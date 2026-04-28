@@ -28,5 +28,12 @@ logs/
 *.log
 
 # Secrets
+secrets/
 *.key
 *.pem
+
+# Claude local settings
+.claude/settings.local.json
+
+# Cache
+.cache/
