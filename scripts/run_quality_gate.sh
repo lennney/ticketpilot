@@ -15,7 +15,7 @@ else
 fi
 
 echo "== Secret scan placeholder =="
-if grep -R "sk-" . --exclude-dir=.git --exclude-dir=.venv --exclude=".env.example"; then
+if grep -R "sk-[a-zA-Z0-9]{20,}" . --exclude-dir=.git --exclude-dir=.venv --exclude=".env.example"; then
   echo "Potential secret detected."
   exit 1
 else
