@@ -1,25 +1,89 @@
 #!/usr/bin/env bash
-set -e
+set -euo pipefail
 
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+NC='\033[0m'
+
+FAILED=0
+
+echo "========================================="
+echo "  TicketPilot Quality Gate"
+echo "========================================="
+
+# 1. Ruff linting
+echo ""
 echo "== Ruff =="
-uv run ruff check . || true
+uv run ruff check src tests || {
+    echo -e "${RED}FAIL: Ruff linting errors found${NC}"
+    FAILED=1
+}
 
-echo "== Pytest =="
-uv run pytest || true
+# 2. Unit tests
+echo ""
+echo "== Unit Tests =="
+uv run pytest tests/unit/ -v --strict-markers || {
+    echo -e "${RED}FAIL: Unit tests failed${NC}"
+    FAILED=1
+}
 
-echo "== OpenSpec validation =="
+# 3. Integration tests (with skip-count guard)
+echo ""
+echo "== Integration Tests =="
+INTEGRATION_OUTPUT=$(uv run pytest tests/integration/ -v --strict-markers 2>&1) || true
+INTEGRATION_EXIT=${PIPESTATUS[0]}
+
+SKIPPED_COUNT=$(echo "$INTEGRATION_OUTPUT" | grep -o '[0-9]* skipped' | grep -o '[0-9]*' || echo "0")
+SKIPPED_COUNT=${SKIPPED_COUNT:-0}
+echo "$INTEGRATION_OUTPUT" | tail -25
+
+if [ "${TICKETPILOT_SKIP_DB_TESTS:-0}" = "1" ]; then
+    echo -e "${YELLOW}INFO: TICKETPILOT_SKIP_DB_TESTS=1, allowing ${SKIPPED_COUNT} skipped tests${NC}"
+elif [ "$SKIPPED_COUNT" -gt 0 ]; then
+    echo -e "${RED}FAIL: ${SKIPPED_COUNT} integration tests skipped (DB unavailable).${NC}"
+    echo -e "${RED}      Set TICKETPILOT_SKIP_DB_TESTS=1 to temporarily allow.${NC}"
+    FAILED=1
+elif [ "$INTEGRATION_EXIT" -ne 0 ]; then
+    echo -e "${RED}FAIL: Integration tests failed${NC}"
+    FAILED=1
+fi
+
+# 4. OpenSpec validation
+echo ""
+echo "== OpenSpec Validation =="
 if command -v openspec >/dev/null 2>&1; then
-  openspec validate --all || true
+    openspec validate --all || {
+        echo -e "${RED}FAIL: OpenSpec validation failed${NC}"
+        FAILED=1
+    }
 else
-  echo "OpenSpec not installed. Skipping."
+    echo -e "${YELLOW}WARNING: OpenSpec not installed, skipping${NC}"
 fi
 
-echo "== Secret scan placeholder =="
-if grep -R "sk-[a-zA-Z0-9]{20,}" . --exclude-dir=.git --exclude-dir=.venv --exclude=".env.example"; then
-  echo "Potential secret detected."
-  exit 1
+# 5. Secret scan
+echo ""
+echo "== Secret Scan =="
+if grep -rP 'sk-[a-zA-Z0-9]{20,}' . \
+    --exclude-dir=.git \
+    --exclude-dir=.venv \
+    --exclude-dir=.venv_broken \
+    --exclude='.env.example' \
+    2>/dev/null; then
+    echo -e "${RED}FAIL: Potential secret detected${NC}"
+    FAILED=1
 else
-  echo "No obvious OpenAI-style secret found."
+    echo "No obvious OpenAI-style secret found."
 fi
 
-echo "Quality gate completed."
+echo ""
+echo "========================================="
+if [ "$FAILED" -eq 0 ]; then
+    echo -e "${GREEN}  Quality Gate PASSED${NC}"
+    echo "========================================="
+    exit 0
+else
+    echo -e "${RED}  Quality Gate FAILED${NC}"
+    echo "========================================="
+    exit 1
+fi
