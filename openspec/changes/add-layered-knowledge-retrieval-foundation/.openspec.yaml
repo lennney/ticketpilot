@@ -1,0 +1,21 @@
+schema: spec-driven
+created: 2026-04-29
+title: Add Layered Knowledge Retrieval Foundation
+summary: Build retrieval foundation with FAQ/Policy/Case layered knowledge base, hybrid PostgreSQL full-text + pgvector HNSW retrieval, RRF fusion, and retrieval traces.
+status: proposed
+owner: ticketpilot-team
+affected_modules:
+  - retrieval
+affected_specs:
+  - knowledge-schema
+  - retrieval-pipeline
+  - retrieval-evaluation
+constraints:
+  - no-reply-generation
+  - no-reranker-integration
+  - no-langfuse-ragas
+  - no-streamlit-ui
+  - faq-policy-case-separated
+  - parent-child-chunking-required
+  - hnsw-index-required
+  - hybrid-retrieval-required
