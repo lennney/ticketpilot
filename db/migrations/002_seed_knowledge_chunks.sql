@@ -1,0 +1,16 @@
+-- Migration 002: Seed knowledge_chunks table
+-- Description: This is a marker migration only — no SQL operations.
+--
+-- Actual seeding is performed by the Python seeding script, which:
+--   1. Reads JSON seed files from data/knowledge/{faq,policy,case}_seed.json
+--   2. Chunks documents using the parent-child chunker
+--   3. Generates fake embeddings for each chunk
+--   4. Inserts chunks into the knowledge_chunks table
+--
+-- Run seeding with:
+--   python -m ticketpilot.retrieval.db.seeding
+--   (requires PostgreSQL + pgvector to be running)
+--
+-- Verify with:
+--   SELECT doc_type, COUNT(*) FROM knowledge_chunks GROUP BY doc_type;
+--   Expected: >= 12 chunks per doc_type (total >= 36)
