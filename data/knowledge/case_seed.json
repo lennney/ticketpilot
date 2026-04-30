@@ -1,0 +1,122 @@
+[
+  {
+    "id": "b1111111-1111-1111-1111-111111111111",
+    "doc_type": "CASE",
+    "business_domain": "refund",
+    "case_id": "CASE-2024-001",
+    "issue_summary": "用户反映收到商品与描述严重不符，要求全额退款",
+    "resolution": "经核实，商品确实存在描述不符问题，已全额退款并赠送20元优惠券作为补偿",
+    "risk_level": "high",
+    "compensation_amount": 20.00
+  },
+  {
+    "id": "b2222222-2222-2222-2222-222222222222",
+    "doc_type": "CASE",
+    "business_domain": "refund",
+    "case_id": "CASE-2024-002",
+    "issue_summary": "用户称未收到货但物流显示已签收",
+    "resolution": "经调查，快递员送错地址，已安排重新发货并向收错件用户追回商品",
+    "risk_level": "medium",
+    "compensation_amount": null
+  },
+  {
+    "id": "b3333333-3333-3333-3333-333333333333",
+    "doc_type": "CASE",
+    "business_domain": "return_exchange",
+    "case_id": "CASE-2024-003",
+    "issue_summary": "用户购买的服装尺码不合适，申请换货",
+    "resolution": "用户换货同款更大尺码，已安排快递上门取件并重新发货",
+    "risk_level": "low",
+    "compensation_amount": null
+  },
+  {
+    "id": "b4444444-4444-4444-4444-444444444444",
+    "doc_type": "CASE",
+    "business_domain": "account",
+    "case_id": "CASE-2024-004",
+    "issue_summary": "用户账户被盗，有异常订单产生",
+    "resolution": "已紧急冻结账户，验证用户身份后解冻，取消异常订单，协助修改密码",
+    "risk_level": "high",
+    "compensation_amount": 0
+  },
+  {
+    "id": "b5555555-5555-5555-5555-555555555555",
+    "doc_type": "CASE",
+    "business_domain": "account",
+    "case_id": "CASE-2024-005",
+    "issue_summary": "用户忘记密码无法登录，邮箱已更换",
+    "resolution": "通过人工客服验证身份（核对注册信息、近期订单等），协助重置密码",
+    "risk_level": "medium",
+    "compensation_amount": null
+  },
+  {
+    "id": "b6666666-6666-6666-6666-666666666666",
+    "doc_type": "CASE",
+    "business_domain": "technical",
+    "case_id": "CASE-2024-006",
+    "issue_summary": "APP频繁闪退导致用户无法正常下单",
+    "resolution": "技术团队排查后发现是特定安卓版本兼容性问题，已发布热修复版本",
+    "risk_level": "medium",
+    "compensation_amount": 10.00
+  },
+  {
+    "id": "b7777777-7777-7777-7777-777777777777",
+    "doc_type": "CASE",
+    "business_domain": "technical",
+    "case_id": "CASE-2024-007",
+    "issue_summary": "支付多次失败但银行显示已扣款",
+    "resolution": "经核查，银行存在延迟转账问题，24小时后资金自动退回，重新下单成功",
+    "risk_level": "medium",
+    "compensation_amount": null
+  },
+  {
+    "id": "b8888888-8888-8888-8888-888888888888",
+    "doc_type": "CASE",
+    "business_domain": "logistics",
+    "case_id": "CASE-2024-008",
+    "issue_summary": "快递在运输过程中严重破损，商品无法使用",
+    "resolution": "已向快递公司索赔，为用户重新发货，并给予50元赔偿",
+    "risk_level": "high",
+    "compensation_amount": 50.00
+  },
+  {
+    "id": "b9999999-9999-9999-9999-999999999999",
+    "doc_type": "CASE",
+    "business_domain": "logistics",
+    "case_id": "CASE-2024-009",
+    "issue_summary": "用户反映快递被冒名签收",
+    "resolution": "经核实，快递员未按规范操作，已向用户道歉并赔偿30元，处罚快递员",
+    "risk_level": "medium",
+    "compensation_amount": 30.00
+  },
+  {
+    "id": "baaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
+    "doc_type": "CASE",
+    "business_domain": "complaint",
+    "case_id": "CASE-2024-010",
+    "issue_summary": "用户对客服态度不满进行投诉",
+    "resolution": "经核查，客服确实存在服务态度问题，已对客服进行培训，向用户致歉并赠送15元优惠券",
+    "risk_level": "low",
+    "compensation_amount": 15.00
+  },
+  {
+    "id": "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb",
+    "doc_type": "CASE",
+    "business_domain": "product_consulting",
+    "case_id": "CASE-2024-011",
+    "issue_summary": "用户咨询商品是否为正品及如何验证",
+    "resolution": "已向用户详细说明正品验证方法（防伪码验证、官方渠道确认等），用户表示满意",
+    "risk_level": "low",
+    "compensation_amount": null
+  },
+  {
+    "id": "bcccccc1-cccc-cccc-cccc-cccccccccccc",
+    "doc_type": "CASE",
+    "business_domain": "return_exchange",
+    "case_id": "CASE-2024-012",
+    "issue_summary": "商品存在隐蔽瑕疵，用户要求退货退款",
+    "resolution": "经鉴定确实存在隐蔽瑕疵，已全额退款并承担退货运费，用户对处理结果满意",
+    "risk_level": "high",
+    "compensation_amount": 0
+  }
+]

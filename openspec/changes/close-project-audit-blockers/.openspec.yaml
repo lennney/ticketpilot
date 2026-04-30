@@ -1,0 +1,19 @@
+schema: spec-driven
+created: 2026-04-29
+title: Close Project Audit Blockers
+summary: Remediation change to resolve 5 blocking issues found by the 2026-04-29 project plan audit before any new product features begin.
+status: proposed
+owner: ticketpilot-team
+affected_modules:
+  - retrieval
+  - pipeline
+  - docs
+  - quality-gate
+affected_specs:
+  - knowledge-schema
+constraints:
+  - no-new-product-features
+  - no-reply-generation
+  - no-streamlit-ui
+  - no-real-embedding-provider
+  - no-reranker-integration

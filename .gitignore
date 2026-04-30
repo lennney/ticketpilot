@@ -37,3 +37,10 @@ secrets/
 
 # Cache
 .cache/
+.claude/scheduled_tasks.lock
+
+# Backup files
+*.bak
+
+# Broken venv (corrupted symlink)
+.venv_broken/

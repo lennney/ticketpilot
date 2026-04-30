@@ -23,7 +23,7 @@ uv run ruff check src tests || {
 # 2. Unit tests
 echo ""
 echo "== Unit Tests =="
-uv run pytest tests/unit/ -v --strict-markers || {
+uv run python -m pytest tests/unit/ -v --strict-markers || {
     echo -e "${RED}FAIL: Unit tests failed${NC}"
     FAILED=1
 }
@@ -31,7 +31,7 @@ uv run pytest tests/unit/ -v --strict-markers || {
 # 3. Integration tests (with skip-count guard)
 echo ""
 echo "== Integration Tests =="
-INTEGRATION_OUTPUT=$(uv run pytest tests/integration/ -v --strict-markers 2>&1) || true
+INTEGRATION_OUTPUT=$(uv run python -m pytest tests/integration/ -v --strict-markers 2>&1) || true
 INTEGRATION_EXIT=${PIPESTATUS[0]}
 
 SKIPPED_COUNT=$(echo "$INTEGRATION_OUTPUT" | grep -o '[0-9]* skipped' | grep -o '[0-9]*' || echo "0")

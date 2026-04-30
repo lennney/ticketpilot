@@ -1,7 +1,6 @@
 """Integration tests for vector retrieval."""
 
 import uuid
-from unittest.mock import patch
 
 import pytest
 
@@ -80,22 +79,17 @@ class TestVectorSearchMocked:
             ),
         ]
 
-    def test_vector_search_returns_results(self, mock_vector_results):
-        """Test that vector_search returns results structure.
-
-        This test requires database to be available.
-        """
+    def test_vector_search_module_loads(self, mock_vector_results):
+        """Test that vector_search module can be imported."""
         try:
             import ticketpilot.retrieval.db.connection  # noqa: F401
         except ImportError:
             pytest.skip("Database not available")
 
-        # This is actually an integration test since we need the real DB
-        with patch(
-            "ticketpilot.retrieval.vector_search.get_db_connection",
-        ):
-            # When db is available, the mock would work
-            pass  # See integration tests for actual database tests
+        from ticketpilot.retrieval.vector_search import vector_search, get_hnsw_params
+        assert callable(vector_search)
+        params = get_hnsw_params()
+        assert params["m"] == 16
 
 
 class TestVectorSearchIntegration:

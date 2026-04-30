@@ -1,0 +1,18 @@
+schema: spec-driven
+created: 2026-04-30
+title: Connect Retrieval to Intake-Risk Pipeline
+summary: Wire the verified hybrid retrieval engine into the existing ticket intake-risk pipeline, producing evidence candidates for downstream review and reply generation.
+status: proposed
+owner: ticketpilot-team
+affected_modules:
+  - pipeline
+  - retrieval
+  - schema
+affected_specs:
+  - pipeline
+constraints:
+  - no-reply-generation
+  - no-llm-api
+  - no-streamlit-ui
+  - no-real-embedding-provider
+  - no-reranker-integration
