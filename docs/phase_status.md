@@ -23,7 +23,7 @@ Summary:
 
 ## Stage 1B Batch 2 - Hybrid Retrieval Engine
 
-Status: ACCEPTED_WITH_DB_GAP
+Status: ACCEPTED
 
 Summary:
 - Fake embedding provider implemented
@@ -32,8 +32,4 @@ Summary:
 - RRF implemented
 - Retrieval traces implemented
 - Unit tests passed
-- Integration tests partially skipped due to pgvector / DB verification gap
-
-Next required action:
-- Complete PostgreSQL + pgvector integration verification
-- Ensure skipped integration tests either pass or are explicitly justified
+- Integration tests pass (55 passed, 0 skipped) — DB verification gap closed

@@ -1,20 +1,49 @@
 """Main smoke test for intake-risk-triage vertical slice."""
 
+import uuid
 from datetime import datetime
+from unittest.mock import patch
 
 import pytest
 
+from ticketpilot.schema.evidence import EvidenceCandidate
 from ticketpilot.schema.ticket import (
     IntentClass,
     RiskFlag,
     RiskSeverity,
 )
 from ticketpilot.pipeline import intake_risk_pipeline
+from ticketpilot.retrieval.traces import RetrievalTrace
+
+
+def _make_non_empty_evidence():
+    """Return non-empty evidence to prevent INSUFFICIENT_EVIDENCE from being added.
+
+    Golden case unit tests should not depend on live DB availability.
+    Mocking retrieve_evidence isolates intent + risk assessment behavior.
+    """
+    from ticketpilot.retrieval.schema.knowledge import DocType
+
+    candidates = [
+        EvidenceCandidate(
+            chunk_id=uuid.uuid4(),
+            doc_id=uuid.uuid4(),
+            doc_type=DocType.FAQ,
+            source_id=uuid.uuid4(),
+            source_table="knowledge_faq",
+            content="退款政策说明",
+            score=0.95,
+            rank=1,
+        )
+    ]
+    trace = RetrievalTrace(query="test", query_embedding=[0.0] * 384, top_k=10)
+    return candidates, trace
 
 
 class TestGoldenCases:
     """Test all golden cases from the specification."""
 
+    @patch("ticketpilot.pipeline.retrieve_evidence")
     @pytest.mark.parametrize(
         "input_text,expected_intent,expected_flags,expected_severity",
         [
@@ -69,9 +98,11 @@ class TestGoldenCases:
         ],
     )
     def test_golden_cases(
-        self, input_text, expected_intent, expected_flags, expected_severity
+        self, mock_retrieve, input_text, expected_intent, expected_flags, expected_severity
     ):
         """Test all golden cases must pass."""
+        mock_retrieve.return_value = _make_non_empty_evidence()
+
         from ticketpilot.schema.ticket import RawTicket
 
         raw_ticket = RawTicket(

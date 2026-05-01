@@ -23,7 +23,9 @@ uv run ruff check src tests || {
 # 2. Unit tests
 echo ""
 echo "== Unit Tests =="
-uv run python -m pytest tests/unit/ -v --strict-markers || {
+# Use /tmp for coverage data to avoid SQLite lock issues on WSL cross-filesystem paths
+export COVERAGE_FILE="${COVERAGE_FILE:-/tmp/.coverage_ticketpilot_gate}"
+uv run python -m pytest tests/unit/ -v --strict-markers --cov=src/ticketpilot --cov-fail-under=70 || {
     echo -e "${RED}FAIL: Unit tests failed${NC}"
     FAILED=1
 }
@@ -31,8 +33,10 @@ uv run python -m pytest tests/unit/ -v --strict-markers || {
 # 3. Integration tests (with skip-count guard)
 echo ""
 echo "== Integration Tests =="
-INTEGRATION_OUTPUT=$(uv run python -m pytest tests/integration/ -v --strict-markers 2>&1) || true
-INTEGRATION_EXIT=${PIPESTATUS[0]}
+set +e
+INTEGRATION_OUTPUT=$(uv run python -m pytest tests/integration/ -v --strict-markers 2>&1)
+INTEGRATION_EXIT=$?
+set -e
 
 SKIPPED_COUNT=$(echo "$INTEGRATION_OUTPUT" | grep -o '[0-9]* skipped' | grep -o '[0-9]*' || echo "0")
 SKIPPED_COUNT=${SKIPPED_COUNT:-0}

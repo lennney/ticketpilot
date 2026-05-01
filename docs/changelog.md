@@ -1,5 +1,61 @@
 # TicketPilot Changelog
 
+## 2026-04-29 — Audit Remediation: Quality Gate, Documentation, and Two-Layer Schema (close-project-audit-blockers)
+
+### Changed
+- Fixed quality gate to detect real failures: removed `|| true` from ruff, pytest, and openspec validate lines; added `--strict-markers` to pytest; added integration test skip-count guard with `TICKETPILOT_SKIP_DB_TESTS` bypass.
+- Added `--cov=src/ticketpilot --cov-fail-under=70` to unit test invocation.
+- Created `scripts/run_integration_tests.sh` for standalone integration test execution.
+- Added Current Status section to README documenting which stages are ACCEPTED, ACCEPTED_WITH_DB_GAP, or not started, plus key limitations and link to phase_status.md.
+- Synced `docs/technical_decisions.md` with actual code: ef_construction=200, fake embedding dim=384, FTS config=simple, removed SourceRouter references, labeled fake embeddings as PIPELINE VERIFICATION ONLY.
+- Implemented two-layer source table architecture (BLOCK-2): added `knowledge_faq`, `knowledge_policy`, `knowledge_case` source tables with type-specific columns; added `source_table` and `source_id` columns to `knowledge_chunks` for source traceability.
+- Fixed docker-compose.yml volume path: `./db/seed` → `./db/migrations`.
+- Annotated `002_seed_knowledge_chunks.sql` as a no-op marker migration.
+- Deleted duplicate `docs/acceptance_report_batch1.md`.
+
+### Why
+- Prior quality gate used `|| true` on every check, making it impossible to detect failures. 26 skipped integration tests were invisible.
+- README described 11 Copilot stages but only ~3 existed, with no gap disclosure.
+- Spec required physically separate FAQ/Policy/Case tables but implementation had only a single `knowledge_chunks` table with a discriminator column.
+- `technical_decisions.md` contained aspirational values (ef_construction=64, fake dim=128, FTS=chinese, SourceRouter) that did not match the implementation.
+
+### Tests / Evaluation
+- Quality gate now exits non-zero on ruff failure, unit test failure, integration test failure (not skip), openspec validation failure, or secret detection.
+- Unit tests: 202 pass (unchanged).
+- Integration tests: 55 pass with 0 skipped when DB is available.
+- All Batches A, B, C committed and merged via `fix/audit-blockers` branch.
+
+### Remaining risks
+- Migration 004 (separate source refs migration) not created — source refs folded into migration 003.
+- `map_intent_to_doc_types` and `RetrievalTrace` naming collision remain deferred cleanup items from connecting pipeline change.
+- Spec Purpose sections in promoted specs still contain placeholder TBD text.
+
+---
+
+## 2026-04-30 — Quality Gate Fix: Mock Isolation, Dependency Restoration, Coverage (close-project-audit-blockers)
+
+### Changed
+- Fixed 7 golden case test failures in `tests/unit/test_intake_risk_triage.py` by adding `@patch("ticketpilot.pipeline.retrieve_evidence")` mock with `_make_non_empty_evidence()` helper, isolating unit tests from Stage 4 DB dependency. Decorator order corrected: `@patch` placed above `@pytest.mark.parametrize`.
+- Restored `psycopg-pool>=3.3.0` to project dependencies in `pyproject.toml` — `uv sync` had removed it because it wasn't declared, breaking all integration tests (33 skipped).
+- Added `COVERAGE_FILE` export to `scripts/run_quality_gate.sh` pointing to `/tmp/` to work around WSL cross-filesystem SQLite lock issue that caused INTERNALERROR during coverage collection.
+- Added `pytest-cov>=7.0.0` to dev dependencies in `pyproject.toml`.
+
+### Why
+- Quality gate run after Batch D implementation revealed 7 golden case test failures, 33 skipped integration tests, and coverage at 68.97% (below 70% threshold).
+- The 4-stage pipeline's Stage 4 (`retrieve_evidence`) requires a live DB, but golden case unit tests did not mock it. With DB unavailable, retrieval returned empty evidence, adding INSUFFICIENT_EVIDENCE flag to all cases.
+- Missing `psycopg-pool` dependency caused all integration tests to skip because `connection.py` could not import `ConnectionPool`.
+- WSL `\\wsl.localhost\...` paths don't support SQLite file locking, so `pytest-cov` failed to write `.coverage` files in the repo directory.
+
+### Tests / Evaluation
+- Quality gate now exits 0 with all checks passing: Ruff clean, 202 unit tests passed (80.25% coverage), 55 integration tests passed (0 skipped), OpenSpec 10/10 passed, no secrets detected.
+- No production code modified. No tests weakened. Coverage threshold preserved at 70%.
+
+### Remaining risks
+- `test_embedding_dimension_validation` in `tests/integration/test_vector_retrieval.py` still imports from DB module inline — deferred cleanup.
+- Batch D Docker/migration/seed verification tasks (D.1.2–D.3.3) not explicitly verified as separate steps, though all integration tests pass.
+
+---
+
 ## 2026-04-30 - Batch 1: Schema Foundation + Evidence Mapper (connect-retrieval-to-intake-risk-pipeline)
 
 ### Changed
