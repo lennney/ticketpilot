@@ -175,7 +175,38 @@
 
 ---
 
-## 2026-04-29 - Initialize development management workflow
+---
+
+## 2026-05-02 — Batch 1: Draft Generation Schemas, Provider, and Validator (add-evidence-draft-generation)
+
+### Changed
+- Added `src/ticketpilot/drafting/` module with four new files:
+  - `schemas.py` — Citation, DraftReply, and DraftGenerationTrace Pydantic models
+  - `provider.py` — AbstractDraftProvider interface and deterministic FakeDraftProvider
+  - `citation_validator.py` — CitationValidator for unsupported claim detection
+  - `__init__.py` — clean module exports
+- FakeDraftProvider generates template-based, evidence-grounded draft replies without LLM calls
+- No-evidence fallback produces a safe message with no policy promises
+- High-risk tickets produce drafts flagged with `must_human_review=True`
+- CitationValidator performs deterministic checks: citation existence, claim-coverage scan, and evidence cross-reference
+- Added 3 unit test files (test_drafting_schemas, test_drafting_provider, test_citation_validator)
+- No modifications to pipeline.py, schema/ticket.py, or any existing module
+
+### Why
+- Completes the drafting data model and provider interface without any pipeline breaking changes
+- Enables standalone `generate_draft(ticket_output)` composition without modifying existing return types
+- Lays the foundation for pipeline integration in Batch 2
+
+### Tests / Evaluation
+- Unit tests: 202 prior + 40 new = 242 unit tests passed
+- Ruff clean
+- OpenSpec validate —all: 10/10 passed
+- No existing tests modified
+
+### Remaining risks
+- Pipeline integration (calling generate_draft inside intake_risk_pipeline) deferred to Batch 2
+- Regex-based claim detection may produce false positives/negatives with real Chinese text
+- FakeDraftProvider is MVP-only; real LLM provider implementation deferred
 
 ### Changed
 - Initialized TicketPilot project structure.

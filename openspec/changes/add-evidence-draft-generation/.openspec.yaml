@@ -1,0 +1,23 @@
+schema: spec-driven
+created: 2026-05-02
+title: Add Evidence Draft Generation
+summary: Add evidence-grounded customer service reply draft generation with Citation/DraftReply/DraftGenerationTrace schemas, FakeDraftProvider, CitationValidator, no-evidence fallback, high-risk fallback, and pipeline integration.
+status: proposed
+owner: ticketpilot-team
+affected_modules:
+  - drafting
+  - pipeline
+affected_specs:
+  - drafting
+constraints:
+  - no-real-llm-provider
+  - no-langgraph
+  - no-streamlit
+  - no-langfuse-ragas
+  - no-evaluation-pipeline
+  - no-auto-send
+  - evidence-only-generation
+  - high-risk-human-review
+  - no-evidence-fallback
+  - must-not-modify-existing-schema-files
+  - must-not-modify-retrieval-engine
