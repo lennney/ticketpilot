@@ -155,6 +155,8 @@ TicketPilot is a Chinese customer support ticket triage and evidence-grounded re
 | retrieval_latency_ms | INTEGER | Total retrieval time |
 | created_at | TIMESTAMP | Trace timestamp |
 
+> **Deferred:** Persistent `retrieval_traces` DB table moved to a future trace-observability change. MVP uses in-memory Pydantic `RetrievalTrace` on `TicketOutput` (see `src/ticketpilot/retrieval/traces.py`). All spec requirements for trace completeness are satisfied by the Pydantic model. No code writes traces to the database.
+
 ## Why Source Separation Is Critical
 
 **FORBIDDEN: Mixing FAQ/Policy/Case into one table**
