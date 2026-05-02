@@ -113,15 +113,20 @@
 - [x] 5.4 Verify determinism:
   - Same input produces identical draft output across repeated calls
 
-## Phase 6: Quality Gate and Documentation (Batch 2)
+## Phase 6: Quality Gate and Documentation (Batch 2D)
 
-- [ ] 6.1 Update `docs/changelog.md` with evidence draft generation entry
-- [ ] 6.2 Update `docs/technical_decisions.md` with drafting architecture decisions:
+- [x] 6.1 Update `docs/changelog.md` with evidence draft generation entry
+- [x] 6.2 Update `docs/technical_decisions.md` with drafting architecture decisions:
   - FakeDraftProvider chosen for deterministic, testable generation (no real LLM in MVP)
-  - Template-based Chinese reply generation
+  - Draft generation is optional workflow, not part of default pipeline contract
+  - generate_draft(ticket_output) standalone composition function
+  - run_pipeline_with_draft(raw_ticket) optional workflow entrypoint
+  - DraftedTicketResult wraps ticket_output + draft_reply only
   - CitationValidator as lightweight guard before any future LLM integration
-  - Fallback patterns for no-evidence and high-risk scenarios
-- [ ] 6.3 Run full quality gate: `bash scripts/run_quality_gate.sh`
+  - No-evidence fallback: safe Chinese message without deterministic policy promises
+  - High-risk and unsupported-claim paths preserve must_human_review=true
+  - Deferred items: real LLM provider, review UI, LangGraph, persistent trace, full eval pipeline
+- [x] 6.3 Run full quality gate: `bash scripts/run_quality_gate.sh`
 
 ## Phase 7: Optional Pipeline Entrypoint (Batch 2B)
 
