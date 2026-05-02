@@ -54,3 +54,24 @@ Summary:
 - No real LLM, no network, no API keys, no env dependencies
 - Full quality gate passed
 - OpenSpec change archived
+
+## Stage 1D — Human Review Console
+
+Status: ACCEPTED
+
+Summary:
+- ReviewAction enum (APPROVE, EDIT, ESCALATE, REJECT) defined
+- ReviewDecision Pydantic model with full audit trail (15+ fields)
+- ReviewStore append-only JSONL persistence with save/load_all/count
+- review_trigger_reasons captures why human review was needed (high_risk, no_evidence, unsupported_claims, generation_error)
+- Streamlit console MVP for human review workflow
+- Console supports RawTicket input, full pipeline display, action buttons, and JSONL persistence
+- Console explicitly disclaims no auto-send ("审核控制台 — 不自动发送回复")
+- Pure helper functions (determine_trigger_reasons, build_review_decision) with 40 unit tests
+- Integration tests for console module imports, ReviewDecision persistence, and no-auto-send verification
+- Unit tests: 325 passed (285 prior + 40 new)
+- Integration tests: 74 passed (65 prior + 9 new)
+- 0 skipped integration tests
+- No modifications to pipeline.py, drafting, retrieval, risk, intake, classification, or database code
+- Full quality gate passed
+- OpenSpec change ready for archive

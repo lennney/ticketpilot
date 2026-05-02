@@ -46,13 +46,13 @@
 
 ## Phase 3: Integration Tests + Quality Gate
 
-- [ ] 3.1 Create `tests/integration/test_review_console.py`:
+- [x] 3.1 Create `tests/integration/test_review_console.py`:
   - Test that ReviewStore integrates with ReviewDecision roundtrip
   - Test that the console module loads without error
-- [ ] 3.2 Update `docs/changelog.md` with human review console entry
-- [ ] 3.3 Run full quality gate: `bash scripts/run_quality_gate.sh`
-- [ ] 3.4 Update `docs/phase_status.md` with Stage 1D status
-- [ ] 3.5 Final acceptance + archive
+- [x] 3.2 Update `docs/changelog.md` with human review console entry
+- [x] 3.3 Run full quality gate: `bash scripts/run_quality_gate.sh`
+- [x] 3.4 Update `docs/phase_status.md` with Stage 1D status
+- [x] 3.5 Final acceptance + archive
 
 ## Batch Plan Summary
 

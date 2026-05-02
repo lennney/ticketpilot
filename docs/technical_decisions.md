@@ -157,6 +157,51 @@ The following are explicitly out of scope for Stage 1C and documented as deferre
 - Multi-turn or conversational draft generation
 - Improved reranker or embedding fine-tuning
 
+## Human Review Console Architecture (Stage 1D — Implemented)
+
+### Design: Streamlit MVP, Not Production Frontend
+
+The review console is a **Streamlit single-page application**, not a production-grade
+admin panel. It is designed for local demo and manual testing, not for multi-user
+deployment. Key architectural decisions:
+
+| Decision | Choice | Rationale |
+|----------|--------|-----------|
+| Framework | Streamlit (single-page, no routing) | Zero frontend build step, Python-only, fast iteration |
+| Persistence | Append-only JSONL (`ReviewStore`) | Zero infrastructure needed, full audit trail, easy to inspect |
+| Review actions | APPROVE / EDIT / ESCALATE / REJECT | Covers all human review outcomes; no auto-send |
+| Reviewer identity | Free-text label (`reviewer_label`) | MVP-only — no auth, no login |
+| Entrypoint | `run_pipeline_with_draft(raw_ticket)` | Reuses existing pipeline + draft workflow unchanged |
+
+### Audit Trail Design
+
+`ReviewDecision` captures a self-contained snapshot of the review-time state:
+
+| What | How |
+|------|-----|
+| Why human review was triggered | `review_trigger_reasons: list[str]` — "high_risk", "unsupported_claims", "no_evidence", "generation_error" |
+| What the system produced | `original_draft_text`, `confidence`, `citations_summary`, `evidence_used_count` |
+| What the reviewer did | `action`, `edited_text`, `decision_reason` |
+| System state at review time | `was_high_risk`, `had_unsupported_claims`, `risk_flags`, `intent` |
+| When | `reviewed_at` |
+
+### Safety: No Auto-Send
+
+The console has **no send functionality**. All four actions (Approve, Edit, Escalate,
+Reject) only persist a `ReviewDecision` to local JSONL. There is no network call,
+no API request, no message dispatch. This is a deliberate constraint:
+
+> The review console is a decision-recording interface, not a reply-sending interface.
+
+### Deferred Items
+
+- Authentication / multi-user workflow
+- Production database backend (replace JSONL)
+- Shared review queue across reviewers
+- Deployment (Docker, cloud)
+- Trace dashboard / observability integration
+- Real-time ticket feed (polling or WebSocket)
+
 ## Embedding Model Tiers (Planned, Not Implemented)
 
 | Tier | Dimension | Status |

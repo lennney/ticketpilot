@@ -334,3 +334,44 @@
 - Streamlit UI is an MVP prototype — no auth, no reviewer identity, no auto-refresh
 - No integration tests for the console (no browser automation)
 - Review decisions are stored on local filesystem only — no shared database backend
+
+---
+
+## 2026-05-02 — Batch 3: Integration Tests + Documentation + Quality Gate (add-human-review-console)
+
+### Changed
+- Added `tests/integration/test_review_console.py` with 9 integration tests:
+  - Console module imports without Streamlit side effects
+  - APPROVE persists original draft
+  - EDIT preserves original draft and stores edited final reply
+  - ESCALATE stores decision_reason
+  - REJECT stores decision_reason
+  - Saved record preserves all key audit fields (ticket_id, action, risk_flags, was_high_risk, evidence_used_count)
+  - No auto-send side effect (only JSONL append)
+- Updated `docs/technical_decisions.md` with Human Review Console Architecture section:
+  - Streamlit MVP design rationale
+  - Audit trail field mapping
+  - No-auto-send safety constraint documented
+  - Deferred items listed
+- Updated `docs/phase_status.md` with Stage 1D — Human Review Console (ACCEPTED)
+- Updated `openspec/changes/add-human-review-console/tasks.md` — Phase 3 tasks marked complete
+- Verified Streamlit 1.56.0 is importable (no pyproject.toml change needed)
+
+### Why
+- Completes the full test coverage for the human review workflow
+- Documents architecture decisions for future maintainers
+- Ensures the change is ready for OpenSpec archive
+
+### Tests / Evaluation
+- Integration tests: 65 prior + 9 new = **74 passed, 0 skipped**
+- Unit tests: 325 passed (unchanged)
+- Ruff clean
+- OpenSpec validate —all: 11/11 passed
+- Quality gate: PASSED
+- No pipeline, drafting, retrieval, risk, intake, classification, or database code modified
+- No auto-send capability added
+
+### Remaining risks
+- Console is local-only (no shared DB, no multi-user queue)
+- No authentication or reviewer login
+- OpenSpec archive not yet performed
