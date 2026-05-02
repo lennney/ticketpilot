@@ -75,3 +75,26 @@ Summary:
 - No modifications to pipeline.py, drafting, retrieval, risk, intake, classification, or database code
 - Full quality gate passed
 - OpenSpec change ready for archive
+
+## Documentation Package (document-development-process-and-demo-package)
+
+Status: ACCEPTED
+
+Summary:
+- Development trace (`docs/development_trace/`): 9 files — index, timeline, and 7 stage narratives covering all 6 archived OpenSpec changes plus quality gate hardening
+- Technical docs (`docs/technical/`): 11 files — system architecture, workflow pipeline, data contracts, risk assessment rules, retrieval architecture, evidence draft generation, human review console, quality gate, testing strategy, open questions, glossary
+- Reusable skills (`docs/skills/`): 10 files — spec-driven development, batch implementation, quality gate acceptance, OpenSpec archive, product boundary, retrieval evaluation, evidence-grounded generation, human review workflow, secure AI development, portfolio packaging
+- Prompt library (`docs/prompts/`): 7 files — project director, system architect, QA evaluator, phase supervisor, Claude Code batch, acceptance review, archive prompts
+- Portfolio docs (`docs/portfolio/`): 5 files — Chinese case study, English case study, interview talking points, demo script, limitations and next steps
+- All documents consistently state:
+  - Current system is local demo / portfolio-ready, not production-ready
+  - Fake embedding proves pipeline mechanics, not real semantic retrieval quality
+  - Current knowledge base is seed data, not real enterprise data
+  - No auto-send exists
+  - Human review is required for risky or unsupported outputs
+  - Evaluation pipeline, realistic data pack, real embedding provider, real LLM provider, trace persistence, LangGraph workflow, auth/multi-user review, production deployment, and real customer service integration are deferred
+- Unit tests: 325 passed, 76.57% coverage (unchanged)
+- Integration tests: 74 passed, 0 skipped (unchanged)
+- No source code modified
+- Full quality gate passed
+- OpenSpec change archived

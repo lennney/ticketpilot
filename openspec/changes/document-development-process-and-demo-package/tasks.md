@@ -63,13 +63,13 @@
 
 ## Phase 7: Finalization
 
-- [ ] 7.1 Verify all docs reference correct test counts, commits, and scope
-- [ ] 7.2 Update `docs/changelog.md`
-- [ ] 7.3 Update `docs/phase_status.md`
-- [ ] 7.4 Run quality gate: `bash scripts/run_quality_gate.sh`
-- [ ] 7.5 OpenSpec validate --all
-- [ ] 7.6 OpenSpec archive
-- [ ] 7.7 Final acceptance
+- [x] 7.1 Verify all docs reference correct test counts, commits, and scope
+- [x] 7.2 Update `docs/changelog.md`
+- [x] 7.3 Update `docs/phase_status.md`
+- [x] 7.4 Run quality gate: `bash scripts/run_quality_gate.sh`
+- [x] 7.5 OpenSpec validate --all
+- [x] 7.6 OpenSpec archive
+- [x] 7.7 Final acceptance
 
 ## Batch Plan
 
