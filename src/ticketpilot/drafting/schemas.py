@@ -6,6 +6,7 @@ from uuid import UUID
 from pydantic import BaseModel, Field
 
 from ticketpilot.retrieval.schema.knowledge import DocType
+from ticketpilot.schema.ticket import TicketOutput
 
 
 class Citation(BaseModel):
@@ -33,6 +34,13 @@ class DraftReply(BaseModel):
     must_human_review: bool = False
     fallback_reason: str | None = None
     generation_trace: dict | None = None
+
+
+class DraftedTicketResult(BaseModel):
+    """Wrapper combining a processed ticket with its generated draft reply."""
+
+    ticket_output: TicketOutput
+    draft_reply: DraftReply
 
 
 class DraftGenerationTrace(BaseModel):

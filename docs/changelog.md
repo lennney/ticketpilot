@@ -177,6 +177,31 @@
 
 ---
 
+## 2026-05-02 — Batch 2B: Optional Pipeline Draft Entrypoint (add-evidence-draft-generation)
+
+### Changed
+- Added `DraftedTicketResult` wrapper schema combining `TicketOutput` + `DraftReply` in `drafting/schemas.py`
+- Added `run_pipeline_with_draft(raw_ticket)` in `drafting/pipeline.py` — optional entrypoint that runs the existing 4-stage pipeline then generates a draft reply
+- `run_pipeline_with_draft()` composes `intake_risk_pipeline()` + `generate_draft()` without modifying either function's contract
+- Default `intake_risk_pipeline()` behavior unchanged — `TicketOutput` return type preserved
+- No modifications to `pipeline.py`, `schema/ticket.py`, or any existing module
+
+### Why
+- Provides a clean, discoverable entrypoint for workflows that need both ticket processing and draft generation
+- Keeps the optional workflow separate from the default pipeline contract
+- Enables Streamlit UI and API consumers to call a single function without composing manually
+
+### Tests / Evaluation
+- Unit tests: 254 prior + 9 new = 263 unit tests passed
+- Ruff clean
+- No existing tests modified
+
+### Remaining risks
+- Integration tests (Phase 5) not yet started — requires DB seed data and seed-specific assertions
+- Pipeline integration (modifying `intake_risk_pipeline` default behavior) intentionally deferred
+
+---
+
 ## 2026-05-02 — Batch 1: Draft Generation Schemas, Provider, and Validator (add-evidence-draft-generation)
 
 ### Changed

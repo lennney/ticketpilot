@@ -122,6 +122,25 @@
   - Fallback patterns for no-evidence and high-risk scenarios
 - [ ] 6.3 Run full quality gate: `bash scripts/run_quality_gate.sh`
 
+## Phase 7: Optional Pipeline Entrypoint (Batch 2B)
+
+- [x] 7.1 Add `DraftedTicketResult` wrapper schema to `src/ticketpilot/drafting/schemas.py`:
+  - `ticket_output: TicketOutput`
+  - `draft_reply: DraftReply`
+- [x] 7.2 Create `src/ticketpilot/drafting/pipeline.py` with:
+  - `run_pipeline_with_draft(raw_ticket: RawTicket) -> DraftedTicketResult`
+  - Composes existing `intake_risk_pipeline()` + `generate_draft()` without modification
+  - Returns wrapper result preserving both TicketOutput and DraftReply
+- [x] 7.3 Update `src/ticketpilot/drafting/__init__.py` to export `DraftedTicketResult` and `run_pipeline_with_draft`
+- [x] 7.4 Write unit tests in `tests/unit/test_drafting_pipeline.py`:
+  - Returns DraftedTicketResult with ticket_output and draft_reply
+  - Calls intake_risk_pipeline exactly once
+  - Calls generate_draft exactly once with returned TicketOutput
+  - Preserves high-risk must_human_review
+  - Does not mutate TicketOutput
+  - Deterministic for same mocked inputs
+- [x] 7.5 Update `docs/changelog.md` with Batch 2B entry
+
 ## Batch Plan Summary
 
 - **Batch 1**: Phases 1-3 (schemas + FakeDraftProvider + CitationValidator + unit tests). Creates only new files in `src/ticketpilot/drafting/` and `tests/unit/`. Zero risk to existing code or tests.
