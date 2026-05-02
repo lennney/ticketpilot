@@ -109,6 +109,7 @@ class TestReviewDecision:
         assert decision.risk_flags == []
         assert decision.citations_summary == []
         assert decision.evidence_used_count == 0
+        assert decision.reviewer_label == ""
         assert isinstance(decision.reviewed_at, datetime)
 
     def test_json_serialization_roundtrip(self):
@@ -124,6 +125,7 @@ class TestReviewDecision:
             risk_flags=[],
             citations_summary=[{"chunk_id": "abc", "doc_type": "FAQ"}],
             evidence_used_count=1,
+            reviewer_label="reviewer-zhang",
         )
         json_str = decision.model_dump_json()
         restored = ReviewDecision.model_validate_json(json_str)
@@ -133,6 +135,7 @@ class TestReviewDecision:
         assert restored.confidence == decision.confidence
         assert restored.citations_summary == decision.citations_summary
         assert restored.evidence_used_count == decision.evidence_used_count
+        assert restored.reviewer_label == "reviewer-zhang"
 
     def test_rejects_invalid_action(self):
         with pytest.raises(ValidationError):

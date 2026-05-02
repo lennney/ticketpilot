@@ -37,4 +37,5 @@ class ReviewDecision(BaseModel):
     risk_flags: list[str] = Field(default_factory=list)
     citations_summary: list[dict] = Field(default_factory=list)
     evidence_used_count: int = 0
+    reviewer_label: str = ""
     reviewed_at: datetime = Field(default_factory=datetime.utcnow)
