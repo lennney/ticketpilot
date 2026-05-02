@@ -473,3 +473,36 @@
 - No src/ or tests/ files modified
 - Portfolio docs verified against source material (changelog, technical docs, development trace, OpenSpec specs)
 - All claims traceable to project artifacts, not aspirational plans
+
+## 2026-05-02 — Batch 3B: Prompt Library (document-development-process-and-demo-package)
+
+### Changed
+- Created `docs/prompts/` directory with 7 reusable prompt library documents extracted from the TicketPilot development process:
+  - `project_director_prompts.md` — 5 prompts for creating OpenSpec changes, defining product boundary, splitting roadmap into stages, preventing scope creep, and selecting next phase
+  - `system_architect_prompts.md` — 5 prompts for architecture review, schema/data contract review, integration boundary review, provider abstraction review, and optional workflow design
+  - `qa_evaluator_prompts.md` — 5 prompts for test strategy design, golden case planning, quality gate hardening, skipped integration test detection, and coverage/regression review
+  - `phase_supervisor_prompts.md` — 5 prompts for implementation-readiness review, batch acceptance review, forbidden-scope audit, task status audit, and final phase acceptance
+  - `claude_code_batch_prompts.md` — 6 prompts for schema/store implementation, standalone function implementation, optional entrypoint implementation, integration test batch, docs-only batch, and no-code planning batch
+  - `acceptance_review_prompts.md` — 5 prompts for full validation pack, individual stage review, test gap review, production-code untouched verification, and commit readiness report
+  - `archive_prompts.md` — 5 prompts for final documentation update, OpenSpec archive readiness, archive command sequence, post-archive validation, and clean working tree verification
+
+### Why
+- Prompt library documents extract reusable prompt templates from the TicketPilot development process for use in future projects
+- Each prompt entry includes purpose, when to use, inputs, forbidden scope, template, expected output, acceptance checklist, and common failure modes
+- Placeholders like [Change name], [Current accepted state], [Allowed files], [Forbidden scope], [Validation commands], and [Return format] make the prompts reusable across projects
+
+### Tests
+- Unit tests: 325 passed (unchanged — documentation only)
+- Integration tests: 74 passed, 0 skipped (unchanged — documentation only)
+- Coverage: 80.25% (unchanged — no code modified)
+
+### Evaluation
+- All 7 new prompt documents follow consistent structure and truth-in-documentation rules
+- Source material used: development trace, technical docs, portfolio, skills docs, changelog, phase status, technical decisions, archived OpenSpec changes
+- No unsupported claims, no exaggeration of maturity, no claims of production readiness
+- New files only: docs/prompts/ directory with 7 markdown files
+
+### Remaining risks
+- Prompt library documents have not been reviewed by external users; usability validation is deferred
+- Some prompt templates may need adjustment for projects with different toolchains
+- No automated validation of prompt document structure or consistency exists

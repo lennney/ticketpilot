@@ -45,13 +45,13 @@
 
 ## Phase 5: Prompt Library (docs/prompts/)
 
-- [ ] 5.1 Create `project_director_prompts.md`
-- [ ] 5.2 Create `system_architect_prompts.md`
-- [ ] 5.3 Create `qa_evaluator_prompts.md`
-- [ ] 5.4 Create `phase_supervisor_prompts.md`
-- [ ] 5.5 Create `claude_code_batch_prompts.md`
-- [ ] 5.6 Create `acceptance_review_prompts.md`
-- [ ] 5.7 Create `archive_prompts.md`
+- [x] 5.1 Create `project_director_prompts.md`
+- [x] 5.2 Create `system_architect_prompts.md`
+- [x] 5.3 Create `qa_evaluator_prompts.md`
+- [x] 5.4 Create `phase_supervisor_prompts.md`
+- [x] 5.5 Create `claude_code_batch_prompts.md`
+- [x] 5.6 Create `acceptance_review_prompts.md`
+- [x] 5.7 Create `archive_prompts.md`
 
 ## Phase 6: Portfolio Docs (docs/portfolio/)
 
