@@ -375,3 +375,35 @@
 - Console is local-only (no shared DB, no multi-user queue)
 - No authentication or reviewer login
 - OpenSpec archive not yet performed
+
+---
+
+## 2026-05-02 — Batch 1: Development Trace Documentation (document-development-process-and-demo-package)
+
+### Changed
+- Created `docs/development_trace/index.md` — project overview, readiness levels, stage overview, key constraints, and cross-stage deferred items list
+- Created `docs/development_trace/timeline.md` — chronological commit history organized by date and stage
+- Created `docs/development_trace/00_project_origin.md` — Stage 0: project initialization, toolchain setup, OpenSpec workflow
+- Created `docs/development_trace/01_intake_risk_triage.md` — Stage 1A: ticket intake, intent classification, risk assessment
+- Created `docs/development_trace/02_layered_retrieval_foundation.md` — Stage 1B: knowledge schema, hybrid retrieval engine, fake embeddings
+- Created `docs/development_trace/03_connect_retrieval_to_pipeline.md` — Wiring retrieval as Stage 4, query builder, evidence mapper
+- Created `docs/development_trace/04_quality_gate_hardening.md` — Audit remediation, quality gate fixes, two-layer schema, doc sync
+- Created `docs/development_trace/05_evidence_draft_generation.md` — Stage 1C: drafting schemas, FakeDraftProvider, CitationValidator
+- Created `docs/development_trace/06_human_review_console.md` — Stage 1D: review schemas, JSONL store, Streamlit console
+
+### Why
+- Provides a complete historical narrative of TicketPilot's 6 OpenSpec changes
+- Every stage document documents goal, business problem, design decisions, test results, risks, deferred items, and reusable patterns
+- Required before technical, skills, and portfolio documentation can be written
+
+### Content constraints enforced in every relevant document
+- Fake embeddings are explicitly stated as pipeline verification only (no semantic retrieval quality)
+- Current knowledge base is stated as seed data, not real enterprise data
+- No auto-send is documented
+- High-risk / unsupported / no-evidence outputs require human review
+- Evaluation pipeline, realistic data pack, real embedding provider, real LLM provider, trace persistence, LangGraph workflow, and production deployment are listed as deferred
+
+### Tests / Evaluation
+- No source code modified (docs-only change)
+- git status clean
+- `ruff check` passes (no Python code changed)

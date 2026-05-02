@@ -7,14 +7,14 @@
 
 ## Phase 2: Development Trace (docs/development_trace/)
 
-- [ ] 2.1 Create `docs/development_trace/index.md` and `timeline.md`
-- [ ] 2.2 Create `00_project_origin.md`
-- [ ] 2.3 Create `01_intake_risk_triage.md`
-- [ ] 2.4 Create `02_layered_retrieval_foundation.md`
-- [ ] 2.5 Create `03_connect_retrieval_to_pipeline.md`
-- [ ] 2.6 Create `04_quality_gate_hardening.md`
-- [ ] 2.7 Create `05_evidence_draft_generation.md`
-- [ ] 2.8 Create `06_human_review_console.md`
+- [x] 2.1 Create `docs/development_trace/index.md` and `timeline.md`
+- [x] 2.2 Create `00_project_origin.md`
+- [x] 2.3 Create `01_intake_risk_triage.md`
+- [x] 2.4 Create `02_layered_retrieval_foundation.md`
+- [x] 2.5 Create `03_connect_retrieval_to_pipeline.md`
+- [x] 2.6 Create `04_quality_gate_hardening.md`
+- [x] 2.7 Create `05_evidence_draft_generation.md`
+- [x] 2.8 Create `06_human_review_console.md`
 
 ## Phase 3: Technical Docs (docs/technical/)
 
