@@ -177,6 +177,30 @@
 
 ---
 
+## 2026-05-02 — Batch 1: Review Schema and Store Foundation (add-human-review-console)
+
+### Changed
+- Added `src/ticketpilot/review/` module with:
+  - `ReviewAction` enum: APPROVE, EDIT, ESCALATE, REJECT
+  - `ReviewDecision` Pydantic model with audit trail fields (review_id, ticket_id, ticket_text, action, edited_text, decision_reason, original_draft_text, confidence, had_unsupported_claims, was_high_risk, intent, risk_flags, citations_summary, evidence_used_count, reviewed_at)
+  - `ReviewStore` class with append-only JSONL persistence (save, load_all, count)
+
+### Why
+- Establishes the data contract for human review decisions before any UI code is written
+- Ensures every review action is recorded as a self-contained, traceable business decision
+
+### Tests / Evaluation
+- Unit tests: 285 passed (263 prior + 22 new)
+- Ruff clean
+- No existing tests modified
+
+### Remaining risks
+- Streamlit console UI not yet implemented (Phase 2)
+- No integration tests yet (Phase 3)
+- Reviewer identity is MVP-only (label field, no auth)
+
+---
+
 ## 2026-05-02 — Batch 2C: Drafting Workflow Integration Tests (add-evidence-draft-generation)
 
 ### Changed

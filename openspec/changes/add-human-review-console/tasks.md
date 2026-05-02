@@ -1,25 +1,26 @@
-## Phase 1: Review Schemas + Store
+## Phase 1: Review Schemas + Store (Batch 1)
 
-- [ ] 1.1 Create `src/ticketpilot/review/__init__.py` with package exports
-- [ ] 1.2 Create `src/ticketpilot/review/schemas.py` with:
+- [x] 1.1 Create `src/ticketpilot/review/__init__.py` with package exports
+- [x] 1.2 Create `src/ticketpilot/review/schemas.py` with:
   - `ReviewAction` enum: APPROVE, EDIT, ESCALATE, REJECT
   - `ReviewDecision` Pydantic model with all audit trail fields:
     - review_id, ticket_id, ticket_text, action, edited_text, decision_reason
     - original_draft_text, confidence, had_unsupported_claims, was_high_risk
     - intent, risk_flags, citations_summary, evidence_used_count, reviewed_at
-- [ ] 1.3 Create `src/ticketpilot/review/store.py` with:
+- [x] 1.3 Create `src/ticketpilot/review/store.py` with:
   - `ReviewStore` class using JSONL persistence
   - `save(decision)`, `load_all()`, `count()` methods
-  - Thread-safe append
-- [ ] 1.4 Write unit tests in `tests/unit/test_review_schemas.py`:
-  - ReviewAction enum values
-  - ReviewDecision valid construction
-  - ReviewDecision defaults
-- [ ] 1.5 Write unit tests in `tests/unit/test_review_store.py`:
-  - Save and load a single decision
-  - Save and load multiple decisions
-  - Load from empty file
-  - Roundtrip data integrity
+  - Creates parent directory if needed
+  - Handles invalid JSONL rows gracefully
+- [x] 1.4 Write unit tests in `tests/unit/test_review_schemas.py` (11 tests):
+  - ReviewAction enum has 4 values and is string enum
+  - ReviewDecision: approve, edit, escalate, reject decisions
+  - ReviewDecision defaults, JSON roundtrip, invalid action rejection
+- [x] 1.5 Write unit tests in `tests/unit/test_review_store.py` (11 tests):
+  - Save and load single/multiple decisions
+  - Empty and nonexistent file handling
+  - Roundtrip data integrity (all fields)
+  - Append-only behavior, invalid JSONL skipping, count(), parent dir creation
 
 ## Phase 2: Streamlit Review Console
 
