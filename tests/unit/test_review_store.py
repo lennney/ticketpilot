@@ -75,6 +75,7 @@ class TestReviewStore:
                 risk_flags=["COMPENSATION_RISK"],
                 citations_summary=[{"chunk_id": "abc", "doc_type": "FAQ"}],
                 evidence_used_count=1,
+                review_trigger_reasons=["high_risk", "no_evidence"],
                 reviewer_label="reviewer-li",
             )
             store.save(original)
@@ -95,6 +96,7 @@ class TestReviewStore:
             assert restored.risk_flags == original.risk_flags
             assert restored.citations_summary == original.citations_summary
             assert restored.evidence_used_count == original.evidence_used_count
+            assert restored.review_trigger_reasons == original.review_trigger_reasons
             assert restored.reviewer_label == "reviewer-li"
 
     def test_saves_are_append_only(self):

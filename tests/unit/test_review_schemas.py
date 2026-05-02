@@ -109,6 +109,7 @@ class TestReviewDecision:
         assert decision.risk_flags == []
         assert decision.citations_summary == []
         assert decision.evidence_used_count == 0
+        assert decision.review_trigger_reasons == []
         assert decision.reviewer_label == ""
         assert isinstance(decision.reviewed_at, datetime)
 
@@ -125,6 +126,7 @@ class TestReviewDecision:
             risk_flags=[],
             citations_summary=[{"chunk_id": "abc", "doc_type": "FAQ"}],
             evidence_used_count=1,
+            review_trigger_reasons=["no_evidence", "generation_error"],
             reviewer_label="reviewer-zhang",
         )
         json_str = decision.model_dump_json()
@@ -135,6 +137,7 @@ class TestReviewDecision:
         assert restored.confidence == decision.confidence
         assert restored.citations_summary == decision.citations_summary
         assert restored.evidence_used_count == decision.evidence_used_count
+        assert restored.review_trigger_reasons == decision.review_trigger_reasons
         assert restored.reviewer_label == "reviewer-zhang"
 
     def test_rejects_invalid_action(self):
