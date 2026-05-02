@@ -32,16 +32,16 @@
 
 ## Phase 4: Reusable Skills (docs/skills/)
 
-- [ ] 4.1 Create `spec_driven_development_skill.md`
-- [ ] 4.2 Create `batch_implementation_skill.md`
-- [ ] 4.3 Create `quality_gate_acceptance_skill.md`
-- [ ] 4.4 Create `openspec_archive_skill.md`
-- [ ] 4.5 Create `ticketpilot_product_boundary_skill.md`
-- [ ] 4.6 Create `retrieval_evaluation_skill.md`
-- [ ] 4.7 Create `evidence_grounded_generation_skill.md`
-- [ ] 4.8 Create `human_review_workflow_skill.md`
-- [ ] 4.9 Create `secure_ai_development_skill.md`
-- [ ] 4.10 Create `portfolio_project_packaging_skill.md`
+- [x] 4.1 Create `spec_driven_development_skill.md`
+- [x] 4.2 Create `batch_implementation_skill.md`
+- [x] 4.3 Create `quality_gate_acceptance_skill.md`
+- [x] 4.4 Create `openspec_archive_skill.md`
+- [x] 4.5 Create `ticketpilot_product_boundary_skill.md`
+- [x] 4.6 Create `retrieval_evaluation_skill.md`
+- [x] 4.7 Create `evidence_grounded_generation_skill.md`
+- [x] 4.8 Create `human_review_workflow_skill.md`
+- [x] 4.9 Create `secure_ai_development_skill.md`
+- [x] 4.10 Create `portfolio_project_packaging_skill.md`
 
 ## Phase 5: Prompt Library (docs/prompts/)
 

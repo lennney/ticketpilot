@@ -1,5 +1,46 @@
 # TicketPilot Changelog
 
+## 2026-05-02 — Batch 3A: Reusable Skill Documentation (document-development-process-and-demo-package)
+
+### Changed
+- Created `docs/skills/` directory with 10 reusable skill documents extracted from the TicketPilot development process:
+  - `spec_driven_development_skill.md` — How to start each feature with an OpenSpec change before implementation
+  - `batch_implementation_skill.md` — How to split implementation into safe batches with allowed/forbidden scope
+  - `quality_gate_acceptance_skill.md` — Acceptance review, full quality gate, skipped integration test policy, and no `|| true`
+  - `openspec_archive_skill.md` — Final validation, task closure, archive, promoted specs, and clean working tree
+  - `ticketpilot_product_boundary_skill.md` — How to prevent the system from becoming a generic chatbot, generic RAG demo, or auto-send tool
+  - `retrieval_evaluation_skill.md` — Retrieval architecture review, fake embedding limitation, evidence recall, and deferred evaluation
+  - `evidence_grounded_generation_skill.md` — DraftReply, citation validation, unsupported claim guard, no-evidence fallback, and high-risk review
+  - `human_review_workflow_skill.md` — ReviewDecision, ReviewStore, Approve/Edit/Escalate/Reject, audit trail, and no auto-send
+  - `secure_ai_development_skill.md` — Secret handling, no API keys in repo, provider boundaries, local config, and safe defaults
+  - `portfolio_project_packaging_skill.md` — How to convert the project into development trace, technical docs, portfolio docs, demo script, and interview talking points
+- Updated `openspec/changes/document-development-process-and-demo-package/tasks.md` — Phase 4 tasks marked complete
+
+### Why
+- Skills documents extract repeatable methodologies from the TicketPilot development process for reuse in future projects
+- Each skill documents purpose, allowed/forbidden scope, step-by-step procedure, acceptance checklist, common failure modes, and a reusable Claude Code prompt template with a TicketPilot example
+- Completes Phase 4 (Reusable Skills) of the document-development-process-and-demo-package OpenSpec change
+
+### Content Constraints Enforced in All Skill Docs
+- Fake embeddings labeled as pipeline verification only, no semantic meaning
+- Seed data stated as synthetic, not real enterprise data
+- No auto-send documented as architectural constraint
+- High-risk / unsupported / no-evidence outputs require human review
+- Evaluation pipeline, realistic data pack, real embedding provider, real LLM provider, trace persistence, LangGraph workflow, and production deployment are listed as deferred
+- No exaggerated claims about production readiness, retrieval quality, or LLM capabilities
+
+### Tests / Evaluation
+- No source code modified (docs-only change)
+- No src/ or tests/ files modified
+- Skill docs verified against source material (changelog, technical docs, development trace, OpenSpec specs, portfolio docs)
+- All claims traceable to project artifacts, not aspirational plans
+- `ruff check` passes (no Python code changed)
+
+### Remaining risks
+- Phase 5 (Prompt Library), Phase 7 (Finalization including changelog, quality gate, archive) not yet started
+- Skills docs content accuracy depends on accuracy of underlying source materials
+- Prompt library docs will cross-reference skill documents
+
 ## 2026-04-29 — Audit Remediation: Quality Gate, Documentation, and Two-Layer Schema (close-project-audit-blockers)
 
 ### Changed
