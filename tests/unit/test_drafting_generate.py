@@ -1,6 +1,7 @@
 """Unit tests for generate_draft()."""
 
 from datetime import datetime
+from unittest.mock import patch
 from uuid import uuid4
 
 from ticketpilot.drafting.generate import generate_draft
@@ -89,6 +90,8 @@ class TestGenerateDraft:
         assert result.confidence == 0.0
         assert result.must_human_review is True
         assert result.fallback_reason == "no_evidence"
+        # Safe fallback text makes no substantive claims; no false positives
+        assert result.unsupported_claims == []
 
     def test_preserves_ticket_id(self):
         output = _make_output(evidence=[_make_evidence()])
@@ -111,21 +114,22 @@ class TestGenerateDraft:
         result = generate_draft(output)
         assert result.must_human_review is True
 
-    def test_unsupported_claims_force_human_review(self):
-        """Unsupported claim in draft should set must_human_review and populate unsupported_claims."""
-        # Use evidence that won't cover keywords like "赔偿" to trigger validator
-        ev = _make_evidence(content="普通政策条款内容。")
-        output = _make_output(
-            evidence=[ev],
-            intent=IntentClass.REFUND,
-            text="我要退款",
-        )
-        result = generate_draft(output)
-        # The draft will contain "refund" intent and mention evidence, but the
-        # validator may flag sentences with claim keywords lacking [N] markers.
-        # Regardless of specific detection, the contract is that when issues exist,
-        # unsupported_claims is populated and must_human_review becomes True.
-        if result.unsupported_claims:
+    def test_unsupported_claims_populated_when_validator_fails(self):
+        """When CitationValidator detects issues, unsupported_claims is populated and must_human_review=True."""
+        # Patch provider to return a draft with an uncited claim keyword
+        with patch(
+            "ticketpilot.drafting.generate.FakeDraftProvider"
+        ) as MockProvider:
+            mock_instance = MockProvider.return_value
+            # Return a DraftReply whose text triggers the validator
+            mock_instance.generate.return_value = DraftReply(
+                ticket_id="",
+                draft_text="根据公司政策，客户可以申请全额赔偿。",
+                citations=[],
+            )
+            output = _make_output(evidence=[_make_evidence()])
+            result = generate_draft(output)
+            assert len(result.unsupported_claims) > 0
             assert result.must_human_review is True
 
     def test_no_mutation_of_ticket_output(self):
@@ -155,11 +159,22 @@ class TestGenerateDraft:
         assert result.citations[0].doc_id == ev.doc_id
 
     def test_handles_exception_gracefully(self):
-        """Test that an invalid output still produces a fallback DraftReply."""
-        output = _make_output(evidence=[_make_evidence()])
-        result = generate_draft(output)
-        # Normal case: verify it returns a DraftReply without error
-        assert isinstance(result, DraftReply)
+        """When provider raises, generate_draft returns safe fallback DraftReply."""
+        with patch(
+            "ticketpilot.drafting.generate.FakeDraftProvider"
+        ) as MockProvider:
+            mock_instance = MockProvider.return_value
+            mock_instance.generate.side_effect = RuntimeError("provider failure")
+            output = _make_output(evidence=[_make_evidence()])
+            result = generate_draft(output)
+            assert isinstance(result, DraftReply)
+            assert result.draft_text == "根据现有信息，无法确认具体政策条款，建议转人工处理。"
+            assert result.citations == []
+            assert result.confidence == 0.0
+            assert result.must_human_review is True
+            assert result.fallback_reason == "generation_error"
+            assert result.ticket_id == output.ticket_id
+            assert result.unsupported_claims == ["生成回复时发生异常"]
 
     def test_low_risk_no_human_review(self):
         output = _make_output(
@@ -168,9 +183,9 @@ class TestGenerateDraft:
             severity=RiskSeverity.LOW,
         )
         result = generate_draft(output)
-        # If no unsupported claims are found, must_human_review should be False
-        if not result.unsupported_claims:
-            assert result.must_human_review is False
+        # With normal evidence, no unsupported claims should be detected
+        assert result.unsupported_claims == []
+        assert result.must_human_review is False
 
     def test_ticket_id_in_fallback(self):
         output = _make_output(evidence=[])

@@ -198,7 +198,7 @@
 - Lays the foundation for pipeline integration in Batch 2
 
 ### Tests / Evaluation
-- Unit tests: 202 prior + 40 new = 242 unit tests passed
+- Unit tests: 202 prior + 52 new = 254 unit tests passed
 - Ruff clean
 - OpenSpec validate —all: 10/10 passed
 - No existing tests modified

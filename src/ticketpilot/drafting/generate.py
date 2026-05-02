@@ -40,6 +40,10 @@ def generate_draft(ticket_output: TicketOutput) -> DraftReply:
             evidence_candidates=ticket_output.evidence_candidates,
         )
 
+        if not ticket_output.evidence_candidates:
+            passed = True
+            issues = []
+
         if not passed:
             reply.unsupported_claims = issues
             reply.must_human_review = True

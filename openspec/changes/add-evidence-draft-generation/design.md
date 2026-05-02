@@ -164,11 +164,11 @@ The draft generator enforces four grounding rules at the architectural level. Th
 
 **Rule 1: Each citation maps to a numbered reference in the reply.**
 
-Every `Citation` in `DraftReply.citations` corresponds to a bracketed number in `reply_text` (e.g., `[1]`, `[2]`). The fake provider satisfies this by construction: it numbers each evidence chunk inline. The mapping is 1:1 -- citation `[i]` references `citations[i-1]`.
+Every `Citation` in `DraftReply.citations` corresponds to a bracketed number in `draft_text` (e.g., `[1]`, `[2]`). The fake provider satisfies this by construction: it numbers each evidence chunk inline. The mapping is 1:1 -- citation `[i]` references `citations[i-1]`.
 
 **Rule 2: Every factual claim must reference at least one citation.**
 
-No factual claim in `reply_text` appears without an accompanying citation marker. Policy statements, compensation amounts, return windows, and procedural steps must all cite their source. Generic courtesy phrases (e.g., "感谢您的耐心等待") are exempt.
+No factual claim in `draft_text` appears without an accompanying citation marker. Policy statements, compensation amounts, return windows, and procedural steps must all cite their source. Generic courtesy phrases (e.g., "感谢您的耐心等待") are exempt.
 
 **Rule 3: No deterministic policy promises when no evidence supports the claim.**
 
@@ -191,7 +191,7 @@ After draft generation, the `CitationValidator` scans the reply for claims not b
 
 The validator performs two checks:
 
-1. **Citation existence check**: Every `[N]` reference in `reply_text` must have a corresponding entry in `citations`. If `reply_text` contains `[3]` but only 2 citations exist, this is flagged.
+1. **Citation existence check**: Every `[N]` reference in `draft_text` must have a corresponding entry in `citations`. If `draft_text` contains `[3]` but only 2 citations exist, this is flagged.
 
 2. **Claim-coverage pattern scan**: Uses regex patterns to detect common factual claim phrasings that lack a citation marker within the same sentence. Patterns include:
    - 根据... (according to...)
@@ -207,7 +207,7 @@ The validator performs two checks:
 
 ### Behavior
 
-- If unsupported claims are detected: `DraftReply.has_unsupported_claims = True`, `DraftGenerationTrace.has_unsupported_claims = True`, and `human_review_required` is set to `True`.
+- If unsupported claims are detected: `DraftReply.unsupported_claims` is populated with the issue descriptions, and `DraftReply.must_human_review` is set to `True`.
 - The validator does NOT raise exceptions. It always returns a `(passed: bool, issues: list[str])` tuple.
 - Multiple issues are accumulated (not short-circuited).
 - The validator is stateless and thread-safe.
@@ -243,13 +243,13 @@ The regex approach is imprecise: it will miss subtle claims and may flag false p
 When `evidence_candidates` is empty after retrieval, the draft generator must not fabricate a reply. Instead, it produces a standardized safe message:
 
 ```
-reply_text = "根据现有信息，无法确认具体政策条款，建议转人工处理。"
+draft_text = "根据现有信息，无法确认具体政策条款，建议转人工处理。"
 ```
 
 Conditions:
 - `confidence = 0.0`
-- `has_unsupported_claims = False` (no claims were made)
-- `human_review_required = True`
+- `unsupported_claims = []` (no claims were made)
+- `must_human_review = True`
 - `citations = []`
 - `DraftGenerationTrace.fallback_reason = "no_evidence"`
 - The risk assessment is also updated with `INSUFFICIENT_EVIDENCE` flag (handled by existing pipeline logic)
@@ -263,11 +263,11 @@ When evidence is empty, the draft must never say "根据政策" (according to po
 
 When `risk_assessment.must_human_review` is `True`, the pipeline still generates a draft (the agent may find it useful as a starting point), but:
 
-- `DraftReply.human_review_required = True`
+- `DraftReply.must_human_review = True`
 - `DraftGenerationTrace.human_review_required = True`
 - The draft is preview-only. The system never auto-sends.
 - The draft is still generated from evidence; it is not replaced with the no-evidence fallback.
-- The fake provider sets `human_review_required = True` on the draft when the risk assessment demands it.
+- The fake provider sets `must_human_review = True` on the draft when the risk assessment demands it.
 
 When both high-risk and no-evidence conditions hold (e.g., risk flags include both `must_human_review` and `INSUFFICIENT_EVIDENCE`), the no-evidence fallback takes priority. A ticket with no evidence should never show a substantive draft, regardless of risk level.
 
@@ -325,7 +325,7 @@ The MVP ships with exactly one implementation: `FakeDraftProvider`. It is determ
    - **Closing**: "希望以上信息对您有帮助。如有其他问题，请随时联系我们。"
 5. Create a `Citation` for each evidence chunk used.
 6. Compute `confidence`: `min(1.0, max(0.0, average_score_of_evidence_used))`.
-7. If `risk_assessment.must_human_review` is `True` or `risk_assessment.severity == RiskSeverity.HIGH`, set `human_review_required = True`.
+7. If `risk_assessment.must_human_review` is `True` or `risk_assessment.severity == RiskSeverity.HIGH`, set `must_human_review = True`.
 
 **Template example (with 2 evidence chunks):**
 
@@ -439,13 +439,19 @@ def generate_draft(ticket_output: TicketOutput) -> DraftReply:
         )
 
         # Run the citation validator
-        passed, _ = validator.validate(
-            text=draft.reply_text,
+        passed, issues = validator.validate(
+            text=draft.draft_text,
             citations=draft.citations,
+            evidence_candidates=ticket_output.evidence_candidates,
         )
 
+        if not ticket_output.evidence_candidates:
+            passed = True
+            issues = []
+
         if not passed:
-            draft.has_unsupported_claims = True
+            draft.unsupported_claims = issues
+            draft.must_human_review = True
 
         return draft
 
@@ -453,10 +459,14 @@ def generate_draft(ticket_output: TicketOutput) -> DraftReply:
         # Graceful degradation: safe fallback on any provider/validator error
         return DraftReply(
             ticket_id=ticket_output.ticket_id,
-            reply_text="根据现有信息，无法确认具体政策条款，建议转人工处理。",
+            draft_text="根据现有信息，无法确认具体政策条款，建议转人工处理。",
             citations=[],
+            evidence_used=[],
+            unsupported_claims=["生成回复时发生异常"],
+            missing_information=["未找到相关证据"],
             confidence=0.0,
-            has_unsupported_claims=False,
+            must_human_review=True,
+            fallback_reason="generation_error",
         )
 ```
 
@@ -484,8 +494,8 @@ The `generate_draft()` function follows the same try/except pattern as the exist
 | Provider raises exception | Safe fallback message returned |
 | Validator raises exception | Safe fallback message returned |
 | Empty evidence list | No-evidence fallback message (returned by FakeDraftProvider internally) |
-| High risk assessment | Draft generated with `has_unsupported_claims=True` |
-| Normal flow | Complete draft with citations and `has_unsupported_claims=False` |
+| High risk assessment | Draft generated with `must_human_review=True` |
+| Normal flow | Complete draft with citations and `unsupported_claims=[]` |
 
 
 ## Migration Plan (Batch 1)
