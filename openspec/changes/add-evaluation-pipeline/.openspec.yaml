@@ -1,0 +1,25 @@
+schema: spec-driven
+created: 2026-05-02
+title: Add Evaluation Pipeline
+summary: Add an offline evaluation pipeline to quantify TicketPilot behavior across intent classification, risk flagging, severity correctness, evidence retrieval, draft quality, and human-review decision readiness using small deterministic golden evaluation data.
+state: planning
+owner: ticketpilot-team
+affected_modules:
+  - evaluation
+  - pipeline (indirect, via test harness)
+affected_specs:
+  - add-evaluation-pipeline
+constraints:
+  - no-real-embedding-provider
+  - no-real-llm-provider
+  - no-modify-src
+  - no-modify-tests
+  - no-large-dataset
+  - no-auto-send
+  - no-quality-gate-weakening
+  - no-skipped-integration-tests-as-pass
+  - no-external-services
+  - no-api-keys
+  - small-deterministic-evaluation-data-only
+  - fake-embedding-limitation-must-be-documented
+  - measure-current-behavior-not-hide-weak-results
