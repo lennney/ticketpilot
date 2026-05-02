@@ -300,3 +300,37 @@
 - No backend workflow implemented yet.
 - No database schema implemented yet.
 - No evaluation cases yet.
+
+---
+
+## 2026-05-02 — Batch 2: Streamlit Human Review Console MVP (add-human-review-console)
+
+### Changed
+- Created `src/ticketpilot/review/console.py` — Streamlit console for human reviewers to:
+  - Paste RawTicket JSON and process through the full pipeline
+  - View ticket info, risk assessment, evidence candidates, citations, and draft reply
+  - Approve, edit, escalate, or reject draft replies
+  - Persist review decisions to `ReviewStore` (JSONL)
+  - Display clear "不自动发送回复" disclaimer
+- Added `determine_trigger_reasons(result)` — pure function that inspects risk flags, fallback reason, and unsupported claims to populate `ReviewDecision.review_trigger_reasons`
+- Added `build_review_decision(result, action, ...)` — pure data-transformation function converting `DraftedTicketResult` + reviewer action into a `ReviewDecision`
+
+### Why
+- Provides a working UI for human reviewers to interact with TicketPilot's draft replies without any frontend framework dependency
+- Keeps all data transformations testable as pure functions separate from Streamlit's widget lifecycle
+
+### Tests / Evaluation
+- Added `tests/unit/test_review_console_helpers.py`: 40 tests covering:
+  - `determine_trigger_reasons` for 5 trigger scenarios (high_risk, no_evidence, unsupported_claims, generation_error, empty)
+  - `build_review_decision` for all 4 actions (APPROVE, EDIT, ESCALATE, REJECT)
+  - Field population correctness (risk flags, citations summary, evidence count, was_high_risk, had_unsupported_claims)
+  - Round-trip persistence through ReviewStore for all 4 action types
+  - Scenario-based tests combining multiple trigger conditions
+- Full unit suite: 325 passed (285 prior + 40 new)
+- Ruff clean
+- No existing tests modified
+
+### Remaining risks
+- Streamlit UI is an MVP prototype — no auth, no reviewer identity, no auto-refresh
+- No integration tests for the console (no browser automation)
+- Review decisions are stored on local filesystem only — no shared database backend
