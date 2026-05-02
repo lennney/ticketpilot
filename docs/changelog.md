@@ -1,5 +1,35 @@
 # TicketPilot Changelog
 
+## 2026-05-02 — Batch 1: Evaluation Data Foundation (add-evaluation-pipeline)
+
+### Changed
+- Created `data/eval/tickets_eval.csv` with 10 deterministic evaluation tickets covering 8 intent classes, 5 risk flag categories, all 3 severity levels, and edge cases (no-evidence, high-risk legal)
+- Created `data/eval/golden_expectations.csv` with golden expectations for all 10 tickets, including semicolon-separated risk flags and evidence doc types
+- Created `src/ticketpilot/evaluation/` module with:
+  - `schemas.py` — Pydantic models: `EvalTicket`, `GoldenExpectation`, `EvalDataset`, `LoadResult`
+  - `loaders.py` — Deterministic CSV loading with validation (required columns, unique case_ids, cross-reference checks, boolean coercion, semicolon-list parsing, issue type/severity validation)
+- Added unit tests: `tests/unit/test_evaluation_schemas.py` covering schema validation, issue type/severity validation, boolean coercion, deterministic frozenset comparison
+- Added unit tests: `tests/unit/test_evaluation_loaders.py` covering valid CSV loading, duplicate rejection, missing column rejection, unknown issue type/severity rejection, semicolon parsing, cross-reference validation, loader determinism
+- Updated `openspec/changes/add-evaluation-pipeline/tasks.md` — Phase 1 tasks, Phase 2.1-2.3, and Phase 4.2-4.3 marked complete
+
+### Why
+- Establishes the evaluation data contract (CSV schemas, Pydantic models, validation) before any metric or runner code is written
+- Separates golden expectations from ticket text for independent versioning
+- Pure I/O loaders with no pipeline, database, LLM, or external service dependencies
+
+### Tests / Evaluation
+- Unit tests: 325 prior + 47 new = 372 unit tests passed
+- Ruff clean
+- No existing tests modified
+- No integration tests added in this batch
+- Loaders verified deterministic: two consecutive loads produce identical results
+
+### Remaining risks
+- Metrics, comparison, and report modules not yet implemented (Batch 2)
+- Runner script not yet created (Batch 2)
+- No integration tests yet (Batch 3)
+- Technical documentation and phase status update pending
+
 ## 2026-05-02 — Batch 3A: Reusable Skill Documentation (document-development-process-and-demo-package)
 
 ### Changed

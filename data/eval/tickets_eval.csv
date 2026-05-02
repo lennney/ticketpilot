@@ -1,0 +1,11 @@
+case_id,original_text,customer_id,submitted_at,scenario_type,notes
+case_refund_001,我要退款，订单号：123456，商品质量有问题。,CUST001,2026-05-01T10:00:00Z,refund,Standard refund request with order number
+case_return_ex_001,我想退货换货，订单号：654321，尺码不合适。,CUST002,2026-05-01T10:05:00Z,return_exchange,Return and exchange request due to size issue
+case_acct_001,我的账号被冻结了，无法登录，请帮忙解决，订单号：112233。,CUST003,2026-05-01T10:10:00Z,account_issue,Account frozen and unable to login
+case_logistics_001,快递一直没有送到，单号：987654321，麻烦查一下物流信息。,CUST004,2026-05-01T10:15:00Z,logistics,Delivery not received tracking request
+case_complaint_001,客服态度差，我要投诉！订单号：555666，要求赔偿。,CUST005,2026-05-01T10:20:00Z,complaint,Complaint about service attitude with compensation demand
+case_privacy_001,我的个人信息被泄露了，手机号被他人使用，要求立即处理。,CUST006,2026-05-01T10:25:00Z,privacy,Privacy leak and account security concern
+case_no_evidence_001,退款。,CUST007,2026-05-01T10:30:00Z,no_evidence,Very short refund request without evidence
+case_high_risk_001,你们这是欺诈，我已经找律师了，准备起诉。要求3倍赔偿。,CUST008,2026-05-01T10:35:00Z,high_risk_complaint,High-risk complaint with legal threat and compensation demand
+case_technical_001,APP打不开，显示系统错误，订单号：777888。,CUST009,2026-05-01T10:40:00Z,technical_issue,Technical issue with app displaying system error
+case_consulting_001,请问产品规格参数能发一下吗？这个怎么使用？,CUST010,2026-05-01T10:45:00Z,product_consulting,Product specification and usage inquiry

@@ -1,0 +1,11 @@
+case_id,expected_issue_type,expected_risk_flags,expected_severity,expected_must_human_review,expected_evidence_doc_types,expected_fallback_required,expected_no_auto_send,notes
+case_refund_001,refund,,LOW,false,FAQ,false,false,Standard refund — no risk flags expected
+case_return_ex_001,return_exchange,,LOW,false,FAQ;POLICY,false,false,Return exchange — standard processing
+case_acct_001,account_issue,account_security_risk,LOW,true,FAQ;CASE,false,true,Account security — requires human review
+case_logistics_001,logistics,,LOW,false,FAQ,false,false,Logistics tracking — no risk
+case_complaint_001,complaint,complaint_risk;compensation_risk,MEDIUM,true,FAQ;POLICY;CASE,false,true,Complaint with compensation demand — elevated risk
+case_privacy_001,account_issue,privacy_risk,MEDIUM,true,POLICY,false,true,Privacy leak — sensitive personal data exposure
+case_no_evidence_001,refund,insufficient_evidence,LOW,true,,true,true,Vague short request — insufficient evidence
+case_high_risk_001,complaint,legal_risk;compensation_risk,HIGH,true,POLICY;CASE,false,true,Legal threat with compensation — highest severity
+case_technical_001,technical_issue,,LOW,false,FAQ,false,false,App technical issue — standard processing
+case_consulting_001,product_consulting,,LOW,false,FAQ,false,false,Product inquiry — no risk

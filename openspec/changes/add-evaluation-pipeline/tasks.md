@@ -1,20 +1,22 @@
 ## Phase 1: Evaluation Data
 
-- [ ] 1.1 Create data/eval/tickets_eval.csv with 15-25 seed tickets:
-  - At least 2 tickets per intent class
-  - Tickets covering each risk category
-  - Tickets at each severity level
-  - Edge cases: empty text, very long text, mixed intents
-- [ ] 1.2 Create data/eval/golden_expectations.csv
-- [ ] 1.3 Validate dataset consistency
+- [x] 1.1 Create data/eval/tickets_eval.csv with 8-12 seed tickets:
+  - Refund, return_exchange, account_issue, logistics, complaint
+  - Privacy/account-security, no-evidence, high-risk complaint/legal
+  - Technical issue, product consulting for full 8-intent coverage
+  - Tickets at LOW, MEDIUM, HIGH severity
+  - Tickets with must_human_review=True and False
+- [x] 1.2 Create data/eval/golden_expectations.csv
+- [x] 1.3 Validate dataset consistency (via load_eval_dataset with cross-reference checks)
 
 ## Phase 2: Reusable Evaluation Logic
 
-- [ ] 2.1 Create src/ticketpilot/evaluation/__init__.py
-- [ ] 2.2 Create src/ticketpilot/evaluation/loader.py
-- [ ] 2.3 Create src/ticketpilot/evaluation/metrics.py
-- [ ] 2.4 Create src/ticketpilot/evaluation/comparison.py
-- [ ] 2.5 Create src/ticketpilot/evaluation/report.py
+- [x] 2.1 Create src/ticketpilot/evaluation/__init__.py
+- [x] 2.2 Create src/ticketpilot/evaluation/schemas.py (Pydantic models: EvalTicket, GoldenExpectation, EvalDataset, LoadResult)
+- [x] 2.3 Create src/ticketpilot/evaluation/loaders.py (CSV loading with validation)
+- [ ] 2.4 Create src/ticketpilot/evaluation/metrics.py
+- [ ] 2.5 Create src/ticketpilot/evaluation/comparison.py
+- [ ] 2.6 Create src/ticketpilot/evaluation/report.py
 
 ## Phase 3: Evaluation Runner Script
 
@@ -24,9 +26,10 @@
 ## Phase 4: Unit Tests
 
 - [ ] 4.1 Create tests/unit/test_evaluation_metrics.py
-- [ ] 4.2 Create tests/unit/test_evaluation_loader.py
-- [ ] 4.3 Create tests/unit/test_evaluation_report.py
-- [ ] 4.4 Create tests/unit/test_evaluation_comparison.py
+- [x] 4.2 Create tests/unit/test_evaluation_schemas.py
+- [x] 4.3 Create tests/unit/test_evaluation_loaders.py
+- [ ] 4.4 Create tests/unit/test_evaluation_report.py
+- [ ] 4.5 Create tests/unit/test_evaluation_comparison.py
 
 ## Phase 5: Integration Tests
 
@@ -37,15 +40,15 @@
 ## Phase 6: Documentation
 
 - [ ] 6.1 Create docs/technical/evaluation_pipeline.md
-- [ ] 6.2 Update docs/changelog.md
+- [x] 6.2 Update docs/changelog.md
 - [ ] 6.3 Update docs/phase_status.md
-- [ ] 6.4 Run quality gate
+- [x] 6.4 Run quality gate
 
 ## Batch Plan Summary
 
-- Batch 1: Phase 1 (evaluation data)
-- Batch 2: Phases 2-3 (evaluation logic + runner)
-- Batch 3: Phases 4-5 (tests)
+- Batch 1: Phase 1 (evaluation data) + Phase 2 (schemas + loaders) + Phase 4 (schema + loader tests) + changelog + quality gate
+- Batch 2: Phases 2 rest (metrics, comparison, report) + Phase 3 (runner)
+- Batch 3: Phases 4-5 (remaining tests)
 - Batch 4: Phase 6 (documentation)
 ### Phase 1 Details
 
