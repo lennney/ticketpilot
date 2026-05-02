@@ -96,21 +96,22 @@
 
 > **Note**: This phase does NOT modify `pipeline.py` or `schema/ticket.py`. The `generate_draft()` function is a standalone composition point. Full pipeline integration (calling `generate_draft` automatically inside `intake_risk_pipeline()`) is deferred to a future change.
 
-## Phase 5: Integration Tests (Batch 2)
+## Phase 5: Integration Tests (Batch 2C)
 
-- [ ] 5.1 Create `tests/integration/test_drafting_integration.py` with integration test using `generate_draft()`:
-  - Construct a `TicketOutput` with real evidence candidates (from seed data)
-  - Call `generate_draft(ticket_output)` and verify DraftReply is returned
-  - Verify citations reference actual evidence chunk IDs
-  - Verify DraftGenerationTrace contains correct evidence_count
-  - Verify human_review_required is True when risk assessment demands it
-- [ ] 5.2 Create no-evidence integration test using `generate_draft()`:
-  - Call with a TicketOutput that has empty evidence_candidates
-  - Verify DraftReply uses the safe fallback message (Chinese)
-  - Verify DraftGenerationTrace fallback_reason == "no_evidence"
-- [ ] 5.3 Create high-risk integration test using `generate_draft()`:
-  - Call with a TicketOutput where risk_assessment.must_human_review=True
-  - Verify DraftGenerationTrace.human_review_required is True
+- [x] 5.1 Create `tests/integration/test_drafting_integration.py` with integration test using `run_pipeline_with_draft()`:
+  - Construct a real `RawTicket` and call `run_pipeline_with_draft(raw_ticket)`
+  - Verify `DraftedTicketResult` structure with both `ticket_output` and `draft_reply`
+  - Verify citations reference actual evidence chunk IDs when evidence exists
+  - Verify high-risk case preserves `must_human_review=True`
+- [x] 5.2 Verify no-evidence / low-confidence scenario:
+  - Empty ticket text still produces a safe `DraftReply` (no crash)
+  - If no evidence candidates, draft uses fallback message
+  - If evidence exists, draft has citations with proper field types
+- [x] 5.3 Verify high-risk integration:
+  - Call with a legal/complaint ticket that triggers `LEGAL_RISK`
+  - Verify `must_human_review=True` in both `ticket_output` and `draft_reply`
+- [x] 5.4 Verify determinism:
+  - Same input produces identical draft output across repeated calls
 
 ## Phase 6: Quality Gate and Documentation (Batch 2)
 

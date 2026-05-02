@@ -177,6 +177,29 @@
 
 ---
 
+## 2026-05-02 — Batch 2C: Drafting Workflow Integration Tests (add-evidence-draft-generation)
+
+### Changed
+- Added `tests/integration/test_drafting_integration.py` with 10 integration tests for the optional drafting workflow
+- Tests cover: `DraftedTicketResult` structure, evidence-backed citations, high-risk `must_human_review` preservation, confidence bounds, empty-input safety, determinism, and unsupported policy claim prevention
+
+### Why
+- Validates the full real-pipeline-then-draft workflow against the live knowledge base
+- Confirms high-risk routing, no-evidence fallback, and citation integrity work end-to-end
+
+### Tests / Evaluation
+- Integration tests: 55 prior + 10 new = 65 integration tests passed, 0 skipped
+- Unit tests: 263 passed (unchanged)
+- Full quality gate: PASSED
+- Ruff clean
+- OpenSpec validate —all: 10/10 passed
+
+### Remaining risks
+- Phase 6 (final quality gate + technical_decisions.md + archive) not yet started
+- Integration test for `DraftGenerationTrace` audit fields deferred to final gate
+
+---
+
 ## 2026-05-02 — Batch 2B: Optional Pipeline Draft Entrypoint (add-evidence-draft-generation)
 
 ### Changed
