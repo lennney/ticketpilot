@@ -80,15 +80,15 @@
 
 ## Phase 4: Standalone generate_draft() Function (Batch 2)
 
-- [ ] 4.1 Create `src/ticketpilot/drafting/generate.py` with a standalone function:
+- [x] 4.1 Create `src/ticketpilot/drafting/generate.py` with a standalone function:
   - `generate_draft(ticket_output: TicketOutput) -> DraftReply`
   - Instantiates `FakeDraftProvider` and `CitationValidator` internally
   - Calls `provider.generate()` with data from `ticket_output`
   - Runs `CitationValidator.validate()` on the result
   - If validation fails, sets `has_unsupported_claims = True` on the DraftReply
   - Wraps everything in try/except with safe fallback on error
-- [ ] 4.2 Update `src/ticketpilot/drafting/__init__.py` to export `generate_draft`
-- [ ] 4.3 Write unit tests in `tests/unit/test_drafting_generate.py` for `generate_draft()`:
+- [x] 4.2 Update `src/ticketpilot/drafting/__init__.py` to export `generate_draft`
+- [x] 4.3 Write unit tests in `tests/unit/test_drafting_generate.py` for `generate_draft()`:
   - Test with a full TicketOutput (constructed in test) with evidence
   - Test with empty evidence
   - Test with high-risk ticket

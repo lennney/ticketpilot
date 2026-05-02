@@ -1,6 +1,7 @@
 """Evidence-grounded draft reply generation module."""
 
 from ticketpilot.drafting.citation_validator import CitationValidator
+from ticketpilot.drafting.generate import generate_draft
 from ticketpilot.drafting.provider import (
     AbstractDraftProvider,
     FakeDraftProvider,
@@ -16,6 +17,7 @@ __all__ = [
     "AbstractDraftProvider",
     "FakeDraftProvider",
     "CitationValidator",
+    "generate_draft",
     "Citation",
     "DraftReply",
     "DraftGenerationTrace",
