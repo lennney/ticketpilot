@@ -1,0 +1,4 @@
+name: add-human-review-console
+description: Human review console MVP for evidence-grounded draft approval workflow
+tools: none
+spec_directory: specs
