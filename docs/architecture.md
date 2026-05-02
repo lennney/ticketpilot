@@ -1,5 +1,10 @@
 # TicketPilot Architecture
 
+> **Status note (2026-05-02):** This document describes the aspirational end-to-end workflow.
+> Stages up to "human review for high-risk" are implemented. "Rerank", "finalization",
+> and "trace write-back" are not yet implemented. See `docs/technical_decisions.md` and
+> `docs/phase_status.md` for the current implementation state.
+
 TicketPilot is a Chinese customer support ticket triage and evidence-grounded reply Copilot.
 
 The system must preserve the following workflow:

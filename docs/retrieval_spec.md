@@ -1,5 +1,10 @@
 # RAG Retrieval Specification
 
+> **NOTE (2026-05-02):** This document was created during early design and was never
+> promoted to an OpenSpec spec. The authoritative retrieval specs are at
+> `openspec/specs/retrieval-evaluation/spec.md` and `openspec/specs/retrieval-pipeline/spec.md`.
+> For the implementation reference, see `docs/technical_decisions.md` (Retrieval Architecture section).
+
 ## Overview
 
 This spec defines the retrieval system for TicketPilot, a Chinese customer support ticket triage and evidence-grounded reply Copilot.

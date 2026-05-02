@@ -1,5 +1,15 @@
 # Retrieval Architecture Design
 
+> **DEPRECATED (2026-05-02):** This document contains values and designs that do not
+> match the current implementation. The following specific claims are incorrect:
+> - Fake embedding dimension: doc says 128, code uses **384**
+> - FTS config: doc says `chinese`, code uses **`simple`**
+> - HNSW ef_construction: doc says 64, code uses **200**
+> - SourceRouter: documented as implemented, actually **deferred**
+>
+> For the authoritative implementation reference, see `docs/technical_decisions.md`
+> (Retrieval Architecture section). For the actual code, see `src/ticketpilot/retrieval/`.
+
 ## Decision Summary
 
 TicketPilot MVP uses hybrid retrieval combining PostgreSQL full-text search (keyword) with pgvector HNSW (dense vectors), fused via Reciprocal Rank Fusion (RRF). This approach balances query latency, recall quality, and operational simplicity within the PostgreSQL + pgvector stack.
