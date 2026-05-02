@@ -55,11 +55,11 @@
 
 ## Phase 6: Portfolio Docs (docs/portfolio/)
 
-- [ ] 6.1 Create `project_case_study_cn.md`
-- [ ] 6.2 Create `project_case_study_en.md`
-- [ ] 6.3 Create `interview_talking_points.md`
-- [ ] 6.4 Create `demo_script.md`
-- [ ] 6.5 Create `limitations_and_next_steps.md`
+- [x] 6.1 Create `project_case_study_cn.md`
+- [x] 6.2 Create `project_case_study_en.md`
+- [x] 6.3 Create `interview_talking_points.md`
+- [x] 6.4 Create `demo_script.md`
+- [x] 6.5 Create `limitations_and_next_steps.md`
 
 ## Phase 7: Finalization
 

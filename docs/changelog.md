@@ -407,3 +407,28 @@
 - No source code modified (docs-only change)
 - git status clean
 - `ruff check` passes (no Python code changed)
+
+## 2026-05-02 — Batch 2B: Portfolio Documentation (document-development-process-and-demo-package)
+
+### Changed
+- Created `docs/portfolio/` directory with 5 portfolio-facing documents:
+  - `project_case_study_cn.md` — Chinese case study for interview/portfolio use
+  - `project_case_study_en.md` — English case study, concise and interview-usable
+  - `interview_talking_points.md` — 30-second, 1-minute, 3-minute pitches, PM/engineering/risk angles, Q&A
+  - `demo_script.md` — Step-by-step demo flow with sample inputs, expected outputs, and what-not-to-claim
+  - `limitations_and_next_steps.md` — Demo vs MVP vs production readiness, comprehensive deferred items
+- Updated `openspec/changes/document-development-process-and-demo-package/tasks.md` — Phase 6 marked complete
+
+### Content Constraints Enforced in All Portfolio Docs
+- Fake embeddings labeled as pipeline verification only, no semantic meaning
+- Seed data stated as synthetic, not real enterprise data
+- No auto-send documented as architectural constraint
+- High-risk / unsupported / no-evidence outputs require human review
+- Evaluation pipeline, realistic data pack, real embedding provider, real LLM provider, trace persistence, LangGraph workflow, and production deployment are listed as deferred
+- No exaggerated claims about production readiness or retrieval quality
+
+### Tests / Evaluation
+- No source code modified (docs-only change)
+- No src/ or tests/ files modified
+- Portfolio docs verified against source material (changelog, technical docs, development trace, OpenSpec specs)
+- All claims traceable to project artifacts, not aspirational plans
