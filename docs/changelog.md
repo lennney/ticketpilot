@@ -1,6 +1,31 @@
 # TicketPilot Changelog
 
 
+## 2026-05-03 — Batch 4: Runtime Skill Loader and Business Skills (add-agent-kernel-runtime)
+
+### Added
+- `src/ticketpilot/agent/skill_loader.py` — SkillDefinition frozen dataclass, SkillLoader with load_all/select_by_id/select_by_issue_type/select_by_text/list_skills, fallback skill (generic_support) for unknown IDs or non-matching text
+- `skills/runtime/__init__.py` — package marker
+- `skills/runtime/refund_request/SKILL.md` + `planner_template.yaml` — refund business skill with Chinese/English keywords
+- `skills/runtime/complaint_escalation/SKILL.md` + `planner_template.yaml` — complaint skill with legal escalation rules, highest keyword matching priority
+- `skills/runtime/account_issue/SKILL.md` + `planner_template.yaml` — account security skill with authentication keywords
+- `skills/runtime/technical_issue/SKILL.md` + `planner_template.yaml` — technical troubleshooting skill
+- `tests/unit/test_agent_skill_loader.py` — 27 tests covering: load_all (4 skills), selection by id/issue_type/text, complaint priority, fallback, error handling (missing dir, missing YAML, missing SKILL.md, invalid YAML, unknown tools, duplicate IDs), keyword matching
+
+### Why
+- Connect Batch 1-3 agent kernel to real business skill definitions
+- Deterministic skill selection without LLM calls
+- Separate human-readable skill documentation (SKILL.md) from machine-loaded plan templates (planner_template.yaml)
+- Known-tool validation prevents loading skills referencing nonexistent tools
+
+### Tests / Evaluation
+- 27/27 skill loader tests passed
+- 636 unit tests total (609 prior + 27 new), no regressions
+- 85 integration tests passed, 0 skipped
+- Ruff clean
+- No existing pipeline behavior changed
+- No LLM, embedding, network, or auto-send introduced
+
 ## 2026-05-03 — Batch 3: Deterministic Planner, Memory, and Agent Loop (add-agent-kernel-runtime)
 
 ### Added

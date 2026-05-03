@@ -82,23 +82,24 @@ created: 2026-05-03
 - `tests/unit/test_agent_memory.py` (new)
 - `tests/unit/test_agent_loop.py` (new)
 
-## Phase 4 — Runtime Skill Loader + Business Skills
+## Phase 4 — Runtime Skill Loader + Business Skills ✅
 
-- [ ] 4.1 Create `skills/runtime/__init__.py`
-- [ ] 4.2 Create `src/ticketpilot/agent/skill_loader.py`:
-  - Load skill definitions from `skills/runtime/*/SKILL.md`
-  - Parse YAML frontmatter or structured format
-  - Skill selection based on plan goal or intent
-- [ ] 4.3 Create initial skills:
+- [x] 4.1 Create `skills/runtime/__init__.py`
+- [x] 4.2 Create `src/ticketpilot/agent/skill_loader.py`:
+  - Load skill definitions from `skills/runtime/*/planner_template.yaml`
+  - Skill selection by skill_id, issue_type, or keyword matching
+  - Missing skill returns safe fallback (generic_support)
+- [x] 4.3 Create initial skills:
   - `skills/runtime/refund_request/SKILL.md` + `planner_template.yaml`
   - `skills/runtime/complaint_escalation/SKILL.md` + `planner_template.yaml`
   - `skills/runtime/account_issue/SKILL.md` + `planner_template.yaml`
   - `skills/runtime/technical_issue/SKILL.md` + `planner_template.yaml`
-- [ ] 4.4 Update agent loop to integrate skill selection
-- [ ] 4.5 Create `tests/unit/test_agent_skill_loader.py`:
+- [ ] 4.4 Update agent loop to integrate skill selection (deferred — Phase 4 scope limited to skill loader + skills)
+- [x] 4.5 Create `tests/unit/test_agent_skill_loader.py`:
   - Skill loading from directory
-  - Skill selection by intent/plan
+  - Skill selection by id, issue_type, and keyword text matching
   - Missing skill fallback
+  - Error handling for malformed/missing files
 
 ### Allowed files
 - `skills/runtime/` (new directory + files)

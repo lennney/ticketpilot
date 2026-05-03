@@ -3,6 +3,7 @@
 Batch 1: agent schemas and trace event models.
 Batch 2: tool registry and wrapper functions.
 Batch 3: deterministic planner, memory, and agent loop.
+Batch 4: runtime skill loader and business skills.
 """
 
 from ticketpilot.agent.loop import run_agent_pipeline
@@ -18,6 +19,7 @@ from ticketpilot.agent.schemas import (
     AgentStep,
     AgentToolSpec,
 )
+from ticketpilot.agent.skill_loader import SkillDefinition, SkillLoader, SkillLoadError
 from ticketpilot.agent.tools import (
     assess_risk_tool,
     classify_ticket_tool,
@@ -52,4 +54,8 @@ __all__ = [
     "WorkingMemory",
     "EpisodicMemory",
     "run_agent_pipeline",
+    # Batch 4 — skill loader
+    "SkillDefinition",
+    "SkillLoader",
+    "SkillLoadError",
 ]

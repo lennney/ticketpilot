@@ -1,0 +1,28 @@
+skill_id: technical_issue
+issue_type: technical
+goal: "Diagnose and resolve technical issue"
+description: "Troubleshoot technical problems with evidence-grounded solutions"
+match_keywords:
+  - 故障
+  - 报错
+  - 不能用
+  - 崩溃
+  - bug
+  - error
+required_tools:
+  - normalize_ticket
+  - classify_ticket
+  - assess_risk
+  - retrieve_evidence
+  - generate_draft
+steps:
+  - step_id: s1_normalize
+    tool_name: normalize_ticket
+  - step_id: s2_classify
+    tool_name: classify_ticket
+  - step_id: s3_assess_risk
+    tool_name: assess_risk
+  - step_id: s4_retrieve_evidence
+    tool_name: retrieve_evidence
+  - step_id: s5_generate_draft
+    tool_name: generate_draft

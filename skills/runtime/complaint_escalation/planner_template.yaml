@@ -1,0 +1,29 @@
+skill_id: complaint_escalation
+issue_type: complaint
+goal: "Handle complaint or legal-risk ticket with escalation steps"
+description: "Escalate and respond to customer complaints with full evidence trail"
+match_keywords:
+  - 投诉
+  - 举报
+  - 法律
+  - 起诉
+  - 赔偿
+  - compensation
+  - complaint
+required_tools:
+  - normalize_ticket
+  - classify_ticket
+  - assess_risk
+  - retrieve_evidence
+  - generate_draft
+steps:
+  - step_id: s1_normalize
+    tool_name: normalize_ticket
+  - step_id: s2_classify
+    tool_name: classify_ticket
+  - step_id: s3_assess_risk
+    tool_name: assess_risk
+  - step_id: s4_retrieve_evidence
+    tool_name: retrieve_evidence
+  - step_id: s5_generate_draft
+    tool_name: generate_draft

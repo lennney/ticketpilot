@@ -1,0 +1,29 @@
+skill_id: account_issue
+issue_type: account
+goal: "Resolve account or login issue"
+description: "Handle account access, security, and login problems"
+match_keywords:
+  - 账号
+  - 登录
+  - 密码
+  - 账户
+  - 安全
+  - login
+  - account
+required_tools:
+  - normalize_ticket
+  - classify_ticket
+  - assess_risk
+  - retrieve_evidence
+  - generate_draft
+steps:
+  - step_id: s1_normalize
+    tool_name: normalize_ticket
+  - step_id: s2_classify
+    tool_name: classify_ticket
+  - step_id: s3_assess_risk
+    tool_name: assess_risk
+  - step_id: s4_retrieve_evidence
+    tool_name: retrieve_evidence
+  - step_id: s5_generate_draft
+    tool_name: generate_draft
