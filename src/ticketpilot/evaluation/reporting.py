@@ -76,6 +76,7 @@ def write_json_report(
     tickets_path: str = "",
     golden_path: str = "",
     predictions_path: str = "",
+    prediction_mode: str = "csv",
 ) -> str:
     generated_at = datetime.datetime.now(datetime.timezone.utc).isoformat()
 
@@ -93,6 +94,7 @@ def write_json_report(
     report = {
         "generated_at": generated_at,
         "metadata": {
+            "prediction_mode": prediction_mode,
             "tickets_path": tickets_path,
             "golden_path": golden_path,
             "predictions_path": predictions_path,
@@ -132,9 +134,11 @@ def write_markdown_report(
     tickets_path: str = "",
     golden_path: str = "",
     predictions_path: str = "",
+    prediction_mode: str = "csv",
 ) -> str:
     generated_at = datetime.datetime.now(datetime.timezone.utc).isoformat()
 
+    mode_label = "pipeline (local)" if prediction_mode == "pipeline" else "CSV"
     md = ["# Evaluation Report",
           "",
           "**Generated at:** " + generated_at,
@@ -147,6 +151,7 @@ def write_markdown_report(
           "| Tickets file | `" + tickets_path + "` |",
           "| Golden file | `" + golden_path + "` |",
           "| Predictions file | `" + predictions_path + "` |",
+          "| Prediction mode | " + mode_label + " |",
           "| Mismatches found | " + str(len(summary.failed_cases)) + " |",
           "",
           "## Aggregate Metrics",
@@ -186,7 +191,7 @@ def write_markdown_report(
     md.append("")
     md.append("## Limitations")
     md.append("")
-    md.append("- **Small deterministic dataset**: This evaluation uses a small set of curated deterministic local data. Results are not statistically significant and should not be used to claim real-world performance.")
+    md.append("- **Small deterministic seed dataset**: This evaluation uses a small set of curated deterministic seed data. Results are not statistically significant and should not be used to claim real-world performance.")
     md.append("- **No real embedding provider**: The current evaluation uses fake embeddings. Evidence retrieval metrics will change when a real embedding provider is integrated unless pipeline mode is added later.")
     md.append("- **Not real-world performance**: This report reflects offline evaluation on synthetic/golden data only. It does not represent production behavior.")
 

@@ -33,9 +33,9 @@
 
 ## Phase 5: Integration Tests
 
-- [ ] 5.1 Create test fixture CSVs
-- [ ] 5.2 Create tests/integration/test_evaluation_pipeline.py
-- [ ] 5.3 Verify integration tests pass with existing quality gate
+- [x] 5.1 Create test fixture CSVs
+- [x] 5.2 Create tests/integration/test_evaluation_pipeline.py
+- [x] 5.3 Verify integration tests pass with existing quality gate
 
 ## Phase 6: Documentation
 

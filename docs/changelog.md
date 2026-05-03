@@ -1,6 +1,57 @@
 # TicketPilot Changelog
 
 
+## 2026-05-02 — Batch 4: Pipeline-Backed Prediction Generation and Integration Tests (add-evaluation-pipeline)
+
+### Added
+- Created `src/ticketpilot/evaluation/pipeline_predictions.py` with `predict_from_pipeline()` — maps local TicketPilot pipeline output (via `run_pipeline_with_draft`) to `EvalPrediction` objects by deriving:
+  - `predicted_issue_type` from intent classification
+  - `predicted_risk_flags` from risk assessment
+  - `predicted_severity` from risk assessment
+  - `predicted_must_human_review` from risk assessment and DraftReply
+  - `predicted_evidence_doc_types` from evidence candidate doc types
+  - `predicted_fallback_required` from DraftReply fallback state
+  - `predicted_no_auto_send` always True
+- Updated `scripts/run_eval.py` with `--prediction-mode` argument (`csv` | `pipeline`) — `csv` mode (default) loads predictions from `--predictions` file, `pipeline` mode runs the local pipeline for each eval ticket
+- Updated `src/ticketpilot/evaluation/reporting.py` — both `write_json_report()` and `write_markdown_report()` accept optional `prediction_mode` keyword and include it in report metadata
+- Updated `src/ticketpilot/evaluation/__init__.py` with `predict_from_pipeline` export
+- Created `tests/integration/test_evaluation_pipeline.py` — 11 integration tests covering:
+  - Pipeline prediction shape (one per case, no missing/extra)
+  - All required EvalPrediction fields present
+  - `predicted_no_auto_send` always True
+  - High-risk cases have `predicted_must_human_review=True`
+  - No-risk cases have `predicted_must_human_review=False` (when no flags)
+  - Fallback detection for no-evidence ticket
+  - Predictions can be scored by `metrics.py`
+  - Pipeline mode report generation (JSON + Markdown)
+  - CLI pipeline mode works end-to-end
+  - CLI CSV prediction mode still works (regression)
+- Updated `openspec/changes/add-evaluation-pipeline/tasks.md` — Phase 5 (integration tests) marked complete
+
+### Why
+- Enables pipeline-backed evaluation of the current local TicketPilot pipeline against the deterministic eval dataset
+- Provides a single CLI command to generate pipeline predictions, compute metrics, and produce reports
+- All 10 evaluation tickets are processed through the full pipeline (intake → classify → assess risk → retrieve evidence → draft)
+
+### Constraints
+- Uses the existing local pipeline only — no real LLM, embedding provider, network, or external API calls
+- Default pipeline contract (`intake_risk_pipeline` → `TicketOutput`) remains unchanged
+- Report limitations clearly state seed data, fake embedding limitation, and no real-world performance claim
+
+### Tests / Evaluation
+- Integration tests: 74 prior + 11 new = **85 passed, 0 skipped** (when DB available)
+- Unit tests: 433 passed (unchanged)
+- Ruff clean
+- OpenSpec validate --all passed
+- Quality gate: PASSED
+- No pipeline.py, retrieval, risk, drafting, review console, intake, classification, or database logic modified
+- No forbidden files touched
+- No real LLM, embedding provider, network, or external API introduced
+
+### Remaining risks
+- Technical documentation and phase status update pending (Batch 4)
+- Real embedding provider would change evidence retrieval behavior
+
 ## 2026-05-02 — Batch 3: CLI Evaluation Runner and Report Generation (add-evaluation-pipeline)
 
 ### Added

@@ -32,6 +32,7 @@ from ticketpilot.evaluation.metrics import (
     compute_risk_flag_metrics,
     validate_predictions,
 )
+from ticketpilot.evaluation.pipeline_predictions import predict_from_pipeline
 from ticketpilot.evaluation.predictions import load_predictions
 from ticketpilot.evaluation.reporting import (
     write_json_report,
@@ -57,6 +58,7 @@ __all__ = [
     "compute_case_metrics",
     "validate_predictions",
     "compute_evaluation_summary",
+    "predict_from_pipeline",
     "load_predictions",
     "write_json_report",
     "write_markdown_report",

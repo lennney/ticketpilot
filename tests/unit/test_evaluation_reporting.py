@@ -100,7 +100,7 @@ def test_markdown_report_contains_expected_sections(sample_summary):
         assert "## Risk Flag Metrics" in result
         assert "## Mismatch Summary" in result
         assert "## Limitations" in result
-        assert "Small deterministic dataset" in result
+        assert "Small deterministic seed dataset" in result
         assert "No real embedding provider" in result
         assert "Not real-world performance" in result
         assert "case_002" in result
@@ -159,7 +159,7 @@ def test_markdown_report_has_limitations_section(sample_summary):
     try:
         result = write_markdown_report(sample_summary, tmp)
         assert "## Limitations" in result
-        assert "small set of curated deterministic local data" in result
+        assert "small set of curated deterministic seed data" in result
         assert "fake embeddings" in result
         assert "synthetic/golden data only" in result
     finally:

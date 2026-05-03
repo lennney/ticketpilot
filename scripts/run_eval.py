@@ -47,8 +47,15 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     )
     parser.add_argument(
         "--predictions",
-        required=True,
-        help="Path to predictions CSV file",
+        required=False,
+        help="Path to predictions CSV file (required when --prediction-mode csv)",
+    )
+    parser.add_argument(
+        "--prediction-mode",
+        choices=["csv", "pipeline"],
+        default="csv",
+        help="Prediction source: 'csv' (default) loads from --predictions file, "
+        "'pipeline' runs the local TicketPilot pipeline for each ticket",
     )
     parser.add_argument(
         "--out-json",
@@ -61,6 +68,40 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         help="Path for output Markdown report",
     )
     return parser.parse_args(argv)
+
+
+def _load_or_generate_predictions(
+    args: argparse.Namespace,
+    dataset,
+) -> dict:
+    """Load predictions from CSV or generate from pipeline depending on mode."""
+    if args.prediction_mode == "pipeline":
+        from ticketpilot.evaluation.pipeline_predictions import (
+            predict_from_pipeline,
+        )
+
+        predictions: dict = {}
+        sorted_ids = sorted(dataset.tickets.keys())
+        for case_id in sorted_ids:
+            ticket = dataset.tickets[case_id]
+            prediction = predict_from_pipeline(ticket)
+            predictions[case_id] = prediction
+        return predictions
+
+    # CSV mode
+    if not args.predictions:
+        die("--predictions is required when --prediction-mode is csv")
+    try:
+        return load_predictions(args.predictions)
+    except (FileNotFoundError, ValueError) as exc:
+        die(str(exc))
+
+
+def _predictions_source_label(args: argparse.Namespace) -> str:
+    """Return a human-readable label for where predictions came from."""
+    if args.prediction_mode == "pipeline":
+        return "pipeline (generated from local TicketPilot pipeline)"
+    return args.predictions or "unknown"
 
 
 def run_eval(args: argparse.Namespace) -> None:
@@ -78,22 +119,22 @@ def run_eval(args: argparse.Namespace) -> None:
 
     dataset = load_result.dataset
 
-    try:
-        predictions = load_predictions(args.predictions)
-    except (FileNotFoundError, ValueError) as exc:
-        die(str(exc))
+    predictions = _load_or_generate_predictions(args, dataset)
 
     try:
         summary = compute_evaluation_summary(predictions, dataset.golden)
     except ValueError as exc:
         die(str(exc))
 
+    predictions_label = _predictions_source_label(args)
+
     write_json_report(
         summary,
         args.out_json,
         tickets_path=args.tickets,
         golden_path=args.golden,
-        predictions_path=args.predictions,
+        predictions_path=args.predictions or predictions_label,
+        prediction_mode=args.prediction_mode,
     )
     print(f"JSON report written to {args.out_json}")
 
@@ -102,7 +143,8 @@ def run_eval(args: argparse.Namespace) -> None:
         args.out_md,
         tickets_path=args.tickets,
         golden_path=args.golden,
-        predictions_path=args.predictions,
+        predictions_path=args.predictions or predictions_label,
+        prediction_mode=args.prediction_mode,
     )
     print(f"Markdown report written to {args.out_md}")
 
