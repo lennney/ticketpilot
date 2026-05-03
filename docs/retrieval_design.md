@@ -82,7 +82,7 @@ TicketPilot MVP uses hybrid retrieval combining PostgreSQL full-text search (key
 1. **No training required**: Unlike IVF_PQ, HNSW builds indices immediately without sample training data
 2. **pgvector-native**: Full support in PostgreSQL extension, no external services
 3. **Fast queries**: O(log n) search with excellent recall (typically 95-99% on standard benchmarks)
-4. **Mature implementation**: pgvector HNSW is well-tested in production environments
+4. **Validated locally**: pgvector HNSW has been validated through local unit, integration, OpenSpec, and quality-gate checks
 5. **Simple operational model**: Single PostgreSQL instance, no additional services
 
 **Trade-off**: HNSW consumes more memory than IVFFlat or IVF_PQ for equivalent corpus sizes. For MVP with <1M vectors, this is acceptable.

@@ -1,6 +1,21 @@
 # TicketPilot Changelog
 
 
+## 2026-05-03 — Batch 1: Public README Foundation (add-public-github-package)
+
+### Added
+- Rewrote `README.md` (Chinese, primary) with sections 1–6:
+  - What is TicketPilot, Why not a normal RAG demo, Core workflow, Feature overview, Architecture summary, Quick Start
+- Created `README.en.md` (English, synchronized) with matching sections
+- Explicitly states no auto-send, fake embedding limitation, seed data limitation, local demo / portfolio-ready
+
+### Changed
+- `docs/retrieval_design.md`: "well-tested in production environments" → "validated through local unit, integration, OpenSpec, and quality-gate checks"
+- Updated `openspec/changes/add-public-github-package/tasks.md`: Phase 1 and Phase 2 items marked complete
+
+### Why
+Prepare TicketPilot for public GitHub portfolio presentation with accurate, non-overclaimed documentation.
+
 ## 2026-05-03 — Batch 5: Evaluation Pipeline Finalization and Documentation (add-evaluation-pipeline)
 
 ### Added
