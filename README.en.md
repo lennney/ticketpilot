@@ -223,5 +223,69 @@ print(f'Severity: {output.risk_assessment.severity.value}')
 
 ---
 
-> Full documentation map available in [docs/README.md](docs/README.md) (added in a later batch).
+> Full documentation map in section 7 below.
 > 中文版请见 [README.md](README.md)。
+
+---
+
+## 7. Documentation Map
+
+| Directory | Contents |
+|-----------|----------|
+| `docs/technical/` | Technical design docs: system architecture, data contracts, retrieval design, risk rules, quality gate, evaluation pipeline |
+| `docs/development_trace/` | Development process records and project retrospectives |
+| `docs/portfolio/` | Portfolio materials: case studies (CN/EN), demo script, interview talking points, limitations and roadmap |
+| `docs/skills/` | Claude Code skills: batch implementation, quality gate acceptance, retrieval evaluation, secure development |
+| `docs/prompts/` | Reusable prompt templates |
+| `docs/audits/` | Project audit reports |
+| `docs/changelog.md` | Changelog |
+| `openspec/` | OpenSpec spec-driven development: proposals, designs, specs, tasks for every change |
+| `reports/eval/` | Evaluation report output (JSON + Markdown) |
+
+---
+
+## 8. Current Limitations
+
+- **Local demo / portfolio level**: This is an architecture-first functional demonstration, not a production customer-service system.
+- **Seed data only**: Knowledge base has 36 seed documents; evaluation has 10 seed tickets. Does not reflect enterprise data scale or diversity.
+- **Fake embeddings**: Vector search uses deterministic fake embeddings (384-dim SHA-256 hash vectors). Cosine similarity scores have no semantic meaning — they verify pipeline connectivity only.
+- **No real LLM**: Draft generation uses deterministic templates, no LLM API calls. All `LLM_PROVIDER` config entries are currently unused placeholders.
+- **No auto-send**: See section 10.
+- **Streamlit console**: MVP-level human review UI, not a production frontend.
+- **Evaluation reports**: Based on local deterministic seed data, not real-world benchmarks.
+- **No multi-user support**: No authentication or permissions model.
+
+---
+
+## 9. Roadmap
+
+Priority-ordered future directions (not scheduled):
+
+| Direction | Description | Dependency |
+|-----------|-------------|------------|
+| **Realistic data pack** | Expand knowledge base and eval dataset to hundreds of realistic entries | None |
+| **Chinese embedding service** | Replace fake embeddings with real Chinese embeddings (e.g. text2vec, BGE) | Data pack first |
+| **Retrieval quality eval** | Precision/recall/NDCG comparison after embedding replacement | Real embeddings |
+| **Expanded eval dataset** | 50+ tickets covering edge cases and combined scenarios | Data pack |
+| **Trace persistence** | Optional Langfuse or other tracing integration | Data pack |
+| **Auth / multi-user** | Login and role model for review console | None |
+| **Production deployment** | Dockerized deployment, CI/CD, monitoring | All above |
+| **LangGraph workflow** | Optional LangGraph orchestration of full pipeline | Core eval stable |
+
+---
+
+## 10. Safety Boundary: No Auto-Send
+
+**This is an architectural constraint, not a configurable option.**
+
+- Generated draft replies are **review suggestions**, not sent customer responses.
+- Human review console actions (approve/edit/escalate/reject) write only to local `ReviewDecision` JSONL files — **they do not connect to any send channel**.
+- The following situations **require** human review:
+  - High-risk flags (legal risk, compensation demands, privacy leaks)
+  - No evidence retrieved (fallback mode)
+  - Draft contains unsupported claims (per policy rule detection)
+- No API, message queue, or webhook exists in the current version for automatically sending customer replies.
+
+---
+
+*TicketPilot — local demo / portfolio project*

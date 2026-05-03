@@ -10,7 +10,7 @@ created: 2026-05-03
 ## Phase 1: Repository Hygiene and Foundation
 
 - [x] 1.1 Audit `.gitignore` for local artifacts (`.coverage*`, `.claude/worktrees/`, `.pytest_cache/`)
-- [ ] 1.2 Audit `.env.example` and ensure all required env vars documented
+- [x] 1.2 Audit `.env.example` and ensure all required env vars documented
 - [x] 1.3 Verify no API keys, secrets, or credentials in committed files
 - [x] 1.4 Verify no overstated claims in existing docs
 - [x] 1.5 Create `openspec/changes/add-public-github-package/` structure
@@ -21,8 +21,8 @@ created: 2026-05-03
 - [x] 2.2 Write core workflow and feature overview
 - [x] 2.3 Write architecture summary
 - [x] 2.4 Write Quick Start instructions
-- [ ] 2.5 Write documentation map (deferred to Batch 2)
-- [ ] 2.6 Write limitations, roadmap, and safety boundary sections (deferred to Batch 2)
+- [x] 2.5 Write documentation map
+- [x] 2.6 Write limitations, roadmap, and safety boundary sections
 - [x] 2.7 Review README for overclaiming and technical accuracy
 
 ## Phase 3: Demo Guide

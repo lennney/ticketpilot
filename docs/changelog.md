@@ -1,6 +1,22 @@
 # TicketPilot Changelog
 
 
+## 2026-05-03 — Batch 2: Complete Public README and Environment Example (add-public-github-package)
+
+### Added
+- README.md (Chinese) sections 7–10: Documentation Map, Current Limitations, Roadmap, Safety Boundary / No Auto-Send
+- README.en.md (English) synchronized sections 7–10
+- `.env.example` updated to reflect actual env vars used in code (DB_HOST, DB_PORT, DB_NAME, DB_USER, DB_PASSWORD); commented out unused LLM/Langfuse placeholders with explanation
+- `.gitignore` added `.coverage` and `.coverage.*` patterns
+
+### Changed
+- Updated `openspec/changes/add-public-github-package/tasks.md`: Phase 1 (1.2) and Phase 2 (2.5, 2.6) marked complete
+
+### Why
+- Prepare TicketPilot for public GitHub portfolio with complete, accurate README
+- Ensure .env.example contains only safe default values, no real secrets
+- Ensure .gitignore excludes local coverage artifacts
+
 ## 2026-05-03 — Batch 1: Public README Foundation (add-public-github-package)
 
 ### Added
