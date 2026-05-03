@@ -1,6 +1,25 @@
 # TicketPilot Changelog
 
 
+## 2026-05-03 — Batch 1: Agent Schemas and Trace Event Models (add-agent-kernel-runtime)
+
+### Added
+- `src/ticketpilot/agent/` module with schemas, trace, and public API exports
+- AgentEventType enum (10 event types), AgentRunStatus enum (5 statuses)
+- AgentEvent, AgentToolSpec, AgentStep, AgentPlan, AgentRun Pydantic schemas
+- AgentTrace class — append-only event recording with JSON export
+- `tests/unit/test_agent_schemas.py` — 39 tests covering all schema validation
+- `tests/unit/test_agent_trace.py` — 14 tests covering trace functionality
+
+### Why
+- Establish the data contracts and event recording foundation for the Agent Kernel Runtime
+- Batch 1 is data-only (no Callable in schemas, no YAML dependency)
+
+### Tests / Evaluation
+- 39/39 schema tests passed, 14/14 trace tests passed
+- Ruff clean
+- No existing src/ or tests/ files modified
+
 ## 2026-05-03 — Batch 4: Finalization and Archive (add-public-github-package)
 
 ### Added

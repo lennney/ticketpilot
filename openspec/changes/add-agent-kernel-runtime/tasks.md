@@ -14,26 +14,13 @@ created: 2026-05-03
 - [x] 0.3 Create `openspec/changes/add-agent-kernel-runtime/` with proposal, design, tasks, spec
 - [x] 0.4 Define batch structure, allowed/forbidden files, and acceptance criteria
 
-## Phase 1 — Agent Schemas and Trace Event Models
+## Phase 1 — Agent Schemas and Trace Event Models ✅
 
-- [ ] 1.1 Create `src/ticketpilot/agent/__init__.py` with public API exports
-- [ ] 1.2 Create `src/ticketpilot/agent/schemas.py`:
-  - AgentEventType enum, AgentEvent model
-  - AgentTool schema with input_schema/output_schema as JSON Schema dicts
-  - AgentPlan, AgentStep schemas
-  - AgentRun schema (complete run record)
-- [ ] 1.3 Create `src/ticketpilot/agent/trace.py`:
-  - AgentTrace class for event recording and ordering
-  - Event emission helpers
-  - JSON export for audit/debugging
-- [ ] 1.4 Create `tests/unit/test_agent_schemas.py`:
-  - All schema construction, validation, serialization
-  - AgentEventType enum coverage
-  - AgentRun default states
-- [ ] 1.5 Create `tests/unit/test_agent_trace.py`:
-  - Event recording in order
-  - Event data payload handling
-  - Export format
+- [x] 1.1 Create `src/ticketpilot/agent/__init__.py` with public API exports
+- [x] 1.2 Create `src/ticketpilot/agent/schemas.py`
+- [x] 1.3 Create `src/ticketpilot/agent/trace.py`
+- [x] 1.4 Create `tests/unit/test_agent_schemas.py`
+- [x] 1.5 Create `tests/unit/test_agent_trace.py`
 
 ### Allowed files
 - `src/ticketpilot/agent/__init__.py` (new)
