@@ -191,11 +191,9 @@ uv run python scripts/run_eval.py \
 ```bash
 # 启动 PostgreSQL（需要 Docker）
 docker compose up -d
+# 数据库迁移会在首次启动时通过 db/migrations/ 自动执行
 
-# 初始化数据库
-alembic upgrade head
-
-# 导入种子知识数据
+# 验证种子知识数据（本地 chunking，无需数据库）
 uv run python scripts/ingest_knowledge.py
 
 # 启动 Streamlit 控制台

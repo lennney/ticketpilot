@@ -1,6 +1,19 @@
 # TicketPilot Changelog
 
 
+## 2026-05-03 — Local Run Verification Report
+
+### Added
+- `docs/demo/local_run_verification.md` — full local run verification report covering all 10 verification phases: environment preflight, dependency install, CSV evaluation, Docker/pgvector startup, seed data verification, pipeline evaluation, Streamlit console check, Agent Kernel smoke test, and quality gate
+
+### Fixed
+- `README.md` and `README.en.md` — replaced non-functional `alembic upgrade head` command with note that migrations run automatically via Docker `db/migrations/` (`docker-entrypoint-initdb.d`)
+
+### Tests / Evaluation
+- Full quality gate: PASSED (636 unit, 119 integration, 0 skipped, 84.09% coverage, Ruff clean, OpenSpec 15/15)
+- Agent Kernel smoke test: both normal refund and high-risk complaint tickets produce correct AgentRun with proper routing
+- Evaluation: CSV mode 100%, pipeline mode with expected mismatches for seed data / fake embedding
+
 ## 2026-05-03 — Phase 6: Documentation, Quality Gate, and Archive (add-agent-kernel-runtime)
 
 ### Added

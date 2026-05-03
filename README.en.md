@@ -191,11 +191,9 @@ uv run python scripts/run_eval.py \
 ```bash
 # Start PostgreSQL (requires Docker)
 docker compose up -d
+# Database migrations run automatically via db/migrations/ on first start
 
-# Run database migrations
-alembic upgrade head
-
-# Seed knowledge base
+# Verify knowledge seed data (local chunking, no database required)
 uv run python scripts/ingest_knowledge.py
 
 # Start Streamlit console
