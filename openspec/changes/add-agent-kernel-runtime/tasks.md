@@ -63,44 +63,21 @@ created: 2026-05-03
 - Calling real LLM or embedding providers
 - Network calls in tool wrappers
 
-## Phase 3 — Task Planner + Agent Loop
+## Phase 3 — Task Planner + Agent Loop ✅
 
-- [ ] 3.1 Create `src/ticketpilot/agent/planner.py`:
-  - DeterministicTaskPlanner class
-  - Plan template registry (at least 6 templates: refund, return_exchange, complaint_escalation, account_issue, logistics_query, generic)
-  - create_plan(text) → AgentPlan
-  - Template selection logic based on keyword matching
-- [ ] 3.2 Create `src/ticketpilot/agent/memory.py`:
-  - WorkingMemory class per-run context store
-  - EpisodicMemory class (in-memory list, optional JSONL persistence)
-  - EpisodicMemory.append-only invariant
-- [ ] 3.3 Create `src/ticketpilot/agent/loop.py`:
-  - `run_agent_pipeline(raw_ticket)` — the main agent loop
-  - Implements the loop pseudocode from design.md
-  - Composes ToolRegistry, DeterministicTaskPlanner, WorkingMemory, AgentTrace
-  - Calls existing generate_draft() for the draft step
-  - Returns AgentRun with full trace
-- [ ] 3.4 Update `src/ticketpilot/agent/__init__.py` to export `run_agent_pipeline`
-- [ ] 3.5 Create `tests/unit/test_agent_planner.py`:
-  - Plan templates return correct step structures
-  - Template selection for all 8 intent types
-  - Generic fallback for unknown input
-  - Deterministic: same input → same plan
-- [ ] 3.6 Create `tests/unit/test_agent_memory.py`:
-  - WorkingMemory read/write isolation
-  - EpisodicMemory add/get/get_all
-  - Append-only invariant enforcement
-- [ ] 3.7 Create `tests/unit/test_agent_loop.py`:
-  - Agent loop runs end-to-end with mocked tools
-  - Correct event ordering
-  - Human review routing when must_human_review=True
-  - Graceful handling of tool failures
+- [x] 3.1 Create `src/ticketpilot/agent/planner.py`
+- [x] 3.2 Create `src/ticketpilot/agent/memory.py`
+- [x] 3.3 Create `src/ticketpilot/agent/loop.py`
+- [x] 3.4 Update `src/ticketpilot/agent/__init__.py` to add Batch 3 exports
+- [x] 3.5 Create `tests/unit/test_agent_planner.py` — 33 tests
+- [x] 3.6 Create `tests/unit/test_agent_memory.py` — 21 tests
+- [x] 3.7 Create `tests/unit/test_agent_loop.py` — 25 tests
 
 ### Allowed files
 - `src/ticketpilot/agent/planner.py` (new)
 - `src/ticketpilot/agent/memory.py` (new)
 - `src/ticketpilot/agent/loop.py` (new)
-- Modifications to `src/ticketpilot/agent/__init__.py` (add exports)
+- `src/ticketpilot/agent/__init__.py` (modified — exports only)
 - `tests/unit/test_agent_planner.py` (new)
 - `tests/unit/test_agent_memory.py` (new)
 - `tests/unit/test_agent_loop.py` (new)

@@ -1,6 +1,29 @@
 # TicketPilot Changelog
 
 
+## 2026-05-03 — Batch 3: Deterministic Planner, Memory, and Agent Loop (add-agent-kernel-runtime)
+
+### Added
+- `src/ticketpilot/agent/planner.py` — DeterministicTaskPlanner with 7 templates (keyword-based, complaint highest priority)
+- `src/ticketpilot/agent/memory.py` — WorkingMemory (per-run context) and EpisodicMemory (append-only store)
+- `src/ticketpilot/agent/loop.py` — `run_agent_pipeline()` composing trace, planner, registry, and memory into a full agent run
+- `tests/unit/test_agent_planner.py` — 33 tests (template selection, priority, plan structure, constraints)
+- `tests/unit/test_agent_memory.py` — 21 tests (WorkingMemory set/get/snapshot/clear, EpisodicMemory append/get/copy/clear)
+- `tests/unit/test_agent_loop.py` — 25 tests (mock ToolRegistry, event ordering, human review routing, failure handling, injectables)
+
+### Why
+- Connect Batch 1 schemas/trace and Batch 2 tool registry into a working agent loop
+- Deterministic keyword-based planning without LLM calls
+- All unit tests use mocked tools — no DB, no real pipeline calls
+
+### Tests / Evaluation
+- 33/33 planner tests passed, 21/21 memory tests passed, 25/25 loop tests passed
+- Ruff clean
+- 609 unit tests total (433 original + 53 Batch 1 + 44 Batch 2 + 79 Batch 3), no regressions
+- No existing pipeline behavior changed
+- No DB required in unit tests
+- No LLM, embedding, network, or auto-send introduced
+
 ## 2026-05-03 — Batch 2: Agent Tool Registry and Wrappers (add-agent-kernel-runtime)
 
 ### Added
