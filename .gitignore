@@ -35,6 +35,9 @@ secrets/
 # Claude local settings
 .claude/settings.local.json
 
+# Claude worktrees (local only, never committed)
+.claude/worktrees/
+
 # Cache
 .cache/
 .claude/scheduled_tasks.lock
