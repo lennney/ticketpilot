@@ -875,3 +875,35 @@ Prepare TicketPilot for public GitHub portfolio presentation with accurate, non-
 - Prompt library documents have not been reviewed by external users; usability validation is deferred
 - Some prompt templates may need adjustment for projects with different toolchains
 - No automated validation of prompt document structure or consistency exists
+
+
+## 2026-05-03 — Phase 5: Integration Tests for Agent Kernel Runtime (add-agent-kernel-runtime)
+
+### Added
+- `tests/integration/test_agent_runtime.py` — 12 integration tests covering:
+  - Normal refund ticket produces complete AgentRun
+  - High-risk complaint/legal ticket routes to human review
+  - Account/security ticket processes without error
+  - AgentRun shape validation (run_id, raw_ticket_text, plan, events, final_status, timestamps)
+  - Event ordering (RUN_STARTED before PLAN_CREATED before TOOL_CALLED, terminal event last, TOOL_CALLED/TOOL_RETURNED pairing)
+  - Plan structure with 5 deterministic core steps (s1_normalize through s5_generate_draft)
+  - Plan determinism for same input (identical goal, steps, constraints, required_tools, success_criteria)
+  - No-evidence/weak-evidence fallback does not crash and produces draft_reply
+  - Trace export is JSON-serializable (both AgentRun.model_dump_json and AgentTrace.to_json)
+  - No auto-send event type exists in trace
+  - No auto-send instructions in draft reply text
+  - No real LLM, embedding, or HTTP client imports in agent module source code
+  - Skill selection documented as conditional (Phase 4 task 4.4 deferred)
+
+### Why
+- Validate the agent kernel runtime end-to-end through the real pipeline with DB-backed evidence retrieval
+- Confirm AgentRun shape, event ordering, and status routing work as designed
+- Enforce no-auto-send, no-LLM, no-network constraints at the integration level
+
+### Tests / Evaluation
+- Integration tests: 85 prior + 12 new = 97 passed, 0 skipped (with DB)
+- Unit tests: 636 passed (unchanged)
+- Ruff clean
+- No existing pipeline behavior changed
+- No LLM, embedding, network, or auto-send introduced
+- No existing src/ or tests/ files modified outside new test file

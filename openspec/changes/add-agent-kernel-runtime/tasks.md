@@ -145,3 +145,22 @@ created: 2026-05-03
 - Working tree clean
 - No existing src/ or tests/ files modified outside agent module
 - No real LLM, real embedding, network calls, auto-send, or generic agent framework
+
+## Phase 5 — Integration Tests ✅
+
+- [x] 5.1 Create `tests/integration/test_agent_runtime.py`:
+  - Full agent run through real pipeline (DB required for retrieval)
+  - AgentRun shape: ticket_id, plan, events, final_status
+  - Event ordering: RUN_STARTED → PLAN_CREATED → TOOL_CALLED → ... → RUN_COMPLETED
+  - Human review routing for high-risk tickets
+  - Fallback for no-evidence tickets
+  - Trace export structure
+
+### Allowed files
+- `tests/integration/test_agent_runtime.py` (new)
+
+### Acceptance criteria
+- 12 integration tests covering all runtime requirements
+- 0 skipped integration tests with DB available
+- No existing src/ or tests/ files modified
+- No LLM, embedding, network, or auto-send introduced
