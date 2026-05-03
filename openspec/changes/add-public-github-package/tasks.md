@@ -27,10 +27,10 @@ created: 2026-05-03
 
 ## Phase 3: Demo Guide
 
-- [ ] 3.1 Create `docs/demo/README.md` with step-by-step demo instructions
-- [ ] 3.2 Add sample ticket inputs and expected outputs
-- [ ] 3.3 Add troubleshooting section
-- [ ] 3.4 Add screenshot/GIF placeholder instructions
+- [x] 3.1 Create `docs/demo/README.md` with step-by-step demo instructions
+- [x] 3.2 Add sample ticket inputs and expected outputs (`docs/demo/sample_tickets.md`)
+- [x] 3.3 Add troubleshooting section
+- [x] 3.4 Add screenshot/GIF placeholder instructions
 
 ## Phase 4: Release Checklist
 

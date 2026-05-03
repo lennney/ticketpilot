@@ -233,6 +233,8 @@ print(f'严重程度: {output.risk_assessment.severity.value}')
 | 目录 | 说明 |
 |------|------|
 | `docs/technical/` | 技术设计文档：系统架构、数据契约、检索设计、风险规则、质量门禁、评估流水线等 |
+| `docs/demo/` | 演示指南：三条演示线的分步说明和示例工单 |
+| `docs/github_release_checklist.md` | GitHub 发布前检查清单 |
 | `docs/development_trace/` | 各阶段开发过程记录和项目复盘 |
 | `docs/portfolio/` | 作品集材料：项目案例（中/英）、演示脚本、面试要点、限制与路线图 |
 | `docs/skills/` | Claude Code 技能文档：批量实施、质量门禁验收、检索评估、安全开发等 |

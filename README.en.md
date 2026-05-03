@@ -233,6 +233,8 @@ print(f'Severity: {output.risk_assessment.severity.value}')
 | Directory | Contents |
 |-----------|----------|
 | `docs/technical/` | Technical design docs: system architecture, data contracts, retrieval design, risk rules, quality gate, evaluation pipeline |
+| `docs/demo/` | Demo guide: step-by-step instructions for 3 demo lines with sample tickets |
+| `docs/github_release_checklist.md` | Pre-publication checklist for GitHub release |
 | `docs/development_trace/` | Development process records and project retrospectives |
 | `docs/portfolio/` | Portfolio materials: case studies (CN/EN), demo script, interview talking points, limitations and roadmap |
 | `docs/skills/` | Claude Code skills: batch implementation, quality gate acceptance, retrieval evaluation, secure development |

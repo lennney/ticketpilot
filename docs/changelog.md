@@ -1,6 +1,21 @@
 # TicketPilot Changelog
 
 
+## 2026-05-03 — Batch 3: Public Demo Guide and Release Checklist (add-public-github-package)
+
+### Added
+- `docs/demo/README.md` — step-by-step demo guide with 3 demo lines (A: normal refund/return, B: high-risk complaint/legal/privacy, C: evaluation pipeline); prerequisites, sample code, troubleshooting, and "do not claim" list
+- `docs/demo/sample_tickets.md` — 7 copy-pasteable ticket scenarios with expected intent, severity, risk flags, and observation notes
+- `docs/github_release_checklist.md` — pre-publication checklist covering repo hygiene, secrets, .env.example, README, demo, quality gate, OpenSpec, limitations, screenshots, and final pre-push commands
+
+### Changed
+- `README.md` and `README.en.md` — added `docs/demo/` and `docs/github_release_checklist.md` links to documentation map
+- Updated `openspec/changes/add-public-github-package/tasks.md`: Phase 3 items marked complete
+
+### Why
+- Provide clear, runnable demo instructions for portfolio presentation
+- Ensure all items are verified before pushing to public GitHub
+
 ## 2026-05-03 — Batch 2: Complete Public README and Environment Example (add-public-github-package)
 
 ### Added
