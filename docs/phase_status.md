@@ -159,7 +159,7 @@ Summary:
 - Human review routing for high-risk/unsupported/no-evidence outputs
 - No auto-send capability introduced
 - Unit tests: 636 passed (433 original + 203 agent kernel specific)
-- Integration tests: 85 passed, 0 skipped (unchanged — agent integration tests deferred)
+- Integration tests: 119 passed, 0 skipped (85 prior + 34 agent runtime integration tests)
 - Ruff clean
 - No existing src/ or tests/ files modified outside the agent module
 - No LLM, embedding, network, or auto-send introduced

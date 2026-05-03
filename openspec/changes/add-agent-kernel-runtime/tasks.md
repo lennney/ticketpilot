@@ -119,14 +119,14 @@ created: 2026-05-03
 ### Allowed files
 - `tests/integration/test_agent_runtime.py` (new)
 
-## Phase 6 — Documentation, Changelog, Quality Gate, Archive
+## Phase 6 — Documentation, Changelog, Quality Gate, Archive ✅
 
-- [ ] 6.1 Create `docs/technical/agent_kernel.md` — design doc for the agent module
-- [ ] 6.2 Update `docs/changelog.md` with all batch entries
-- [ ] 6.3 Update `docs/phase_status.md` — add Agent Kernel entry mark ACCEPTED
-- [ ] 6.4 Run full quality gate (Ruff, unit tests, integration tests, coverage, OpenSpec)
-- [ ] 6.5 Archive OpenSpec change
-- [ ] 6.6 Post-archive validation
+- [x] 6.1 Create `docs/technical/agent_kernel.md` — design doc for the agent module
+- [x] 6.2 Update `docs/changelog.md` with all batch entries
+- [x] 6.3 Update `docs/phase_status.md` — add Agent Kernel entry mark ACCEPTED
+- [x] 6.4 Run full quality gate (Ruff, unit tests, integration tests, coverage, OpenSpec)
+- [x] 6.5 Archive OpenSpec change
+- [x] 6.6 Post-archive validation
 
 ### Allowed files
 - `docs/technical/agent_kernel.md` (new)
@@ -160,7 +160,7 @@ created: 2026-05-03
 - `tests/integration/test_agent_runtime.py` (new)
 
 ### Acceptance criteria
-- 12 integration tests covering all runtime requirements
+- 34 integration tests covering all runtime requirements
 - 0 skipped integration tests with DB available
 - No existing src/ or tests/ files modified
 - No LLM, embedding, network, or auto-send introduced
