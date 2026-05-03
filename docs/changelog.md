@@ -1,6 +1,28 @@
 # TicketPilot Changelog
 
 
+## 2026-05-03 — Batch 2: Agent Tool Registry and Wrappers (add-agent-kernel-runtime)
+
+### Added
+- `src/ticketpilot/agent/registry.py` — RegisteredTool (dataclass), ToolRegistry (register/get/has/list_names/list_specs/call)
+- `src/ticketpilot/agent/tools.py` — 5 thin wrapper functions: normalize_ticket_tool, classify_ticket_tool, assess_risk_tool, retrieve_evidence_tool, generate_draft_tool
+- `create_default_tool_registry()` — pre-populated registry with all 5 tools and correct risk levels
+- Dict-to-Pydantic conversion in all wrappers for flexible input
+- `_parse_intent()` / `_parse_risk_flags()` helpers with validation
+- `tests/unit/test_agent_registry.py` — 17 tests (registration, lookup, call, error cases)
+- `tests/unit/test_agent_tools.py` — 27 tests (wrapper invocation, dict input, validation, default registry)
+
+### Why
+- Establish runtime callable binding layer (handler in dataclass, spec in Pydantic)
+- Wrap existing TicketPilot capabilities as registered tools without modifying any existing module
+
+### Tests / Evaluation
+- 17/17 registry tests passed, 27/27 tools tests passed
+- Ruff clean
+- 530 unit tests total (433 original + 53 Batch 1 + 44 Batch 2), no regressions
+- No existing pipeline behavior changed
+- No LLM, embedding, network, or auto-send introduced
+
 ## 2026-05-03 — Batch 1: Agent Schemas and Trace Event Models (add-agent-kernel-runtime)
 
 ### Added

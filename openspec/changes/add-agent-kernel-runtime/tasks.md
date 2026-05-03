@@ -43,36 +43,18 @@ created: 2026-05-03
 - 100% unit test pass rate on new tests
 - No existing src/ or tests/ files modified
 
-## Phase 2 — Tool Registry
+## Phase 2 — Tool Registry and Tool Wrappers ✅
 
-- [ ] 2.1 Create `src/ticketpilot/agent/tools/__init__.py` with tool registration helper
-- [ ] 2.2 Create `src/ticketpilot/agent/registry.py`:
-  - ToolRegistry class with register(), get(), list_all(), has_tool()
-  - Registration validation (name uniqueness, required fields)
-- [ ] 2.3 Create tool wrappers:
-  - `src/ticketpilot/agent/tools/intake_tool.py`
-  - `src/ticketpilot/agent/tools/classify_tool.py`
-  - `src/ticketpilot/agent/tools/risk_tool.py`
-  - `src/ticketpilot/agent/tools/retrieve_tool.py`
-  - `src/ticketpilot/agent/tools/draft_tool.py`
-  - Each wrapper: name, description, input_schema (JSON Schema dict), output_schema, risk_level, and a callable that invokes the existing module
-- [ ] 2.4 Create `tests/unit/test_agent_registry.py`:
-  - Tool registration and lookup
-  - Duplicate name rejection
-  - Input/output schema validation
-- [ ] 2.5 Create `tests/unit/test_agent_tools.py`:
-  - Each tool wrapper constructs correctly
-  - Tool calls delegate to existing modules (mocked)
-  - Risk levels are set appropriately per tool
+- [x] 2.1 Create `src/ticketpilot/agent/registry.py` — ToolRegistry + RegisteredTool
+- [x] 2.2 Create `src/ticketpilot/agent/tools.py` — 5 wrapper functions + create_default_tool_registry()
+- [x] 2.3 Update `src/ticketpilot/agent/__init__.py` — add Batch 2 exports
+- [x] 2.4 Create `tests/unit/test_agent_registry.py` — 17 tests
+- [x] 2.5 Create `tests/unit/test_agent_tools.py` — 27 tests
 
 ### Allowed files
+- `src/ticketpilot/agent/__init__.py` (modified — exports only)
 - `src/ticketpilot/agent/registry.py` (new)
-- `src/ticketpilot/agent/tools/__init__.py` (new)
-- `src/ticketpilot/agent/tools/intake_tool.py` (new)
-- `src/ticketpilot/agent/tools/classify_tool.py` (new)
-- `src/ticketpilot/agent/tools/risk_tool.py` (new)
-- `src/ticketpilot/agent/tools/retrieve_tool.py` (new)
-- `src/ticketpilot/agent/tools/draft_tool.py` (new)
+- `src/ticketpilot/agent/tools.py` (new)
 - `tests/unit/test_agent_registry.py` (new)
 - `tests/unit/test_agent_tools.py` (new)
 
