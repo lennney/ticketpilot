@@ -39,9 +39,9 @@
 
 ## Phase 6: Documentation
 
-- [ ] 6.1 Create docs/technical/evaluation_pipeline.md (deferred to Batch 4)
+- [x] 6.1 Create docs/technical/evaluation_pipeline.md (deferred to Batch 4)
 - [x] 6.2 Update docs/changelog.md (Batch 3)
-- [ ] 6.3 Update docs/phase_status.md (deferred to Batch 4)
+- [x] 6.3 Update docs/phase_status.md (deferred to Batch 4)
 - [x] 6.4 Run quality gate
 
 ## Batch Plan Summary

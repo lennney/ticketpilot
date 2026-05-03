@@ -98,3 +98,22 @@ Summary:
 - No source code modified
 - Full quality gate passed
 - OpenSpec change archived
+
+## Evaluation Pipeline (add-evaluation-pipeline)
+
+Status: ACCEPTED
+
+Summary:
+- Evaluation dataset created (`data/eval/tickets_eval.csv`, `data/eval/golden_expectations.csv`) with 10 seed tickets covering 8 intent classes, 5 risk flag categories, 3 severity levels, and edge cases
+- Evaluation schemas, loaders, and metrics implemented as pure deterministic functions
+- CLI evaluation runner (`scripts/run_eval.py`) supports both CSV-prediction and pipeline-prediction modes
+- Pipeline-backed prediction generation (`predict_from_pipeline()`) maps local TicketPilot pipeline output to EvalPrediction objects
+- JSON and Markdown report generation implemented
+- Unit tests: 433 passed (unchanged throughout all batches)
+- Integration tests: 74 prior + 11 new = 85 passed, 0 skipped
+- Coverage: 80.25%
+- All evaluation is local deterministic / seed-data based — no real embedding provider, no real LLM, no network, no external APIs
+- Reports explicitly state: seed data only, fake embedding limitation, no real-world performance claim
+- No src/ or tests/ files modified outside the evaluation module
+- Full quality gate passed
+- OpenSpec change archived

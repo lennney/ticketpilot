@@ -1,6 +1,54 @@
 # TicketPilot Changelog
 
 
+## 2026-05-03 — Batch 5: Evaluation Pipeline Finalization and Documentation (add-evaluation-pipeline)
+
+### Added
+- Created `docs/technical/evaluation_pipeline.md` — comprehensive documentation covering:
+  - Evaluation dataset design (tickets_eval.csv, golden_expectations.csv, sample_predictions.csv)
+  - Metric definitions (intent_accuracy, severity_accuracy, must_human_review_accuracy, evidence_doc_type_recall, fallback_correctness, no_auto_send_compliance, risk_flag_metrics)
+  - CLI usage for both CSV and pipeline prediction modes
+  - JSON and Markdown report output formats
+  - Current limitations (seed data, fake embedding, no real-world performance)
+  - Deferred: realistic data pack, real embedding evaluation, real LLM evaluation, online evaluation, regression detection
+  - References to evaluation_plan.md, testing_strategy.md, and CLI entrypoint
+
+### Changed
+- Updated `docs/phase_status.md` — "Evaluation Pipeline" entry set to ACCEPTED with test counts (433 unit, 85 integration, 0 skipped, 80.25% coverage), clearly stating evaluation is local deterministic / seed-data based
+- Updated `openspec/changes/add-evaluation-pipeline/tasks.md` — Phase 6 (Documentation) tasks 6.1 and 6.3 marked complete; all phases now fully complete
+
+### Why
+- Completes the documentation and finalization phase of the add-evaluation-pipeline OpenSpec change
+- Provides a single reference document for the evaluation dataset design, metric formulas, CLI usage, and report formats
+- Documents current limitations and deferred items to prevent misinterpretation of evaluation results
+
+### Constraints
+- No src/ or tests/ files modified
+- No data/eval/ files modified
+- No pipeline behavior modified
+- No retrieval, risk, drafting, review, intake, classification, or database logic modified
+- No real embedding provider or real LLM provider introduced
+- No network, API, or external service calls
+- No real-world performance claims
+- All limitations (seed data, fake embedding) explicitly documented
+
+### Tests / Evaluation
+- Unit tests: 433 passed (unchanged)
+- Integration tests: 85 passed, 0 skipped (unchanged)
+- Ruff clean
+- OpenSpec validate --all passed
+- Quality gate: PASSED
+- All evaluation CLI commands produce correct reports
+- CSV prediction mode: 100% on all metrics (perfect match)
+- Pipeline prediction mode: realistic current performance with identified mismatches
+- Archive validation confirms clean post-archive state
+
+### Remaining risks
+- Real embedding provider would change evidence retrieval behavior
+- Realistic data pack needed for statistically significant evaluation
+- Real LLM integration would enable draft quality measurement
+- Online / regression evaluation not yet implemented
+
 ## 2026-05-02 — Batch 4: Pipeline-Backed Prediction Generation and Integration Tests (add-evaluation-pipeline)
 
 ### Added

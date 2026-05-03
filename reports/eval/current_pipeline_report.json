@@ -1,0 +1,501 @@
+{
+  "generated_at": "2026-05-03T07:56:29.532950+00:00",
+  "metadata": {
+    "prediction_mode": "pipeline",
+    "tickets_path": "data/eval/tickets_eval.csv",
+    "golden_path": "data/eval/golden_expectations.csv",
+    "predictions_path": "pipeline (generated from local TicketPilot pipeline)"
+  },
+  "total_cases": 10,
+  "aggregate_metrics": {
+    "intent_accuracy": 0.8,
+    "severity_accuracy": 0.9,
+    "must_human_review_accuracy": 0.7,
+    "evidence_doc_type_recall": 1.0,
+    "fallback_correctness": 0.9,
+    "no_auto_send_compliance": 0.5
+  },
+  "risk_flag_metrics": {
+    "precision": 0.875,
+    "recall": 1.0,
+    "f1": 0.9333333333333333
+  },
+  "per_case_results": [
+    {
+      "case_id": "case_acct_001",
+      "prediction": {
+        "predicted_issue_type": "account_issue",
+        "predicted_risk_flags": [
+          "account_security_risk"
+        ],
+        "predicted_severity": "LOW",
+        "predicted_must_human_review": true,
+        "predicted_evidence_doc_types": [
+          "CASE",
+          "FAQ",
+          "POLICY"
+        ],
+        "predicted_fallback_required": false,
+        "predicted_no_auto_send": true
+      },
+      "metrics": {
+        "intent_accuracy": true,
+        "severity_accuracy": true,
+        "must_human_review_accuracy": true,
+        "risk_flag_metrics": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "exact_match": true
+        },
+        "evidence_doc_type_recall": 1.0,
+        "fallback_correctness": true,
+        "no_auto_send_compliance": true
+      },
+      "mismatches": []
+    },
+    {
+      "case_id": "case_complaint_001",
+      "prediction": {
+        "predicted_issue_type": "complaint",
+        "predicted_risk_flags": [
+          "compensation_risk",
+          "complaint_risk"
+        ],
+        "predicted_severity": "MEDIUM",
+        "predicted_must_human_review": true,
+        "predicted_evidence_doc_types": [
+          "CASE",
+          "FAQ",
+          "POLICY"
+        ],
+        "predicted_fallback_required": false,
+        "predicted_no_auto_send": true
+      },
+      "metrics": {
+        "intent_accuracy": true,
+        "severity_accuracy": true,
+        "must_human_review_accuracy": true,
+        "risk_flag_metrics": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "exact_match": true
+        },
+        "evidence_doc_type_recall": 1.0,
+        "fallback_correctness": true,
+        "no_auto_send_compliance": true
+      },
+      "mismatches": []
+    },
+    {
+      "case_id": "case_consulting_001",
+      "prediction": {
+        "predicted_issue_type": "product_consulting",
+        "predicted_risk_flags": [],
+        "predicted_severity": "LOW",
+        "predicted_must_human_review": false,
+        "predicted_evidence_doc_types": [
+          "CASE",
+          "FAQ",
+          "POLICY"
+        ],
+        "predicted_fallback_required": false,
+        "predicted_no_auto_send": true
+      },
+      "metrics": {
+        "intent_accuracy": true,
+        "severity_accuracy": true,
+        "must_human_review_accuracy": true,
+        "risk_flag_metrics": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "exact_match": true
+        },
+        "evidence_doc_type_recall": 1.0,
+        "fallback_correctness": true,
+        "no_auto_send_compliance": false
+      },
+      "mismatches": [
+        {
+          "metric": "no_auto_send_compliance",
+          "expected": "False",
+          "predicted": "True"
+        }
+      ]
+    },
+    {
+      "case_id": "case_high_risk_001",
+      "prediction": {
+        "predicted_issue_type": "other",
+        "predicted_risk_flags": [
+          "compensation_risk",
+          "legal_risk"
+        ],
+        "predicted_severity": "HIGH",
+        "predicted_must_human_review": true,
+        "predicted_evidence_doc_types": [
+          "CASE",
+          "FAQ",
+          "POLICY"
+        ],
+        "predicted_fallback_required": false,
+        "predicted_no_auto_send": true
+      },
+      "metrics": {
+        "intent_accuracy": false,
+        "severity_accuracy": true,
+        "must_human_review_accuracy": true,
+        "risk_flag_metrics": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "exact_match": true
+        },
+        "evidence_doc_type_recall": 1.0,
+        "fallback_correctness": true,
+        "no_auto_send_compliance": true
+      },
+      "mismatches": [
+        {
+          "metric": "intent_accuracy",
+          "expected": "complaint",
+          "predicted": "other"
+        }
+      ]
+    },
+    {
+      "case_id": "case_logistics_001",
+      "prediction": {
+        "predicted_issue_type": "logistics",
+        "predicted_risk_flags": [],
+        "predicted_severity": "LOW",
+        "predicted_must_human_review": true,
+        "predicted_evidence_doc_types": [
+          "CASE",
+          "FAQ",
+          "POLICY"
+        ],
+        "predicted_fallback_required": false,
+        "predicted_no_auto_send": true
+      },
+      "metrics": {
+        "intent_accuracy": true,
+        "severity_accuracy": true,
+        "must_human_review_accuracy": false,
+        "risk_flag_metrics": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "exact_match": true
+        },
+        "evidence_doc_type_recall": 1.0,
+        "fallback_correctness": true,
+        "no_auto_send_compliance": false
+      },
+      "mismatches": [
+        {
+          "metric": "must_human_review_accuracy",
+          "expected": "False",
+          "predicted": "True"
+        },
+        {
+          "metric": "no_auto_send_compliance",
+          "expected": "False",
+          "predicted": "True"
+        }
+      ]
+    },
+    {
+      "case_id": "case_no_evidence_001",
+      "prediction": {
+        "predicted_issue_type": "refund",
+        "predicted_risk_flags": [
+          "insufficient_evidence"
+        ],
+        "predicted_severity": "LOW",
+        "predicted_must_human_review": true,
+        "predicted_evidence_doc_types": [
+          "CASE",
+          "FAQ",
+          "POLICY"
+        ],
+        "predicted_fallback_required": false,
+        "predicted_no_auto_send": true
+      },
+      "metrics": {
+        "intent_accuracy": true,
+        "severity_accuracy": true,
+        "must_human_review_accuracy": true,
+        "risk_flag_metrics": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "exact_match": true
+        },
+        "evidence_doc_type_recall": 1.0,
+        "fallback_correctness": false,
+        "no_auto_send_compliance": true
+      },
+      "mismatches": [
+        {
+          "metric": "fallback_correctness",
+          "expected": "True",
+          "predicted": "False"
+        }
+      ]
+    },
+    {
+      "case_id": "case_privacy_001",
+      "prediction": {
+        "predicted_issue_type": "other",
+        "predicted_risk_flags": [
+          "low_confidence",
+          "privacy_risk"
+        ],
+        "predicted_severity": "LOW",
+        "predicted_must_human_review": true,
+        "predicted_evidence_doc_types": [
+          "CASE",
+          "FAQ",
+          "POLICY"
+        ],
+        "predicted_fallback_required": false,
+        "predicted_no_auto_send": true
+      },
+      "metrics": {
+        "intent_accuracy": false,
+        "severity_accuracy": false,
+        "must_human_review_accuracy": true,
+        "risk_flag_metrics": {
+          "precision": 0.5,
+          "recall": 1.0,
+          "f1": 0.6666666666666666,
+          "exact_match": false
+        },
+        "evidence_doc_type_recall": 1.0,
+        "fallback_correctness": true,
+        "no_auto_send_compliance": true
+      },
+      "mismatches": [
+        {
+          "metric": "intent_accuracy",
+          "expected": "account_issue",
+          "predicted": "other"
+        },
+        {
+          "metric": "severity_accuracy",
+          "expected": "MEDIUM",
+          "predicted": "LOW"
+        },
+        {
+          "metric": "risk_flags",
+          "expected": "privacy_risk",
+          "predicted": "low_confidence,privacy_risk"
+        }
+      ]
+    },
+    {
+      "case_id": "case_refund_001",
+      "prediction": {
+        "predicted_issue_type": "refund",
+        "predicted_risk_flags": [],
+        "predicted_severity": "LOW",
+        "predicted_must_human_review": true,
+        "predicted_evidence_doc_types": [
+          "CASE",
+          "FAQ",
+          "POLICY"
+        ],
+        "predicted_fallback_required": false,
+        "predicted_no_auto_send": true
+      },
+      "metrics": {
+        "intent_accuracy": true,
+        "severity_accuracy": true,
+        "must_human_review_accuracy": false,
+        "risk_flag_metrics": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "exact_match": true
+        },
+        "evidence_doc_type_recall": 1.0,
+        "fallback_correctness": true,
+        "no_auto_send_compliance": false
+      },
+      "mismatches": [
+        {
+          "metric": "must_human_review_accuracy",
+          "expected": "False",
+          "predicted": "True"
+        },
+        {
+          "metric": "no_auto_send_compliance",
+          "expected": "False",
+          "predicted": "True"
+        }
+      ]
+    },
+    {
+      "case_id": "case_return_ex_001",
+      "prediction": {
+        "predicted_issue_type": "return_exchange",
+        "predicted_risk_flags": [],
+        "predicted_severity": "LOW",
+        "predicted_must_human_review": true,
+        "predicted_evidence_doc_types": [
+          "CASE",
+          "FAQ",
+          "POLICY"
+        ],
+        "predicted_fallback_required": false,
+        "predicted_no_auto_send": true
+      },
+      "metrics": {
+        "intent_accuracy": true,
+        "severity_accuracy": true,
+        "must_human_review_accuracy": false,
+        "risk_flag_metrics": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "exact_match": true
+        },
+        "evidence_doc_type_recall": 1.0,
+        "fallback_correctness": true,
+        "no_auto_send_compliance": false
+      },
+      "mismatches": [
+        {
+          "metric": "must_human_review_accuracy",
+          "expected": "False",
+          "predicted": "True"
+        },
+        {
+          "metric": "no_auto_send_compliance",
+          "expected": "False",
+          "predicted": "True"
+        }
+      ]
+    },
+    {
+      "case_id": "case_technical_001",
+      "prediction": {
+        "predicted_issue_type": "technical_issue",
+        "predicted_risk_flags": [],
+        "predicted_severity": "LOW",
+        "predicted_must_human_review": false,
+        "predicted_evidence_doc_types": [
+          "CASE",
+          "FAQ",
+          "POLICY"
+        ],
+        "predicted_fallback_required": false,
+        "predicted_no_auto_send": true
+      },
+      "metrics": {
+        "intent_accuracy": true,
+        "severity_accuracy": true,
+        "must_human_review_accuracy": true,
+        "risk_flag_metrics": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "exact_match": true
+        },
+        "evidence_doc_type_recall": 1.0,
+        "fallback_correctness": true,
+        "no_auto_send_compliance": false
+      },
+      "mismatches": [
+        {
+          "metric": "no_auto_send_compliance",
+          "expected": "False",
+          "predicted": "True"
+        }
+      ]
+    }
+  ],
+  "mismatches": [
+    {
+      "case_id": "case_consulting_001",
+      "metric": "no_auto_send_compliance",
+      "expected": "False",
+      "predicted": "True"
+    },
+    {
+      "case_id": "case_high_risk_001",
+      "metric": "intent_accuracy",
+      "expected": "complaint",
+      "predicted": "other"
+    },
+    {
+      "case_id": "case_logistics_001",
+      "metric": "must_human_review_accuracy",
+      "expected": "False",
+      "predicted": "True"
+    },
+    {
+      "case_id": "case_logistics_001",
+      "metric": "no_auto_send_compliance",
+      "expected": "False",
+      "predicted": "True"
+    },
+    {
+      "case_id": "case_no_evidence_001",
+      "metric": "fallback_correctness",
+      "expected": "True",
+      "predicted": "False"
+    },
+    {
+      "case_id": "case_privacy_001",
+      "metric": "intent_accuracy",
+      "expected": "account_issue",
+      "predicted": "other"
+    },
+    {
+      "case_id": "case_privacy_001",
+      "metric": "risk_flags",
+      "expected": "privacy_risk",
+      "predicted": "low_confidence,privacy_risk"
+    },
+    {
+      "case_id": "case_privacy_001",
+      "metric": "severity_accuracy",
+      "expected": "MEDIUM",
+      "predicted": "LOW"
+    },
+    {
+      "case_id": "case_refund_001",
+      "metric": "must_human_review_accuracy",
+      "expected": "False",
+      "predicted": "True"
+    },
+    {
+      "case_id": "case_refund_001",
+      "metric": "no_auto_send_compliance",
+      "expected": "False",
+      "predicted": "True"
+    },
+    {
+      "case_id": "case_return_ex_001",
+      "metric": "must_human_review_accuracy",
+      "expected": "False",
+      "predicted": "True"
+    },
+    {
+      "case_id": "case_return_ex_001",
+      "metric": "no_auto_send_compliance",
+      "expected": "False",
+      "predicted": "True"
+    },
+    {
+      "case_id": "case_technical_001",
+      "metric": "no_auto_send_compliance",
+      "expected": "False",
+      "predicted": "True"
+    }
+  ]
+}
