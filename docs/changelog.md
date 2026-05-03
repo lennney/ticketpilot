@@ -1,6 +1,38 @@
 # TicketPilot Changelog
 
-## 2026-05-02 — Batch 1: Evaluation Data Foundation (add-evaluation-pipeline)
+## 2026-05-02 — Batch 2: Deterministic Metric Computation (add-evaluation-pipeline)
+
+### Changed
+- Added `EvalPrediction` schema mirroring `GoldenExpectation` shape with `predicted_*` fields for representing pipeline output
+- Added metric schemas: `RiskFlagMetrics` (precision, recall, F1, exact_match), `EvaluationMetrics` (all 7 per-case metric categories), `MismatchEntry` (case_id, metric, expected, predicted), `CaseResult` (full per-case evaluation), `EvaluationSummary` (aggregate metrics with micro-averaged risk flag scores)
+- Created `src/ticketpilot/evaluation/metrics.py` with pure, deterministic functions:
+  - `compute_risk_flag_metrics()` — handles exact match, missing flag, extra flag, empty sets
+  - `compute_evidence_doc_type_recall()` — recall of expected doc types, 1.0 for empty expected
+  - `compute_case_metrics()` — all 7 metric categories with mismatch recording
+  - `validate_predictions()` — missing/extra case_id detection
+  - `compute_evaluation_summary()` — per-case results, aggregate rates, micro-averaged risk flag metrics
+- Updated `__init__.py` with new schema and metric function exports
+- Added unit tests: `tests/unit/test_evaluation_metrics.py` covering all metric functions, edge cases, validation failures, and determinism
+
+### Why
+- Provides deterministic, in-memory metric computation without pipeline, DB, embedding provider, LLM, network, or filesystem dependencies
+- Enables offline evaluation of pipeline outputs against golden expectations for post-Batch 3 integration
+- Micro-averaged risk flag metrics correctly handle multi-flag cases where per-case averaging would be misleading
+
+### Tests / Evaluation
+- Unit tests: 372 prior + 47 new = 419 unit tests passed
+- Integration tests: 74 passed, 0 skipped (unchanged — no new integration tests)
+- Ruff clean
+- OpenSpec validate --all passed
+- Quality gate: PASSED
+- No pipeline, retrieval, risk, drafting, review, intake, classification, database, or runner code modified
+- No forbidden files touched
+- .claude/worktrees/ unchanged
+
+### Remaining risks
+- Comparison, report, and runner scripts not yet implemented (Batch 3)
+- No integration tests for the evaluation pipeline yet (Batch 3)
+- Technical documentation and phase status update pending (Batch 4)
 
 ### Changed
 - Created `data/eval/tickets_eval.csv` with 10 deterministic evaluation tickets covering 8 intent classes, 5 risk flag categories, all 3 severity levels, and edge cases (no-evidence, high-risk legal)

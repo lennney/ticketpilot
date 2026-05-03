@@ -145,3 +145,92 @@ class LoadResult:
             and len(self.missing_ticket_for_golden) == 0
             and len(self.errors) == 0
         )
+
+
+# ---------------------------------------------------------------------------
+# Prediction & metric schemas (Batch 2)
+# ---------------------------------------------------------------------------
+
+
+class EvalPrediction(BaseModel):
+    """Predicted pipeline output for a single evaluation ticket.
+
+    Mirrors the shape of GoldenExpectation but with predicted_* fields
+    instead of expected_* fields.
+    """
+
+    case_id: str = Field(..., min_length=1)
+    predicted_issue_type: str
+    predicted_risk_flags: frozenset[str] = Field(default_factory=frozenset)
+    predicted_severity: str
+    predicted_must_human_review: bool
+    predicted_evidence_doc_types: frozenset[str] = Field(default_factory=frozenset)
+    predicted_fallback_required: bool
+    predicted_no_auto_send: bool
+
+
+class RiskFlagMetrics(BaseModel):
+    """Per-case risk flag prediction metrics.
+
+    All float values are in [0.0, 1.0].
+    """
+
+    precision: float = Field(..., ge=0.0, le=1.0)
+    recall: float = Field(..., ge=0.0, le=1.0)
+    f1: float = Field(..., ge=0.0, le=1.0)
+    exact_match: bool
+
+
+class EvaluationMetrics(BaseModel):
+    """All computed metrics for a single evaluation case.
+
+    Boolean metrics are per-case (True = correct, False = mismatch).
+    """
+
+    intent_accuracy: bool
+    severity_accuracy: bool
+    must_human_review_accuracy: bool
+    risk_flag_metrics: RiskFlagMetrics
+    evidence_doc_type_recall: float = Field(..., ge=0.0, le=1.0)
+    fallback_correctness: bool
+    no_auto_send_compliance: bool
+
+
+class MismatchEntry(BaseModel):
+    """A single mismatch between prediction and golden expectation."""
+
+    case_id: str
+    metric: str
+    expected: str
+    predicted: str
+
+
+class CaseResult(BaseModel):
+    """Full evaluation result for a single case."""
+
+    case_id: str
+    golden: GoldenExpectation
+    prediction: EvalPrediction
+    metrics: EvaluationMetrics
+    mismatches: list[MismatchEntry] = Field(default_factory=list)
+
+
+class EvaluationSummary(BaseModel):
+    """Aggregate evaluation summary across all cases.
+
+    Aggregate metrics are rate-based (float in [0.0, 1.0]).
+    Risk flag metrics use micro-averaging across all cases.
+    """
+
+    total_cases: int = Field(..., ge=0)
+    results: dict[str, CaseResult] = Field(default_factory=dict)
+    aggregate_intent_accuracy: float = Field(default=0.0, ge=0.0, le=1.0)
+    aggregate_severity_accuracy: float = Field(default=0.0, ge=0.0, le=1.0)
+    aggregate_must_human_review_accuracy: float = Field(default=0.0, ge=0.0, le=1.0)
+    aggregate_risk_flag_precision: float = Field(default=0.0, ge=0.0, le=1.0)
+    aggregate_risk_flag_recall: float = Field(default=0.0, ge=0.0, le=1.0)
+    aggregate_risk_flag_f1: float = Field(default=0.0, ge=0.0, le=1.0)
+    aggregate_evidence_doc_type_recall: float = Field(default=0.0, ge=0.0, le=1.0)
+    aggregate_fallback_correctness: float = Field(default=0.0, ge=0.0, le=1.0)
+    aggregate_no_auto_send_compliance: float = Field(default=0.0, ge=0.0, le=1.0)
+    failed_cases: list[MismatchEntry] = Field(default_factory=list)

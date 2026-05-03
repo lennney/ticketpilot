@@ -14,9 +14,9 @@
 - [x] 2.1 Create src/ticketpilot/evaluation/__init__.py
 - [x] 2.2 Create src/ticketpilot/evaluation/schemas.py (Pydantic models: EvalTicket, GoldenExpectation, EvalDataset, LoadResult)
 - [x] 2.3 Create src/ticketpilot/evaluation/loaders.py (CSV loading with validation)
-- [ ] 2.4 Create src/ticketpilot/evaluation/metrics.py
-- [ ] 2.5 Create src/ticketpilot/evaluation/comparison.py
-- [ ] 2.6 Create src/ticketpilot/evaluation/report.py
+- [x] 2.4 Create src/ticketpilot/evaluation/metrics.py
+- [ ] 2.5 Create src/ticketpilot/evaluation/comparison.py (deferred)
+- [ ] 2.6 Create src/ticketpilot/evaluation/report.py (deferred)
 
 ## Phase 3: Evaluation Runner Script
 
@@ -25,7 +25,7 @@
 
 ## Phase 4: Unit Tests
 
-- [ ] 4.1 Create tests/unit/test_evaluation_metrics.py
+- [x] 4.1 Create tests/unit/test_evaluation_metrics.py
 - [x] 4.2 Create tests/unit/test_evaluation_schemas.py
 - [x] 4.3 Create tests/unit/test_evaluation_loaders.py
 - [ ] 4.4 Create tests/unit/test_evaluation_report.py
@@ -47,8 +47,8 @@
 ## Batch Plan Summary
 
 - Batch 1: Phase 1 (evaluation data) + Phase 2 (schemas + loaders) + Phase 4 (schema + loader tests) + changelog + quality gate
-- Batch 2: Phases 2 rest (metrics, comparison, report) + Phase 3 (runner)
-- Batch 3: Phases 4-5 (remaining tests)
+- Batch 2: Phase 2 (metrics) + Phase 4 (metric tests) + changelog + quality gate
+- Batch 3: Phase 2 rest (comparison, report) + Phase 3 (runner) + remaining tests
 - Batch 4: Phase 6 (documentation)
 ### Phase 1 Details
 
