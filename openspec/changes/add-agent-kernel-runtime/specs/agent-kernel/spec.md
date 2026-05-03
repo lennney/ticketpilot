@@ -5,159 +5,243 @@ status: proposed
 created: 2026-05-03
 ---
 
-# Spec: Agent Kernel / Runtime
+# Agent Kernel Specification
 
 ## Overview
 
 The Agent Kernel is a lightweight, deterministic orchestration layer within TicketPilot. It wraps existing pipeline capabilities as registered tools, provides a rule-based task planner, a documented skill system, and run-level execution tracing. It transforms TicketPilot from a linear pipeline into an agentic workflow system without modifying any existing module.
 
-## Core Requirements
+## ADDED Requirements
 
-### REQ-AGENT-01: Agent Run
+### Requirement: Agent Run Entrypoint
+The system SHALL provide a `run_agent_pipeline(raw_ticket)` entrypoint that creates a structured AgentPlan, executes registered tool steps, stores intermediate results in WorkingMemory, generates an evidence-grounded draft reply, performs a final risk check with human review routing, and returns an AgentRun with complete trace and status.
 
-The system MUST support a `run_agent_pipeline(raw_ticket)` entrypoint that:
-1. Accepts a `RawTicket` as input.
-2. Creates a structured AgentPlan.
-3. Selects a business skill if applicable.
-4. Executes steps by calling registered tools.
-5. Observes and stores intermediate results in WorkingMemory.
-6. Generates an evidence-grounded draft reply.
-7. Performs a final risk check and routes to human review if required.
-8. Records all events in an AgentTrace.
-9. Returns an AgentRun with complete trace and status.
+#### Scenario: Normal refund ticket produces complete AgentRun
+- WHEN `run_agent_pipeline()` is called with a refund ticket
+- THEN it returns an AgentRun with run_id, plan, events, and final_status=RUN_COMPLETED
 
-Rationale: Provides a single, structured entrypoint for agentic ticket processing that is distinct from both `intake_risk_pipeline()` and `run_pipeline_with_draft()`.
+#### Scenario: Event ordering is maintained
+- WHEN a pipeline run completes
+- THEN events appear in order: RUN_STARTED before PLAN_CREATED before TOOL_CALLED before terminal event
 
-### REQ-AGENT-02: No Modification to Existing Modules
+#### Scenario: High-risk ticket routes to human review
+- WHEN a ticket with legal or compensation risk flags is processed
+- THEN the AgentRun final status indicates human review required
 
-The Agent Kernel MUST NOT modify, patch, or monkey-patch any existing `src/ticketpilot/` module (pipeline, intake, classification, risk, retrieval, drafting, review, evaluation, schema). It MUST only import and call existing functions.
+### Requirement: Agent Schemas and Trace
+The system SHALL define Pydantic schemas for AgentEventType (10 event types), AgentRunStatus (5 statuses), AgentEvent, AgentToolSpec, AgentStep, AgentPlan, AgentRun, and an AgentTrace class with append-only event recording and JSON export.
 
-Rationale: Preserves backward compatibility. Existing callers, tests, and evaluation pipeline continue to work unchanged.
+#### Scenario: All schemas construct and validate correctly
+- WHEN each schema is constructed with valid data
+- THEN validation passes and field values are preserved
 
-### REQ-AGENT-03: Tool Registry
+#### Scenario: AgentRun exists with no plan
+- WHEN an AgentRun is created with plan=None
+- THEN it represents an initial state before planning
 
-The system MUST provide a ToolRegistry that:
-1. Allows registering tools with: name, description, input_schema (JSON Schema dict), output_schema (JSON Schema dict), risk_level, and callable.
-2. Requires unique tool names (duplicate registration raises an error).
-3. Supports lookup by name, listing all tools, and checking tool existence.
-4. Initially registers at least 5 tools: normalize_ticket, classify_ticket, assess_risk, retrieve_evidence, generate_draft.
+#### Scenario: JSON serialization round-trips
+- WHEN an AgentRun is serialized to JSON and deserialized
+- THEN all fields are preserved
 
-Rationale: The registry makes tool composition explicit, inspectable, and independently testable. JSON Schema dicts for input/output enable future validation without coupling to Pydantic models.
+#### Scenario: AgentTrace is append-only
+- WHEN an event is appended to a trace
+- THEN it cannot be modified after recording
 
-### REQ-AGENT-04: Deterministic Task Planner
+### Requirement: Tool Registry
+The system SHALL provide a ToolRegistry that registers tools with unique names, descriptions, JSON Schema dicts, risk levels, and callables, and supports lookup, listing, existence checks, and invocation.
 
-The system MUST provide a DeterministicTaskPlanner that:
-1. Creates an AgentPlan from raw ticket text using rule-based keyword matching.
-2. Supports at least 6 plan templates: refund, return_exchange, complaint_escalation, account_issue, logistics_query, and generic fallback.
-3. Each template defines ordered steps with tool name, input params, and fallback.
-4. The planner is deterministic: same input → same plan.
+#### Scenario: Register and retrieve a tool
+- WHEN a tool is registered with a unique name
+- THEN it can be retrieved by name and listed
 
-Rationale: Rule-based planning avoids LLM dependency and ensures predictable, testable behavior. Future LLM-based planning is out of scope.
+#### Scenario: Duplicate tool name raises error
+- WHEN two tools are registered with the same name
+- THEN a ValueError is raised
 
-### REQ-AGENT-05: Run-Level Trace
+#### Scenario: At least 5 tools registered
+- WHEN the default registry is created
+- THEN normalize_ticket, classify_ticket, assess_risk, retrieve_evidence, and generate_draft are available
 
-The system MUST provide AgentTrace that:
-1. Records events in order with event type, timestamp, step number, and data payload.
-2. Supports at least these event types: RUN_STARTED, PLAN_CREATED, SKILL_SELECTED, TOOL_CALLED, TOOL_RETURNED, DRAFT_GENERATED, RISK_CHECKED, HUMAN_REVIEW_REQUIRED, RUN_COMPLETED, RUN_FAILED.
-3. Events are append-only (cannot be modified after recording).
-4. Supports JSON export for audit and debugging.
+### Requirement: Deterministic Task Planner
+The system SHALL provide a DeterministicTaskPlanner that creates AgentPlan objects from raw ticket text using rule-based keyword matching, supporting at least 6 plan templates with deterministic output.
 
-Rationale: Structured trace enables debugging, portfolio demonstration, and future evaluation of agent behavior. No external tracing service required.
+#### Scenario: Same input produces same plan
+- WHEN the planner is called twice with the same ticket text
+- THEN the same plan is produced
 
-### REQ-AGENT-06: Working Memory
+#### Scenario: Complaint keyword has highest priority
+- WHEN a ticket text contains both complaint and refund keywords
+- THEN the complaint template is selected
 
-The system MUST provide WorkingMemory for per-run context that:
-1. Stores intermediate results keyed by step_id.
-2. Is isolated between runs (no cross-run contamination).
-3. Stores: normalized_text, classification, risk_assessment, evidence_candidates, draft_reply, and arbitrary intermediate_results dict.
+#### Scenario: Unknown intent returns generic fallback
+- WHEN a ticket text matches no business template
+- THEN the generic fallback template is returned
 
-Rationale: Working memory replaces ad-hoc parameter passing and provides a single context store for the agent loop.
+### Requirement: Working Memory
+The system SHALL provide WorkingMemory for per-run context storage of intermediate results keyed by step_id, isolated between runs.
 
-### REQ-AGENT-07: Episodic Memory (Lightweight)
+#### Scenario: Store and retrieve intermediate result
+- WHEN a result is stored by step_id
+- THEN it can be retrieved by the same key
 
-The system MUST provide EpisodicMemory that:
-1. Stores completed AgentRun records in an append-only list.
-2. Supports query by run_id and listing all runs.
-3. Optional JSONL persistence (same pattern as ReviewStore).
-4. Enforces append-only: runs cannot be deleted or modified after addition.
+#### Scenario: No cross-run contamination
+- WHEN a second run stores data
+- THEN the first run's data is not visible in the second run
 
-Rationale: Enables post-run trace review and debugging without a database. Pattern mirrors ReviewStore's append-only JSONL design.
+### Requirement: Episodic Memory
+The system SHALL provide EpisodicMemory as an append-only store of completed AgentRun records, supporting query by run_id and listing all runs.
 
-### REQ-AGENT-08: Runtime Skill System
+#### Scenario: Append and retrieve a run
+- WHEN a completed AgentRun is appended
+- THEN it can be retrieved by run_id
 
-The system MUST support runtime skills stored in `skills/runtime/` that:
-1. Each skill is a directory with a `SKILL.md` definition file and an optional `planner_template.yaml`.
-2. SKILL.md documents: when_to_use, required_tools, business_constraints, evidence_requirements, human_review_rules, bad_cases.
-3. SkillLoader scans `skills/runtime/` and loads available skills.
-4. The agent loop can select a skill based on the plan goal or ticket intent.
-5. Skills are separate from `.claude/skills/` (Claude Code development skills).
+#### Scenario: Runs are append-only
+- WHEN a run is added to EpisodicMemory
+- THEN it cannot be deleted or modified
 
-Rationale: Business process knowledge becomes documented, loadable, and independently testable. Separating runtime skills from development skills prevents confusion.
+### Requirement: Runtime Skill Loader
+The system SHALL provide a SkillLoader that scans `skills/runtime/` directories, loads SkillDefinition objects from `planner_template.yaml` and `SKILL.md`, validates required_tools against a known tool set, detects duplicate skill_ids, and provides deterministic selection by skill_id, issue_type, or keyword text matching with a safe fallback.
 
-### REQ-AGENT-09: Safety Constraints
+#### Scenario: Load 4 business skills
+- WHEN SkillLoader.load_all() scans skills/runtime/
+- THEN it returns 4 SkillDefinition objects with IDs: refund_request, complaint_escalation, account_issue, technical_issue
 
-The Agent Kernel MUST:
-1. Never auto-send draft replies. The review console remains the sole output channel.
-2. Never call external LLM or embedding APIs.
-3. Never make network calls.
-4. Never execute arbitrary code from skill definitions.
-5. Route to human review when `must_human_review=True` (from risk assessment or draft).
+#### Scenario: Select skill by text keyword
+- WHEN select_by_text() is called with a matching keyword
+- THEN the corresponding skill is returned
 
-Rationale: These safety constraints align with TicketPilot's existing architectural invariants.
+#### Scenario: Unknown skill returns fallback
+- WHEN select_by_id() is called with a nonexistent skill_id
+- THEN the generic_support fallback skill is returned
+
+#### Scenario: Malformed YAML raises SkillLoadError
+- WHEN a skill directory contains invalid YAML
+- THEN SkillLoadError is raised
+
+#### Scenario: Unknown required_tool raises SkillLoadError
+- WHEN a planner_template.yaml references an unknown tool
+- THEN SkillLoadError is raised describing the unknown tool
+
+#### Scenario: Duplicate skill_id raises SkillLoadError
+- WHEN two skill directories declare the same skill_id
+- THEN SkillLoadError is raised
+
+### Requirement: Business Skills
+The system SHALL provide 4 business skills in `skills/runtime/` each containing a `planner_template.yaml` (machine-readable) and `SKILL.md` (human-readable business recipe) documenting business constraints, evidence requirements, human review rules, and bad cases.
+
+#### Scenario: Refund skill has refund keywords
+- WHEN the refund_request skill is loaded
+- THEN its match_keywords include Chinese and English refund terms
+
+#### Scenario: Complaint skill has highest matching priority
+- WHEN select_by_text() is called with text containing both complaint and refund keywords
+- THEN complaint_escalation skill is returned
+
+#### Scenario: Account skill has security keywords
+- WHEN the account_issue skill is loaded
+- THEN its match_keywords include account and login terms
+
+#### Scenario: Technical skill has error keywords
+- WHEN the technical_issue skill is loaded
+- THEN its match_keywords include bug and error terms
+
+### Requirement: No Modification to Existing Modules
+The Agent Kernel SHALL NOT modify, patch, or monkey-patch any existing `src/ticketpilot/` module outside the `agent/` directory.
+
+#### Scenario: Existing pipeline tests pass unchanged
+- WHEN all existing unit and integration tests are run
+- THEN they pass without modification
+
+### Requirement: Safety Constraints
+The Agent Kernel SHALL: (1) never auto-send draft replies, (2) never call external LLM or embedding APIs, (3) never make network calls, (4) never execute arbitrary code from skill definitions, (5) route to human review when must_human_review is True.
+
+#### Scenario: No auto-send capability exists
+- WHEN the agent kernel code is inspected
+- THEN there is no code path that sends or dispatches draft replies
+
+#### Scenario: No LLM or external API dependencies
+- WHEN the agent kernel dependencies are inspected
+- THEN there are no imports of LLM, embedding, or HTTP client libraries
 
 ## Non-Requirements
 
 - The Agent Kernel is NOT a general-purpose agent framework.
 - The Agent Kernel is NOT a chatbot or conversational system.
-- The Agent Kernel is NOT a Claude Code clone.
 - The Agent Kernel does NOT require LangGraph, AutoGen, CrewAI, or any orchestration framework.
 - The Agent Kernel does NOT perform LLM-based planning or reasoning.
 - The Agent Kernel does NOT support dynamic tool creation or code generation.
 - The Agent Kernel does NOT replace existing pipeline, drafting, review, or evaluation modules.
 - The Agent Kernel does NOT add authentication, multi-user, or deployment features.
-- The Agent Kernel does NOT connect to external tracing services (Langfuse, Ragas, etc.).
+- The Agent Kernel does NOT connect to external tracing services.
+- The Agent Kernel does NOT modify existing pipeline behavior by default.
 
 ## Data Contracts
 
-See `design.md` for full Pydantic schema definitions. Key types:
-
+Key types:
 - `AgentEventType` — enum with 10 event types
-- `AgentEvent` — single trace event with type, timestamp, step_number, data
-- `AgentTool` — registered tool descriptor with name, description, schemas, callable
+- `AgentRunStatus` — enum with 5 statuses
+- `AgentEvent` — single trace event with event_type, timestamp, step_number, data
+- `AgentToolSpec` — registered tool descriptor with tool_name, description, input_schema, output_schema, risk_level
+- `AgentStep` — single plan step with step_id, tool_name, input_params, fallback
 - `AgentPlan` — structured plan with goal, constraints, steps, required_tools, success_criteria
-- `AgentStep` — single step with tool reference and input params
-- `AgentRun` — complete run record with all fields, events, and final status
+- `AgentRun` — complete run record with run_id, raw_ticket_id, plan, status, events, draft_result, human_review, trace
+- `SkillDefinition` — frozen dataclass with skill_id, issue_type, goal, description, match_keywords, required_tools, steps
 - `WorkingMemory` — per-run mutable context store
 - `EpisodicMemory` — append-only historical run store
+
+See `design.md` for full Pydantic schema definitions.
 
 ## File Layout
 
 ```
 src/ticketpilot/agent/          # New module — Agent Kernel runtime
-├── __init__.py
-├── schemas.py                  # Agent schemas (REQ-AGENT-01, 03, 04)
-├── registry.py                 # ToolRegistry (REQ-AGENT-03)
-├── planner.py                  # DeterministicTaskPlanner (REQ-AGENT-04)
-├── loop.py                     # Agent loop entrypoint (REQ-AGENT-01)
-├── memory.py                   # WorkingMemory + EpisodicMemory (REQ-AGENT-06, 07)
-├── skill_loader.py             # SkillLoader (REQ-AGENT-08)
-├── trace.py                    # AgentTrace (REQ-AGENT-05)
-└── tools/                      # Tool wrappers (REQ-AGENT-03)
-    ├── __init__.py
-    ├── intake_tool.py
-    ├── classify_tool.py
-    ├── risk_tool.py
-    ├── retrieve_tool.py
-    └── draft_tool.py
+├── __init__.py                 # Public API exports
+├── schemas.py                  # Agent schemas and trace event models
+├── trace.py                    # AgentTrace — append-only event recording
+├── registry.py                 # ToolRegistry + RegisteredTool
+├── tools.py                    # 5 tool wrapper functions
+├── planner.py                  # DeterministicTaskPlanner
+├── memory.py                   # WorkingMemory + EpisodicMemory
+├── loop.py                     # run_agent_pipeline() entrypoint
+└── skill_loader.py             # SkillLoader + SkillDefinition
 
-skills/runtime/                 # Business skills (REQ-AGENT-08)
+skills/runtime/                 # Business skills
 ├── __init__.py
 ├── refund_request/
 ├── complaint_escalation/
 ├── account_issue/
 └── technical_issue/
-
-tests/unit/test_agent_*.py      # Unit tests for all agent modules
-tests/integration/test_agent_runtime.py  # Integration tests
-docs/technical/agent_kernel.md  # Technical documentation
 ```
+
+## Test Strategy
+
+### Unit Tests
+
+test_agent_schemas.py (39 tests): schema construction, event type enum, status enum, event ordering, AgentPlan with steps, AgentRun with no plan, JSON serialization.
+
+test_agent_trace.py (14 tests): append-only recording, event ordering, JSON export, empty trace, cross-run isolation.
+
+test_agent_registry.py (17 tests): register/lookup/has/list_names/list_specs/call, duplicate name error, unknown name handling.
+
+test_agent_tools.py (27 tests): 5 wrapper definitions, dict input, validation, default registry, risk levels.
+
+test_agent_planner.py (33 tests): template selection for all intents, complaint priority, determinism, unknown intent fallback, plan structure.
+
+test_agent_memory.py (21 tests): WorkingMemory set/get/snapshot/clear, cross-run isolation, EpisodicMemory append/get/copy/clear, append-only.
+
+test_agent_loop.py (25 tests): run_agent_pipeline returns AgentRun, event ordering, human review routing, failure handling, custom injectables, trace export.
+
+test_agent_skill_loader.py (27 tests): load_all returns 4 skills, selection by id/issue_type/text, complaint priority, unknown ID fallback, error handling for missing/malformed files, keyword matching.
+
+### Integration Tests (Phase 5)
+
+test_agent_runtime.py: full agent run through real pipeline, AgentRun shape, event ordering, human review routing, fallback, trace export.
+
+### What NOT to Test
+
+- Real LLM or embedding provider calls (out of scope)
+- Pipeline behavior (tested by existing pipeline tests)
+- Draft generation correctness (tested by existing drafting tests)
+- Risk assessment rules (tested by existing risk tests)
+- Review console UI behavior (out of scope)
+- Dynamic plugin loading or code generation (out of scope)

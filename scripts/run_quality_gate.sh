@@ -23,8 +23,11 @@ uv run ruff check src tests || {
 # 2. Unit tests
 echo ""
 echo "== Unit Tests =="
-# Use /tmp for coverage data to avoid SQLite lock issues on WSL cross-filesystem paths
-export COVERAGE_FILE="${COVERAGE_FILE:-/tmp/.coverage_ticketpilot_gate}"
+# Remove stale coverage data from previous runs (WSL cross-filesystem SQLite corruption)
+rm -f /tmp/.coverage* .coverage* 2>/dev/null || true
+# Resolve coverage directory to Windows-absolute path when Python runs on Windows
+COVERAGE_DIR="$(uv run python -c "import tempfile; print(tempfile.gettempdir())" 2>/dev/null || echo "/tmp")"
+export COVERAGE_FILE="${COVERAGE_FILE:-${COVERAGE_DIR}/.coverage_ticketpilot_gate}"
 uv run python -m pytest tests/unit/ -v --strict-markers --cov=src/ticketpilot --cov-fail-under=70 || {
     echo -e "${RED}FAIL: Unit tests failed${NC}"
     FAILED=1
