@@ -1,6 +1,24 @@
 # TicketPilot Changelog
 
 
+## 2026-05-03 — Batch 4: Finalization and Archive (add-public-github-package)
+
+### Added
+- `docs/phase_status.md` — Public GitHub Package entry marked as ACCEPTED
+
+### Changed
+- `openspec/changes/add-public-github-package/tasks.md` — Phase 4, 5, 6 tasks marked complete
+
+### Why
+- Finalize the public GitHub package, run final validation, archive the OpenSpec change, and verify clean post-archive state
+
+### Tests / Evaluation
+- Pre-archive quality gate: Ruff clean, 433 unit tests passed, 85 integration tests passed (0 skipped), 80.25% coverage, OpenSpec 14/14 passed, secret scan clean
+- Post-archive quality gate: all checks passed, OpenSpec active changes = 1 → 0
+- Public-claim audit: no overstated claims found in README or demo docs
+- No src/ or tests/ files modified
+- OpenSpec change archived
+
 ## 2026-05-03 — Batch 3: Public Demo Guide and Release Checklist (add-public-github-package)
 
 ### Added

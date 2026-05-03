@@ -34,19 +34,19 @@ created: 2026-05-03
 
 ## Phase 4: Release Checklist
 
-- [ ] 4.1 Create `docs/github_release_checklist.md`
-- [ ] 4.2 Verify each checklist item on current state
+- [x] 4.1 Create `docs/github_release_checklist.md`
+- [x] 4.2 Verify each checklist item on current state
 
 ## Phase 5: Final Validation
 
-- [ ] 5.1 Run full quality gate (Ruff, unit tests, integration tests, coverage, OpenSpec)
-- [ ] 5.2 Verify Quick Start from clean clone
-- [ ] 5.3 Verify demo guide accuracy
-- [ ] 5.4 Verify no secrets or local artifacts committed
-- [ ] 5.5 Verify no overstated claims
+- [x] 5.1 Run full quality gate (Ruff, unit tests, integration tests, coverage, OpenSpec)
+- [x] 5.2 Verify Quick Start from clean clone
+- [x] 5.3 Verify demo guide accuracy
+- [x] 5.4 Verify no secrets or local artifacts committed
+- [x] 5.5 Verify no overstated claims
 
 ## Phase 6: Archive
 
-- [ ] 6.1 Commit all changes
-- [ ] 6.2 Archive OpenSpec change
-- [ ] 6.3 Post-archive validation
+- [x] 6.1 Commit all changes
+- [x] 6.2 Archive OpenSpec change
+- [x] 6.3 Post-archive validation

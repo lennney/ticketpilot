@@ -117,3 +117,31 @@ Summary:
 - No src/ or tests/ files modified outside the evaluation module
 - Full quality gate passed
 - OpenSpec change archived
+
+## Public GitHub Package (add-public-github-package)
+
+Status: ACCEPTED
+
+Summary:
+- README.md (Chinese, primary) and README.en.md (English, synchronized) rewritten for public portfolio presentation:
+  - Sections 1-6 (Batch 1): What is TicketPilot, Why not a normal RAG demo, Core workflow, Feature overview, Architecture summary, Quick Start
+  - Sections 7-10 (Batch 2): Documentation Map, Current Limitations, Roadmap, Safety Boundary / No Auto-Send
+- .env.example updated to match actual code usage (DB_HOST, DB_PORT, DB_NAME, DB_USER, DB_PASSWORD); unused LLM/Langfuse placeholders commented out with explanation
+- .gitignore updated with `.coverage` and `.coverage.*` patterns
+- Demo guide (Batch 3): `docs/demo/README.md` with 3 demo lines (A: normal refund/return, B: high-risk complaint/legal/privacy, C: evaluation pipeline), `docs/demo/sample_tickets.md` with 7 ticket scenarios
+- GitHub release checklist: `docs/github_release_checklist.md` with 11-section pre-publication checklist
+- Public-claim audit: no overstated claims in README or demo docs
+- No secrets, API keys, or credentials in committed files
+- Safety constraints explicitly documented: no auto-send (architectural), fake embeddings (pipeline verification only), seed data only, no real LLM
+- Unit tests: 433 passed (unchanged — no src/ or tests/ modifications)
+- Integration tests: 85 passed, 0 skipped (unchanged)
+- Coverage: 80.25% (unchanged)
+- Full quality gate passed
+- OpenSpec change archived
+
+### All documents consistently state
+- Local demo / portfolio-ready, not production-ready
+- Fake embeddings prove pipeline mechanics, not real semantic retrieval quality
+- Knowledge base is seed data (36 documents), not real enterprise data
+- No auto-send exists (architectural constraint)
+- Human review required for risky or unsupported outputs
