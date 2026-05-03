@@ -168,6 +168,54 @@ class EvalPrediction(BaseModel):
     predicted_fallback_required: bool
     predicted_no_auto_send: bool
 
+    @field_validator("predicted_issue_type")
+    @classmethod
+    def _validate_issue_type(cls, v: str) -> str:
+        if v not in VALID_ISSUE_TYPES:
+            msg = (
+                f"Unknown issue type '{v}'. "
+                f"Must be one of: {', '.join(sorted(VALID_ISSUE_TYPES))}"
+            )
+            raise ValueError(msg)
+        return v
+
+    @field_validator("predicted_severity")
+    @classmethod
+    def _validate_severity(cls, v: str) -> str:
+        v_upper = v.upper()
+        if v_upper not in VALID_SEVERITIES:
+            msg = (
+                f"Unknown severity '{v}'. "
+                f"Must be one of: {', '.join(sorted(VALID_SEVERITIES))}"
+            )
+            raise ValueError(msg)
+        return v_upper
+
+    @field_validator("predicted_must_human_review", mode="before")
+    @classmethod
+    def _coerce_bool(cls, v: bool | str) -> bool:
+        if isinstance(v, bool):
+            return v
+        if isinstance(v, str):
+            lowered = v.strip().lower()
+            if lowered in ("true", "1", "yes"):
+                return True
+            if lowered in ("false", "0", "no"):
+                return False
+            msg = f"Cannot parse boolean from '{v}'"
+            raise ValueError(msg)
+        return bool(v)
+
+    @field_validator("predicted_fallback_required", mode="before")
+    @classmethod
+    def _coerce_bool_fallback(cls, v: bool | str) -> bool:
+        return EvalPrediction._coerce_bool(v)
+
+    @field_validator("predicted_no_auto_send", mode="before")
+    @classmethod
+    def _coerce_bool_no_auto_send(cls, v: bool | str) -> bool:
+        return EvalPrediction._coerce_bool(v)
+
 
 class RiskFlagMetrics(BaseModel):
     """Per-case risk flag prediction metrics.

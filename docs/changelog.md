@@ -1,5 +1,35 @@
 # TicketPilot Changelog
 
+
+## 2026-05-02 — Batch 3: CLI Evaluation Runner and Report Generation (add-evaluation-pipeline)
+
+### Added
+- Created `src/ticketpilot/evaluation/predictions.py` with `load_predictions()` — loads prediction CSV rows into `EvalPrediction` objects with semicolon-separated list parsing, duplicate/column validation, and issue type/severity validation
+- Created `src/ticketpilot/evaluation/reporting.py` with:
+  - `write_json_report()` — writes structured JSON report with aggregate metrics, per-case results, mismatches, and metadata
+  - `write_markdown_report()` — writes human-readable Markdown report with dataset summary, aggregate metric tables, risk flag tables, mismatch summary, and limitations section
+- Created `scripts/run_eval.py` — CLI runner accepting `--tickets`, `--golden`, `--predictions`, `--out-json`, `--out-md` arguments; loads data, computes metrics, writes both reports; returns non-zero exit code on invalid input
+- Created `data/eval/sample_predictions.csv` — matching predictions for all 10 evaluation tickets for CLI smoke tests
+- Created `tests/unit/test_evaluation_predictions.py` — tests for prediction loading, semicolon parsing, duplicate/missing/extra/column validation
+- Created `tests/unit/test_evaluation_reporting.py` — tests for JSON/Markdown report structure, keys, limitations section, determinism
+- Created `tests/unit/test_run_eval_cli.py` — tests for CLI happy path, invalid input, pipeline isolation, determinism, extra prediction rejection
+- Updated `__init__.py` with `load_predictions`, `write_json_report`, `write_markdown_report` exports
+
+### Why
+- Enables offline deterministic evaluation of predictions against golden expectations via CLI
+- Provides both machine-readable (JSON) and human-readable (Markdown) evaluation reports
+- Documented limitations explicitly state current evaluation constraints (small data, fake embeddings, no real-world claim)
+
+### Constraints
+- No real pipeline, DB, LLM, or embedding provider calls in `run_eval.py`
+- All metric computation is deterministic and operates on in-memory objects only
+- Reports include explicit limitations section
+
+### Remaining risks
+- Technical documentation and phase status update pending (Batch 4)
+- Integration tests for evaluation pipeline pending (Batch 4)
+- Real pipeline mode not yet implemented
+
 ## 2026-05-02 — Batch 2: Deterministic Metric Computation (add-evaluation-pipeline)
 
 ### Changed

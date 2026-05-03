@@ -1,0 +1,11 @@
+case_id,predicted_issue_type,predicted_risk_flags,predicted_severity,predicted_must_human_review,predicted_evidence_doc_types,predicted_fallback_required,predicted_no_auto_send
+case_refund_001,refund,,LOW,false,FAQ,false,false
+case_return_ex_001,return_exchange,,LOW,false,FAQ;POLICY,false,false
+case_acct_001,account_issue,account_security_risk,LOW,true,FAQ;CASE,false,true
+case_logistics_001,logistics,,LOW,false,FAQ,false,false
+case_complaint_001,complaint,complaint_risk;compensation_risk,MEDIUM,true,FAQ;POLICY;CASE,false,true
+case_privacy_001,account_issue,privacy_risk,MEDIUM,true,POLICY,false,true
+case_no_evidence_001,refund,insufficient_evidence,LOW,true,,true,true
+case_high_risk_001,complaint,legal_risk;compensation_risk,HIGH,true,POLICY;CASE,false,true
+case_technical_001,technical_issue,,LOW,false,FAQ,false,false
+case_consulting_001,product_consulting,,LOW,false,FAQ,false,false

@@ -15,21 +15,21 @@
 - [x] 2.2 Create src/ticketpilot/evaluation/schemas.py (Pydantic models: EvalTicket, GoldenExpectation, EvalDataset, LoadResult)
 - [x] 2.3 Create src/ticketpilot/evaluation/loaders.py (CSV loading with validation)
 - [x] 2.4 Create src/ticketpilot/evaluation/metrics.py
-- [ ] 2.5 Create src/ticketpilot/evaluation/comparison.py (deferred)
-- [ ] 2.6 Create src/ticketpilot/evaluation/report.py (deferred)
+- [x] 2.5 Create src/ticketpilot/evaluation/predictions.py (prediction loader)
+- [x] 2.6 Create src/ticketpilot/evaluation/reporting.py (report writers)
 
 ## Phase 3: Evaluation Runner Script
 
-- [ ] 3.1 Create scripts/run_eval.py
-- [ ] 3.2 Test runner manually
+- [x] 3.1 Create scripts/run_eval.py
+- [x] 3.2 Test runner manually
 
 ## Phase 4: Unit Tests
 
 - [x] 4.1 Create tests/unit/test_evaluation_metrics.py
 - [x] 4.2 Create tests/unit/test_evaluation_schemas.py
 - [x] 4.3 Create tests/unit/test_evaluation_loaders.py
-- [ ] 4.4 Create tests/unit/test_evaluation_report.py
-- [ ] 4.5 Create tests/unit/test_evaluation_comparison.py
+- [x] 4.4 Create tests/unit/test_evaluation_reporting.py
+- [x] 4.5 Create tests/unit/test_evaluation_predictions.py
 
 ## Phase 5: Integration Tests
 
@@ -39,16 +39,16 @@
 
 ## Phase 6: Documentation
 
-- [ ] 6.1 Create docs/technical/evaluation_pipeline.md
-- [x] 6.2 Update docs/changelog.md
-- [ ] 6.3 Update docs/phase_status.md
+- [ ] 6.1 Create docs/technical/evaluation_pipeline.md (deferred to Batch 4)
+- [x] 6.2 Update docs/changelog.md (Batch 3)
+- [ ] 6.3 Update docs/phase_status.md (deferred to Batch 4)
 - [x] 6.4 Run quality gate
 
 ## Batch Plan Summary
 
 - Batch 1: Phase 1 (evaluation data) + Phase 2 (schemas + loaders) + Phase 4 (schema + loader tests) + changelog + quality gate
 - Batch 2: Phase 2 (metrics) + Phase 4 (metric tests) + changelog + quality gate
-- Batch 3: Phase 2 rest (comparison, report) + Phase 3 (runner) + remaining tests
+- Batch 3: Phase 2 rest (predictions, reporting) + Phase 3 (runner) + remaining tests
 - Batch 4: Phase 6 (documentation)
 ### Phase 1 Details
 
