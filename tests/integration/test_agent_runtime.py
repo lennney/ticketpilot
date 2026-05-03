@@ -15,19 +15,8 @@ import pytest
 from ticketpilot.agent.loop import run_agent_pipeline
 from ticketpilot.agent.schemas import (
     AgentEventType,
-    AgentPlan,
     AgentRun,
     AgentRunStatus,
-    AgentStep,
-    AgentToolSpec,
-)
-from ticketpilot.agent.registry import RegisteredTool, ToolRegistry
-from ticketpilot.agent.tools import (
-    assess_risk_tool,
-    classify_ticket_tool,
-    create_default_tool_registry,
-    generate_draft_tool,
-    normalize_ticket_tool,
 )
 from ticketpilot.schema.ticket import RawTicket
 
