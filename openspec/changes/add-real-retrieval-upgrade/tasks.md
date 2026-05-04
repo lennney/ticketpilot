@@ -50,18 +50,41 @@
 - [x] 4.10 Technical docs: `docs/technical/embedding_rebuild_workflow.md`
 - [x] 4.11 Run existing retrieval tests to verify no regression
 
-## Batch 5: Retrieval Comparison Evaluation
+## Batch 5A: Retrieval Comparison Tooling (COMPLETE)
 
-- [ ] 5.1 Run fake baseline — compute Top-K hit rate, MRR, doc type recall on Phase 7 dataset
-- [ ] 5.2 Implement comparison CLI or script (`scripts/compare_retrieval.py`)
-- [ ] 5.3 Run real provider opt-in comparison on same dataset (requires real API key)
-- [ ] 5.4 Compute Top-1/3/5 evidence hit rate for both providers
-- [ ] 5.5 Compute MRR for both providers
-- [ ] 5.6 Compute evidence doc type recall for both providers
-- [ ] 5.7 Compute no-evidence fallback correctness difference
-- [ ] 5.8 Preserve retrieval traces in JSONL format
-- [ ] 5.9 Output `reports/retrieval/fake_vs_real_comparison.json`
-- [ ] 5.10 Output `reports/retrieval/fake_vs_real_comparison.md`
+- [x] 5A.1 Audit golden expectations for `expected_relevant_doc_ids` support — column does not exist; schema updated to support optional doc_id field
+- [x] 5A.2 Add `expected_relevant_doc_ids` to `GoldenExpectation` schema — optional `frozenset[str]` defaulting to empty
+- [x] 5A.3 Implement `src/ticketpilot/evaluation/retrieval_metrics.py` — pure metric functions:
+  - RetrievedDoc, RetrievalComparisonCase, CaseRetrievalMetrics dataclasses
+  - compute_hit_rate_at_k, compute_mrr helpers
+  - compute_case_retrieval_metrics — per-case doc_type + doc_id hit rates
+  - summarize_wrong_cases — classify failures into missing_doc_type / below_top_10
+  - compute_retrieval_comparison_summary — aggregate metrics across cases
+- [x] 5A.4 Implement `src/ticketpilot/evaluation/retrieval_comparison.py` — report builder:
+  - comparison_summary_to_dict, comparison_summary_to_markdown
+  - write_json_report, write_markdown_report
+- [x] 5A.5 Implement `scripts/run_retrieval_comparison.py` — CLI skeleton:
+  - --tickets, --golden, --out-json, --out-md
+  - --retrieval-mode mock (default) / pipeline (planned for 5B)
+  - --mock-seed for deterministic synthetic results
+  - Mock mode generates synthetic RetrievedDoc entries (no real pipeline/API)
+- [x] 5A.6 Define `reports/retrieval/` report paths (directory created, .gitkeep in place)
+- [x] 5A.7 Unit tests: 56 tests across test_retrieval_metrics.py + test_retrieval_comparison.py
+- [x] 5A.8 Technical docs: docs/technical/retrieval_comparison_workflow.md
+- [x] 5A.9 Update changelog with Phase 8E entry
+- [x] 5A.10 ruff check — clean; no regressions in existing tests
+
+## Batch 5B: Retrieval Comparison Run (REAL PROVIDER)
+
+- [ ] 5B.1 Implement pipeline mode in `run_retrieval_comparison.py` — call real retrieval pipeline for each case
+- [ ] 5B.2 Run fake baseline — compute Top-K hit rate, MRR, doc type recall on Phase 7 dataset
+- [ ] 5B.3 Run real provider opt-in comparison on same dataset (requires real API key)
+- [ ] 5B.4 Compute Top-1/3/5 evidence hit rate for both providers
+- [ ] 5B.5 Compute MRR for both providers
+- [ ] 5B.6 Compute evidence doc type recall for both providers
+- [ ] 5B.7 Compute wrong-case classification for both providers
+- [ ] 5B.8 Preserve retrieval traces in JSONL format
+- [ ] 5B.9 Output fake-vs-real comparison report to `reports/retrieval/`
 
 ## Batch 6: Wrong-case Analysis Report
 

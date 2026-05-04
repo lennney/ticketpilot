@@ -195,6 +195,9 @@ def load_golden_expectations(
                     expected_evidence_doc_types=_parse_semicolon_list(
                         row.get("expected_evidence_doc_types", "")
                     ),
+                    expected_relevant_doc_ids=_parse_semicolon_list(
+                        row.get("expected_relevant_doc_ids", "")
+                    ),
                     expected_fallback_required=row.get(
                         "expected_fallback_required", ""
                     ).strip(),

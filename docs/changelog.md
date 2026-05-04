@@ -1,6 +1,33 @@
 # TicketPilot Changelog
 
 
+## 2026-05-05 — Phase 8E: Retrieval Comparison Tooling (add-real-retrieval-upgrade)
+
+### Added
+- `src/ticketpilot/evaluation/retrieval_metrics.py` — pure metric functions for retrieval comparison:
+  - `RetrievedDoc`, `RetrievalComparisonCase`, `CaseRetrievalMetrics` dataclasses
+  - Top-K doc_type/doc_id hit rate, MRR computation
+  - `summarize_wrong_cases()` — classifies retrieval failures into `missing_doc_type` / `below_top_10`
+  - `compute_retrieval_comparison_summary()` — aggregate metrics across all cases
+- `src/ticketpilot/evaluation/retrieval_comparison.py` — report builder for retrieval comparison:
+  - JSON and Markdown report generation
+  - Hit rate tables, MRR summary, wrong-case distribution and detail sections
+  - Optional doc_id-level metrics (only when golden expectations include doc IDs)
+- `scripts/run_retrieval_comparison.py` — CLI for retrieval comparison:
+  - `--retrieval-mode mock` (default, generates synthetic results) or `pipeline` (future)
+  - `--mock-seed` for deterministic mock data
+  - Output to `reports/retrieval/comparison_report.json` and `.md`
+- `docs/technical/retrieval_comparison_workflow.md` — usage, metric definitions, data structures
+
+### Changed
+- `src/ticketpilot/evaluation/schemas.py` — `GoldenExpectation` gains optional `expected_relevant_doc_ids` field (frozenset, empty default)
+- `src/ticketpilot/evaluation/loaders.py` — parses optional `expected_relevant_doc_ids` column from golden CSV
+- `openspec/changes/add-real-retrieval-upgrade/tasks.md` — Batch 5 split into 5A (tooling, complete) and 5B (real run, deferred)
+
+### Tests
+- `tests/unit/test_retrieval_metrics.py` — 34 tests covering hit rate, MRR, per-case metrics, aggregation, wrong-case classification, edge cases
+- `tests/unit/test_retrieval_comparison.py` — 22 tests covering dict serialization, markdown generation, file writing, edge cases
+
 ## 2026-05-04 — Phase 8D: Index Rebuild Workflow (add-real-retrieval-upgrade)
 
 ### Added

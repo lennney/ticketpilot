@@ -47,6 +47,7 @@ class GoldenExpectation(BaseModel):
     expected_severity: str
     expected_must_human_review: bool
     expected_evidence_doc_types: frozenset[str] = Field(default_factory=frozenset)
+    expected_relevant_doc_ids: frozenset[str] = Field(default_factory=frozenset)
     expected_fallback_required: bool
     expected_no_auto_send: bool
     notes: str | None = None

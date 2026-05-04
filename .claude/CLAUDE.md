@@ -37,9 +37,12 @@
 | `src/ticketpilot/retrieval/schema/knowledge.py` | `tests/unit/test_knowledge_schema.py` |
 | `src/ticketpilot/retrieval/pipeline.py` | `tests/unit/test_pipeline_retrieval.py` |
 | `src/ticketpilot/evaluation/` | `tests/unit/test_evaluation_*.py` |
+| `src/ticketpilot/evaluation/retrieval_metrics.py` | `tests/unit/test_retrieval_metrics.py` |
+| `src/ticketpilot/evaluation/retrieval_comparison.py` | `tests/unit/test_retrieval_comparison.py` |
 | `src/ticketpilot/review/` | `tests/unit/test_review_*.py` |
 | `src/ticketpilot/retrieval/db/seeding.py` | `tests/unit/test_seed_data.py` |
 | `scripts/run_eval.py` | `tests/unit/test_run_eval_cli.py` |
+| `scripts/run_retrieval_comparison.py` | `tests/unit/test_retrieval_metrics.py` |
 
 ### 测试策略分级
 
