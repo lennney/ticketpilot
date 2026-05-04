@@ -2,6 +2,7 @@
 
 import uuid
 from datetime import datetime
+from typing import Optional
 
 from ticketpilot.schema.ticket import (
     ClassificationResult,
@@ -16,6 +17,7 @@ from ticketpilot.schema.ticket import (
 from ticketpilot.intake.pipeline import pipeline as intake_pipeline
 from ticketpilot.classification.classifier import IntentClassifier
 from ticketpilot.risk.assessor import RiskAssessor
+from ticketpilot.retrieval.providers.fake_embedding import FakeEmbeddingProvider
 from ticketpilot.retrieval.retrieve_evidence import retrieve_evidence
 
 
@@ -36,7 +38,7 @@ def _with_added_risk_flag(assessment: RiskAssessment, flag: RiskFlag) -> RiskAss
     )
 
 
-def intake_risk_pipeline(raw_ticket: RawTicket) -> TicketOutput:
+def intake_risk_pipeline(raw_ticket: RawTicket, embedding_provider: Optional[FakeEmbeddingProvider] = None) -> TicketOutput:
     """
     Process a raw ticket through a 4-stage pipeline:
 
@@ -96,6 +98,7 @@ def intake_risk_pipeline(raw_ticket: RawTicket) -> TicketOutput:
             normalized_text=normalized_ticket.text,
             intent=classification.intent,
             risk_flags=risk_assessment.flags,
+            embedding_provider=embedding_provider,
         )
     except Exception:
         candidates = []

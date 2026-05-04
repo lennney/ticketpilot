@@ -76,24 +76,24 @@
 
 ## Batch 5B: Retrieval Comparison Run (REAL PROVIDER)
 
-- [ ] 5B.1 Implement pipeline mode in `run_retrieval_comparison.py` — call real retrieval pipeline for each case
-- [ ] 5B.2 Run fake baseline — compute Top-K hit rate, MRR, doc type recall on Phase 7 dataset
-- [ ] 5B.3 Run real provider opt-in comparison on same dataset (requires real API key)
-- [ ] 5B.4 Compute Top-1/3/5 evidence hit rate for both providers
-- [ ] 5B.5 Compute MRR for both providers
-- [ ] 5B.6 Compute evidence doc type recall for both providers
-- [ ] 5B.7 Compute wrong-case classification for both providers
-- [ ] 5B.8 Preserve retrieval traces in JSONL format
-- [ ] 5B.9 Output fake-vs-real comparison report to `reports/retrieval/`
+- [x] 5B.1 Implement pipeline mode in `run_retrieval_comparison.py` — export mode with subparser, provider plumbing, env config loading
+- [x] 5B.2 Run fake baseline — 59.4% Top-10, 31.7% Top-1, MRR 0.4114
+- [x] 5B.3 Run real provider comparison on same dataset — DashScope text-embedding-v4 (1024-d)
+- [x] 5B.4 Compute Top-1/3/5/10 evidence hit rate for both providers
+- [x] 5B.5 Compute MRR for both providers
+- [x] 5B.6 Compute evidence doc type recall for both providers
+- [x] 5B.7 Compute wrong-case classification for both providers
+- [x] 5B.8 Preserve retrieval traces in JSONL format
+- [x] 5B.9 Output fake-vs-real comparison report to `reports/retrieval/`
 
 ## Batch 6: Wrong-case Analysis Report
 
-- [ ] 6.1 Classify each retrieval failure into a wrong-case category
-- [ ] 6.2 Count distribution across categories for both providers
-- [ ] 6.3 Identify which categories improve with real provider vs which persist
-- [ ] 6.4 Document remaining gaps: missing knowledge, wrong issue type, insufficient golden
-- [ ] 6.5 Output `reports/retrieval/wrong_cases.md`
-- [ ] 6.6 Summarise: retrieval improvement and remaining limitations
+- [x] 6.1 Classify each retrieval failure into a wrong-case category
+- [x] 6.2 Count distribution across categories for both providers
+- [x] 6.3 Identify which categories improve with real provider vs which persist
+- [x] 6.4 Document remaining gaps: missing knowledge, wrong issue type, insufficient golden
+- [x] 6.5 Output `reports/retrieval/wrong_cases.md`
+- [x] 6.6 Summarise: retrieval improvement and remaining limitations
 
 ## Batch 7: Documentation and Archive
 

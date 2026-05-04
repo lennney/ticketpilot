@@ -128,8 +128,13 @@ def _recreate_hnsw_index(conn) -> None:
 
 
 def _alter_vector_dimension(conn, new_dim: int) -> None:
-    """Change the embedding column to a new vector dimension."""
+    """Change the embedding column to a new vector dimension.
+
+    pgvector requires existing embeddings to be NULL before changing
+    dimension, since there is no valid cast between different dimensions.
+    """
     with conn.cursor() as cur:
+        cur.execute("UPDATE knowledge_chunks SET embedding = NULL")
         cur.execute(
             f"ALTER TABLE knowledge_chunks "
             f"ALTER COLUMN embedding TYPE vector({new_dim})"

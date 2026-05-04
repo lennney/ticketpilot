@@ -1,6 +1,35 @@
 # TicketPilot Changelog
 
 
+## 2026-05-05 (2) — Phase 8B: Fake vs Real Retrieval Comparison Run
+
+### Added
+- `reports/retrieval/fake_retrieval_rows.json` — exported retrieval rows for all 101 eval cases using fake embeddings (384-d)
+- `reports/retrieval/real_retrieval_rows.json` — exported retrieval rows for all 101 eval cases using text-embedding-v4 (1024-d, DashScope)
+- `reports/retrieval/fake_vs_real_comparison.json` / `.md` — comparison report: Top-K hit rate, MRR, wrong-case distribution, delta analysis
+
+### Changed
+- `src/ticketpilot/retrieval/retrieve_evidence.py` — `retrieve_evidence()` gains optional `embedding_provider` parameter, threaded through to `hybrid_retrieval()`
+- `src/ticketpilot/pipeline.py` — `intake_risk_pipeline()` gains optional `embedding_provider` parameter, threaded through to `retrieve_evidence()`
+- `scripts/run_retrieval_comparison.py` — export mode builds embedding provider from env config (falls back to fake); passes provider through pipeline chain
+- `scripts/rebuild_embeddings.py` — `_alter_vector_dimension()` NULLs embeddings before ALTER COLUMN for pgvector 0.8.2 compatibility
+
+### Results (101 cases)
+| Metric | Fake (384-d) | Real (1024-d) | Delta |
+|--------|-------------|---------------|-------|
+| Top-1 hit rate | 31.7% | 42.6% | +10.9% |
+| Top-3 hit rate | 47.5% | 56.4% | +8.9% |
+| Top-5 hit rate | 53.5% | 58.4% | +5.0% |
+| Top-10 hit rate | 59.4% | 59.4% | 0.0% |
+| MRR | 0.4114 | 0.4913 | +0.0799 |
+| Wrong cases | 41 | 41 | 0 |
+
+### Analysis
+- Real embedding provider improves ranking quality (Top-1 +10.9%, MRR +0.0799) but Top-10 ceiling is identical — both providers hit the same knowledge base content limit
+- All 41 wrong cases are `missing_doc_type` failures, same set for both providers
+- Knowledge base coverage, not embedding quality, is the limiting factor
+- `reports/retrieval/wrong_cases.md` — detailed wrong-case classification and improvement paths
+
 ## 2026-05-05 — Phase 8E: Retrieval Comparison Tooling (add-real-retrieval-upgrade)
 
 ### Added
