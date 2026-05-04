@@ -98,6 +98,15 @@ The no_auto_send_compliance metric SHALL be redefined from a per-case prediction
 
 (None — metrics are redefined, not removed.)
 
+### Requirement: Demo Scenario Coverage in Evaluation
+The evaluation spec SHALL reference demo scenarios where evaluation results validate scenario behavior.
+
+#### Scenario: Demo scenarios reference evaluation results
+- WHEN `docs/demo/scenario_refund_complaint.md` is read
+- THEN it references pipeline evaluation's no_auto_send_compliance=100%
+- WHEN `docs/demo/phase7_demo_scenarios.md` is read
+- THEN it references evaluation report and quality gate results
+
 ## Data Sources
 
 - All eval tickets are **synthetic**: manually crafted Chinese customer service scenarios.

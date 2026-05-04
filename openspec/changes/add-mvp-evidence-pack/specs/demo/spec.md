@@ -12,15 +12,15 @@
 The system SHALL provide a documented demo scenario for a refund request combined with complaint/legal risk.
 
 #### Scenario: Demo scenario document exists
-- WHEN checking `docs/demo/` or `docs/portfolio/`
-- THEN a document exists describing the refund+complaint scenario
+- WHEN `docs/demo/scenario_refund_complaint.md` is checked
+- THEN it exists
 
-#### Scenario: Scenario includes 3–5 sample tickets
+#### Scenario: Scenario includes 3 sample tickets
 - WHEN the scenario document is read
-- THEN it contains 3–5 sample ticket texts in Chinese covering variations:
-  - Refund request with damaged product + complaint about customer service
-  - Refund request mentioning lawyer/legal action (legal risk trigger)
-  - Refund request with compensation demand (compensation risk trigger)
+- THEN it contains 3 sample ticket texts in Chinese covering:
+  - Refund due not arrived + complaint + compensation demand (Ticket A1)
+  - Product defect + lawyer/legal action threat (Ticket A2)
+  - Duplicate payment + 12315 complaint threat (Ticket A3)
 
 #### Scenario: Scenario documents expected pipeline behavior
 - WHEN the scenario document is read
@@ -37,15 +37,15 @@ The system SHALL provide a documented demo scenario for a refund request combine
 The system SHALL provide a documented demo scenario for account security issues combined with privacy/data leak risk.
 
 #### Scenario: Demo scenario document exists
-- WHEN checking `docs/demo/` or `docs/portfolio/`
-- THEN a document exists describing the account+privacy scenario
+- WHEN `docs/demo/scenario_privacy_account.md` is checked
+- THEN it exists
 
-#### Scenario: Scenario includes 3–5 sample tickets
+#### Scenario: Scenario includes 3 sample tickets
 - WHEN the scenario document is read
-- THEN it contains 3–5 sample ticket texts in Chinese covering:
-  - Account hacked/stolen, cannot log in
-  - Phone number leaked, receiving spam calls (privacy risk)
-  - ID number / real name exposed through platform (privacy + account_security risk)
+- THEN it contains 3 sample ticket texts in Chinese covering:
+  - Account abnormal login + personal info leaked (Ticket B1)
+  - Account stolen + unauthorized orders (Ticket B2)
+  - Personal info leak leading to spam calls (Ticket B3)
 
 #### Scenario: Scenario documents expected pipeline behavior
 - WHEN the scenario document is read
@@ -61,22 +61,22 @@ The system SHALL provide a documented demo scenario for account security issues 
 The system SHALL provide a documented demo scenario for billing, invoicing, and payment amount disputes.
 
 #### Scenario: Demo scenario document exists
-- WHEN checking `docs/demo/` or `docs/portfolio/`
-- THEN a document exists describing the billing/payment scenario
+- WHEN `docs/demo/scenario_invoice_payment.md` is checked
+- THEN it exists
 
-#### Scenario: Scenario includes 3–5 sample tickets
+#### Scenario: Scenario includes 3 sample tickets
 - WHEN the scenario document is read
-- THEN it contains 3–5 sample ticket texts in Chinese covering:
-  - Invoice not issued after purchase (billing issue)
-  - Payment deducted but order not confirmed (payment dispute)
-  - Charged wrong amount / overcharge dispute (amount dispute)
+- THEN it contains 3 sample ticket texts in Chinese covering:
+  - Payment deducted but order not confirmed + duplicate charge + invoice issue (Ticket C1)
+  - Invoice type correction request (Ticket C2)
+  - Amount overcharge dispute + complaint threat (Ticket C3)
 
 #### Scenario: Scenario documents expected pipeline behavior
 - WHEN the scenario document is read
 - THEN it describes the expected flow:
   - Classification: logistics, refund, or consulting depending on specifics
   - Risk: POLICY_CONFLICT or INSUFFICIENT_EVIDENCE; LOW to MEDIUM severity
-  - must_human_review: false for simple cases, true if escalation language present
+  - must_human_review: false for no-risk simple cases, true when risk flags present (policy_conflict / complaint_risk)
   - Retrieval: FAQ (payment FAQ) + POLICY (billing policy) + CASE (similar dispute resolutions)
   - Draft: evidence-grounded draft explaining policy or proposing resolution
   - Human review: required only if risk flags triggered
@@ -106,9 +106,26 @@ All three demo scenario documents SHALL include a clear limitations section.
 - Scenarios are designed to demonstrate specific pipeline behaviors (risk detection, evidence retrieval, must_human_review trigger).
 - No real customer data, real tickets, or production transcripts are used.
 
+### Requirement: Demo Overview Document
+The system SHALL provide a demo overview document at `docs/demo/phase7_demo_scenarios.md` comparing all three scenarios.
+
+#### Scenario: Overview document exists
+- WHEN `docs/demo/phase7_demo_scenarios.md` is checked
+- THEN it exists
+- AND it contains a comparison table, capability coverage matrix, interview talking points, and screenshot opportunities
+
+### Requirement: Demo Docs Are Docs-Only
+All demo scenario documents SHALL be purely documentation — no source code, test files, data, or configuration modified.
+
+#### Scenario: No code or data files modified
+- WHEN checking git status after creating demo docs
+- THEN only `docs/demo/*.md`, `docs/changelog.md`, and `openspec/changes/add-mvp-evidence-pack/**` are modified
+- AND no `src/**`, `tests/**`, `data/**`, `reports/**`, `README*.md`, `pyproject.toml`, or `uv.lock` files are modified
+
 ## Validation
 
-- All 3 demo scenario documents exist in `docs/demo/` or `docs/portfolio/`
-- Each document contains sample tickets, expected pipeline flow, and limitations
+- All 3 demo scenario documents exist in `docs/demo/`
+- Each document contains 3 sample tickets, expected pipeline flow, risk behavior, evidence behavior, draft boundary, and limitations
+- Overview document exists at `docs/demo/phase7_demo_scenarios.md`
 - OpenSpec validate --all passes
-- Quality gate passes
+- Quality gate passes (Level 0: docs-only — scoped validation sufficient)

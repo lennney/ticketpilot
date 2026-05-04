@@ -265,6 +265,17 @@ The system SHALL register the data sources and methodology spec under the `add-m
 
 (None)
 
+### Requirement: Demo Scenario Reference in Data Spec
+The data specification SHALL reference the demo scenario documents where knowledge data is demonstrated.
+
+#### Scenario: Demo docs reference knowledge data
+- WHEN `docs/demo/scenario_refund_complaint.md` is read
+- THEN it references specific knowledge document IDs (Policy compensation rules, legal threat rules, complaint cases)
+- WHEN `docs/demo/scenario_privacy_account.md` is read
+- THEN it references privacy policy and account security knowledge records
+- WHEN `docs/demo/scenario_invoice_payment.md` is read
+- THEN it references invoice policy and payment case knowledge records
+
 ## Data Sources
 
 - All external source references are documented in `docs/data/evidence_pack_sources.md`.

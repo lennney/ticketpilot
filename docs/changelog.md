@@ -1,6 +1,31 @@
 # TicketPilot Changelog
 
 
+## 2026-05-04 — Phase 7B-5: Three Strong Demo Scenario Docs (add-mvp-evidence-pack)
+
+### Added
+- `docs/demo/scenario_refund_complaint.md` — Refund + Complaint scenario: 3 sample tickets with legal/compensation risk, expected workflow, evidence behavior, and limitations
+- `docs/demo/scenario_privacy_account.md` — Account Issue + Privacy Risk scenario: 3 sample tickets with account_security and privacy risk, HIGH severity, forced human review
+- `docs/demo/scenario_invoice_payment.md` — Invoice/Payment Dispute scenario: 3 sample tickets with policy_conflict risk, conditional human review
+- `docs/demo/phase7_demo_scenarios.md` — Overview document with comparison table, capability coverage matrix, interview talking points, screenshot opportunities, and workflow summary
+
+### Changed
+- Updated OpenSpec demo spec to reflect completed scenario docs
+- Updated OpenSpec tasks.md: Batch 5 items marked complete
+
+### Coverage
+- 3 scenarios × 3 sample tickets = 9 demo tickets total
+- All 8 risk flags covered across scenarios (complaint, compensation, legal, account_security, privacy, policy_conflict, insufficient_evidence, low_confidence)
+- Conditional vs forced human review demonstrated
+- Interview talking points for each scenario (3–5 sentences)
+
+### Constraints
+- No src/ or tests/ files modified
+- No data/eval/ files modified
+- No knowledge seed files modified
+- No README modified
+- No reports regenerated
+
 ## 2026-05-04 — Phase 7B-4: Knowledge Base Expansion (add-mvp-evidence-pack)
 
 ### Added

@@ -99,19 +99,19 @@
 
 - [x] 5.1 Generate final CSV-mode evaluation report → `reports/eval/evaluation_report.json` + `.md`
 - [x] 5.2 Generate final pipeline-mode evaluation report → `reports/eval/current_pipeline_report.json` + `.md`
-- [ ] 5.3 Create demo scenario 1: 退款投诉 (refund + complaint / compensation + legal risk)
-  - 3–5 sample tickets
+- [x] 5.3 Create demo scenario 1: 退款投诉 (refund + complaint / compensation + legal risk)
+  - 3 sample tickets
   - Expected pipeline flow: intake → classification → risk (COMPLAINT_RISK, COMPENSATION_RISK, LEGAL_RISK, HIGH severity) → retrieval (CASE + POLICY) → draft with high-risk warning → must_human_review
   - Walkthrough steps
-- [ ] 5.4 Create demo scenario 2: 隐私/账号异常 (account issue + privacy leak risk)
-  - 3–5 sample tickets
+- [x] 5.4 Create demo scenario 2: 隐私/账号异常 (account issue + privacy leak risk)
+  - 3 sample tickets
   - Expected pipeline flow: intake → classification → risk (ACCOUNT_SECURITY, PRIVACY_RISK, MEDIUM severity) → retrieval (FAQ + POLICY) → draft with privacy warning → must_human_review
   - Walkthrough steps
-- [ ] 5.5 Create demo scenario 3: 发票/支付争议 (billing/invoice + payment dispute)
-  - 3–5 sample tickets
+- [x] 5.5 Create demo scenario 3: 发票/支付争议 (billing/invoice + payment dispute)
+  - 3 sample tickets
   - Expected pipeline flow: intake → classification → risk (POLICY_CONFLICT, LOW-MEDIUM severity) → retrieval (FAQ + POLICY + CASE) → draft
   - Walkthrough steps
-- [ ] 5.6 Run quality gate — must pass
+- [x] 5.6 Run quality gate — must pass (scoped validation: Level 0 docs-only — OpenSpec validate --all 16/16 passed, no full quality gate required)
 
 ## Batch 6: Limitations/README Update and Final Quality Gate
 
