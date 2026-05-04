@@ -93,6 +93,16 @@ class TestFakeEmbeddingDeterminism:
 
         assert vec1 == vec2, "Long text must produce deterministic embeddings"
 
+    def test_provider_name_is_fake(self):
+        """Test that FakeEmbeddingProvider reports correct provider_name."""
+        provider = FakeEmbeddingProvider()
+        assert provider.provider_name == "fake"
+
+    def test_model_name_is_sha_256(self):
+        """Test that FakeEmbeddingProvider reports correct model_name."""
+        provider = FakeEmbeddingProvider()
+        assert provider.model_name == "sha-256"
+
     def test_provider_singleton_reuse(self):
         """Test that singleton provider produces same results."""
         from ticketpilot.retrieval.providers.fake_embedding import get_fake_embedding_provider

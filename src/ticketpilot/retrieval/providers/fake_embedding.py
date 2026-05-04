@@ -35,6 +35,8 @@ class FakeEmbeddingProvider:
 
     Attributes:
         DIM: Fixed embedding dimension (384)
+        provider_name: "fake"
+        model_name: "sha-256" (indicating deterministic hash-based generation)
 
     Example:
         >>> provider = FakeEmbeddingProvider()
@@ -44,6 +46,8 @@ class FakeEmbeddingProvider:
     """
 
     DIM: int = FAKE_EMBEDDING_DIM
+    provider_name: str = "fake"
+    model_name: str = "sha-256"
 
     def embed(self, text: str) -> list[float]:
         """

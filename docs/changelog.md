@@ -1,6 +1,51 @@
 # TicketPilot Changelog
 
 
+## 2026-05-04 — Phase 8B: Provider Config and Interface Design (add-real-retrieval-upgrade)
+
+### Added
+- `src/ticketpilot/retrieval/embedding_config.py` — `EmbeddingConfig` dataclass (provider, model, dimension, base_url, api_key, batch_size) + `load_embedding_config_from_env()` with all 6 EMBEDDING_* env vars and safe defaults (provider=fake, model=fake-384, dim=384, batch_size=32)
+- `tests/unit/test_embedding_provider_factory.py` — 15 tests covering: default config values, env loading, fake provider creation, openai_compatible NotImplementedError, unknown provider ValueError, dimension mismatch ValueError, singleton behavior, no-network/no-API-key guarantee
+
+### Changed
+- `src/ticketpilot/retrieval/providers/__init__.py` — added `create_embedding_provider(config)` factory and `get_embedding_provider(config?)` singleton; unknown provider → ValueError; dimension mismatch → ValueError
+- `src/ticketpilot/retrieval/providers/fake_embedding.py` — added `provider_name="fake"` and `model_name="sha-256"` class attributes to `FakeEmbeddingProvider`
+- `tests/unit/test_fake_embedding.py` — added `test_provider_name_is_fake` and `test_model_name_is_sha_256`
+- `.env.example` — expanded embedding config section with all 6 variables, API key security warning
+- Updated OpenSpec tasks.md: Batch 2 items marked complete
+
+### Constraints
+- No real API keys committed
+- FakeEmbeddingProvider remains the default
+- No network dependency in tests
+- No modification to pipeline, data, eval, reports, README
+
+### Validation
+- `uv run ruff check .` — PASSED (no new violations)
+- OpenSpec validate --all: 16/16 passed
+- Unit tests: all Batch 2 tests passing
+
+## 2026-05-04 — Phase 8A: Real Retrieval Upgrade Planning (add-real-retrieval-upgrade)
+
+### Added
+- `openspec/changes/add-real-retrieval-upgrade/.openspec.yaml` — change metadata, constraints, affected modules and specs
+- `openspec/changes/add-real-retrieval-upgrade/proposal.md` — problem statement, goal, non-goals, 5 key design decisions (provider abstraction, dimension handling, index rebuild, API key security, evaluation), proposed metrics with 10 wrong-case categories, expected output across 7 batches
+- `openspec/changes/add-real-retrieval-upgrade/tasks.md` — 7 batches: planning, provider config/interface, real provider implementation, index rebuild, retrieval comparison evaluation, wrong-case analysis, documentation and archive
+- `openspec/changes/add-real-retrieval-upgrade/specs/embedding/spec.md` — EmbeddingProvider interface, Fake remains default, Real as opt-in, dimension contract, metadata, no API key committed, network tests not in CI
+- `openspec/changes/add-real-retrieval-upgrade/specs/config/spec.md` — 6 environment variables (EMBEDDING_PROVIDER, MODEL, DIM, BASE_URL, API_KEY, BATCH_SIZE) with safe defaults and .env.example listing
+- `openspec/changes/add-real-retrieval-upgrade/specs/retrieval-evaluation/spec.md` — fake-vs-real comparison, Top-K hit rate, MRR, doc type recall, retrieval trace preservation, wrong-case analysis with 9 categories, report output paths
+
+### Constraints
+- No src/ or tests/ files modified
+- No data/eval/ or data/knowledge/ files modified
+- No reports/ files modified
+- No README modified
+- FakeEmbeddingProvider remains the default — all existing tests must pass unchanged
+- No API keys may be committed to the repository
+
+### Validation
+- OpenSpec validate --all: No items found to validate (expected — change just created)
+
 ## 2026-05-04 — Phase 7B-6: Limitations Doc, README Update, and Final Packaging (add-mvp-evidence-pack)
 
 ### Added
