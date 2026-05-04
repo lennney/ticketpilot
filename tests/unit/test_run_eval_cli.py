@@ -14,6 +14,13 @@ HAPPY_TICKETS = "data/eval/tickets_eval.csv"
 HAPPY_GOLDEN = "data/eval/golden_expectations.csv"
 HAPPY_PREDS = "data/eval/sample_predictions.csv"
 
+def _count_tickets():
+    import csv
+    with open(HAPPY_TICKETS, encoding="utf-8") as f:
+        return len(list(csv.DictReader(f)))
+
+EXPECTED_TICKET_COUNT = _count_tickets()
+
 
 @pytest.fixture
 def tmp_json():
@@ -43,8 +50,8 @@ def test_cli_happy_path(tmp_json, tmp_md):
     assert pathlib.Path(tmp_json).exists()
     assert pathlib.Path(tmp_md).exists()
     data = json.loads(pathlib.Path(tmp_json).read_text(encoding="utf-8"))
-    assert data["total_cases"] == 10
-    assert len(data["per_case_results"]) == 10
+    assert data["total_cases"] == EXPECTED_TICKET_COUNT
+    assert len(data["per_case_results"]) == EXPECTED_TICKET_COUNT
     md = pathlib.Path(tmp_md).read_text(encoding="utf-8")
     assert "# Evaluation Report" in md
     assert "## Limitations" in md

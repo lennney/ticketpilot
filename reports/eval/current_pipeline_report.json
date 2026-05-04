@@ -1,28 +1,395 @@
 {
-  "generated_at": "2026-05-03T07:56:29.532950+00:00",
+  "generated_at": "2026-05-04T07:37:14.089832+00:00",
   "metadata": {
     "prediction_mode": "pipeline",
     "tickets_path": "data/eval/tickets_eval.csv",
     "golden_path": "data/eval/golden_expectations.csv",
     "predictions_path": "pipeline (generated from local TicketPilot pipeline)"
   },
-  "total_cases": 10,
+  "total_cases": 101,
   "aggregate_metrics": {
-    "intent_accuracy": 0.8,
-    "severity_accuracy": 0.9,
-    "must_human_review_accuracy": 0.7,
-    "evidence_doc_type_recall": 1.0,
-    "fallback_correctness": 0.9,
-    "no_auto_send_compliance": 0.5
+    "intent_accuracy": 0.5346534653465347,
+    "severity_accuracy": 0.5445544554455446,
+    "must_human_review_accuracy": 0.594059405940594,
+    "evidence_doc_type_recall": 0.4323432343234324,
+    "fallback_correctness": 0.900990099009901,
+    "no_auto_send_compliance": 1.0
   },
   "risk_flag_metrics": {
-    "precision": 0.875,
-    "recall": 1.0,
-    "f1": 0.9333333333333333
+    "precision": 0.3333333333333333,
+    "recall": 0.27,
+    "f1": 0.2983425414364641
   },
   "per_case_results": [
     {
-      "case_id": "case_acct_001",
+      "case_id": "case_acco_001",
+      "prediction": {
+        "predicted_issue_type": "account_issue",
+        "predicted_risk_flags": [],
+        "predicted_severity": "LOW",
+        "predicted_must_human_review": false,
+        "predicted_evidence_doc_types": [
+          "CASE",
+          "FAQ",
+          "POLICY"
+        ],
+        "predicted_fallback_required": false,
+        "predicted_no_auto_send": true
+      },
+      "metrics": {
+        "intent_accuracy": true,
+        "severity_accuracy": false,
+        "must_human_review_accuracy": false,
+        "risk_flag_metrics": {
+          "precision": 1.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "exact_match": false
+        },
+        "evidence_doc_type_recall": 0.3333333333333333,
+        "fallback_correctness": true,
+        "no_auto_send_compliance": true
+      },
+      "mismatches": [
+        {
+          "metric": "severity_accuracy",
+          "expected": "HIGH",
+          "predicted": "LOW"
+        },
+        {
+          "metric": "must_human_review_accuracy",
+          "expected": "True",
+          "predicted": "False"
+        },
+        {
+          "metric": "risk_flags",
+          "expected": "account_security_risk",
+          "predicted": ""
+        },
+        {
+          "metric": "evidence_doc_type_recall",
+          "expected": "Case,FAQ,Policy",
+          "predicted": "CASE,FAQ,POLICY"
+        }
+      ]
+    },
+    {
+      "case_id": "case_acco_002",
+      "prediction": {
+        "predicted_issue_type": "account_issue",
+        "predicted_risk_flags": [],
+        "predicted_severity": "LOW",
+        "predicted_must_human_review": true,
+        "predicted_evidence_doc_types": [
+          "CASE",
+          "FAQ",
+          "POLICY"
+        ],
+        "predicted_fallback_required": false,
+        "predicted_no_auto_send": true
+      },
+      "metrics": {
+        "intent_accuracy": true,
+        "severity_accuracy": false,
+        "must_human_review_accuracy": true,
+        "risk_flag_metrics": {
+          "precision": 1.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "exact_match": false
+        },
+        "evidence_doc_type_recall": 0.5,
+        "fallback_correctness": true,
+        "no_auto_send_compliance": true
+      },
+      "mismatches": [
+        {
+          "metric": "severity_accuracy",
+          "expected": "MEDIUM",
+          "predicted": "LOW"
+        },
+        {
+          "metric": "risk_flags",
+          "expected": "account_security_risk",
+          "predicted": ""
+        },
+        {
+          "metric": "evidence_doc_type_recall",
+          "expected": "FAQ,Policy",
+          "predicted": "CASE,FAQ,POLICY"
+        }
+      ]
+    },
+    {
+      "case_id": "case_acco_003",
+      "prediction": {
+        "predicted_issue_type": "other",
+        "predicted_risk_flags": [
+          "low_confidence",
+          "privacy_risk"
+        ],
+        "predicted_severity": "LOW",
+        "predicted_must_human_review": true,
+        "predicted_evidence_doc_types": [
+          "CASE",
+          "FAQ",
+          "POLICY"
+        ],
+        "predicted_fallback_required": false,
+        "predicted_no_auto_send": true
+      },
+      "metrics": {
+        "intent_accuracy": false,
+        "severity_accuracy": false,
+        "must_human_review_accuracy": true,
+        "risk_flag_metrics": {
+          "precision": 0.5,
+          "recall": 0.5,
+          "f1": 0.5,
+          "exact_match": false
+        },
+        "evidence_doc_type_recall": 0.0,
+        "fallback_correctness": true,
+        "no_auto_send_compliance": true
+      },
+      "mismatches": [
+        {
+          "metric": "intent_accuracy",
+          "expected": "account_issue",
+          "predicted": "other"
+        },
+        {
+          "metric": "severity_accuracy",
+          "expected": "HIGH",
+          "predicted": "LOW"
+        },
+        {
+          "metric": "risk_flags",
+          "expected": "complaint_risk,privacy_risk",
+          "predicted": "low_confidence,privacy_risk"
+        },
+        {
+          "metric": "evidence_doc_type_recall",
+          "expected": "Case,Policy",
+          "predicted": "CASE,FAQ,POLICY"
+        }
+      ]
+    },
+    {
+      "case_id": "case_acco_004",
+      "prediction": {
+        "predicted_issue_type": "logistics",
+        "predicted_risk_flags": [],
+        "predicted_severity": "LOW",
+        "predicted_must_human_review": true,
+        "predicted_evidence_doc_types": [
+          "CASE",
+          "FAQ",
+          "POLICY"
+        ],
+        "predicted_fallback_required": false,
+        "predicted_no_auto_send": true
+      },
+      "metrics": {
+        "intent_accuracy": false,
+        "severity_accuracy": false,
+        "must_human_review_accuracy": true,
+        "risk_flag_metrics": {
+          "precision": 1.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "exact_match": false
+        },
+        "evidence_doc_type_recall": 0.3333333333333333,
+        "fallback_correctness": true,
+        "no_auto_send_compliance": true
+      },
+      "mismatches": [
+        {
+          "metric": "intent_accuracy",
+          "expected": "account_issue",
+          "predicted": "logistics"
+        },
+        {
+          "metric": "severity_accuracy",
+          "expected": "HIGH",
+          "predicted": "LOW"
+        },
+        {
+          "metric": "risk_flags",
+          "expected": "account_security_risk,privacy_risk",
+          "predicted": ""
+        },
+        {
+          "metric": "evidence_doc_type_recall",
+          "expected": "Case,FAQ,Policy",
+          "predicted": "CASE,FAQ,POLICY"
+        }
+      ]
+    },
+    {
+      "case_id": "case_acco_005",
+      "prediction": {
+        "predicted_issue_type": "account_issue",
+        "predicted_risk_flags": [
+          "privacy_risk"
+        ],
+        "predicted_severity": "LOW",
+        "predicted_must_human_review": true,
+        "predicted_evidence_doc_types": [
+          "CASE",
+          "FAQ"
+        ],
+        "predicted_fallback_required": false,
+        "predicted_no_auto_send": true
+      },
+      "metrics": {
+        "intent_accuracy": true,
+        "severity_accuracy": false,
+        "must_human_review_accuracy": true,
+        "risk_flag_metrics": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "exact_match": false
+        },
+        "evidence_doc_type_recall": 0.5,
+        "fallback_correctness": false,
+        "no_auto_send_compliance": true
+      },
+      "mismatches": [
+        {
+          "metric": "severity_accuracy",
+          "expected": "MEDIUM",
+          "predicted": "LOW"
+        },
+        {
+          "metric": "risk_flags",
+          "expected": "insufficient_evidence",
+          "predicted": "privacy_risk"
+        },
+        {
+          "metric": "evidence_doc_type_recall",
+          "expected": "FAQ,Policy",
+          "predicted": "CASE,FAQ"
+        },
+        {
+          "metric": "fallback_correctness",
+          "expected": "True",
+          "predicted": "False"
+        }
+      ]
+    },
+    {
+      "case_id": "case_acco_006",
+      "prediction": {
+        "predicted_issue_type": "other",
+        "predicted_risk_flags": [
+          "low_confidence"
+        ],
+        "predicted_severity": "LOW",
+        "predicted_must_human_review": true,
+        "predicted_evidence_doc_types": [
+          "CASE",
+          "FAQ",
+          "POLICY"
+        ],
+        "predicted_fallback_required": false,
+        "predicted_no_auto_send": true
+      },
+      "metrics": {
+        "intent_accuracy": false,
+        "severity_accuracy": false,
+        "must_human_review_accuracy": true,
+        "risk_flag_metrics": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "exact_match": false
+        },
+        "evidence_doc_type_recall": 0.0,
+        "fallback_correctness": true,
+        "no_auto_send_compliance": true
+      },
+      "mismatches": [
+        {
+          "metric": "intent_accuracy",
+          "expected": "account_issue",
+          "predicted": "other"
+        },
+        {
+          "metric": "severity_accuracy",
+          "expected": "HIGH",
+          "predicted": "LOW"
+        },
+        {
+          "metric": "risk_flags",
+          "expected": "account_security_risk,privacy_risk",
+          "predicted": "low_confidence"
+        },
+        {
+          "metric": "evidence_doc_type_recall",
+          "expected": "Case,Policy",
+          "predicted": "CASE,FAQ,POLICY"
+        }
+      ]
+    },
+    {
+      "case_id": "case_acco_007",
+      "prediction": {
+        "predicted_issue_type": "other",
+        "predicted_risk_flags": [
+          "low_confidence"
+        ],
+        "predicted_severity": "LOW",
+        "predicted_must_human_review": true,
+        "predicted_evidence_doc_types": [
+          "CASE",
+          "FAQ",
+          "POLICY"
+        ],
+        "predicted_fallback_required": false,
+        "predicted_no_auto_send": true
+      },
+      "metrics": {
+        "intent_accuracy": false,
+        "severity_accuracy": false,
+        "must_human_review_accuracy": true,
+        "risk_flag_metrics": {
+          "precision": 0.0,
+          "recall": 1.0,
+          "f1": 0.0,
+          "exact_match": false
+        },
+        "evidence_doc_type_recall": 0.5,
+        "fallback_correctness": true,
+        "no_auto_send_compliance": true
+      },
+      "mismatches": [
+        {
+          "metric": "intent_accuracy",
+          "expected": "account_issue",
+          "predicted": "other"
+        },
+        {
+          "metric": "severity_accuracy",
+          "expected": "MEDIUM",
+          "predicted": "LOW"
+        },
+        {
+          "metric": "risk_flags",
+          "expected": "",
+          "predicted": "low_confidence"
+        },
+        {
+          "metric": "evidence_doc_type_recall",
+          "expected": "FAQ,Policy",
+          "predicted": "CASE,FAQ,POLICY"
+        }
+      ]
+    },
+    {
+      "case_id": "case_acco_008",
       "prediction": {
         "predicted_issue_type": "account_issue",
         "predicted_risk_flags": [
@@ -40,7 +407,7 @@
       },
       "metrics": {
         "intent_accuracy": true,
-        "severity_accuracy": true,
+        "severity_accuracy": false,
         "must_human_review_accuracy": true,
         "risk_flag_metrics": {
           "precision": 1.0,
@@ -48,21 +415,31 @@
           "f1": 1.0,
           "exact_match": true
         },
-        "evidence_doc_type_recall": 1.0,
+        "evidence_doc_type_recall": 0.3333333333333333,
         "fallback_correctness": true,
         "no_auto_send_compliance": true
       },
-      "mismatches": []
+      "mismatches": [
+        {
+          "metric": "severity_accuracy",
+          "expected": "HIGH",
+          "predicted": "LOW"
+        },
+        {
+          "metric": "evidence_doc_type_recall",
+          "expected": "Case,FAQ,Policy",
+          "predicted": "CASE,FAQ,POLICY"
+        }
+      ]
     },
     {
-      "case_id": "case_complaint_001",
+      "case_id": "case_acco_009",
       "prediction": {
-        "predicted_issue_type": "complaint",
+        "predicted_issue_type": "account_issue",
         "predicted_risk_flags": [
-          "compensation_risk",
-          "complaint_risk"
+          "policy_conflict"
         ],
-        "predicted_severity": "MEDIUM",
+        "predicted_severity": "LOW",
         "predicted_must_human_review": true,
         "predicted_evidence_doc_types": [
           "CASE",
@@ -74,24 +451,45 @@
       },
       "metrics": {
         "intent_accuracy": true,
-        "severity_accuracy": true,
+        "severity_accuracy": false,
         "must_human_review_accuracy": true,
         "risk_flag_metrics": {
-          "precision": 1.0,
-          "recall": 1.0,
-          "f1": 1.0,
-          "exact_match": true
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "exact_match": false
         },
-        "evidence_doc_type_recall": 1.0,
-        "fallback_correctness": true,
+        "evidence_doc_type_recall": 0.0,
+        "fallback_correctness": false,
         "no_auto_send_compliance": true
       },
-      "mismatches": []
+      "mismatches": [
+        {
+          "metric": "severity_accuracy",
+          "expected": "MEDIUM",
+          "predicted": "LOW"
+        },
+        {
+          "metric": "risk_flags",
+          "expected": "complaint_risk,insufficient_evidence",
+          "predicted": "policy_conflict"
+        },
+        {
+          "metric": "evidence_doc_type_recall",
+          "expected": "Case,Policy",
+          "predicted": "CASE,FAQ,POLICY"
+        },
+        {
+          "metric": "fallback_correctness",
+          "expected": "True",
+          "predicted": "False"
+        }
+      ]
     },
     {
-      "case_id": "case_consulting_001",
+      "case_id": "case_acco_010",
       "prediction": {
-        "predicted_issue_type": "product_consulting",
+        "predicted_issue_type": "account_issue",
         "predicted_risk_flags": [],
         "predicted_severity": "LOW",
         "predicted_must_human_review": false,
@@ -113,20 +511,429 @@
           "f1": 1.0,
           "exact_match": true
         },
-        "evidence_doc_type_recall": 1.0,
+        "evidence_doc_type_recall": 0.5,
         "fallback_correctness": true,
-        "no_auto_send_compliance": false
+        "no_auto_send_compliance": true
       },
       "mismatches": [
         {
-          "metric": "no_auto_send_compliance",
-          "expected": "False",
-          "predicted": "True"
+          "metric": "evidence_doc_type_recall",
+          "expected": "FAQ,Policy",
+          "predicted": "CASE,FAQ,POLICY"
         }
       ]
     },
     {
-      "case_id": "case_high_risk_001",
+      "case_id": "case_acco_011",
+      "prediction": {
+        "predicted_issue_type": "other",
+        "predicted_risk_flags": [
+          "low_confidence",
+          "privacy_risk"
+        ],
+        "predicted_severity": "LOW",
+        "predicted_must_human_review": true,
+        "predicted_evidence_doc_types": [
+          "CASE",
+          "FAQ",
+          "POLICY"
+        ],
+        "predicted_fallback_required": false,
+        "predicted_no_auto_send": true
+      },
+      "metrics": {
+        "intent_accuracy": false,
+        "severity_accuracy": true,
+        "must_human_review_accuracy": false,
+        "risk_flag_metrics": {
+          "precision": 0.0,
+          "recall": 1.0,
+          "f1": 0.0,
+          "exact_match": false
+        },
+        "evidence_doc_type_recall": 0.5,
+        "fallback_correctness": true,
+        "no_auto_send_compliance": true
+      },
+      "mismatches": [
+        {
+          "metric": "intent_accuracy",
+          "expected": "account_issue",
+          "predicted": "other"
+        },
+        {
+          "metric": "must_human_review_accuracy",
+          "expected": "False",
+          "predicted": "True"
+        },
+        {
+          "metric": "risk_flags",
+          "expected": "",
+          "predicted": "low_confidence,privacy_risk"
+        },
+        {
+          "metric": "evidence_doc_type_recall",
+          "expected": "FAQ,Policy",
+          "predicted": "CASE,FAQ,POLICY"
+        }
+      ]
+    },
+    {
+      "case_id": "case_acco_012",
+      "prediction": {
+        "predicted_issue_type": "other",
+        "predicted_risk_flags": [
+          "low_confidence",
+          "privacy_risk"
+        ],
+        "predicted_severity": "LOW",
+        "predicted_must_human_review": true,
+        "predicted_evidence_doc_types": [
+          "CASE",
+          "FAQ",
+          "POLICY"
+        ],
+        "predicted_fallback_required": false,
+        "predicted_no_auto_send": true
+      },
+      "metrics": {
+        "intent_accuracy": false,
+        "severity_accuracy": false,
+        "must_human_review_accuracy": true,
+        "risk_flag_metrics": {
+          "precision": 0.5,
+          "recall": 0.5,
+          "f1": 0.5,
+          "exact_match": false
+        },
+        "evidence_doc_type_recall": 0.0,
+        "fallback_correctness": true,
+        "no_auto_send_compliance": true
+      },
+      "mismatches": [
+        {
+          "metric": "intent_accuracy",
+          "expected": "account_issue",
+          "predicted": "other"
+        },
+        {
+          "metric": "severity_accuracy",
+          "expected": "HIGH",
+          "predicted": "LOW"
+        },
+        {
+          "metric": "risk_flags",
+          "expected": "legal_risk,privacy_risk",
+          "predicted": "low_confidence,privacy_risk"
+        },
+        {
+          "metric": "evidence_doc_type_recall",
+          "expected": "Case,Policy",
+          "predicted": "CASE,FAQ,POLICY"
+        }
+      ]
+    },
+    {
+      "case_id": "case_acco_013",
+      "prediction": {
+        "predicted_issue_type": "account_issue",
+        "predicted_risk_flags": [
+          "privacy_risk"
+        ],
+        "predicted_severity": "LOW",
+        "predicted_must_human_review": true,
+        "predicted_evidence_doc_types": [
+          "CASE",
+          "FAQ",
+          "POLICY"
+        ],
+        "predicted_fallback_required": false,
+        "predicted_no_auto_send": true
+      },
+      "metrics": {
+        "intent_accuracy": true,
+        "severity_accuracy": true,
+        "must_human_review_accuracy": false,
+        "risk_flag_metrics": {
+          "precision": 0.0,
+          "recall": 1.0,
+          "f1": 0.0,
+          "exact_match": false
+        },
+        "evidence_doc_type_recall": 0.5,
+        "fallback_correctness": true,
+        "no_auto_send_compliance": true
+      },
+      "mismatches": [
+        {
+          "metric": "must_human_review_accuracy",
+          "expected": "False",
+          "predicted": "True"
+        },
+        {
+          "metric": "risk_flags",
+          "expected": "",
+          "predicted": "privacy_risk"
+        },
+        {
+          "metric": "evidence_doc_type_recall",
+          "expected": "FAQ,Policy",
+          "predicted": "CASE,FAQ,POLICY"
+        }
+      ]
+    },
+    {
+      "case_id": "case_acco_014",
+      "prediction": {
+        "predicted_issue_type": "account_issue",
+        "predicted_risk_flags": [
+          "privacy_risk"
+        ],
+        "predicted_severity": "LOW",
+        "predicted_must_human_review": true,
+        "predicted_evidence_doc_types": [
+          "CASE",
+          "FAQ",
+          "POLICY"
+        ],
+        "predicted_fallback_required": false,
+        "predicted_no_auto_send": true
+      },
+      "metrics": {
+        "intent_accuracy": true,
+        "severity_accuracy": false,
+        "must_human_review_accuracy": true,
+        "risk_flag_metrics": {
+          "precision": 1.0,
+          "recall": 0.3333333333333333,
+          "f1": 0.5,
+          "exact_match": false
+        },
+        "evidence_doc_type_recall": 0.0,
+        "fallback_correctness": true,
+        "no_auto_send_compliance": true
+      },
+      "mismatches": [
+        {
+          "metric": "severity_accuracy",
+          "expected": "HIGH",
+          "predicted": "LOW"
+        },
+        {
+          "metric": "risk_flags",
+          "expected": "account_security_risk,legal_risk,privacy_risk",
+          "predicted": "privacy_risk"
+        },
+        {
+          "metric": "evidence_doc_type_recall",
+          "expected": "Case,Policy",
+          "predicted": "CASE,FAQ,POLICY"
+        }
+      ]
+    },
+    {
+      "case_id": "case_acco_015",
+      "prediction": {
+        "predicted_issue_type": "complaint",
+        "predicted_risk_flags": [
+          "complaint_risk"
+        ],
+        "predicted_severity": "LOW",
+        "predicted_must_human_review": true,
+        "predicted_evidence_doc_types": [
+          "CASE",
+          "FAQ",
+          "POLICY"
+        ],
+        "predicted_fallback_required": false,
+        "predicted_no_auto_send": true
+      },
+      "metrics": {
+        "intent_accuracy": false,
+        "severity_accuracy": false,
+        "must_human_review_accuracy": true,
+        "risk_flag_metrics": {
+          "precision": 1.0,
+          "recall": 0.5,
+          "f1": 0.6666666666666666,
+          "exact_match": false
+        },
+        "evidence_doc_type_recall": 0.3333333333333333,
+        "fallback_correctness": true,
+        "no_auto_send_compliance": true
+      },
+      "mismatches": [
+        {
+          "metric": "intent_accuracy",
+          "expected": "account_issue",
+          "predicted": "complaint"
+        },
+        {
+          "metric": "severity_accuracy",
+          "expected": "MEDIUM",
+          "predicted": "LOW"
+        },
+        {
+          "metric": "risk_flags",
+          "expected": "account_security_risk,complaint_risk",
+          "predicted": "complaint_risk"
+        },
+        {
+          "metric": "evidence_doc_type_recall",
+          "expected": "Case,FAQ,Policy",
+          "predicted": "CASE,FAQ,POLICY"
+        }
+      ]
+    },
+    {
+      "case_id": "case_comp_001",
+      "prediction": {
+        "predicted_issue_type": "complaint",
+        "predicted_risk_flags": [
+          "complaint_risk"
+        ],
+        "predicted_severity": "LOW",
+        "predicted_must_human_review": true,
+        "predicted_evidence_doc_types": [
+          "CASE",
+          "FAQ",
+          "POLICY"
+        ],
+        "predicted_fallback_required": false,
+        "predicted_no_auto_send": true
+      },
+      "metrics": {
+        "intent_accuracy": true,
+        "severity_accuracy": false,
+        "must_human_review_accuracy": true,
+        "risk_flag_metrics": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "exact_match": true
+        },
+        "evidence_doc_type_recall": 0.0,
+        "fallback_correctness": true,
+        "no_auto_send_compliance": true
+      },
+      "mismatches": [
+        {
+          "metric": "severity_accuracy",
+          "expected": "MEDIUM",
+          "predicted": "LOW"
+        },
+        {
+          "metric": "evidence_doc_type_recall",
+          "expected": "Case",
+          "predicted": "CASE,FAQ,POLICY"
+        }
+      ]
+    },
+    {
+      "case_id": "case_comp_002",
+      "prediction": {
+        "predicted_issue_type": "complaint",
+        "predicted_risk_flags": [
+          "complaint_risk"
+        ],
+        "predicted_severity": "LOW",
+        "predicted_must_human_review": true,
+        "predicted_evidence_doc_types": [
+          "CASE",
+          "FAQ",
+          "POLICY"
+        ],
+        "predicted_fallback_required": false,
+        "predicted_no_auto_send": true
+      },
+      "metrics": {
+        "intent_accuracy": true,
+        "severity_accuracy": false,
+        "must_human_review_accuracy": true,
+        "risk_flag_metrics": {
+          "precision": 1.0,
+          "recall": 0.5,
+          "f1": 0.6666666666666666,
+          "exact_match": false
+        },
+        "evidence_doc_type_recall": 0.0,
+        "fallback_correctness": true,
+        "no_auto_send_compliance": true
+      },
+      "mismatches": [
+        {
+          "metric": "severity_accuracy",
+          "expected": "HIGH",
+          "predicted": "LOW"
+        },
+        {
+          "metric": "risk_flags",
+          "expected": "complaint_risk,legal_risk",
+          "predicted": "complaint_risk"
+        },
+        {
+          "metric": "evidence_doc_type_recall",
+          "expected": "Case,Policy",
+          "predicted": "CASE,FAQ,POLICY"
+        }
+      ]
+    },
+    {
+      "case_id": "case_comp_003",
+      "prediction": {
+        "predicted_issue_type": "other",
+        "predicted_risk_flags": [
+          "low_confidence"
+        ],
+        "predicted_severity": "LOW",
+        "predicted_must_human_review": true,
+        "predicted_evidence_doc_types": [
+          "CASE",
+          "FAQ",
+          "POLICY"
+        ],
+        "predicted_fallback_required": false,
+        "predicted_no_auto_send": true
+      },
+      "metrics": {
+        "intent_accuracy": false,
+        "severity_accuracy": false,
+        "must_human_review_accuracy": true,
+        "risk_flag_metrics": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "exact_match": false
+        },
+        "evidence_doc_type_recall": 0.0,
+        "fallback_correctness": true,
+        "no_auto_send_compliance": true
+      },
+      "mismatches": [
+        {
+          "metric": "intent_accuracy",
+          "expected": "complaint",
+          "predicted": "other"
+        },
+        {
+          "metric": "severity_accuracy",
+          "expected": "MEDIUM",
+          "predicted": "LOW"
+        },
+        {
+          "metric": "risk_flags",
+          "expected": "compensation_risk,complaint_risk",
+          "predicted": "low_confidence"
+        },
+        {
+          "metric": "evidence_doc_type_recall",
+          "expected": "Case,Policy",
+          "predicted": "CASE,FAQ,POLICY"
+        }
+      ]
+    },
+    {
+      "case_id": "case_comp_004",
       "prediction": {
         "predicted_issue_type": "other",
         "predicted_risk_flags": [
@@ -149,9 +956,352 @@
         "must_human_review_accuracy": true,
         "risk_flag_metrics": {
           "precision": 1.0,
+          "recall": 0.6666666666666666,
+          "f1": 0.8,
+          "exact_match": false
+        },
+        "evidence_doc_type_recall": 0.0,
+        "fallback_correctness": true,
+        "no_auto_send_compliance": true
+      },
+      "mismatches": [
+        {
+          "metric": "intent_accuracy",
+          "expected": "complaint",
+          "predicted": "other"
+        },
+        {
+          "metric": "risk_flags",
+          "expected": "compensation_risk,complaint_risk,legal_risk",
+          "predicted": "compensation_risk,legal_risk"
+        },
+        {
+          "metric": "evidence_doc_type_recall",
+          "expected": "Case,Policy",
+          "predicted": "CASE,FAQ,POLICY"
+        }
+      ]
+    },
+    {
+      "case_id": "case_comp_005",
+      "prediction": {
+        "predicted_issue_type": "other",
+        "predicted_risk_flags": [
+          "low_confidence",
+          "privacy_risk"
+        ],
+        "predicted_severity": "LOW",
+        "predicted_must_human_review": true,
+        "predicted_evidence_doc_types": [
+          "CASE",
+          "FAQ",
+          "POLICY"
+        ],
+        "predicted_fallback_required": false,
+        "predicted_no_auto_send": true
+      },
+      "metrics": {
+        "intent_accuracy": false,
+        "severity_accuracy": false,
+        "must_human_review_accuracy": true,
+        "risk_flag_metrics": {
+          "precision": 0.5,
+          "recall": 0.3333333333333333,
+          "f1": 0.4,
+          "exact_match": false
+        },
+        "evidence_doc_type_recall": 0.0,
+        "fallback_correctness": true,
+        "no_auto_send_compliance": true
+      },
+      "mismatches": [
+        {
+          "metric": "intent_accuracy",
+          "expected": "complaint",
+          "predicted": "other"
+        },
+        {
+          "metric": "severity_accuracy",
+          "expected": "HIGH",
+          "predicted": "LOW"
+        },
+        {
+          "metric": "risk_flags",
+          "expected": "complaint_risk,legal_risk,privacy_risk",
+          "predicted": "low_confidence,privacy_risk"
+        },
+        {
+          "metric": "evidence_doc_type_recall",
+          "expected": "Case,Policy",
+          "predicted": "CASE,FAQ,POLICY"
+        }
+      ]
+    },
+    {
+      "case_id": "case_comp_006",
+      "prediction": {
+        "predicted_issue_type": "complaint",
+        "predicted_risk_flags": [
+          "complaint_risk"
+        ],
+        "predicted_severity": "LOW",
+        "predicted_must_human_review": true,
+        "predicted_evidence_doc_types": [
+          "CASE",
+          "FAQ",
+          "POLICY"
+        ],
+        "predicted_fallback_required": false,
+        "predicted_no_auto_send": true
+      },
+      "metrics": {
+        "intent_accuracy": true,
+        "severity_accuracy": false,
+        "must_human_review_accuracy": true,
+        "risk_flag_metrics": {
+          "precision": 1.0,
           "recall": 1.0,
           "f1": 1.0,
           "exact_match": true
+        },
+        "evidence_doc_type_recall": 0.0,
+        "fallback_correctness": true,
+        "no_auto_send_compliance": true
+      },
+      "mismatches": [
+        {
+          "metric": "severity_accuracy",
+          "expected": "MEDIUM",
+          "predicted": "LOW"
+        },
+        {
+          "metric": "evidence_doc_type_recall",
+          "expected": "Case",
+          "predicted": "CASE,FAQ,POLICY"
+        }
+      ]
+    },
+    {
+      "case_id": "case_comp_007",
+      "prediction": {
+        "predicted_issue_type": "return_exchange",
+        "predicted_risk_flags": [
+          "compensation_risk"
+        ],
+        "predicted_severity": "LOW",
+        "predicted_must_human_review": true,
+        "predicted_evidence_doc_types": [
+          "CASE",
+          "FAQ",
+          "POLICY"
+        ],
+        "predicted_fallback_required": false,
+        "predicted_no_auto_send": true
+      },
+      "metrics": {
+        "intent_accuracy": false,
+        "severity_accuracy": false,
+        "must_human_review_accuracy": true,
+        "risk_flag_metrics": {
+          "precision": 1.0,
+          "recall": 0.5,
+          "f1": 0.6666666666666666,
+          "exact_match": false
+        },
+        "evidence_doc_type_recall": 0.0,
+        "fallback_correctness": true,
+        "no_auto_send_compliance": true
+      },
+      "mismatches": [
+        {
+          "metric": "intent_accuracy",
+          "expected": "complaint",
+          "predicted": "return_exchange"
+        },
+        {
+          "metric": "severity_accuracy",
+          "expected": "MEDIUM",
+          "predicted": "LOW"
+        },
+        {
+          "metric": "risk_flags",
+          "expected": "compensation_risk,complaint_risk",
+          "predicted": "compensation_risk"
+        },
+        {
+          "metric": "evidence_doc_type_recall",
+          "expected": "Case,Policy",
+          "predicted": "CASE,FAQ,POLICY"
+        }
+      ]
+    },
+    {
+      "case_id": "case_comp_008",
+      "prediction": {
+        "predicted_issue_type": "other",
+        "predicted_risk_flags": [
+          "low_confidence"
+        ],
+        "predicted_severity": "LOW",
+        "predicted_must_human_review": true,
+        "predicted_evidence_doc_types": [
+          "CASE",
+          "FAQ",
+          "POLICY"
+        ],
+        "predicted_fallback_required": false,
+        "predicted_no_auto_send": true
+      },
+      "metrics": {
+        "intent_accuracy": false,
+        "severity_accuracy": false,
+        "must_human_review_accuracy": true,
+        "risk_flag_metrics": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "exact_match": false
+        },
+        "evidence_doc_type_recall": 0.0,
+        "fallback_correctness": true,
+        "no_auto_send_compliance": true
+      },
+      "mismatches": [
+        {
+          "metric": "intent_accuracy",
+          "expected": "complaint",
+          "predicted": "other"
+        },
+        {
+          "metric": "severity_accuracy",
+          "expected": "MEDIUM",
+          "predicted": "LOW"
+        },
+        {
+          "metric": "risk_flags",
+          "expected": "complaint_risk",
+          "predicted": "low_confidence"
+        },
+        {
+          "metric": "evidence_doc_type_recall",
+          "expected": "Case",
+          "predicted": "CASE,FAQ,POLICY"
+        }
+      ]
+    },
+    {
+      "case_id": "case_comp_009",
+      "prediction": {
+        "predicted_issue_type": "other",
+        "predicted_risk_flags": [
+          "low_confidence"
+        ],
+        "predicted_severity": "LOW",
+        "predicted_must_human_review": true,
+        "predicted_evidence_doc_types": [
+          "CASE",
+          "FAQ",
+          "POLICY"
+        ],
+        "predicted_fallback_required": false,
+        "predicted_no_auto_send": true
+      },
+      "metrics": {
+        "intent_accuracy": false,
+        "severity_accuracy": false,
+        "must_human_review_accuracy": true,
+        "risk_flag_metrics": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "exact_match": false
+        },
+        "evidence_doc_type_recall": 0.0,
+        "fallback_correctness": true,
+        "no_auto_send_compliance": true
+      },
+      "mismatches": [
+        {
+          "metric": "intent_accuracy",
+          "expected": "complaint",
+          "predicted": "other"
+        },
+        {
+          "metric": "severity_accuracy",
+          "expected": "HIGH",
+          "predicted": "LOW"
+        },
+        {
+          "metric": "risk_flags",
+          "expected": "compensation_risk,complaint_risk,policy_conflict",
+          "predicted": "low_confidence"
+        },
+        {
+          "metric": "evidence_doc_type_recall",
+          "expected": "Case,Policy",
+          "predicted": "CASE,FAQ,POLICY"
+        }
+      ]
+    },
+    {
+      "case_id": "case_comp_010",
+      "prediction": {
+        "predicted_issue_type": "complaint",
+        "predicted_risk_flags": [
+          "complaint_risk"
+        ],
+        "predicted_severity": "LOW",
+        "predicted_must_human_review": true,
+        "predicted_evidence_doc_types": [
+          "CASE",
+          "FAQ",
+          "POLICY"
+        ],
+        "predicted_fallback_required": false,
+        "predicted_no_auto_send": true
+      },
+      "metrics": {
+        "intent_accuracy": true,
+        "severity_accuracy": true,
+        "must_human_review_accuracy": true,
+        "risk_flag_metrics": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "exact_match": true
+        },
+        "evidence_doc_type_recall": 1.0,
+        "fallback_correctness": true,
+        "no_auto_send_compliance": true
+      },
+      "mismatches": []
+    },
+    {
+      "case_id": "case_comp_011",
+      "prediction": {
+        "predicted_issue_type": "other",
+        "predicted_risk_flags": [
+          "low_confidence"
+        ],
+        "predicted_severity": "LOW",
+        "predicted_must_human_review": true,
+        "predicted_evidence_doc_types": [
+          "CASE",
+          "FAQ",
+          "POLICY"
+        ],
+        "predicted_fallback_required": false,
+        "predicted_no_auto_send": true
+      },
+      "metrics": {
+        "intent_accuracy": false,
+        "severity_accuracy": true,
+        "must_human_review_accuracy": false,
+        "risk_flag_metrics": {
+          "precision": 0.0,
+          "recall": 1.0,
+          "f1": 0.0,
+          "exact_match": false
         },
         "evidence_doc_type_recall": 1.0,
         "fallback_correctness": true,
@@ -162,11 +1312,455 @@
           "metric": "intent_accuracy",
           "expected": "complaint",
           "predicted": "other"
+        },
+        {
+          "metric": "must_human_review_accuracy",
+          "expected": "False",
+          "predicted": "True"
+        },
+        {
+          "metric": "risk_flags",
+          "expected": "",
+          "predicted": "low_confidence"
         }
       ]
     },
     {
-      "case_id": "case_logistics_001",
+      "case_id": "case_comp_012",
+      "prediction": {
+        "predicted_issue_type": "complaint",
+        "predicted_risk_flags": [
+          "complaint_risk"
+        ],
+        "predicted_severity": "LOW",
+        "predicted_must_human_review": true,
+        "predicted_evidence_doc_types": [
+          "CASE",
+          "FAQ",
+          "POLICY"
+        ],
+        "predicted_fallback_required": false,
+        "predicted_no_auto_send": true
+      },
+      "metrics": {
+        "intent_accuracy": true,
+        "severity_accuracy": true,
+        "must_human_review_accuracy": true,
+        "risk_flag_metrics": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "exact_match": true
+        },
+        "evidence_doc_type_recall": 0.5,
+        "fallback_correctness": true,
+        "no_auto_send_compliance": true
+      },
+      "mismatches": [
+        {
+          "metric": "evidence_doc_type_recall",
+          "expected": "Case,FAQ",
+          "predicted": "CASE,FAQ,POLICY"
+        }
+      ]
+    },
+    {
+      "case_id": "case_comp_013",
+      "prediction": {
+        "predicted_issue_type": "other",
+        "predicted_risk_flags": [
+          "low_confidence",
+          "privacy_risk"
+        ],
+        "predicted_severity": "LOW",
+        "predicted_must_human_review": true,
+        "predicted_evidence_doc_types": [
+          "CASE",
+          "FAQ",
+          "POLICY"
+        ],
+        "predicted_fallback_required": false,
+        "predicted_no_auto_send": true
+      },
+      "metrics": {
+        "intent_accuracy": false,
+        "severity_accuracy": false,
+        "must_human_review_accuracy": true,
+        "risk_flag_metrics": {
+          "precision": 0.5,
+          "recall": 0.3333333333333333,
+          "f1": 0.4,
+          "exact_match": false
+        },
+        "evidence_doc_type_recall": 0.0,
+        "fallback_correctness": true,
+        "no_auto_send_compliance": true
+      },
+      "mismatches": [
+        {
+          "metric": "intent_accuracy",
+          "expected": "complaint",
+          "predicted": "other"
+        },
+        {
+          "metric": "severity_accuracy",
+          "expected": "HIGH",
+          "predicted": "LOW"
+        },
+        {
+          "metric": "risk_flags",
+          "expected": "complaint_risk,legal_risk,privacy_risk",
+          "predicted": "low_confidence,privacy_risk"
+        },
+        {
+          "metric": "evidence_doc_type_recall",
+          "expected": "Case,Policy",
+          "predicted": "CASE,FAQ,POLICY"
+        }
+      ]
+    },
+    {
+      "case_id": "case_edge_001",
+      "prediction": {
+        "predicted_issue_type": "other",
+        "predicted_risk_flags": [
+          "insufficient_evidence",
+          "low_confidence"
+        ],
+        "predicted_severity": "LOW",
+        "predicted_must_human_review": true,
+        "predicted_evidence_doc_types": [
+          "CASE",
+          "FAQ",
+          "POLICY"
+        ],
+        "predicted_fallback_required": false,
+        "predicted_no_auto_send": true
+      },
+      "metrics": {
+        "intent_accuracy": false,
+        "severity_accuracy": true,
+        "must_human_review_accuracy": true,
+        "risk_flag_metrics": {
+          "precision": 0.5,
+          "recall": 1.0,
+          "f1": 0.6666666666666666,
+          "exact_match": false
+        },
+        "evidence_doc_type_recall": 1.0,
+        "fallback_correctness": false,
+        "no_auto_send_compliance": true
+      },
+      "mismatches": [
+        {
+          "metric": "intent_accuracy",
+          "expected": "refund",
+          "predicted": "other"
+        },
+        {
+          "metric": "risk_flags",
+          "expected": "insufficient_evidence",
+          "predicted": "insufficient_evidence,low_confidence"
+        },
+        {
+          "metric": "fallback_correctness",
+          "expected": "True",
+          "predicted": "False"
+        }
+      ]
+    },
+    {
+      "case_id": "case_edge_002",
+      "prediction": {
+        "predicted_issue_type": "complaint",
+        "predicted_risk_flags": [
+          "complaint_risk",
+          "insufficient_evidence"
+        ],
+        "predicted_severity": "LOW",
+        "predicted_must_human_review": true,
+        "predicted_evidence_doc_types": [],
+        "predicted_fallback_required": true,
+        "predicted_no_auto_send": true
+      },
+      "metrics": {
+        "intent_accuracy": true,
+        "severity_accuracy": false,
+        "must_human_review_accuracy": true,
+        "risk_flag_metrics": {
+          "precision": 0.5,
+          "recall": 0.3333333333333333,
+          "f1": 0.4,
+          "exact_match": false
+        },
+        "evidence_doc_type_recall": 0.0,
+        "fallback_correctness": false,
+        "no_auto_send_compliance": true
+      },
+      "mismatches": [
+        {
+          "metric": "severity_accuracy",
+          "expected": "MEDIUM",
+          "predicted": "LOW"
+        },
+        {
+          "metric": "risk_flags",
+          "expected": "compensation_risk,complaint_risk,policy_conflict",
+          "predicted": "complaint_risk,insufficient_evidence"
+        },
+        {
+          "metric": "evidence_doc_type_recall",
+          "expected": "Case,Policy",
+          "predicted": ""
+        },
+        {
+          "metric": "fallback_correctness",
+          "expected": "False",
+          "predicted": "True"
+        }
+      ]
+    },
+    {
+      "case_id": "case_edge_003",
+      "prediction": {
+        "predicted_issue_type": "other",
+        "predicted_risk_flags": [
+          "insufficient_evidence",
+          "low_confidence"
+        ],
+        "predicted_severity": "LOW",
+        "predicted_must_human_review": true,
+        "predicted_evidence_doc_types": [],
+        "predicted_fallback_required": true,
+        "predicted_no_auto_send": true
+      },
+      "metrics": {
+        "intent_accuracy": true,
+        "severity_accuracy": true,
+        "must_human_review_accuracy": true,
+        "risk_flag_metrics": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "exact_match": true
+        },
+        "evidence_doc_type_recall": 1.0,
+        "fallback_correctness": true,
+        "no_auto_send_compliance": true
+      },
+      "mismatches": []
+    },
+    {
+      "case_id": "case_edge_004",
+      "prediction": {
+        "predicted_issue_type": "other",
+        "predicted_risk_flags": [
+          "insufficient_evidence",
+          "low_confidence"
+        ],
+        "predicted_severity": "LOW",
+        "predicted_must_human_review": true,
+        "predicted_evidence_doc_types": [],
+        "predicted_fallback_required": true,
+        "predicted_no_auto_send": true
+      },
+      "metrics": {
+        "intent_accuracy": true,
+        "severity_accuracy": true,
+        "must_human_review_accuracy": true,
+        "risk_flag_metrics": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "exact_match": true
+        },
+        "evidence_doc_type_recall": 1.0,
+        "fallback_correctness": true,
+        "no_auto_send_compliance": true
+      },
+      "mismatches": []
+    },
+    {
+      "case_id": "case_edge_005",
+      "prediction": {
+        "predicted_issue_type": "other",
+        "predicted_risk_flags": [
+          "insufficient_evidence",
+          "low_confidence"
+        ],
+        "predicted_severity": "LOW",
+        "predicted_must_human_review": true,
+        "predicted_evidence_doc_types": [],
+        "predicted_fallback_required": true,
+        "predicted_no_auto_send": true
+      },
+      "metrics": {
+        "intent_accuracy": true,
+        "severity_accuracy": true,
+        "must_human_review_accuracy": true,
+        "risk_flag_metrics": {
+          "precision": 0.5,
+          "recall": 1.0,
+          "f1": 0.6666666666666666,
+          "exact_match": false
+        },
+        "evidence_doc_type_recall": 1.0,
+        "fallback_correctness": true,
+        "no_auto_send_compliance": true
+      },
+      "mismatches": [
+        {
+          "metric": "risk_flags",
+          "expected": "insufficient_evidence",
+          "predicted": "insufficient_evidence,low_confidence"
+        }
+      ]
+    },
+    {
+      "case_id": "case_logi_001",
+      "prediction": {
+        "predicted_issue_type": "logistics",
+        "predicted_risk_flags": [],
+        "predicted_severity": "LOW",
+        "predicted_must_human_review": false,
+        "predicted_evidence_doc_types": [
+          "CASE",
+          "FAQ",
+          "POLICY"
+        ],
+        "predicted_fallback_required": false,
+        "predicted_no_auto_send": true
+      },
+      "metrics": {
+        "intent_accuracy": true,
+        "severity_accuracy": true,
+        "must_human_review_accuracy": true,
+        "risk_flag_metrics": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "exact_match": true
+        },
+        "evidence_doc_type_recall": 0.5,
+        "fallback_correctness": true,
+        "no_auto_send_compliance": true
+      },
+      "mismatches": [
+        {
+          "metric": "evidence_doc_type_recall",
+          "expected": "Case,FAQ",
+          "predicted": "CASE,FAQ,POLICY"
+        }
+      ]
+    },
+    {
+      "case_id": "case_logi_002",
+      "prediction": {
+        "predicted_issue_type": "logistics",
+        "predicted_risk_flags": [],
+        "predicted_severity": "LOW",
+        "predicted_must_human_review": true,
+        "predicted_evidence_doc_types": [
+          "CASE",
+          "FAQ",
+          "POLICY"
+        ],
+        "predicted_fallback_required": false,
+        "predicted_no_auto_send": true
+      },
+      "metrics": {
+        "intent_accuracy": true,
+        "severity_accuracy": false,
+        "must_human_review_accuracy": true,
+        "risk_flag_metrics": {
+          "precision": 1.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "exact_match": false
+        },
+        "evidence_doc_type_recall": 0.5,
+        "fallback_correctness": false,
+        "no_auto_send_compliance": true
+      },
+      "mismatches": [
+        {
+          "metric": "severity_accuracy",
+          "expected": "MEDIUM",
+          "predicted": "LOW"
+        },
+        {
+          "metric": "risk_flags",
+          "expected": "insufficient_evidence",
+          "predicted": ""
+        },
+        {
+          "metric": "evidence_doc_type_recall",
+          "expected": "Case,FAQ",
+          "predicted": "CASE,FAQ,POLICY"
+        },
+        {
+          "metric": "fallback_correctness",
+          "expected": "True",
+          "predicted": "False"
+        }
+      ]
+    },
+    {
+      "case_id": "case_logi_003",
+      "prediction": {
+        "predicted_issue_type": "other",
+        "predicted_risk_flags": [
+          "low_confidence"
+        ],
+        "predicted_severity": "LOW",
+        "predicted_must_human_review": true,
+        "predicted_evidence_doc_types": [
+          "CASE",
+          "FAQ",
+          "POLICY"
+        ],
+        "predicted_fallback_required": false,
+        "predicted_no_auto_send": true
+      },
+      "metrics": {
+        "intent_accuracy": false,
+        "severity_accuracy": true,
+        "must_human_review_accuracy": false,
+        "risk_flag_metrics": {
+          "precision": 0.0,
+          "recall": 1.0,
+          "f1": 0.0,
+          "exact_match": false
+        },
+        "evidence_doc_type_recall": 0.5,
+        "fallback_correctness": true,
+        "no_auto_send_compliance": true
+      },
+      "mismatches": [
+        {
+          "metric": "intent_accuracy",
+          "expected": "logistics",
+          "predicted": "other"
+        },
+        {
+          "metric": "must_human_review_accuracy",
+          "expected": "False",
+          "predicted": "True"
+        },
+        {
+          "metric": "risk_flags",
+          "expected": "",
+          "predicted": "low_confidence"
+        },
+        {
+          "metric": "evidence_doc_type_recall",
+          "expected": "FAQ,Policy",
+          "predicted": "CASE,FAQ,POLICY"
+        }
+      ]
+    },
+    {
+      "case_id": "case_logi_004",
       "prediction": {
         "predicted_issue_type": "logistics",
         "predicted_risk_flags": [],
@@ -192,28 +1786,231 @@
         },
         "evidence_doc_type_recall": 1.0,
         "fallback_correctness": true,
-        "no_auto_send_compliance": false
+        "no_auto_send_compliance": true
       },
       "mismatches": [
         {
           "metric": "must_human_review_accuracy",
           "expected": "False",
           "predicted": "True"
-        },
-        {
-          "metric": "no_auto_send_compliance",
-          "expected": "False",
-          "predicted": "True"
         }
       ]
     },
     {
-      "case_id": "case_no_evidence_001",
+      "case_id": "case_logi_005",
       "prediction": {
-        "predicted_issue_type": "refund",
-        "predicted_risk_flags": [
-          "insufficient_evidence"
+        "predicted_issue_type": "logistics",
+        "predicted_risk_flags": [],
+        "predicted_severity": "LOW",
+        "predicted_must_human_review": true,
+        "predicted_evidence_doc_types": [
+          "CASE",
+          "FAQ",
+          "POLICY"
         ],
+        "predicted_fallback_required": false,
+        "predicted_no_auto_send": true
+      },
+      "metrics": {
+        "intent_accuracy": true,
+        "severity_accuracy": false,
+        "must_human_review_accuracy": true,
+        "risk_flag_metrics": {
+          "precision": 1.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "exact_match": false
+        },
+        "evidence_doc_type_recall": 0.0,
+        "fallback_correctness": true,
+        "no_auto_send_compliance": true
+      },
+      "mismatches": [
+        {
+          "metric": "severity_accuracy",
+          "expected": "MEDIUM",
+          "predicted": "LOW"
+        },
+        {
+          "metric": "risk_flags",
+          "expected": "compensation_risk",
+          "predicted": ""
+        },
+        {
+          "metric": "evidence_doc_type_recall",
+          "expected": "Case,Policy",
+          "predicted": "CASE,FAQ,POLICY"
+        }
+      ]
+    },
+    {
+      "case_id": "case_logi_006",
+      "prediction": {
+        "predicted_issue_type": "logistics",
+        "predicted_risk_flags": [],
+        "predicted_severity": "LOW",
+        "predicted_must_human_review": false,
+        "predicted_evidence_doc_types": [
+          "CASE",
+          "FAQ",
+          "POLICY"
+        ],
+        "predicted_fallback_required": false,
+        "predicted_no_auto_send": true
+      },
+      "metrics": {
+        "intent_accuracy": true,
+        "severity_accuracy": false,
+        "must_human_review_accuracy": false,
+        "risk_flag_metrics": {
+          "precision": 1.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "exact_match": false
+        },
+        "evidence_doc_type_recall": 0.5,
+        "fallback_correctness": false,
+        "no_auto_send_compliance": true
+      },
+      "mismatches": [
+        {
+          "metric": "severity_accuracy",
+          "expected": "MEDIUM",
+          "predicted": "LOW"
+        },
+        {
+          "metric": "must_human_review_accuracy",
+          "expected": "True",
+          "predicted": "False"
+        },
+        {
+          "metric": "risk_flags",
+          "expected": "insufficient_evidence",
+          "predicted": ""
+        },
+        {
+          "metric": "evidence_doc_type_recall",
+          "expected": "Case,FAQ",
+          "predicted": "CASE,FAQ,POLICY"
+        },
+        {
+          "metric": "fallback_correctness",
+          "expected": "True",
+          "predicted": "False"
+        }
+      ]
+    },
+    {
+      "case_id": "case_logi_007",
+      "prediction": {
+        "predicted_issue_type": "other",
+        "predicted_risk_flags": [
+          "low_confidence"
+        ],
+        "predicted_severity": "LOW",
+        "predicted_must_human_review": true,
+        "predicted_evidence_doc_types": [
+          "CASE",
+          "FAQ",
+          "POLICY"
+        ],
+        "predicted_fallback_required": false,
+        "predicted_no_auto_send": true
+      },
+      "metrics": {
+        "intent_accuracy": false,
+        "severity_accuracy": true,
+        "must_human_review_accuracy": false,
+        "risk_flag_metrics": {
+          "precision": 0.0,
+          "recall": 1.0,
+          "f1": 0.0,
+          "exact_match": false
+        },
+        "evidence_doc_type_recall": 0.5,
+        "fallback_correctness": true,
+        "no_auto_send_compliance": true
+      },
+      "mismatches": [
+        {
+          "metric": "intent_accuracy",
+          "expected": "logistics",
+          "predicted": "other"
+        },
+        {
+          "metric": "must_human_review_accuracy",
+          "expected": "False",
+          "predicted": "True"
+        },
+        {
+          "metric": "risk_flags",
+          "expected": "",
+          "predicted": "low_confidence"
+        },
+        {
+          "metric": "evidence_doc_type_recall",
+          "expected": "FAQ,Policy",
+          "predicted": "CASE,FAQ,POLICY"
+        }
+      ]
+    },
+    {
+      "case_id": "case_logi_008",
+      "prediction": {
+        "predicted_issue_type": "logistics",
+        "predicted_risk_flags": [],
+        "predicted_severity": "LOW",
+        "predicted_must_human_review": false,
+        "predicted_evidence_doc_types": [
+          "CASE",
+          "FAQ",
+          "POLICY"
+        ],
+        "predicted_fallback_required": false,
+        "predicted_no_auto_send": true
+      },
+      "metrics": {
+        "intent_accuracy": true,
+        "severity_accuracy": false,
+        "must_human_review_accuracy": false,
+        "risk_flag_metrics": {
+          "precision": 1.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "exact_match": false
+        },
+        "evidence_doc_type_recall": 0.0,
+        "fallback_correctness": true,
+        "no_auto_send_compliance": true
+      },
+      "mismatches": [
+        {
+          "metric": "severity_accuracy",
+          "expected": "MEDIUM",
+          "predicted": "LOW"
+        },
+        {
+          "metric": "must_human_review_accuracy",
+          "expected": "True",
+          "predicted": "False"
+        },
+        {
+          "metric": "risk_flags",
+          "expected": "complaint_risk",
+          "predicted": ""
+        },
+        {
+          "metric": "evidence_doc_type_recall",
+          "expected": "Case",
+          "predicted": "CASE,FAQ,POLICY"
+        }
+      ]
+    },
+    {
+      "case_id": "case_logi_009",
+      "prediction": {
+        "predicted_issue_type": "logistics",
+        "predicted_risk_flags": [],
         "predicted_severity": "LOW",
         "predicted_must_human_review": true,
         "predicted_evidence_doc_types": [
@@ -230,29 +2027,33 @@
         "must_human_review_accuracy": true,
         "risk_flag_metrics": {
           "precision": 1.0,
-          "recall": 1.0,
-          "f1": 1.0,
-          "exact_match": true
+          "recall": 0.0,
+          "f1": 0.0,
+          "exact_match": false
         },
-        "evidence_doc_type_recall": 1.0,
-        "fallback_correctness": false,
+        "evidence_doc_type_recall": 0.5,
+        "fallback_correctness": true,
         "no_auto_send_compliance": true
       },
       "mismatches": [
         {
-          "metric": "fallback_correctness",
-          "expected": "True",
-          "predicted": "False"
+          "metric": "risk_flags",
+          "expected": "policy_conflict",
+          "predicted": ""
+        },
+        {
+          "metric": "evidence_doc_type_recall",
+          "expected": "FAQ,Policy",
+          "predicted": "CASE,FAQ,POLICY"
         }
       ]
     },
     {
-      "case_id": "case_privacy_001",
+      "case_id": "case_logi_010",
       "prediction": {
         "predicted_issue_type": "other",
         "predicted_risk_flags": [
-          "low_confidence",
-          "privacy_risk"
+          "low_confidence"
         ],
         "predicted_severity": "LOW",
         "predicted_must_human_review": true,
@@ -269,19 +2070,19 @@
         "severity_accuracy": false,
         "must_human_review_accuracy": true,
         "risk_flag_metrics": {
-          "precision": 0.5,
-          "recall": 1.0,
-          "f1": 0.6666666666666666,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
           "exact_match": false
         },
-        "evidence_doc_type_recall": 1.0,
+        "evidence_doc_type_recall": 0.0,
         "fallback_correctness": true,
         "no_auto_send_compliance": true
       },
       "mismatches": [
         {
           "metric": "intent_accuracy",
-          "expected": "account_issue",
+          "expected": "logistics",
           "predicted": "other"
         },
         {
@@ -291,13 +2092,1127 @@
         },
         {
           "metric": "risk_flags",
-          "expected": "privacy_risk",
-          "predicted": "low_confidence,privacy_risk"
+          "expected": "compensation_risk,complaint_risk",
+          "predicted": "low_confidence"
+        },
+        {
+          "metric": "evidence_doc_type_recall",
+          "expected": "Case,Policy",
+          "predicted": "CASE,FAQ,POLICY"
         }
       ]
     },
     {
-      "case_id": "case_refund_001",
+      "case_id": "case_logi_011",
+      "prediction": {
+        "predicted_issue_type": "other",
+        "predicted_risk_flags": [
+          "low_confidence"
+        ],
+        "predicted_severity": "LOW",
+        "predicted_must_human_review": true,
+        "predicted_evidence_doc_types": [
+          "CASE",
+          "FAQ",
+          "POLICY"
+        ],
+        "predicted_fallback_required": false,
+        "predicted_no_auto_send": true
+      },
+      "metrics": {
+        "intent_accuracy": false,
+        "severity_accuracy": false,
+        "must_human_review_accuracy": true,
+        "risk_flag_metrics": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "exact_match": false
+        },
+        "evidence_doc_type_recall": 0.0,
+        "fallback_correctness": true,
+        "no_auto_send_compliance": true
+      },
+      "mismatches": [
+        {
+          "metric": "intent_accuracy",
+          "expected": "logistics",
+          "predicted": "other"
+        },
+        {
+          "metric": "severity_accuracy",
+          "expected": "MEDIUM",
+          "predicted": "LOW"
+        },
+        {
+          "metric": "risk_flags",
+          "expected": "compensation_risk,complaint_risk",
+          "predicted": "low_confidence"
+        },
+        {
+          "metric": "evidence_doc_type_recall",
+          "expected": "Case,Policy",
+          "predicted": "CASE,FAQ,POLICY"
+        }
+      ]
+    },
+    {
+      "case_id": "case_othe_001",
+      "prediction": {
+        "predicted_issue_type": "other",
+        "predicted_risk_flags": [
+          "low_confidence"
+        ],
+        "predicted_severity": "LOW",
+        "predicted_must_human_review": true,
+        "predicted_evidence_doc_types": [
+          "CASE",
+          "FAQ",
+          "POLICY"
+        ],
+        "predicted_fallback_required": false,
+        "predicted_no_auto_send": true
+      },
+      "metrics": {
+        "intent_accuracy": true,
+        "severity_accuracy": true,
+        "must_human_review_accuracy": false,
+        "risk_flag_metrics": {
+          "precision": 0.0,
+          "recall": 1.0,
+          "f1": 0.0,
+          "exact_match": false
+        },
+        "evidence_doc_type_recall": 1.0,
+        "fallback_correctness": true,
+        "no_auto_send_compliance": true
+      },
+      "mismatches": [
+        {
+          "metric": "must_human_review_accuracy",
+          "expected": "False",
+          "predicted": "True"
+        },
+        {
+          "metric": "risk_flags",
+          "expected": "",
+          "predicted": "low_confidence"
+        }
+      ]
+    },
+    {
+      "case_id": "case_othe_002",
+      "prediction": {
+        "predicted_issue_type": "other",
+        "predicted_risk_flags": [
+          "low_confidence"
+        ],
+        "predicted_severity": "LOW",
+        "predicted_must_human_review": true,
+        "predicted_evidence_doc_types": [
+          "FAQ",
+          "POLICY"
+        ],
+        "predicted_fallback_required": false,
+        "predicted_no_auto_send": true
+      },
+      "metrics": {
+        "intent_accuracy": true,
+        "severity_accuracy": true,
+        "must_human_review_accuracy": true,
+        "risk_flag_metrics": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "exact_match": false
+        },
+        "evidence_doc_type_recall": 0.5,
+        "fallback_correctness": true,
+        "no_auto_send_compliance": true
+      },
+      "mismatches": [
+        {
+          "metric": "risk_flags",
+          "expected": "policy_conflict",
+          "predicted": "low_confidence"
+        },
+        {
+          "metric": "evidence_doc_type_recall",
+          "expected": "FAQ,Policy",
+          "predicted": "FAQ,POLICY"
+        }
+      ]
+    },
+    {
+      "case_id": "case_othe_003",
+      "prediction": {
+        "predicted_issue_type": "other",
+        "predicted_risk_flags": [
+          "low_confidence"
+        ],
+        "predicted_severity": "LOW",
+        "predicted_must_human_review": true,
+        "predicted_evidence_doc_types": [
+          "CASE",
+          "FAQ",
+          "POLICY"
+        ],
+        "predicted_fallback_required": false,
+        "predicted_no_auto_send": true
+      },
+      "metrics": {
+        "intent_accuracy": true,
+        "severity_accuracy": true,
+        "must_human_review_accuracy": false,
+        "risk_flag_metrics": {
+          "precision": 0.0,
+          "recall": 1.0,
+          "f1": 0.0,
+          "exact_match": false
+        },
+        "evidence_doc_type_recall": 0.5,
+        "fallback_correctness": true,
+        "no_auto_send_compliance": true
+      },
+      "mismatches": [
+        {
+          "metric": "must_human_review_accuracy",
+          "expected": "False",
+          "predicted": "True"
+        },
+        {
+          "metric": "risk_flags",
+          "expected": "",
+          "predicted": "low_confidence"
+        },
+        {
+          "metric": "evidence_doc_type_recall",
+          "expected": "FAQ,Policy",
+          "predicted": "CASE,FAQ,POLICY"
+        }
+      ]
+    },
+    {
+      "case_id": "case_othe_004",
+      "prediction": {
+        "predicted_issue_type": "other",
+        "predicted_risk_flags": [
+          "low_confidence"
+        ],
+        "predicted_severity": "LOW",
+        "predicted_must_human_review": true,
+        "predicted_evidence_doc_types": [
+          "CASE",
+          "FAQ",
+          "POLICY"
+        ],
+        "predicted_fallback_required": false,
+        "predicted_no_auto_send": true
+      },
+      "metrics": {
+        "intent_accuracy": true,
+        "severity_accuracy": true,
+        "must_human_review_accuracy": false,
+        "risk_flag_metrics": {
+          "precision": 0.0,
+          "recall": 1.0,
+          "f1": 0.0,
+          "exact_match": false
+        },
+        "evidence_doc_type_recall": 1.0,
+        "fallback_correctness": true,
+        "no_auto_send_compliance": true
+      },
+      "mismatches": [
+        {
+          "metric": "must_human_review_accuracy",
+          "expected": "False",
+          "predicted": "True"
+        },
+        {
+          "metric": "risk_flags",
+          "expected": "",
+          "predicted": "low_confidence"
+        }
+      ]
+    },
+    {
+      "case_id": "case_othe_005",
+      "prediction": {
+        "predicted_issue_type": "other",
+        "predicted_risk_flags": [
+          "low_confidence"
+        ],
+        "predicted_severity": "LOW",
+        "predicted_must_human_review": true,
+        "predicted_evidence_doc_types": [
+          "CASE",
+          "FAQ",
+          "POLICY"
+        ],
+        "predicted_fallback_required": false,
+        "predicted_no_auto_send": true
+      },
+      "metrics": {
+        "intent_accuracy": true,
+        "severity_accuracy": true,
+        "must_human_review_accuracy": false,
+        "risk_flag_metrics": {
+          "precision": 0.0,
+          "recall": 1.0,
+          "f1": 0.0,
+          "exact_match": false
+        },
+        "evidence_doc_type_recall": 1.0,
+        "fallback_correctness": true,
+        "no_auto_send_compliance": true
+      },
+      "mismatches": [
+        {
+          "metric": "must_human_review_accuracy",
+          "expected": "False",
+          "predicted": "True"
+        },
+        {
+          "metric": "risk_flags",
+          "expected": "",
+          "predicted": "low_confidence"
+        }
+      ]
+    },
+    {
+      "case_id": "case_othe_006",
+      "prediction": {
+        "predicted_issue_type": "product_consulting",
+        "predicted_risk_flags": [],
+        "predicted_severity": "LOW",
+        "predicted_must_human_review": false,
+        "predicted_evidence_doc_types": [
+          "CASE",
+          "FAQ",
+          "POLICY"
+        ],
+        "predicted_fallback_required": false,
+        "predicted_no_auto_send": true
+      },
+      "metrics": {
+        "intent_accuracy": false,
+        "severity_accuracy": true,
+        "must_human_review_accuracy": true,
+        "risk_flag_metrics": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "exact_match": true
+        },
+        "evidence_doc_type_recall": 1.0,
+        "fallback_correctness": true,
+        "no_auto_send_compliance": true
+      },
+      "mismatches": [
+        {
+          "metric": "intent_accuracy",
+          "expected": "other",
+          "predicted": "product_consulting"
+        }
+      ]
+    },
+    {
+      "case_id": "case_othe_007",
+      "prediction": {
+        "predicted_issue_type": "other",
+        "predicted_risk_flags": [
+          "low_confidence"
+        ],
+        "predicted_severity": "LOW",
+        "predicted_must_human_review": true,
+        "predicted_evidence_doc_types": [
+          "CASE",
+          "FAQ",
+          "POLICY"
+        ],
+        "predicted_fallback_required": false,
+        "predicted_no_auto_send": true
+      },
+      "metrics": {
+        "intent_accuracy": true,
+        "severity_accuracy": true,
+        "must_human_review_accuracy": false,
+        "risk_flag_metrics": {
+          "precision": 0.0,
+          "recall": 1.0,
+          "f1": 0.0,
+          "exact_match": false
+        },
+        "evidence_doc_type_recall": 1.0,
+        "fallback_correctness": true,
+        "no_auto_send_compliance": true
+      },
+      "mismatches": [
+        {
+          "metric": "must_human_review_accuracy",
+          "expected": "False",
+          "predicted": "True"
+        },
+        {
+          "metric": "risk_flags",
+          "expected": "",
+          "predicted": "low_confidence"
+        }
+      ]
+    },
+    {
+      "case_id": "case_othe_008",
+      "prediction": {
+        "predicted_issue_type": "other",
+        "predicted_risk_flags": [
+          "low_confidence"
+        ],
+        "predicted_severity": "LOW",
+        "predicted_must_human_review": true,
+        "predicted_evidence_doc_types": [
+          "CASE",
+          "FAQ",
+          "POLICY"
+        ],
+        "predicted_fallback_required": false,
+        "predicted_no_auto_send": true
+      },
+      "metrics": {
+        "intent_accuracy": true,
+        "severity_accuracy": true,
+        "must_human_review_accuracy": false,
+        "risk_flag_metrics": {
+          "precision": 0.0,
+          "recall": 1.0,
+          "f1": 0.0,
+          "exact_match": false
+        },
+        "evidence_doc_type_recall": 1.0,
+        "fallback_correctness": true,
+        "no_auto_send_compliance": true
+      },
+      "mismatches": [
+        {
+          "metric": "must_human_review_accuracy",
+          "expected": "False",
+          "predicted": "True"
+        },
+        {
+          "metric": "risk_flags",
+          "expected": "",
+          "predicted": "low_confidence"
+        }
+      ]
+    },
+    {
+      "case_id": "case_othe_009",
+      "prediction": {
+        "predicted_issue_type": "other",
+        "predicted_risk_flags": [
+          "low_confidence"
+        ],
+        "predicted_severity": "LOW",
+        "predicted_must_human_review": true,
+        "predicted_evidence_doc_types": [
+          "CASE",
+          "FAQ",
+          "POLICY"
+        ],
+        "predicted_fallback_required": false,
+        "predicted_no_auto_send": true
+      },
+      "metrics": {
+        "intent_accuracy": true,
+        "severity_accuracy": false,
+        "must_human_review_accuracy": true,
+        "risk_flag_metrics": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "exact_match": false
+        },
+        "evidence_doc_type_recall": 0.0,
+        "fallback_correctness": true,
+        "no_auto_send_compliance": true
+      },
+      "mismatches": [
+        {
+          "metric": "severity_accuracy",
+          "expected": "MEDIUM",
+          "predicted": "LOW"
+        },
+        {
+          "metric": "risk_flags",
+          "expected": "compensation_risk,policy_conflict",
+          "predicted": "low_confidence"
+        },
+        {
+          "metric": "evidence_doc_type_recall",
+          "expected": "Case,Policy",
+          "predicted": "CASE,FAQ,POLICY"
+        }
+      ]
+    },
+    {
+      "case_id": "case_othe_010",
+      "prediction": {
+        "predicted_issue_type": "other",
+        "predicted_risk_flags": [
+          "low_confidence"
+        ],
+        "predicted_severity": "LOW",
+        "predicted_must_human_review": true,
+        "predicted_evidence_doc_types": [
+          "CASE",
+          "FAQ",
+          "POLICY"
+        ],
+        "predicted_fallback_required": false,
+        "predicted_no_auto_send": true
+      },
+      "metrics": {
+        "intent_accuracy": true,
+        "severity_accuracy": false,
+        "must_human_review_accuracy": true,
+        "risk_flag_metrics": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "exact_match": false
+        },
+        "evidence_doc_type_recall": 0.3333333333333333,
+        "fallback_correctness": false,
+        "no_auto_send_compliance": true
+      },
+      "mismatches": [
+        {
+          "metric": "severity_accuracy",
+          "expected": "MEDIUM",
+          "predicted": "LOW"
+        },
+        {
+          "metric": "risk_flags",
+          "expected": "insufficient_evidence,policy_conflict",
+          "predicted": "low_confidence"
+        },
+        {
+          "metric": "evidence_doc_type_recall",
+          "expected": "Case,FAQ,Policy",
+          "predicted": "CASE,FAQ,POLICY"
+        },
+        {
+          "metric": "fallback_correctness",
+          "expected": "True",
+          "predicted": "False"
+        }
+      ]
+    },
+    {
+      "case_id": "case_othe_011",
+      "prediction": {
+        "predicted_issue_type": "other",
+        "predicted_risk_flags": [
+          "low_confidence"
+        ],
+        "predicted_severity": "LOW",
+        "predicted_must_human_review": true,
+        "predicted_evidence_doc_types": [
+          "CASE",
+          "FAQ",
+          "POLICY"
+        ],
+        "predicted_fallback_required": false,
+        "predicted_no_auto_send": true
+      },
+      "metrics": {
+        "intent_accuracy": true,
+        "severity_accuracy": false,
+        "must_human_review_accuracy": true,
+        "risk_flag_metrics": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "exact_match": false
+        },
+        "evidence_doc_type_recall": 0.0,
+        "fallback_correctness": true,
+        "no_auto_send_compliance": true
+      },
+      "mismatches": [
+        {
+          "metric": "severity_accuracy",
+          "expected": "MEDIUM",
+          "predicted": "LOW"
+        },
+        {
+          "metric": "risk_flags",
+          "expected": "complaint_risk",
+          "predicted": "low_confidence"
+        },
+        {
+          "metric": "evidence_doc_type_recall",
+          "expected": "Case,Policy",
+          "predicted": "CASE,FAQ,POLICY"
+        }
+      ]
+    },
+    {
+      "case_id": "case_othe_012",
+      "prediction": {
+        "predicted_issue_type": "other",
+        "predicted_risk_flags": [
+          "low_confidence"
+        ],
+        "predicted_severity": "LOW",
+        "predicted_must_human_review": true,
+        "predicted_evidence_doc_types": [
+          "CASE",
+          "FAQ",
+          "POLICY"
+        ],
+        "predicted_fallback_required": false,
+        "predicted_no_auto_send": true
+      },
+      "metrics": {
+        "intent_accuracy": true,
+        "severity_accuracy": false,
+        "must_human_review_accuracy": true,
+        "risk_flag_metrics": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "exact_match": false
+        },
+        "evidence_doc_type_recall": 0.0,
+        "fallback_correctness": true,
+        "no_auto_send_compliance": true
+      },
+      "mismatches": [
+        {
+          "metric": "severity_accuracy",
+          "expected": "MEDIUM",
+          "predicted": "LOW"
+        },
+        {
+          "metric": "risk_flags",
+          "expected": "policy_conflict",
+          "predicted": "low_confidence"
+        },
+        {
+          "metric": "evidence_doc_type_recall",
+          "expected": "Case,Policy",
+          "predicted": "CASE,FAQ,POLICY"
+        }
+      ]
+    },
+    {
+      "case_id": "case_othe_013",
+      "prediction": {
+        "predicted_issue_type": "other",
+        "predicted_risk_flags": [
+          "low_confidence"
+        ],
+        "predicted_severity": "LOW",
+        "predicted_must_human_review": true,
+        "predicted_evidence_doc_types": [
+          "CASE",
+          "FAQ",
+          "POLICY"
+        ],
+        "predicted_fallback_required": false,
+        "predicted_no_auto_send": true
+      },
+      "metrics": {
+        "intent_accuracy": true,
+        "severity_accuracy": false,
+        "must_human_review_accuracy": true,
+        "risk_flag_metrics": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "exact_match": false
+        },
+        "evidence_doc_type_recall": 0.0,
+        "fallback_correctness": true,
+        "no_auto_send_compliance": true
+      },
+      "mismatches": [
+        {
+          "metric": "severity_accuracy",
+          "expected": "MEDIUM",
+          "predicted": "LOW"
+        },
+        {
+          "metric": "risk_flags",
+          "expected": "complaint_risk,policy_conflict",
+          "predicted": "low_confidence"
+        },
+        {
+          "metric": "evidence_doc_type_recall",
+          "expected": "Case,Policy",
+          "predicted": "CASE,FAQ,POLICY"
+        }
+      ]
+    },
+    {
+      "case_id": "case_prod_001",
+      "prediction": {
+        "predicted_issue_type": "other",
+        "predicted_risk_flags": [
+          "low_confidence"
+        ],
+        "predicted_severity": "LOW",
+        "predicted_must_human_review": true,
+        "predicted_evidence_doc_types": [
+          "CASE",
+          "FAQ",
+          "POLICY"
+        ],
+        "predicted_fallback_required": false,
+        "predicted_no_auto_send": true
+      },
+      "metrics": {
+        "intent_accuracy": false,
+        "severity_accuracy": true,
+        "must_human_review_accuracy": false,
+        "risk_flag_metrics": {
+          "precision": 0.0,
+          "recall": 1.0,
+          "f1": 0.0,
+          "exact_match": false
+        },
+        "evidence_doc_type_recall": 1.0,
+        "fallback_correctness": true,
+        "no_auto_send_compliance": true
+      },
+      "mismatches": [
+        {
+          "metric": "intent_accuracy",
+          "expected": "product_consulting",
+          "predicted": "other"
+        },
+        {
+          "metric": "must_human_review_accuracy",
+          "expected": "False",
+          "predicted": "True"
+        },
+        {
+          "metric": "risk_flags",
+          "expected": "",
+          "predicted": "low_confidence"
+        }
+      ]
+    },
+    {
+      "case_id": "case_prod_002",
+      "prediction": {
+        "predicted_issue_type": "other",
+        "predicted_risk_flags": [
+          "low_confidence"
+        ],
+        "predicted_severity": "LOW",
+        "predicted_must_human_review": true,
+        "predicted_evidence_doc_types": [
+          "CASE",
+          "FAQ",
+          "POLICY"
+        ],
+        "predicted_fallback_required": false,
+        "predicted_no_auto_send": true
+      },
+      "metrics": {
+        "intent_accuracy": false,
+        "severity_accuracy": true,
+        "must_human_review_accuracy": false,
+        "risk_flag_metrics": {
+          "precision": 0.0,
+          "recall": 1.0,
+          "f1": 0.0,
+          "exact_match": false
+        },
+        "evidence_doc_type_recall": 1.0,
+        "fallback_correctness": true,
+        "no_auto_send_compliance": true
+      },
+      "mismatches": [
+        {
+          "metric": "intent_accuracy",
+          "expected": "product_consulting",
+          "predicted": "other"
+        },
+        {
+          "metric": "must_human_review_accuracy",
+          "expected": "False",
+          "predicted": "True"
+        },
+        {
+          "metric": "risk_flags",
+          "expected": "",
+          "predicted": "low_confidence"
+        }
+      ]
+    },
+    {
+      "case_id": "case_prod_003",
+      "prediction": {
+        "predicted_issue_type": "other",
+        "predicted_risk_flags": [
+          "low_confidence"
+        ],
+        "predicted_severity": "LOW",
+        "predicted_must_human_review": true,
+        "predicted_evidence_doc_types": [
+          "CASE",
+          "FAQ",
+          "POLICY"
+        ],
+        "predicted_fallback_required": false,
+        "predicted_no_auto_send": true
+      },
+      "metrics": {
+        "intent_accuracy": false,
+        "severity_accuracy": true,
+        "must_human_review_accuracy": false,
+        "risk_flag_metrics": {
+          "precision": 0.0,
+          "recall": 1.0,
+          "f1": 0.0,
+          "exact_match": false
+        },
+        "evidence_doc_type_recall": 1.0,
+        "fallback_correctness": true,
+        "no_auto_send_compliance": true
+      },
+      "mismatches": [
+        {
+          "metric": "intent_accuracy",
+          "expected": "product_consulting",
+          "predicted": "other"
+        },
+        {
+          "metric": "must_human_review_accuracy",
+          "expected": "False",
+          "predicted": "True"
+        },
+        {
+          "metric": "risk_flags",
+          "expected": "",
+          "predicted": "low_confidence"
+        }
+      ]
+    },
+    {
+      "case_id": "case_prod_004",
+      "prediction": {
+        "predicted_issue_type": "other",
+        "predicted_risk_flags": [
+          "low_confidence"
+        ],
+        "predicted_severity": "LOW",
+        "predicted_must_human_review": true,
+        "predicted_evidence_doc_types": [
+          "CASE",
+          "FAQ",
+          "POLICY"
+        ],
+        "predicted_fallback_required": false,
+        "predicted_no_auto_send": true
+      },
+      "metrics": {
+        "intent_accuracy": false,
+        "severity_accuracy": true,
+        "must_human_review_accuracy": false,
+        "risk_flag_metrics": {
+          "precision": 0.0,
+          "recall": 1.0,
+          "f1": 0.0,
+          "exact_match": false
+        },
+        "evidence_doc_type_recall": 1.0,
+        "fallback_correctness": true,
+        "no_auto_send_compliance": true
+      },
+      "mismatches": [
+        {
+          "metric": "intent_accuracy",
+          "expected": "product_consulting",
+          "predicted": "other"
+        },
+        {
+          "metric": "must_human_review_accuracy",
+          "expected": "False",
+          "predicted": "True"
+        },
+        {
+          "metric": "risk_flags",
+          "expected": "",
+          "predicted": "low_confidence"
+        }
+      ]
+    },
+    {
+      "case_id": "case_prod_005",
+      "prediction": {
+        "predicted_issue_type": "other",
+        "predicted_risk_flags": [
+          "low_confidence"
+        ],
+        "predicted_severity": "LOW",
+        "predicted_must_human_review": true,
+        "predicted_evidence_doc_types": [
+          "CASE",
+          "FAQ",
+          "POLICY"
+        ],
+        "predicted_fallback_required": false,
+        "predicted_no_auto_send": true
+      },
+      "metrics": {
+        "intent_accuracy": false,
+        "severity_accuracy": true,
+        "must_human_review_accuracy": false,
+        "risk_flag_metrics": {
+          "precision": 0.0,
+          "recall": 1.0,
+          "f1": 0.0,
+          "exact_match": false
+        },
+        "evidence_doc_type_recall": 1.0,
+        "fallback_correctness": true,
+        "no_auto_send_compliance": true
+      },
+      "mismatches": [
+        {
+          "metric": "intent_accuracy",
+          "expected": "product_consulting",
+          "predicted": "other"
+        },
+        {
+          "metric": "must_human_review_accuracy",
+          "expected": "False",
+          "predicted": "True"
+        },
+        {
+          "metric": "risk_flags",
+          "expected": "",
+          "predicted": "low_confidence"
+        }
+      ]
+    },
+    {
+      "case_id": "case_prod_006",
+      "prediction": {
+        "predicted_issue_type": "other",
+        "predicted_risk_flags": [
+          "low_confidence"
+        ],
+        "predicted_severity": "LOW",
+        "predicted_must_human_review": true,
+        "predicted_evidence_doc_types": [
+          "CASE",
+          "FAQ",
+          "POLICY"
+        ],
+        "predicted_fallback_required": false,
+        "predicted_no_auto_send": true
+      },
+      "metrics": {
+        "intent_accuracy": false,
+        "severity_accuracy": true,
+        "must_human_review_accuracy": false,
+        "risk_flag_metrics": {
+          "precision": 0.0,
+          "recall": 1.0,
+          "f1": 0.0,
+          "exact_match": false
+        },
+        "evidence_doc_type_recall": 0.5,
+        "fallback_correctness": true,
+        "no_auto_send_compliance": true
+      },
+      "mismatches": [
+        {
+          "metric": "intent_accuracy",
+          "expected": "product_consulting",
+          "predicted": "other"
+        },
+        {
+          "metric": "must_human_review_accuracy",
+          "expected": "False",
+          "predicted": "True"
+        },
+        {
+          "metric": "risk_flags",
+          "expected": "",
+          "predicted": "low_confidence"
+        },
+        {
+          "metric": "evidence_doc_type_recall",
+          "expected": "FAQ,Policy",
+          "predicted": "CASE,FAQ,POLICY"
+        }
+      ]
+    },
+    {
+      "case_id": "case_prod_007",
+      "prediction": {
+        "predicted_issue_type": "other",
+        "predicted_risk_flags": [
+          "low_confidence"
+        ],
+        "predicted_severity": "LOW",
+        "predicted_must_human_review": true,
+        "predicted_evidence_doc_types": [
+          "CASE",
+          "FAQ",
+          "POLICY"
+        ],
+        "predicted_fallback_required": false,
+        "predicted_no_auto_send": true
+      },
+      "metrics": {
+        "intent_accuracy": false,
+        "severity_accuracy": true,
+        "must_human_review_accuracy": false,
+        "risk_flag_metrics": {
+          "precision": 0.0,
+          "recall": 1.0,
+          "f1": 0.0,
+          "exact_match": false
+        },
+        "evidence_doc_type_recall": 1.0,
+        "fallback_correctness": true,
+        "no_auto_send_compliance": true
+      },
+      "mismatches": [
+        {
+          "metric": "intent_accuracy",
+          "expected": "product_consulting",
+          "predicted": "other"
+        },
+        {
+          "metric": "must_human_review_accuracy",
+          "expected": "False",
+          "predicted": "True"
+        },
+        {
+          "metric": "risk_flags",
+          "expected": "",
+          "predicted": "low_confidence"
+        }
+      ]
+    },
+    {
+      "case_id": "case_prod_008",
+      "prediction": {
+        "predicted_issue_type": "other",
+        "predicted_risk_flags": [
+          "low_confidence"
+        ],
+        "predicted_severity": "LOW",
+        "predicted_must_human_review": true,
+        "predicted_evidence_doc_types": [
+          "CASE",
+          "FAQ",
+          "POLICY"
+        ],
+        "predicted_fallback_required": false,
+        "predicted_no_auto_send": true
+      },
+      "metrics": {
+        "intent_accuracy": false,
+        "severity_accuracy": true,
+        "must_human_review_accuracy": false,
+        "risk_flag_metrics": {
+          "precision": 0.0,
+          "recall": 1.0,
+          "f1": 0.0,
+          "exact_match": false
+        },
+        "evidence_doc_type_recall": 0.5,
+        "fallback_correctness": true,
+        "no_auto_send_compliance": true
+      },
+      "mismatches": [
+        {
+          "metric": "intent_accuracy",
+          "expected": "product_consulting",
+          "predicted": "other"
+        },
+        {
+          "metric": "must_human_review_accuracy",
+          "expected": "False",
+          "predicted": "True"
+        },
+        {
+          "metric": "risk_flags",
+          "expected": "",
+          "predicted": "low_confidence"
+        },
+        {
+          "metric": "evidence_doc_type_recall",
+          "expected": "FAQ,Policy",
+          "predicted": "CASE,FAQ,POLICY"
+        }
+      ]
+    },
+    {
+      "case_id": "case_refu_001",
+      "prediction": {
+        "predicted_issue_type": "complaint",
+        "predicted_risk_flags": [
+          "complaint_risk"
+        ],
+        "predicted_severity": "LOW",
+        "predicted_must_human_review": true,
+        "predicted_evidence_doc_types": [
+          "CASE",
+          "FAQ",
+          "POLICY"
+        ],
+        "predicted_fallback_required": false,
+        "predicted_no_auto_send": true
+      },
+      "metrics": {
+        "intent_accuracy": false,
+        "severity_accuracy": false,
+        "must_human_review_accuracy": true,
+        "risk_flag_metrics": {
+          "precision": 1.0,
+          "recall": 0.5,
+          "f1": 0.6666666666666666,
+          "exact_match": false
+        },
+        "evidence_doc_type_recall": 0.0,
+        "fallback_correctness": true,
+        "no_auto_send_compliance": true
+      },
+      "mismatches": [
+        {
+          "metric": "intent_accuracy",
+          "expected": "refund",
+          "predicted": "complaint"
+        },
+        {
+          "metric": "severity_accuracy",
+          "expected": "MEDIUM",
+          "predicted": "LOW"
+        },
+        {
+          "metric": "risk_flags",
+          "expected": "complaint_risk,low_confidence",
+          "predicted": "complaint_risk"
+        },
+        {
+          "metric": "evidence_doc_type_recall",
+          "expected": "Case,Policy",
+          "predicted": "CASE,FAQ,POLICY"
+        }
+      ]
+    },
+    {
+      "case_id": "case_refu_002",
       "prediction": {
         "predicted_issue_type": "refund",
         "predicted_risk_flags": [],
@@ -321,9 +3236,9 @@
           "f1": 1.0,
           "exact_match": true
         },
-        "evidence_doc_type_recall": 1.0,
+        "evidence_doc_type_recall": 0.5,
         "fallback_correctness": true,
-        "no_auto_send_compliance": false
+        "no_auto_send_compliance": true
       },
       "mismatches": [
         {
@@ -332,14 +3247,888 @@
           "predicted": "True"
         },
         {
-          "metric": "no_auto_send_compliance",
+          "metric": "evidence_doc_type_recall",
+          "expected": "FAQ,Policy",
+          "predicted": "CASE,FAQ,POLICY"
+        }
+      ]
+    },
+    {
+      "case_id": "case_refu_003",
+      "prediction": {
+        "predicted_issue_type": "refund",
+        "predicted_risk_flags": [],
+        "predicted_severity": "LOW",
+        "predicted_must_human_review": true,
+        "predicted_evidence_doc_types": [
+          "CASE",
+          "FAQ",
+          "POLICY"
+        ],
+        "predicted_fallback_required": false,
+        "predicted_no_auto_send": true
+      },
+      "metrics": {
+        "intent_accuracy": true,
+        "severity_accuracy": false,
+        "must_human_review_accuracy": true,
+        "risk_flag_metrics": {
+          "precision": 1.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "exact_match": false
+        },
+        "evidence_doc_type_recall": 0.0,
+        "fallback_correctness": true,
+        "no_auto_send_compliance": true
+      },
+      "mismatches": [
+        {
+          "metric": "severity_accuracy",
+          "expected": "MEDIUM",
+          "predicted": "LOW"
+        },
+        {
+          "metric": "risk_flags",
+          "expected": "complaint_risk,policy_conflict",
+          "predicted": ""
+        },
+        {
+          "metric": "evidence_doc_type_recall",
+          "expected": "Case,Policy",
+          "predicted": "CASE,FAQ,POLICY"
+        }
+      ]
+    },
+    {
+      "case_id": "case_refu_004",
+      "prediction": {
+        "predicted_issue_type": "other",
+        "predicted_risk_flags": [
+          "low_confidence"
+        ],
+        "predicted_severity": "LOW",
+        "predicted_must_human_review": true,
+        "predicted_evidence_doc_types": [
+          "CASE",
+          "FAQ",
+          "POLICY"
+        ],
+        "predicted_fallback_required": false,
+        "predicted_no_auto_send": true
+      },
+      "metrics": {
+        "intent_accuracy": false,
+        "severity_accuracy": true,
+        "must_human_review_accuracy": false,
+        "risk_flag_metrics": {
+          "precision": 0.0,
+          "recall": 1.0,
+          "f1": 0.0,
+          "exact_match": false
+        },
+        "evidence_doc_type_recall": 0.5,
+        "fallback_correctness": true,
+        "no_auto_send_compliance": true
+      },
+      "mismatches": [
+        {
+          "metric": "intent_accuracy",
+          "expected": "refund",
+          "predicted": "other"
+        },
+        {
+          "metric": "must_human_review_accuracy",
+          "expected": "False",
+          "predicted": "True"
+        },
+        {
+          "metric": "risk_flags",
+          "expected": "",
+          "predicted": "low_confidence"
+        },
+        {
+          "metric": "evidence_doc_type_recall",
+          "expected": "FAQ,Policy",
+          "predicted": "CASE,FAQ,POLICY"
+        }
+      ]
+    },
+    {
+      "case_id": "case_refu_005",
+      "prediction": {
+        "predicted_issue_type": "refund",
+        "predicted_risk_flags": [],
+        "predicted_severity": "LOW",
+        "predicted_must_human_review": true,
+        "predicted_evidence_doc_types": [
+          "CASE",
+          "FAQ",
+          "POLICY"
+        ],
+        "predicted_fallback_required": false,
+        "predicted_no_auto_send": true
+      },
+      "metrics": {
+        "intent_accuracy": true,
+        "severity_accuracy": true,
+        "must_human_review_accuracy": true,
+        "risk_flag_metrics": {
+          "precision": 1.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "exact_match": false
+        },
+        "evidence_doc_type_recall": 0.5,
+        "fallback_correctness": true,
+        "no_auto_send_compliance": true
+      },
+      "mismatches": [
+        {
+          "metric": "risk_flags",
+          "expected": "complaint_risk",
+          "predicted": ""
+        },
+        {
+          "metric": "evidence_doc_type_recall",
+          "expected": "FAQ,Policy",
+          "predicted": "CASE,FAQ,POLICY"
+        }
+      ]
+    },
+    {
+      "case_id": "case_refu_006",
+      "prediction": {
+        "predicted_issue_type": "complaint",
+        "predicted_risk_flags": [
+          "complaint_risk"
+        ],
+        "predicted_severity": "LOW",
+        "predicted_must_human_review": true,
+        "predicted_evidence_doc_types": [
+          "CASE",
+          "FAQ",
+          "POLICY"
+        ],
+        "predicted_fallback_required": false,
+        "predicted_no_auto_send": true
+      },
+      "metrics": {
+        "intent_accuracy": false,
+        "severity_accuracy": false,
+        "must_human_review_accuracy": true,
+        "risk_flag_metrics": {
+          "precision": 1.0,
+          "recall": 0.5,
+          "f1": 0.6666666666666666,
+          "exact_match": false
+        },
+        "evidence_doc_type_recall": 0.0,
+        "fallback_correctness": true,
+        "no_auto_send_compliance": true
+      },
+      "mismatches": [
+        {
+          "metric": "intent_accuracy",
+          "expected": "refund",
+          "predicted": "complaint"
+        },
+        {
+          "metric": "severity_accuracy",
+          "expected": "MEDIUM",
+          "predicted": "LOW"
+        },
+        {
+          "metric": "risk_flags",
+          "expected": "compensation_risk,complaint_risk",
+          "predicted": "complaint_risk"
+        },
+        {
+          "metric": "evidence_doc_type_recall",
+          "expected": "Case,Policy",
+          "predicted": "CASE,FAQ,POLICY"
+        }
+      ]
+    },
+    {
+      "case_id": "case_refu_007",
+      "prediction": {
+        "predicted_issue_type": "logistics",
+        "predicted_risk_flags": [],
+        "predicted_severity": "LOW",
+        "predicted_must_human_review": true,
+        "predicted_evidence_doc_types": [
+          "CASE",
+          "FAQ",
+          "POLICY"
+        ],
+        "predicted_fallback_required": false,
+        "predicted_no_auto_send": true
+      },
+      "metrics": {
+        "intent_accuracy": false,
+        "severity_accuracy": true,
+        "must_human_review_accuracy": false,
+        "risk_flag_metrics": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "exact_match": true
+        },
+        "evidence_doc_type_recall": 1.0,
+        "fallback_correctness": true,
+        "no_auto_send_compliance": true
+      },
+      "mismatches": [
+        {
+          "metric": "intent_accuracy",
+          "expected": "refund",
+          "predicted": "logistics"
+        },
+        {
+          "metric": "must_human_review_accuracy",
           "expected": "False",
           "predicted": "True"
         }
       ]
     },
     {
-      "case_id": "case_return_ex_001",
+      "case_id": "case_refu_008",
+      "prediction": {
+        "predicted_issue_type": "refund",
+        "predicted_risk_flags": [],
+        "predicted_severity": "LOW",
+        "predicted_must_human_review": true,
+        "predicted_evidence_doc_types": [
+          "CASE",
+          "FAQ",
+          "POLICY"
+        ],
+        "predicted_fallback_required": false,
+        "predicted_no_auto_send": true
+      },
+      "metrics": {
+        "intent_accuracy": true,
+        "severity_accuracy": true,
+        "must_human_review_accuracy": true,
+        "risk_flag_metrics": {
+          "precision": 1.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "exact_match": false
+        },
+        "evidence_doc_type_recall": 0.0,
+        "fallback_correctness": true,
+        "no_auto_send_compliance": true
+      },
+      "mismatches": [
+        {
+          "metric": "risk_flags",
+          "expected": "compensation_risk",
+          "predicted": ""
+        },
+        {
+          "metric": "evidence_doc_type_recall",
+          "expected": "Case,Policy",
+          "predicted": "CASE,FAQ,POLICY"
+        }
+      ]
+    },
+    {
+      "case_id": "case_refu_009",
+      "prediction": {
+        "predicted_issue_type": "refund",
+        "predicted_risk_flags": [
+          "legal_risk"
+        ],
+        "predicted_severity": "HIGH",
+        "predicted_must_human_review": true,
+        "predicted_evidence_doc_types": [
+          "CASE",
+          "FAQ",
+          "POLICY"
+        ],
+        "predicted_fallback_required": false,
+        "predicted_no_auto_send": true
+      },
+      "metrics": {
+        "intent_accuracy": true,
+        "severity_accuracy": true,
+        "must_human_review_accuracy": true,
+        "risk_flag_metrics": {
+          "precision": 1.0,
+          "recall": 0.5,
+          "f1": 0.6666666666666666,
+          "exact_match": false
+        },
+        "evidence_doc_type_recall": 0.0,
+        "fallback_correctness": true,
+        "no_auto_send_compliance": true
+      },
+      "mismatches": [
+        {
+          "metric": "risk_flags",
+          "expected": "complaint_risk,legal_risk",
+          "predicted": "legal_risk"
+        },
+        {
+          "metric": "evidence_doc_type_recall",
+          "expected": "Case,Policy",
+          "predicted": "CASE,FAQ,POLICY"
+        }
+      ]
+    },
+    {
+      "case_id": "case_refu_010",
+      "prediction": {
+        "predicted_issue_type": "return_exchange",
+        "predicted_risk_flags": [],
+        "predicted_severity": "LOW",
+        "predicted_must_human_review": true,
+        "predicted_evidence_doc_types": [
+          "CASE",
+          "FAQ",
+          "POLICY"
+        ],
+        "predicted_fallback_required": false,
+        "predicted_no_auto_send": true
+      },
+      "metrics": {
+        "intent_accuracy": false,
+        "severity_accuracy": true,
+        "must_human_review_accuracy": false,
+        "risk_flag_metrics": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "exact_match": true
+        },
+        "evidence_doc_type_recall": 0.3333333333333333,
+        "fallback_correctness": true,
+        "no_auto_send_compliance": true
+      },
+      "mismatches": [
+        {
+          "metric": "intent_accuracy",
+          "expected": "refund",
+          "predicted": "return_exchange"
+        },
+        {
+          "metric": "must_human_review_accuracy",
+          "expected": "False",
+          "predicted": "True"
+        },
+        {
+          "metric": "evidence_doc_type_recall",
+          "expected": "Case,FAQ,Policy",
+          "predicted": "CASE,FAQ,POLICY"
+        }
+      ]
+    },
+    {
+      "case_id": "case_refu_011",
+      "prediction": {
+        "predicted_issue_type": "refund",
+        "predicted_risk_flags": [],
+        "predicted_severity": "LOW",
+        "predicted_must_human_review": true,
+        "predicted_evidence_doc_types": [
+          "CASE",
+          "FAQ",
+          "POLICY"
+        ],
+        "predicted_fallback_required": false,
+        "predicted_no_auto_send": true
+      },
+      "metrics": {
+        "intent_accuracy": true,
+        "severity_accuracy": true,
+        "must_human_review_accuracy": false,
+        "risk_flag_metrics": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "exact_match": true
+        },
+        "evidence_doc_type_recall": 0.5,
+        "fallback_correctness": true,
+        "no_auto_send_compliance": true
+      },
+      "mismatches": [
+        {
+          "metric": "must_human_review_accuracy",
+          "expected": "False",
+          "predicted": "True"
+        },
+        {
+          "metric": "evidence_doc_type_recall",
+          "expected": "FAQ,Policy",
+          "predicted": "CASE,FAQ,POLICY"
+        }
+      ]
+    },
+    {
+      "case_id": "case_refu_012",
+      "prediction": {
+        "predicted_issue_type": "logistics",
+        "predicted_risk_flags": [],
+        "predicted_severity": "LOW",
+        "predicted_must_human_review": true,
+        "predicted_evidence_doc_types": [
+          "CASE",
+          "FAQ",
+          "POLICY"
+        ],
+        "predicted_fallback_required": false,
+        "predicted_no_auto_send": true
+      },
+      "metrics": {
+        "intent_accuracy": false,
+        "severity_accuracy": false,
+        "must_human_review_accuracy": true,
+        "risk_flag_metrics": {
+          "precision": 1.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "exact_match": false
+        },
+        "evidence_doc_type_recall": 0.3333333333333333,
+        "fallback_correctness": false,
+        "no_auto_send_compliance": true
+      },
+      "mismatches": [
+        {
+          "metric": "intent_accuracy",
+          "expected": "refund",
+          "predicted": "logistics"
+        },
+        {
+          "metric": "severity_accuracy",
+          "expected": "MEDIUM",
+          "predicted": "LOW"
+        },
+        {
+          "metric": "risk_flags",
+          "expected": "complaint_risk,insufficient_evidence",
+          "predicted": ""
+        },
+        {
+          "metric": "evidence_doc_type_recall",
+          "expected": "Case,FAQ,Policy",
+          "predicted": "CASE,FAQ,POLICY"
+        },
+        {
+          "metric": "fallback_correctness",
+          "expected": "True",
+          "predicted": "False"
+        }
+      ]
+    },
+    {
+      "case_id": "case_refu_013",
+      "prediction": {
+        "predicted_issue_type": "refund",
+        "predicted_risk_flags": [
+          "compensation_risk"
+        ],
+        "predicted_severity": "LOW",
+        "predicted_must_human_review": true,
+        "predicted_evidence_doc_types": [
+          "CASE",
+          "FAQ",
+          "POLICY"
+        ],
+        "predicted_fallback_required": false,
+        "predicted_no_auto_send": true
+      },
+      "metrics": {
+        "intent_accuracy": true,
+        "severity_accuracy": false,
+        "must_human_review_accuracy": true,
+        "risk_flag_metrics": {
+          "precision": 1.0,
+          "recall": 0.5,
+          "f1": 0.6666666666666666,
+          "exact_match": false
+        },
+        "evidence_doc_type_recall": 0.0,
+        "fallback_correctness": true,
+        "no_auto_send_compliance": true
+      },
+      "mismatches": [
+        {
+          "metric": "severity_accuracy",
+          "expected": "HIGH",
+          "predicted": "LOW"
+        },
+        {
+          "metric": "risk_flags",
+          "expected": "compensation_risk,policy_conflict",
+          "predicted": "compensation_risk"
+        },
+        {
+          "metric": "evidence_doc_type_recall",
+          "expected": "Case,Policy",
+          "predicted": "CASE,FAQ,POLICY"
+        }
+      ]
+    },
+    {
+      "case_id": "case_refu_014",
+      "prediction": {
+        "predicted_issue_type": "other",
+        "predicted_risk_flags": [
+          "low_confidence"
+        ],
+        "predicted_severity": "LOW",
+        "predicted_must_human_review": true,
+        "predicted_evidence_doc_types": [
+          "CASE",
+          "FAQ",
+          "POLICY"
+        ],
+        "predicted_fallback_required": false,
+        "predicted_no_auto_send": true
+      },
+      "metrics": {
+        "intent_accuracy": false,
+        "severity_accuracy": true,
+        "must_human_review_accuracy": false,
+        "risk_flag_metrics": {
+          "precision": 0.0,
+          "recall": 1.0,
+          "f1": 0.0,
+          "exact_match": false
+        },
+        "evidence_doc_type_recall": 0.5,
+        "fallback_correctness": true,
+        "no_auto_send_compliance": true
+      },
+      "mismatches": [
+        {
+          "metric": "intent_accuracy",
+          "expected": "refund",
+          "predicted": "other"
+        },
+        {
+          "metric": "must_human_review_accuracy",
+          "expected": "False",
+          "predicted": "True"
+        },
+        {
+          "metric": "risk_flags",
+          "expected": "",
+          "predicted": "low_confidence"
+        },
+        {
+          "metric": "evidence_doc_type_recall",
+          "expected": "FAQ,Policy",
+          "predicted": "CASE,FAQ,POLICY"
+        }
+      ]
+    },
+    {
+      "case_id": "case_refu_015",
+      "prediction": {
+        "predicted_issue_type": "refund",
+        "predicted_risk_flags": [],
+        "predicted_severity": "LOW",
+        "predicted_must_human_review": true,
+        "predicted_evidence_doc_types": [
+          "CASE",
+          "FAQ",
+          "POLICY"
+        ],
+        "predicted_fallback_required": false,
+        "predicted_no_auto_send": true
+      },
+      "metrics": {
+        "intent_accuracy": true,
+        "severity_accuracy": false,
+        "must_human_review_accuracy": true,
+        "risk_flag_metrics": {
+          "precision": 1.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "exact_match": false
+        },
+        "evidence_doc_type_recall": 0.0,
+        "fallback_correctness": true,
+        "no_auto_send_compliance": true
+      },
+      "mismatches": [
+        {
+          "metric": "severity_accuracy",
+          "expected": "HIGH",
+          "predicted": "LOW"
+        },
+        {
+          "metric": "risk_flags",
+          "expected": "compensation_risk,complaint_risk,legal_risk",
+          "predicted": ""
+        },
+        {
+          "metric": "evidence_doc_type_recall",
+          "expected": "Case,Policy",
+          "predicted": "CASE,FAQ,POLICY"
+        }
+      ]
+    },
+    {
+      "case_id": "case_refu_016",
+      "prediction": {
+        "predicted_issue_type": "other",
+        "predicted_risk_flags": [
+          "low_confidence"
+        ],
+        "predicted_severity": "LOW",
+        "predicted_must_human_review": true,
+        "predicted_evidence_doc_types": [
+          "CASE",
+          "FAQ",
+          "POLICY"
+        ],
+        "predicted_fallback_required": false,
+        "predicted_no_auto_send": true
+      },
+      "metrics": {
+        "intent_accuracy": false,
+        "severity_accuracy": false,
+        "must_human_review_accuracy": true,
+        "risk_flag_metrics": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "exact_match": false
+        },
+        "evidence_doc_type_recall": 0.0,
+        "fallback_correctness": true,
+        "no_auto_send_compliance": true
+      },
+      "mismatches": [
+        {
+          "metric": "intent_accuracy",
+          "expected": "refund",
+          "predicted": "other"
+        },
+        {
+          "metric": "severity_accuracy",
+          "expected": "MEDIUM",
+          "predicted": "LOW"
+        },
+        {
+          "metric": "risk_flags",
+          "expected": "policy_conflict",
+          "predicted": "low_confidence"
+        },
+        {
+          "metric": "evidence_doc_type_recall",
+          "expected": "Case,Policy",
+          "predicted": "CASE,FAQ,POLICY"
+        }
+      ]
+    },
+    {
+      "case_id": "case_retu_001",
+      "prediction": {
+        "predicted_issue_type": "other",
+        "predicted_risk_flags": [
+          "low_confidence"
+        ],
+        "predicted_severity": "LOW",
+        "predicted_must_human_review": true,
+        "predicted_evidence_doc_types": [
+          "CASE",
+          "FAQ",
+          "POLICY"
+        ],
+        "predicted_fallback_required": false,
+        "predicted_no_auto_send": true
+      },
+      "metrics": {
+        "intent_accuracy": false,
+        "severity_accuracy": true,
+        "must_human_review_accuracy": false,
+        "risk_flag_metrics": {
+          "precision": 0.0,
+          "recall": 1.0,
+          "f1": 0.0,
+          "exact_match": false
+        },
+        "evidence_doc_type_recall": 0.5,
+        "fallback_correctness": true,
+        "no_auto_send_compliance": true
+      },
+      "mismatches": [
+        {
+          "metric": "intent_accuracy",
+          "expected": "return_exchange",
+          "predicted": "other"
+        },
+        {
+          "metric": "must_human_review_accuracy",
+          "expected": "False",
+          "predicted": "True"
+        },
+        {
+          "metric": "risk_flags",
+          "expected": "",
+          "predicted": "low_confidence"
+        },
+        {
+          "metric": "evidence_doc_type_recall",
+          "expected": "FAQ,Policy",
+          "predicted": "CASE,FAQ,POLICY"
+        }
+      ]
+    },
+    {
+      "case_id": "case_retu_002",
+      "prediction": {
+        "predicted_issue_type": "other",
+        "predicted_risk_flags": [
+          "low_confidence"
+        ],
+        "predicted_severity": "LOW",
+        "predicted_must_human_review": true,
+        "predicted_evidence_doc_types": [
+          "CASE",
+          "FAQ",
+          "POLICY"
+        ],
+        "predicted_fallback_required": false,
+        "predicted_no_auto_send": true
+      },
+      "metrics": {
+        "intent_accuracy": false,
+        "severity_accuracy": true,
+        "must_human_review_accuracy": false,
+        "risk_flag_metrics": {
+          "precision": 0.0,
+          "recall": 1.0,
+          "f1": 0.0,
+          "exact_match": false
+        },
+        "evidence_doc_type_recall": 0.5,
+        "fallback_correctness": true,
+        "no_auto_send_compliance": true
+      },
+      "mismatches": [
+        {
+          "metric": "intent_accuracy",
+          "expected": "return_exchange",
+          "predicted": "other"
+        },
+        {
+          "metric": "must_human_review_accuracy",
+          "expected": "False",
+          "predicted": "True"
+        },
+        {
+          "metric": "risk_flags",
+          "expected": "",
+          "predicted": "low_confidence"
+        },
+        {
+          "metric": "evidence_doc_type_recall",
+          "expected": "FAQ,Policy",
+          "predicted": "CASE,FAQ,POLICY"
+        }
+      ]
+    },
+    {
+      "case_id": "case_retu_003",
+      "prediction": {
+        "predicted_issue_type": "return_exchange",
+        "predicted_risk_flags": [],
+        "predicted_severity": "LOW",
+        "predicted_must_human_review": true,
+        "predicted_evidence_doc_types": [
+          "CASE",
+          "FAQ",
+          "POLICY"
+        ],
+        "predicted_fallback_required": false,
+        "predicted_no_auto_send": true
+      },
+      "metrics": {
+        "intent_accuracy": true,
+        "severity_accuracy": true,
+        "must_human_review_accuracy": true,
+        "risk_flag_metrics": {
+          "precision": 1.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "exact_match": false
+        },
+        "evidence_doc_type_recall": 0.3333333333333333,
+        "fallback_correctness": true,
+        "no_auto_send_compliance": true
+      },
+      "mismatches": [
+        {
+          "metric": "risk_flags",
+          "expected": "complaint_risk",
+          "predicted": ""
+        },
+        {
+          "metric": "evidence_doc_type_recall",
+          "expected": "Case,FAQ,Policy",
+          "predicted": "CASE,FAQ,POLICY"
+        }
+      ]
+    },
+    {
+      "case_id": "case_retu_004",
+      "prediction": {
+        "predicted_issue_type": "return_exchange",
+        "predicted_risk_flags": [
+          "compensation_risk"
+        ],
+        "predicted_severity": "LOW",
+        "predicted_must_human_review": true,
+        "predicted_evidence_doc_types": [
+          "CASE",
+          "FAQ",
+          "POLICY"
+        ],
+        "predicted_fallback_required": false,
+        "predicted_no_auto_send": true
+      },
+      "metrics": {
+        "intent_accuracy": true,
+        "severity_accuracy": false,
+        "must_human_review_accuracy": true,
+        "risk_flag_metrics": {
+          "precision": 1.0,
+          "recall": 0.5,
+          "f1": 0.6666666666666666,
+          "exact_match": false
+        },
+        "evidence_doc_type_recall": 0.0,
+        "fallback_correctness": true,
+        "no_auto_send_compliance": true
+      },
+      "mismatches": [
+        {
+          "metric": "severity_accuracy",
+          "expected": "MEDIUM",
+          "predicted": "LOW"
+        },
+        {
+          "metric": "risk_flags",
+          "expected": "compensation_risk,policy_conflict",
+          "predicted": "compensation_risk"
+        },
+        {
+          "metric": "evidence_doc_type_recall",
+          "expected": "Case,Policy",
+          "predicted": "CASE,FAQ,POLICY"
+        }
+      ]
+    },
+    {
+      "case_id": "case_retu_005",
       "prediction": {
         "predicted_issue_type": "return_exchange",
         "predicted_risk_flags": [],
@@ -363,9 +4152,9 @@
           "f1": 1.0,
           "exact_match": true
         },
-        "evidence_doc_type_recall": 1.0,
+        "evidence_doc_type_recall": 0.3333333333333333,
         "fallback_correctness": true,
-        "no_auto_send_compliance": false
+        "no_auto_send_compliance": true
       },
       "mismatches": [
         {
@@ -374,14 +4163,695 @@
           "predicted": "True"
         },
         {
-          "metric": "no_auto_send_compliance",
-          "expected": "False",
-          "predicted": "True"
+          "metric": "evidence_doc_type_recall",
+          "expected": "Case,FAQ,Policy",
+          "predicted": "CASE,FAQ,POLICY"
         }
       ]
     },
     {
-      "case_id": "case_technical_001",
+      "case_id": "case_retu_006",
+      "prediction": {
+        "predicted_issue_type": "return_exchange",
+        "predicted_risk_flags": [],
+        "predicted_severity": "LOW",
+        "predicted_must_human_review": false,
+        "predicted_evidence_doc_types": [
+          "CASE",
+          "FAQ",
+          "POLICY"
+        ],
+        "predicted_fallback_required": false,
+        "predicted_no_auto_send": true
+      },
+      "metrics": {
+        "intent_accuracy": true,
+        "severity_accuracy": false,
+        "must_human_review_accuracy": false,
+        "risk_flag_metrics": {
+          "precision": 1.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "exact_match": false
+        },
+        "evidence_doc_type_recall": 0.0,
+        "fallback_correctness": true,
+        "no_auto_send_compliance": true
+      },
+      "mismatches": [
+        {
+          "metric": "severity_accuracy",
+          "expected": "MEDIUM",
+          "predicted": "LOW"
+        },
+        {
+          "metric": "must_human_review_accuracy",
+          "expected": "True",
+          "predicted": "False"
+        },
+        {
+          "metric": "risk_flags",
+          "expected": "compensation_risk,complaint_risk",
+          "predicted": ""
+        },
+        {
+          "metric": "evidence_doc_type_recall",
+          "expected": "Case,Policy",
+          "predicted": "CASE,FAQ,POLICY"
+        }
+      ]
+    },
+    {
+      "case_id": "case_retu_007",
+      "prediction": {
+        "predicted_issue_type": "logistics",
+        "predicted_risk_flags": [],
+        "predicted_severity": "LOW",
+        "predicted_must_human_review": false,
+        "predicted_evidence_doc_types": [
+          "CASE",
+          "FAQ",
+          "POLICY"
+        ],
+        "predicted_fallback_required": false,
+        "predicted_no_auto_send": true
+      },
+      "metrics": {
+        "intent_accuracy": false,
+        "severity_accuracy": true,
+        "must_human_review_accuracy": true,
+        "risk_flag_metrics": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "exact_match": true
+        },
+        "evidence_doc_type_recall": 0.5,
+        "fallback_correctness": true,
+        "no_auto_send_compliance": true
+      },
+      "mismatches": [
+        {
+          "metric": "intent_accuracy",
+          "expected": "return_exchange",
+          "predicted": "logistics"
+        },
+        {
+          "metric": "evidence_doc_type_recall",
+          "expected": "FAQ,Policy",
+          "predicted": "CASE,FAQ,POLICY"
+        }
+      ]
+    },
+    {
+      "case_id": "case_retu_008",
+      "prediction": {
+        "predicted_issue_type": "return_exchange",
+        "predicted_risk_flags": [],
+        "predicted_severity": "LOW",
+        "predicted_must_human_review": false,
+        "predicted_evidence_doc_types": [
+          "CASE",
+          "FAQ",
+          "POLICY"
+        ],
+        "predicted_fallback_required": false,
+        "predicted_no_auto_send": true
+      },
+      "metrics": {
+        "intent_accuracy": true,
+        "severity_accuracy": true,
+        "must_human_review_accuracy": false,
+        "risk_flag_metrics": {
+          "precision": 1.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "exact_match": false
+        },
+        "evidence_doc_type_recall": 0.0,
+        "fallback_correctness": true,
+        "no_auto_send_compliance": true
+      },
+      "mismatches": [
+        {
+          "metric": "must_human_review_accuracy",
+          "expected": "True",
+          "predicted": "False"
+        },
+        {
+          "metric": "risk_flags",
+          "expected": "policy_conflict",
+          "predicted": ""
+        },
+        {
+          "metric": "evidence_doc_type_recall",
+          "expected": "Policy",
+          "predicted": "CASE,FAQ,POLICY"
+        }
+      ]
+    },
+    {
+      "case_id": "case_retu_009",
+      "prediction": {
+        "predicted_issue_type": "other",
+        "predicted_risk_flags": [
+          "low_confidence"
+        ],
+        "predicted_severity": "LOW",
+        "predicted_must_human_review": true,
+        "predicted_evidence_doc_types": [
+          "CASE",
+          "FAQ",
+          "POLICY"
+        ],
+        "predicted_fallback_required": false,
+        "predicted_no_auto_send": true
+      },
+      "metrics": {
+        "intent_accuracy": false,
+        "severity_accuracy": true,
+        "must_human_review_accuracy": false,
+        "risk_flag_metrics": {
+          "precision": 0.0,
+          "recall": 1.0,
+          "f1": 0.0,
+          "exact_match": false
+        },
+        "evidence_doc_type_recall": 0.5,
+        "fallback_correctness": true,
+        "no_auto_send_compliance": true
+      },
+      "mismatches": [
+        {
+          "metric": "intent_accuracy",
+          "expected": "return_exchange",
+          "predicted": "other"
+        },
+        {
+          "metric": "must_human_review_accuracy",
+          "expected": "False",
+          "predicted": "True"
+        },
+        {
+          "metric": "risk_flags",
+          "expected": "",
+          "predicted": "low_confidence"
+        },
+        {
+          "metric": "evidence_doc_type_recall",
+          "expected": "FAQ,Policy",
+          "predicted": "CASE,FAQ,POLICY"
+        }
+      ]
+    },
+    {
+      "case_id": "case_retu_010",
+      "prediction": {
+        "predicted_issue_type": "return_exchange",
+        "predicted_risk_flags": [],
+        "predicted_severity": "LOW",
+        "predicted_must_human_review": false,
+        "predicted_evidence_doc_types": [
+          "CASE",
+          "FAQ",
+          "POLICY"
+        ],
+        "predicted_fallback_required": false,
+        "predicted_no_auto_send": true
+      },
+      "metrics": {
+        "intent_accuracy": true,
+        "severity_accuracy": false,
+        "must_human_review_accuracy": false,
+        "risk_flag_metrics": {
+          "precision": 1.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "exact_match": false
+        },
+        "evidence_doc_type_recall": 0.0,
+        "fallback_correctness": true,
+        "no_auto_send_compliance": true
+      },
+      "mismatches": [
+        {
+          "metric": "severity_accuracy",
+          "expected": "MEDIUM",
+          "predicted": "LOW"
+        },
+        {
+          "metric": "must_human_review_accuracy",
+          "expected": "True",
+          "predicted": "False"
+        },
+        {
+          "metric": "risk_flags",
+          "expected": "complaint_risk,policy_conflict",
+          "predicted": ""
+        },
+        {
+          "metric": "evidence_doc_type_recall",
+          "expected": "Case,Policy",
+          "predicted": "CASE,FAQ,POLICY"
+        }
+      ]
+    },
+    {
+      "case_id": "case_retu_011",
+      "prediction": {
+        "predicted_issue_type": "return_exchange",
+        "predicted_risk_flags": [],
+        "predicted_severity": "LOW",
+        "predicted_must_human_review": true,
+        "predicted_evidence_doc_types": [
+          "CASE",
+          "FAQ",
+          "POLICY"
+        ],
+        "predicted_fallback_required": false,
+        "predicted_no_auto_send": true
+      },
+      "metrics": {
+        "intent_accuracy": true,
+        "severity_accuracy": false,
+        "must_human_review_accuracy": true,
+        "risk_flag_metrics": {
+          "precision": 1.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "exact_match": false
+        },
+        "evidence_doc_type_recall": 0.0,
+        "fallback_correctness": true,
+        "no_auto_send_compliance": true
+      },
+      "mismatches": [
+        {
+          "metric": "severity_accuracy",
+          "expected": "MEDIUM",
+          "predicted": "LOW"
+        },
+        {
+          "metric": "risk_flags",
+          "expected": "complaint_risk",
+          "predicted": ""
+        },
+        {
+          "metric": "evidence_doc_type_recall",
+          "expected": "Case",
+          "predicted": "CASE,FAQ,POLICY"
+        }
+      ]
+    },
+    {
+      "case_id": "case_tech_001",
+      "prediction": {
+        "predicted_issue_type": "other",
+        "predicted_risk_flags": [
+          "low_confidence"
+        ],
+        "predicted_severity": "LOW",
+        "predicted_must_human_review": true,
+        "predicted_evidence_doc_types": [
+          "CASE",
+          "FAQ",
+          "POLICY"
+        ],
+        "predicted_fallback_required": false,
+        "predicted_no_auto_send": true
+      },
+      "metrics": {
+        "intent_accuracy": false,
+        "severity_accuracy": true,
+        "must_human_review_accuracy": false,
+        "risk_flag_metrics": {
+          "precision": 0.0,
+          "recall": 1.0,
+          "f1": 0.0,
+          "exact_match": false
+        },
+        "evidence_doc_type_recall": 1.0,
+        "fallback_correctness": true,
+        "no_auto_send_compliance": true
+      },
+      "mismatches": [
+        {
+          "metric": "intent_accuracy",
+          "expected": "technical_issue",
+          "predicted": "other"
+        },
+        {
+          "metric": "must_human_review_accuracy",
+          "expected": "False",
+          "predicted": "True"
+        },
+        {
+          "metric": "risk_flags",
+          "expected": "",
+          "predicted": "low_confidence"
+        }
+      ]
+    },
+    {
+      "case_id": "case_tech_002",
+      "prediction": {
+        "predicted_issue_type": "other",
+        "predicted_risk_flags": [
+          "low_confidence"
+        ],
+        "predicted_severity": "LOW",
+        "predicted_must_human_review": true,
+        "predicted_evidence_doc_types": [
+          "CASE",
+          "FAQ",
+          "POLICY"
+        ],
+        "predicted_fallback_required": false,
+        "predicted_no_auto_send": true
+      },
+      "metrics": {
+        "intent_accuracy": false,
+        "severity_accuracy": true,
+        "must_human_review_accuracy": false,
+        "risk_flag_metrics": {
+          "precision": 0.0,
+          "recall": 1.0,
+          "f1": 0.0,
+          "exact_match": false
+        },
+        "evidence_doc_type_recall": 1.0,
+        "fallback_correctness": true,
+        "no_auto_send_compliance": true
+      },
+      "mismatches": [
+        {
+          "metric": "intent_accuracy",
+          "expected": "technical_issue",
+          "predicted": "other"
+        },
+        {
+          "metric": "must_human_review_accuracy",
+          "expected": "False",
+          "predicted": "True"
+        },
+        {
+          "metric": "risk_flags",
+          "expected": "",
+          "predicted": "low_confidence"
+        }
+      ]
+    },
+    {
+      "case_id": "case_tech_003",
+      "prediction": {
+        "predicted_issue_type": "technical_issue",
+        "predicted_risk_flags": [],
+        "predicted_severity": "LOW",
+        "predicted_must_human_review": true,
+        "predicted_evidence_doc_types": [
+          "CASE",
+          "FAQ",
+          "POLICY"
+        ],
+        "predicted_fallback_required": false,
+        "predicted_no_auto_send": true
+      },
+      "metrics": {
+        "intent_accuracy": true,
+        "severity_accuracy": false,
+        "must_human_review_accuracy": true,
+        "risk_flag_metrics": {
+          "precision": 1.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "exact_match": false
+        },
+        "evidence_doc_type_recall": 0.3333333333333333,
+        "fallback_correctness": false,
+        "no_auto_send_compliance": true
+      },
+      "mismatches": [
+        {
+          "metric": "severity_accuracy",
+          "expected": "MEDIUM",
+          "predicted": "LOW"
+        },
+        {
+          "metric": "risk_flags",
+          "expected": "insufficient_evidence,policy_conflict",
+          "predicted": ""
+        },
+        {
+          "metric": "evidence_doc_type_recall",
+          "expected": "Case,FAQ,Policy",
+          "predicted": "CASE,FAQ,POLICY"
+        },
+        {
+          "metric": "fallback_correctness",
+          "expected": "True",
+          "predicted": "False"
+        }
+      ]
+    },
+    {
+      "case_id": "case_tech_004",
+      "prediction": {
+        "predicted_issue_type": "other",
+        "predicted_risk_flags": [
+          "low_confidence"
+        ],
+        "predicted_severity": "LOW",
+        "predicted_must_human_review": true,
+        "predicted_evidence_doc_types": [
+          "CASE",
+          "FAQ",
+          "POLICY"
+        ],
+        "predicted_fallback_required": false,
+        "predicted_no_auto_send": true
+      },
+      "metrics": {
+        "intent_accuracy": false,
+        "severity_accuracy": true,
+        "must_human_review_accuracy": false,
+        "risk_flag_metrics": {
+          "precision": 0.0,
+          "recall": 1.0,
+          "f1": 0.0,
+          "exact_match": false
+        },
+        "evidence_doc_type_recall": 1.0,
+        "fallback_correctness": true,
+        "no_auto_send_compliance": true
+      },
+      "mismatches": [
+        {
+          "metric": "intent_accuracy",
+          "expected": "technical_issue",
+          "predicted": "other"
+        },
+        {
+          "metric": "must_human_review_accuracy",
+          "expected": "False",
+          "predicted": "True"
+        },
+        {
+          "metric": "risk_flags",
+          "expected": "",
+          "predicted": "low_confidence"
+        }
+      ]
+    },
+    {
+      "case_id": "case_tech_005",
+      "prediction": {
+        "predicted_issue_type": "other",
+        "predicted_risk_flags": [
+          "low_confidence"
+        ],
+        "predicted_severity": "LOW",
+        "predicted_must_human_review": true,
+        "predicted_evidence_doc_types": [
+          "CASE",
+          "FAQ",
+          "POLICY"
+        ],
+        "predicted_fallback_required": false,
+        "predicted_no_auto_send": true
+      },
+      "metrics": {
+        "intent_accuracy": false,
+        "severity_accuracy": true,
+        "must_human_review_accuracy": false,
+        "risk_flag_metrics": {
+          "precision": 0.0,
+          "recall": 1.0,
+          "f1": 0.0,
+          "exact_match": false
+        },
+        "evidence_doc_type_recall": 1.0,
+        "fallback_correctness": true,
+        "no_auto_send_compliance": true
+      },
+      "mismatches": [
+        {
+          "metric": "intent_accuracy",
+          "expected": "technical_issue",
+          "predicted": "other"
+        },
+        {
+          "metric": "must_human_review_accuracy",
+          "expected": "False",
+          "predicted": "True"
+        },
+        {
+          "metric": "risk_flags",
+          "expected": "",
+          "predicted": "low_confidence"
+        }
+      ]
+    },
+    {
+      "case_id": "case_tech_006",
+      "prediction": {
+        "predicted_issue_type": "other",
+        "predicted_risk_flags": [
+          "low_confidence"
+        ],
+        "predicted_severity": "LOW",
+        "predicted_must_human_review": true,
+        "predicted_evidence_doc_types": [
+          "CASE",
+          "FAQ",
+          "POLICY"
+        ],
+        "predicted_fallback_required": false,
+        "predicted_no_auto_send": true
+      },
+      "metrics": {
+        "intent_accuracy": false,
+        "severity_accuracy": true,
+        "must_human_review_accuracy": false,
+        "risk_flag_metrics": {
+          "precision": 0.0,
+          "recall": 1.0,
+          "f1": 0.0,
+          "exact_match": false
+        },
+        "evidence_doc_type_recall": 1.0,
+        "fallback_correctness": true,
+        "no_auto_send_compliance": true
+      },
+      "mismatches": [
+        {
+          "metric": "intent_accuracy",
+          "expected": "technical_issue",
+          "predicted": "other"
+        },
+        {
+          "metric": "must_human_review_accuracy",
+          "expected": "False",
+          "predicted": "True"
+        },
+        {
+          "metric": "risk_flags",
+          "expected": "",
+          "predicted": "low_confidence"
+        }
+      ]
+    },
+    {
+      "case_id": "case_tech_007",
+      "prediction": {
+        "predicted_issue_type": "technical_issue",
+        "predicted_risk_flags": [],
+        "predicted_severity": "LOW",
+        "predicted_must_human_review": true,
+        "predicted_evidence_doc_types": [
+          "CASE",
+          "FAQ",
+          "POLICY"
+        ],
+        "predicted_fallback_required": false,
+        "predicted_no_auto_send": true
+      },
+      "metrics": {
+        "intent_accuracy": true,
+        "severity_accuracy": true,
+        "must_human_review_accuracy": true,
+        "risk_flag_metrics": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "exact_match": true
+        },
+        "evidence_doc_type_recall": 1.0,
+        "fallback_correctness": true,
+        "no_auto_send_compliance": true
+      },
+      "mismatches": []
+    },
+    {
+      "case_id": "case_tech_008",
+      "prediction": {
+        "predicted_issue_type": "other",
+        "predicted_risk_flags": [
+          "low_confidence"
+        ],
+        "predicted_severity": "LOW",
+        "predicted_must_human_review": true,
+        "predicted_evidence_doc_types": [
+          "CASE",
+          "FAQ",
+          "POLICY"
+        ],
+        "predicted_fallback_required": false,
+        "predicted_no_auto_send": true
+      },
+      "metrics": {
+        "intent_accuracy": false,
+        "severity_accuracy": false,
+        "must_human_review_accuracy": true,
+        "risk_flag_metrics": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "exact_match": false
+        },
+        "evidence_doc_type_recall": 0.3333333333333333,
+        "fallback_correctness": false,
+        "no_auto_send_compliance": true
+      },
+      "mismatches": [
+        {
+          "metric": "intent_accuracy",
+          "expected": "technical_issue",
+          "predicted": "other"
+        },
+        {
+          "metric": "severity_accuracy",
+          "expected": "MEDIUM",
+          "predicted": "LOW"
+        },
+        {
+          "metric": "risk_flags",
+          "expected": "insufficient_evidence,policy_conflict",
+          "predicted": "low_confidence"
+        },
+        {
+          "metric": "evidence_doc_type_recall",
+          "expected": "Case,FAQ,Policy",
+          "predicted": "CASE,FAQ,POLICY"
+        },
+        {
+          "metric": "fallback_correctness",
+          "expected": "True",
+          "predicted": "False"
+        }
+      ]
+    },
+    {
+      "case_id": "case_tech_009",
       "prediction": {
         "predicted_issue_type": "technical_issue",
         "predicted_risk_flags": [],
@@ -407,95 +4877,1811 @@
         },
         "evidence_doc_type_recall": 1.0,
         "fallback_correctness": true,
-        "no_auto_send_compliance": false
+        "no_auto_send_compliance": true
       },
-      "mismatches": [
-        {
-          "metric": "no_auto_send_compliance",
-          "expected": "False",
-          "predicted": "True"
-        }
-      ]
+      "mismatches": []
     }
   ],
   "mismatches": [
     {
-      "case_id": "case_consulting_001",
-      "metric": "no_auto_send_compliance",
-      "expected": "False",
-      "predicted": "True"
+      "case_id": "case_acco_001",
+      "metric": "evidence_doc_type_recall",
+      "expected": "Case,FAQ,Policy",
+      "predicted": "CASE,FAQ,POLICY"
     },
     {
-      "case_id": "case_high_risk_001",
-      "metric": "intent_accuracy",
-      "expected": "complaint",
-      "predicted": "other"
-    },
-    {
-      "case_id": "case_logistics_001",
+      "case_id": "case_acco_001",
       "metric": "must_human_review_accuracy",
-      "expected": "False",
-      "predicted": "True"
-    },
-    {
-      "case_id": "case_logistics_001",
-      "metric": "no_auto_send_compliance",
-      "expected": "False",
-      "predicted": "True"
-    },
-    {
-      "case_id": "case_no_evidence_001",
-      "metric": "fallback_correctness",
       "expected": "True",
       "predicted": "False"
     },
     {
-      "case_id": "case_privacy_001",
-      "metric": "intent_accuracy",
-      "expected": "account_issue",
-      "predicted": "other"
-    },
-    {
-      "case_id": "case_privacy_001",
+      "case_id": "case_acco_001",
       "metric": "risk_flags",
-      "expected": "privacy_risk",
-      "predicted": "low_confidence,privacy_risk"
+      "expected": "account_security_risk",
+      "predicted": ""
     },
     {
-      "case_id": "case_privacy_001",
+      "case_id": "case_acco_001",
+      "metric": "severity_accuracy",
+      "expected": "HIGH",
+      "predicted": "LOW"
+    },
+    {
+      "case_id": "case_acco_002",
+      "metric": "evidence_doc_type_recall",
+      "expected": "FAQ,Policy",
+      "predicted": "CASE,FAQ,POLICY"
+    },
+    {
+      "case_id": "case_acco_002",
+      "metric": "risk_flags",
+      "expected": "account_security_risk",
+      "predicted": ""
+    },
+    {
+      "case_id": "case_acco_002",
       "metric": "severity_accuracy",
       "expected": "MEDIUM",
       "predicted": "LOW"
     },
     {
-      "case_id": "case_refund_001",
+      "case_id": "case_acco_003",
+      "metric": "evidence_doc_type_recall",
+      "expected": "Case,Policy",
+      "predicted": "CASE,FAQ,POLICY"
+    },
+    {
+      "case_id": "case_acco_003",
+      "metric": "intent_accuracy",
+      "expected": "account_issue",
+      "predicted": "other"
+    },
+    {
+      "case_id": "case_acco_003",
+      "metric": "risk_flags",
+      "expected": "complaint_risk,privacy_risk",
+      "predicted": "low_confidence,privacy_risk"
+    },
+    {
+      "case_id": "case_acco_003",
+      "metric": "severity_accuracy",
+      "expected": "HIGH",
+      "predicted": "LOW"
+    },
+    {
+      "case_id": "case_acco_004",
+      "metric": "evidence_doc_type_recall",
+      "expected": "Case,FAQ,Policy",
+      "predicted": "CASE,FAQ,POLICY"
+    },
+    {
+      "case_id": "case_acco_004",
+      "metric": "intent_accuracy",
+      "expected": "account_issue",
+      "predicted": "logistics"
+    },
+    {
+      "case_id": "case_acco_004",
+      "metric": "risk_flags",
+      "expected": "account_security_risk,privacy_risk",
+      "predicted": ""
+    },
+    {
+      "case_id": "case_acco_004",
+      "metric": "severity_accuracy",
+      "expected": "HIGH",
+      "predicted": "LOW"
+    },
+    {
+      "case_id": "case_acco_005",
+      "metric": "evidence_doc_type_recall",
+      "expected": "FAQ,Policy",
+      "predicted": "CASE,FAQ"
+    },
+    {
+      "case_id": "case_acco_005",
+      "metric": "fallback_correctness",
+      "expected": "True",
+      "predicted": "False"
+    },
+    {
+      "case_id": "case_acco_005",
+      "metric": "risk_flags",
+      "expected": "insufficient_evidence",
+      "predicted": "privacy_risk"
+    },
+    {
+      "case_id": "case_acco_005",
+      "metric": "severity_accuracy",
+      "expected": "MEDIUM",
+      "predicted": "LOW"
+    },
+    {
+      "case_id": "case_acco_006",
+      "metric": "evidence_doc_type_recall",
+      "expected": "Case,Policy",
+      "predicted": "CASE,FAQ,POLICY"
+    },
+    {
+      "case_id": "case_acco_006",
+      "metric": "intent_accuracy",
+      "expected": "account_issue",
+      "predicted": "other"
+    },
+    {
+      "case_id": "case_acco_006",
+      "metric": "risk_flags",
+      "expected": "account_security_risk,privacy_risk",
+      "predicted": "low_confidence"
+    },
+    {
+      "case_id": "case_acco_006",
+      "metric": "severity_accuracy",
+      "expected": "HIGH",
+      "predicted": "LOW"
+    },
+    {
+      "case_id": "case_acco_007",
+      "metric": "evidence_doc_type_recall",
+      "expected": "FAQ,Policy",
+      "predicted": "CASE,FAQ,POLICY"
+    },
+    {
+      "case_id": "case_acco_007",
+      "metric": "intent_accuracy",
+      "expected": "account_issue",
+      "predicted": "other"
+    },
+    {
+      "case_id": "case_acco_007",
+      "metric": "risk_flags",
+      "expected": "",
+      "predicted": "low_confidence"
+    },
+    {
+      "case_id": "case_acco_007",
+      "metric": "severity_accuracy",
+      "expected": "MEDIUM",
+      "predicted": "LOW"
+    },
+    {
+      "case_id": "case_acco_008",
+      "metric": "evidence_doc_type_recall",
+      "expected": "Case,FAQ,Policy",
+      "predicted": "CASE,FAQ,POLICY"
+    },
+    {
+      "case_id": "case_acco_008",
+      "metric": "severity_accuracy",
+      "expected": "HIGH",
+      "predicted": "LOW"
+    },
+    {
+      "case_id": "case_acco_009",
+      "metric": "evidence_doc_type_recall",
+      "expected": "Case,Policy",
+      "predicted": "CASE,FAQ,POLICY"
+    },
+    {
+      "case_id": "case_acco_009",
+      "metric": "fallback_correctness",
+      "expected": "True",
+      "predicted": "False"
+    },
+    {
+      "case_id": "case_acco_009",
+      "metric": "risk_flags",
+      "expected": "complaint_risk,insufficient_evidence",
+      "predicted": "policy_conflict"
+    },
+    {
+      "case_id": "case_acco_009",
+      "metric": "severity_accuracy",
+      "expected": "MEDIUM",
+      "predicted": "LOW"
+    },
+    {
+      "case_id": "case_acco_010",
+      "metric": "evidence_doc_type_recall",
+      "expected": "FAQ,Policy",
+      "predicted": "CASE,FAQ,POLICY"
+    },
+    {
+      "case_id": "case_acco_011",
+      "metric": "evidence_doc_type_recall",
+      "expected": "FAQ,Policy",
+      "predicted": "CASE,FAQ,POLICY"
+    },
+    {
+      "case_id": "case_acco_011",
+      "metric": "intent_accuracy",
+      "expected": "account_issue",
+      "predicted": "other"
+    },
+    {
+      "case_id": "case_acco_011",
       "metric": "must_human_review_accuracy",
       "expected": "False",
       "predicted": "True"
     },
     {
-      "case_id": "case_refund_001",
-      "metric": "no_auto_send_compliance",
-      "expected": "False",
-      "predicted": "True"
+      "case_id": "case_acco_011",
+      "metric": "risk_flags",
+      "expected": "",
+      "predicted": "low_confidence,privacy_risk"
     },
     {
-      "case_id": "case_return_ex_001",
+      "case_id": "case_acco_012",
+      "metric": "evidence_doc_type_recall",
+      "expected": "Case,Policy",
+      "predicted": "CASE,FAQ,POLICY"
+    },
+    {
+      "case_id": "case_acco_012",
+      "metric": "intent_accuracy",
+      "expected": "account_issue",
+      "predicted": "other"
+    },
+    {
+      "case_id": "case_acco_012",
+      "metric": "risk_flags",
+      "expected": "legal_risk,privacy_risk",
+      "predicted": "low_confidence,privacy_risk"
+    },
+    {
+      "case_id": "case_acco_012",
+      "metric": "severity_accuracy",
+      "expected": "HIGH",
+      "predicted": "LOW"
+    },
+    {
+      "case_id": "case_acco_013",
+      "metric": "evidence_doc_type_recall",
+      "expected": "FAQ,Policy",
+      "predicted": "CASE,FAQ,POLICY"
+    },
+    {
+      "case_id": "case_acco_013",
       "metric": "must_human_review_accuracy",
       "expected": "False",
       "predicted": "True"
     },
     {
-      "case_id": "case_return_ex_001",
-      "metric": "no_auto_send_compliance",
+      "case_id": "case_acco_013",
+      "metric": "risk_flags",
+      "expected": "",
+      "predicted": "privacy_risk"
+    },
+    {
+      "case_id": "case_acco_014",
+      "metric": "evidence_doc_type_recall",
+      "expected": "Case,Policy",
+      "predicted": "CASE,FAQ,POLICY"
+    },
+    {
+      "case_id": "case_acco_014",
+      "metric": "risk_flags",
+      "expected": "account_security_risk,legal_risk,privacy_risk",
+      "predicted": "privacy_risk"
+    },
+    {
+      "case_id": "case_acco_014",
+      "metric": "severity_accuracy",
+      "expected": "HIGH",
+      "predicted": "LOW"
+    },
+    {
+      "case_id": "case_acco_015",
+      "metric": "evidence_doc_type_recall",
+      "expected": "Case,FAQ,Policy",
+      "predicted": "CASE,FAQ,POLICY"
+    },
+    {
+      "case_id": "case_acco_015",
+      "metric": "intent_accuracy",
+      "expected": "account_issue",
+      "predicted": "complaint"
+    },
+    {
+      "case_id": "case_acco_015",
+      "metric": "risk_flags",
+      "expected": "account_security_risk,complaint_risk",
+      "predicted": "complaint_risk"
+    },
+    {
+      "case_id": "case_acco_015",
+      "metric": "severity_accuracy",
+      "expected": "MEDIUM",
+      "predicted": "LOW"
+    },
+    {
+      "case_id": "case_comp_001",
+      "metric": "evidence_doc_type_recall",
+      "expected": "Case",
+      "predicted": "CASE,FAQ,POLICY"
+    },
+    {
+      "case_id": "case_comp_001",
+      "metric": "severity_accuracy",
+      "expected": "MEDIUM",
+      "predicted": "LOW"
+    },
+    {
+      "case_id": "case_comp_002",
+      "metric": "evidence_doc_type_recall",
+      "expected": "Case,Policy",
+      "predicted": "CASE,FAQ,POLICY"
+    },
+    {
+      "case_id": "case_comp_002",
+      "metric": "risk_flags",
+      "expected": "complaint_risk,legal_risk",
+      "predicted": "complaint_risk"
+    },
+    {
+      "case_id": "case_comp_002",
+      "metric": "severity_accuracy",
+      "expected": "HIGH",
+      "predicted": "LOW"
+    },
+    {
+      "case_id": "case_comp_003",
+      "metric": "evidence_doc_type_recall",
+      "expected": "Case,Policy",
+      "predicted": "CASE,FAQ,POLICY"
+    },
+    {
+      "case_id": "case_comp_003",
+      "metric": "intent_accuracy",
+      "expected": "complaint",
+      "predicted": "other"
+    },
+    {
+      "case_id": "case_comp_003",
+      "metric": "risk_flags",
+      "expected": "compensation_risk,complaint_risk",
+      "predicted": "low_confidence"
+    },
+    {
+      "case_id": "case_comp_003",
+      "metric": "severity_accuracy",
+      "expected": "MEDIUM",
+      "predicted": "LOW"
+    },
+    {
+      "case_id": "case_comp_004",
+      "metric": "evidence_doc_type_recall",
+      "expected": "Case,Policy",
+      "predicted": "CASE,FAQ,POLICY"
+    },
+    {
+      "case_id": "case_comp_004",
+      "metric": "intent_accuracy",
+      "expected": "complaint",
+      "predicted": "other"
+    },
+    {
+      "case_id": "case_comp_004",
+      "metric": "risk_flags",
+      "expected": "compensation_risk,complaint_risk,legal_risk",
+      "predicted": "compensation_risk,legal_risk"
+    },
+    {
+      "case_id": "case_comp_005",
+      "metric": "evidence_doc_type_recall",
+      "expected": "Case,Policy",
+      "predicted": "CASE,FAQ,POLICY"
+    },
+    {
+      "case_id": "case_comp_005",
+      "metric": "intent_accuracy",
+      "expected": "complaint",
+      "predicted": "other"
+    },
+    {
+      "case_id": "case_comp_005",
+      "metric": "risk_flags",
+      "expected": "complaint_risk,legal_risk,privacy_risk",
+      "predicted": "low_confidence,privacy_risk"
+    },
+    {
+      "case_id": "case_comp_005",
+      "metric": "severity_accuracy",
+      "expected": "HIGH",
+      "predicted": "LOW"
+    },
+    {
+      "case_id": "case_comp_006",
+      "metric": "evidence_doc_type_recall",
+      "expected": "Case",
+      "predicted": "CASE,FAQ,POLICY"
+    },
+    {
+      "case_id": "case_comp_006",
+      "metric": "severity_accuracy",
+      "expected": "MEDIUM",
+      "predicted": "LOW"
+    },
+    {
+      "case_id": "case_comp_007",
+      "metric": "evidence_doc_type_recall",
+      "expected": "Case,Policy",
+      "predicted": "CASE,FAQ,POLICY"
+    },
+    {
+      "case_id": "case_comp_007",
+      "metric": "intent_accuracy",
+      "expected": "complaint",
+      "predicted": "return_exchange"
+    },
+    {
+      "case_id": "case_comp_007",
+      "metric": "risk_flags",
+      "expected": "compensation_risk,complaint_risk",
+      "predicted": "compensation_risk"
+    },
+    {
+      "case_id": "case_comp_007",
+      "metric": "severity_accuracy",
+      "expected": "MEDIUM",
+      "predicted": "LOW"
+    },
+    {
+      "case_id": "case_comp_008",
+      "metric": "evidence_doc_type_recall",
+      "expected": "Case",
+      "predicted": "CASE,FAQ,POLICY"
+    },
+    {
+      "case_id": "case_comp_008",
+      "metric": "intent_accuracy",
+      "expected": "complaint",
+      "predicted": "other"
+    },
+    {
+      "case_id": "case_comp_008",
+      "metric": "risk_flags",
+      "expected": "complaint_risk",
+      "predicted": "low_confidence"
+    },
+    {
+      "case_id": "case_comp_008",
+      "metric": "severity_accuracy",
+      "expected": "MEDIUM",
+      "predicted": "LOW"
+    },
+    {
+      "case_id": "case_comp_009",
+      "metric": "evidence_doc_type_recall",
+      "expected": "Case,Policy",
+      "predicted": "CASE,FAQ,POLICY"
+    },
+    {
+      "case_id": "case_comp_009",
+      "metric": "intent_accuracy",
+      "expected": "complaint",
+      "predicted": "other"
+    },
+    {
+      "case_id": "case_comp_009",
+      "metric": "risk_flags",
+      "expected": "compensation_risk,complaint_risk,policy_conflict",
+      "predicted": "low_confidence"
+    },
+    {
+      "case_id": "case_comp_009",
+      "metric": "severity_accuracy",
+      "expected": "HIGH",
+      "predicted": "LOW"
+    },
+    {
+      "case_id": "case_comp_011",
+      "metric": "intent_accuracy",
+      "expected": "complaint",
+      "predicted": "other"
+    },
+    {
+      "case_id": "case_comp_011",
+      "metric": "must_human_review_accuracy",
       "expected": "False",
       "predicted": "True"
     },
     {
-      "case_id": "case_technical_001",
-      "metric": "no_auto_send_compliance",
+      "case_id": "case_comp_011",
+      "metric": "risk_flags",
+      "expected": "",
+      "predicted": "low_confidence"
+    },
+    {
+      "case_id": "case_comp_012",
+      "metric": "evidence_doc_type_recall",
+      "expected": "Case,FAQ",
+      "predicted": "CASE,FAQ,POLICY"
+    },
+    {
+      "case_id": "case_comp_013",
+      "metric": "evidence_doc_type_recall",
+      "expected": "Case,Policy",
+      "predicted": "CASE,FAQ,POLICY"
+    },
+    {
+      "case_id": "case_comp_013",
+      "metric": "intent_accuracy",
+      "expected": "complaint",
+      "predicted": "other"
+    },
+    {
+      "case_id": "case_comp_013",
+      "metric": "risk_flags",
+      "expected": "complaint_risk,legal_risk,privacy_risk",
+      "predicted": "low_confidence,privacy_risk"
+    },
+    {
+      "case_id": "case_comp_013",
+      "metric": "severity_accuracy",
+      "expected": "HIGH",
+      "predicted": "LOW"
+    },
+    {
+      "case_id": "case_edge_001",
+      "metric": "fallback_correctness",
+      "expected": "True",
+      "predicted": "False"
+    },
+    {
+      "case_id": "case_edge_001",
+      "metric": "intent_accuracy",
+      "expected": "refund",
+      "predicted": "other"
+    },
+    {
+      "case_id": "case_edge_001",
+      "metric": "risk_flags",
+      "expected": "insufficient_evidence",
+      "predicted": "insufficient_evidence,low_confidence"
+    },
+    {
+      "case_id": "case_edge_002",
+      "metric": "evidence_doc_type_recall",
+      "expected": "Case,Policy",
+      "predicted": ""
+    },
+    {
+      "case_id": "case_edge_002",
+      "metric": "fallback_correctness",
       "expected": "False",
       "predicted": "True"
+    },
+    {
+      "case_id": "case_edge_002",
+      "metric": "risk_flags",
+      "expected": "compensation_risk,complaint_risk,policy_conflict",
+      "predicted": "complaint_risk,insufficient_evidence"
+    },
+    {
+      "case_id": "case_edge_002",
+      "metric": "severity_accuracy",
+      "expected": "MEDIUM",
+      "predicted": "LOW"
+    },
+    {
+      "case_id": "case_edge_005",
+      "metric": "risk_flags",
+      "expected": "insufficient_evidence",
+      "predicted": "insufficient_evidence,low_confidence"
+    },
+    {
+      "case_id": "case_logi_001",
+      "metric": "evidence_doc_type_recall",
+      "expected": "Case,FAQ",
+      "predicted": "CASE,FAQ,POLICY"
+    },
+    {
+      "case_id": "case_logi_002",
+      "metric": "evidence_doc_type_recall",
+      "expected": "Case,FAQ",
+      "predicted": "CASE,FAQ,POLICY"
+    },
+    {
+      "case_id": "case_logi_002",
+      "metric": "fallback_correctness",
+      "expected": "True",
+      "predicted": "False"
+    },
+    {
+      "case_id": "case_logi_002",
+      "metric": "risk_flags",
+      "expected": "insufficient_evidence",
+      "predicted": ""
+    },
+    {
+      "case_id": "case_logi_002",
+      "metric": "severity_accuracy",
+      "expected": "MEDIUM",
+      "predicted": "LOW"
+    },
+    {
+      "case_id": "case_logi_003",
+      "metric": "evidence_doc_type_recall",
+      "expected": "FAQ,Policy",
+      "predicted": "CASE,FAQ,POLICY"
+    },
+    {
+      "case_id": "case_logi_003",
+      "metric": "intent_accuracy",
+      "expected": "logistics",
+      "predicted": "other"
+    },
+    {
+      "case_id": "case_logi_003",
+      "metric": "must_human_review_accuracy",
+      "expected": "False",
+      "predicted": "True"
+    },
+    {
+      "case_id": "case_logi_003",
+      "metric": "risk_flags",
+      "expected": "",
+      "predicted": "low_confidence"
+    },
+    {
+      "case_id": "case_logi_004",
+      "metric": "must_human_review_accuracy",
+      "expected": "False",
+      "predicted": "True"
+    },
+    {
+      "case_id": "case_logi_005",
+      "metric": "evidence_doc_type_recall",
+      "expected": "Case,Policy",
+      "predicted": "CASE,FAQ,POLICY"
+    },
+    {
+      "case_id": "case_logi_005",
+      "metric": "risk_flags",
+      "expected": "compensation_risk",
+      "predicted": ""
+    },
+    {
+      "case_id": "case_logi_005",
+      "metric": "severity_accuracy",
+      "expected": "MEDIUM",
+      "predicted": "LOW"
+    },
+    {
+      "case_id": "case_logi_006",
+      "metric": "evidence_doc_type_recall",
+      "expected": "Case,FAQ",
+      "predicted": "CASE,FAQ,POLICY"
+    },
+    {
+      "case_id": "case_logi_006",
+      "metric": "fallback_correctness",
+      "expected": "True",
+      "predicted": "False"
+    },
+    {
+      "case_id": "case_logi_006",
+      "metric": "must_human_review_accuracy",
+      "expected": "True",
+      "predicted": "False"
+    },
+    {
+      "case_id": "case_logi_006",
+      "metric": "risk_flags",
+      "expected": "insufficient_evidence",
+      "predicted": ""
+    },
+    {
+      "case_id": "case_logi_006",
+      "metric": "severity_accuracy",
+      "expected": "MEDIUM",
+      "predicted": "LOW"
+    },
+    {
+      "case_id": "case_logi_007",
+      "metric": "evidence_doc_type_recall",
+      "expected": "FAQ,Policy",
+      "predicted": "CASE,FAQ,POLICY"
+    },
+    {
+      "case_id": "case_logi_007",
+      "metric": "intent_accuracy",
+      "expected": "logistics",
+      "predicted": "other"
+    },
+    {
+      "case_id": "case_logi_007",
+      "metric": "must_human_review_accuracy",
+      "expected": "False",
+      "predicted": "True"
+    },
+    {
+      "case_id": "case_logi_007",
+      "metric": "risk_flags",
+      "expected": "",
+      "predicted": "low_confidence"
+    },
+    {
+      "case_id": "case_logi_008",
+      "metric": "evidence_doc_type_recall",
+      "expected": "Case",
+      "predicted": "CASE,FAQ,POLICY"
+    },
+    {
+      "case_id": "case_logi_008",
+      "metric": "must_human_review_accuracy",
+      "expected": "True",
+      "predicted": "False"
+    },
+    {
+      "case_id": "case_logi_008",
+      "metric": "risk_flags",
+      "expected": "complaint_risk",
+      "predicted": ""
+    },
+    {
+      "case_id": "case_logi_008",
+      "metric": "severity_accuracy",
+      "expected": "MEDIUM",
+      "predicted": "LOW"
+    },
+    {
+      "case_id": "case_logi_009",
+      "metric": "evidence_doc_type_recall",
+      "expected": "FAQ,Policy",
+      "predicted": "CASE,FAQ,POLICY"
+    },
+    {
+      "case_id": "case_logi_009",
+      "metric": "risk_flags",
+      "expected": "policy_conflict",
+      "predicted": ""
+    },
+    {
+      "case_id": "case_logi_010",
+      "metric": "evidence_doc_type_recall",
+      "expected": "Case,Policy",
+      "predicted": "CASE,FAQ,POLICY"
+    },
+    {
+      "case_id": "case_logi_010",
+      "metric": "intent_accuracy",
+      "expected": "logistics",
+      "predicted": "other"
+    },
+    {
+      "case_id": "case_logi_010",
+      "metric": "risk_flags",
+      "expected": "compensation_risk,complaint_risk",
+      "predicted": "low_confidence"
+    },
+    {
+      "case_id": "case_logi_010",
+      "metric": "severity_accuracy",
+      "expected": "MEDIUM",
+      "predicted": "LOW"
+    },
+    {
+      "case_id": "case_logi_011",
+      "metric": "evidence_doc_type_recall",
+      "expected": "Case,Policy",
+      "predicted": "CASE,FAQ,POLICY"
+    },
+    {
+      "case_id": "case_logi_011",
+      "metric": "intent_accuracy",
+      "expected": "logistics",
+      "predicted": "other"
+    },
+    {
+      "case_id": "case_logi_011",
+      "metric": "risk_flags",
+      "expected": "compensation_risk,complaint_risk",
+      "predicted": "low_confidence"
+    },
+    {
+      "case_id": "case_logi_011",
+      "metric": "severity_accuracy",
+      "expected": "MEDIUM",
+      "predicted": "LOW"
+    },
+    {
+      "case_id": "case_othe_001",
+      "metric": "must_human_review_accuracy",
+      "expected": "False",
+      "predicted": "True"
+    },
+    {
+      "case_id": "case_othe_001",
+      "metric": "risk_flags",
+      "expected": "",
+      "predicted": "low_confidence"
+    },
+    {
+      "case_id": "case_othe_002",
+      "metric": "evidence_doc_type_recall",
+      "expected": "FAQ,Policy",
+      "predicted": "FAQ,POLICY"
+    },
+    {
+      "case_id": "case_othe_002",
+      "metric": "risk_flags",
+      "expected": "policy_conflict",
+      "predicted": "low_confidence"
+    },
+    {
+      "case_id": "case_othe_003",
+      "metric": "evidence_doc_type_recall",
+      "expected": "FAQ,Policy",
+      "predicted": "CASE,FAQ,POLICY"
+    },
+    {
+      "case_id": "case_othe_003",
+      "metric": "must_human_review_accuracy",
+      "expected": "False",
+      "predicted": "True"
+    },
+    {
+      "case_id": "case_othe_003",
+      "metric": "risk_flags",
+      "expected": "",
+      "predicted": "low_confidence"
+    },
+    {
+      "case_id": "case_othe_004",
+      "metric": "must_human_review_accuracy",
+      "expected": "False",
+      "predicted": "True"
+    },
+    {
+      "case_id": "case_othe_004",
+      "metric": "risk_flags",
+      "expected": "",
+      "predicted": "low_confidence"
+    },
+    {
+      "case_id": "case_othe_005",
+      "metric": "must_human_review_accuracy",
+      "expected": "False",
+      "predicted": "True"
+    },
+    {
+      "case_id": "case_othe_005",
+      "metric": "risk_flags",
+      "expected": "",
+      "predicted": "low_confidence"
+    },
+    {
+      "case_id": "case_othe_006",
+      "metric": "intent_accuracy",
+      "expected": "other",
+      "predicted": "product_consulting"
+    },
+    {
+      "case_id": "case_othe_007",
+      "metric": "must_human_review_accuracy",
+      "expected": "False",
+      "predicted": "True"
+    },
+    {
+      "case_id": "case_othe_007",
+      "metric": "risk_flags",
+      "expected": "",
+      "predicted": "low_confidence"
+    },
+    {
+      "case_id": "case_othe_008",
+      "metric": "must_human_review_accuracy",
+      "expected": "False",
+      "predicted": "True"
+    },
+    {
+      "case_id": "case_othe_008",
+      "metric": "risk_flags",
+      "expected": "",
+      "predicted": "low_confidence"
+    },
+    {
+      "case_id": "case_othe_009",
+      "metric": "evidence_doc_type_recall",
+      "expected": "Case,Policy",
+      "predicted": "CASE,FAQ,POLICY"
+    },
+    {
+      "case_id": "case_othe_009",
+      "metric": "risk_flags",
+      "expected": "compensation_risk,policy_conflict",
+      "predicted": "low_confidence"
+    },
+    {
+      "case_id": "case_othe_009",
+      "metric": "severity_accuracy",
+      "expected": "MEDIUM",
+      "predicted": "LOW"
+    },
+    {
+      "case_id": "case_othe_010",
+      "metric": "evidence_doc_type_recall",
+      "expected": "Case,FAQ,Policy",
+      "predicted": "CASE,FAQ,POLICY"
+    },
+    {
+      "case_id": "case_othe_010",
+      "metric": "fallback_correctness",
+      "expected": "True",
+      "predicted": "False"
+    },
+    {
+      "case_id": "case_othe_010",
+      "metric": "risk_flags",
+      "expected": "insufficient_evidence,policy_conflict",
+      "predicted": "low_confidence"
+    },
+    {
+      "case_id": "case_othe_010",
+      "metric": "severity_accuracy",
+      "expected": "MEDIUM",
+      "predicted": "LOW"
+    },
+    {
+      "case_id": "case_othe_011",
+      "metric": "evidence_doc_type_recall",
+      "expected": "Case,Policy",
+      "predicted": "CASE,FAQ,POLICY"
+    },
+    {
+      "case_id": "case_othe_011",
+      "metric": "risk_flags",
+      "expected": "complaint_risk",
+      "predicted": "low_confidence"
+    },
+    {
+      "case_id": "case_othe_011",
+      "metric": "severity_accuracy",
+      "expected": "MEDIUM",
+      "predicted": "LOW"
+    },
+    {
+      "case_id": "case_othe_012",
+      "metric": "evidence_doc_type_recall",
+      "expected": "Case,Policy",
+      "predicted": "CASE,FAQ,POLICY"
+    },
+    {
+      "case_id": "case_othe_012",
+      "metric": "risk_flags",
+      "expected": "policy_conflict",
+      "predicted": "low_confidence"
+    },
+    {
+      "case_id": "case_othe_012",
+      "metric": "severity_accuracy",
+      "expected": "MEDIUM",
+      "predicted": "LOW"
+    },
+    {
+      "case_id": "case_othe_013",
+      "metric": "evidence_doc_type_recall",
+      "expected": "Case,Policy",
+      "predicted": "CASE,FAQ,POLICY"
+    },
+    {
+      "case_id": "case_othe_013",
+      "metric": "risk_flags",
+      "expected": "complaint_risk,policy_conflict",
+      "predicted": "low_confidence"
+    },
+    {
+      "case_id": "case_othe_013",
+      "metric": "severity_accuracy",
+      "expected": "MEDIUM",
+      "predicted": "LOW"
+    },
+    {
+      "case_id": "case_prod_001",
+      "metric": "intent_accuracy",
+      "expected": "product_consulting",
+      "predicted": "other"
+    },
+    {
+      "case_id": "case_prod_001",
+      "metric": "must_human_review_accuracy",
+      "expected": "False",
+      "predicted": "True"
+    },
+    {
+      "case_id": "case_prod_001",
+      "metric": "risk_flags",
+      "expected": "",
+      "predicted": "low_confidence"
+    },
+    {
+      "case_id": "case_prod_002",
+      "metric": "intent_accuracy",
+      "expected": "product_consulting",
+      "predicted": "other"
+    },
+    {
+      "case_id": "case_prod_002",
+      "metric": "must_human_review_accuracy",
+      "expected": "False",
+      "predicted": "True"
+    },
+    {
+      "case_id": "case_prod_002",
+      "metric": "risk_flags",
+      "expected": "",
+      "predicted": "low_confidence"
+    },
+    {
+      "case_id": "case_prod_003",
+      "metric": "intent_accuracy",
+      "expected": "product_consulting",
+      "predicted": "other"
+    },
+    {
+      "case_id": "case_prod_003",
+      "metric": "must_human_review_accuracy",
+      "expected": "False",
+      "predicted": "True"
+    },
+    {
+      "case_id": "case_prod_003",
+      "metric": "risk_flags",
+      "expected": "",
+      "predicted": "low_confidence"
+    },
+    {
+      "case_id": "case_prod_004",
+      "metric": "intent_accuracy",
+      "expected": "product_consulting",
+      "predicted": "other"
+    },
+    {
+      "case_id": "case_prod_004",
+      "metric": "must_human_review_accuracy",
+      "expected": "False",
+      "predicted": "True"
+    },
+    {
+      "case_id": "case_prod_004",
+      "metric": "risk_flags",
+      "expected": "",
+      "predicted": "low_confidence"
+    },
+    {
+      "case_id": "case_prod_005",
+      "metric": "intent_accuracy",
+      "expected": "product_consulting",
+      "predicted": "other"
+    },
+    {
+      "case_id": "case_prod_005",
+      "metric": "must_human_review_accuracy",
+      "expected": "False",
+      "predicted": "True"
+    },
+    {
+      "case_id": "case_prod_005",
+      "metric": "risk_flags",
+      "expected": "",
+      "predicted": "low_confidence"
+    },
+    {
+      "case_id": "case_prod_006",
+      "metric": "evidence_doc_type_recall",
+      "expected": "FAQ,Policy",
+      "predicted": "CASE,FAQ,POLICY"
+    },
+    {
+      "case_id": "case_prod_006",
+      "metric": "intent_accuracy",
+      "expected": "product_consulting",
+      "predicted": "other"
+    },
+    {
+      "case_id": "case_prod_006",
+      "metric": "must_human_review_accuracy",
+      "expected": "False",
+      "predicted": "True"
+    },
+    {
+      "case_id": "case_prod_006",
+      "metric": "risk_flags",
+      "expected": "",
+      "predicted": "low_confidence"
+    },
+    {
+      "case_id": "case_prod_007",
+      "metric": "intent_accuracy",
+      "expected": "product_consulting",
+      "predicted": "other"
+    },
+    {
+      "case_id": "case_prod_007",
+      "metric": "must_human_review_accuracy",
+      "expected": "False",
+      "predicted": "True"
+    },
+    {
+      "case_id": "case_prod_007",
+      "metric": "risk_flags",
+      "expected": "",
+      "predicted": "low_confidence"
+    },
+    {
+      "case_id": "case_prod_008",
+      "metric": "evidence_doc_type_recall",
+      "expected": "FAQ,Policy",
+      "predicted": "CASE,FAQ,POLICY"
+    },
+    {
+      "case_id": "case_prod_008",
+      "metric": "intent_accuracy",
+      "expected": "product_consulting",
+      "predicted": "other"
+    },
+    {
+      "case_id": "case_prod_008",
+      "metric": "must_human_review_accuracy",
+      "expected": "False",
+      "predicted": "True"
+    },
+    {
+      "case_id": "case_prod_008",
+      "metric": "risk_flags",
+      "expected": "",
+      "predicted": "low_confidence"
+    },
+    {
+      "case_id": "case_refu_001",
+      "metric": "evidence_doc_type_recall",
+      "expected": "Case,Policy",
+      "predicted": "CASE,FAQ,POLICY"
+    },
+    {
+      "case_id": "case_refu_001",
+      "metric": "intent_accuracy",
+      "expected": "refund",
+      "predicted": "complaint"
+    },
+    {
+      "case_id": "case_refu_001",
+      "metric": "risk_flags",
+      "expected": "complaint_risk,low_confidence",
+      "predicted": "complaint_risk"
+    },
+    {
+      "case_id": "case_refu_001",
+      "metric": "severity_accuracy",
+      "expected": "MEDIUM",
+      "predicted": "LOW"
+    },
+    {
+      "case_id": "case_refu_002",
+      "metric": "evidence_doc_type_recall",
+      "expected": "FAQ,Policy",
+      "predicted": "CASE,FAQ,POLICY"
+    },
+    {
+      "case_id": "case_refu_002",
+      "metric": "must_human_review_accuracy",
+      "expected": "False",
+      "predicted": "True"
+    },
+    {
+      "case_id": "case_refu_003",
+      "metric": "evidence_doc_type_recall",
+      "expected": "Case,Policy",
+      "predicted": "CASE,FAQ,POLICY"
+    },
+    {
+      "case_id": "case_refu_003",
+      "metric": "risk_flags",
+      "expected": "complaint_risk,policy_conflict",
+      "predicted": ""
+    },
+    {
+      "case_id": "case_refu_003",
+      "metric": "severity_accuracy",
+      "expected": "MEDIUM",
+      "predicted": "LOW"
+    },
+    {
+      "case_id": "case_refu_004",
+      "metric": "evidence_doc_type_recall",
+      "expected": "FAQ,Policy",
+      "predicted": "CASE,FAQ,POLICY"
+    },
+    {
+      "case_id": "case_refu_004",
+      "metric": "intent_accuracy",
+      "expected": "refund",
+      "predicted": "other"
+    },
+    {
+      "case_id": "case_refu_004",
+      "metric": "must_human_review_accuracy",
+      "expected": "False",
+      "predicted": "True"
+    },
+    {
+      "case_id": "case_refu_004",
+      "metric": "risk_flags",
+      "expected": "",
+      "predicted": "low_confidence"
+    },
+    {
+      "case_id": "case_refu_005",
+      "metric": "evidence_doc_type_recall",
+      "expected": "FAQ,Policy",
+      "predicted": "CASE,FAQ,POLICY"
+    },
+    {
+      "case_id": "case_refu_005",
+      "metric": "risk_flags",
+      "expected": "complaint_risk",
+      "predicted": ""
+    },
+    {
+      "case_id": "case_refu_006",
+      "metric": "evidence_doc_type_recall",
+      "expected": "Case,Policy",
+      "predicted": "CASE,FAQ,POLICY"
+    },
+    {
+      "case_id": "case_refu_006",
+      "metric": "intent_accuracy",
+      "expected": "refund",
+      "predicted": "complaint"
+    },
+    {
+      "case_id": "case_refu_006",
+      "metric": "risk_flags",
+      "expected": "compensation_risk,complaint_risk",
+      "predicted": "complaint_risk"
+    },
+    {
+      "case_id": "case_refu_006",
+      "metric": "severity_accuracy",
+      "expected": "MEDIUM",
+      "predicted": "LOW"
+    },
+    {
+      "case_id": "case_refu_007",
+      "metric": "intent_accuracy",
+      "expected": "refund",
+      "predicted": "logistics"
+    },
+    {
+      "case_id": "case_refu_007",
+      "metric": "must_human_review_accuracy",
+      "expected": "False",
+      "predicted": "True"
+    },
+    {
+      "case_id": "case_refu_008",
+      "metric": "evidence_doc_type_recall",
+      "expected": "Case,Policy",
+      "predicted": "CASE,FAQ,POLICY"
+    },
+    {
+      "case_id": "case_refu_008",
+      "metric": "risk_flags",
+      "expected": "compensation_risk",
+      "predicted": ""
+    },
+    {
+      "case_id": "case_refu_009",
+      "metric": "evidence_doc_type_recall",
+      "expected": "Case,Policy",
+      "predicted": "CASE,FAQ,POLICY"
+    },
+    {
+      "case_id": "case_refu_009",
+      "metric": "risk_flags",
+      "expected": "complaint_risk,legal_risk",
+      "predicted": "legal_risk"
+    },
+    {
+      "case_id": "case_refu_010",
+      "metric": "evidence_doc_type_recall",
+      "expected": "Case,FAQ,Policy",
+      "predicted": "CASE,FAQ,POLICY"
+    },
+    {
+      "case_id": "case_refu_010",
+      "metric": "intent_accuracy",
+      "expected": "refund",
+      "predicted": "return_exchange"
+    },
+    {
+      "case_id": "case_refu_010",
+      "metric": "must_human_review_accuracy",
+      "expected": "False",
+      "predicted": "True"
+    },
+    {
+      "case_id": "case_refu_011",
+      "metric": "evidence_doc_type_recall",
+      "expected": "FAQ,Policy",
+      "predicted": "CASE,FAQ,POLICY"
+    },
+    {
+      "case_id": "case_refu_011",
+      "metric": "must_human_review_accuracy",
+      "expected": "False",
+      "predicted": "True"
+    },
+    {
+      "case_id": "case_refu_012",
+      "metric": "evidence_doc_type_recall",
+      "expected": "Case,FAQ,Policy",
+      "predicted": "CASE,FAQ,POLICY"
+    },
+    {
+      "case_id": "case_refu_012",
+      "metric": "fallback_correctness",
+      "expected": "True",
+      "predicted": "False"
+    },
+    {
+      "case_id": "case_refu_012",
+      "metric": "intent_accuracy",
+      "expected": "refund",
+      "predicted": "logistics"
+    },
+    {
+      "case_id": "case_refu_012",
+      "metric": "risk_flags",
+      "expected": "complaint_risk,insufficient_evidence",
+      "predicted": ""
+    },
+    {
+      "case_id": "case_refu_012",
+      "metric": "severity_accuracy",
+      "expected": "MEDIUM",
+      "predicted": "LOW"
+    },
+    {
+      "case_id": "case_refu_013",
+      "metric": "evidence_doc_type_recall",
+      "expected": "Case,Policy",
+      "predicted": "CASE,FAQ,POLICY"
+    },
+    {
+      "case_id": "case_refu_013",
+      "metric": "risk_flags",
+      "expected": "compensation_risk,policy_conflict",
+      "predicted": "compensation_risk"
+    },
+    {
+      "case_id": "case_refu_013",
+      "metric": "severity_accuracy",
+      "expected": "HIGH",
+      "predicted": "LOW"
+    },
+    {
+      "case_id": "case_refu_014",
+      "metric": "evidence_doc_type_recall",
+      "expected": "FAQ,Policy",
+      "predicted": "CASE,FAQ,POLICY"
+    },
+    {
+      "case_id": "case_refu_014",
+      "metric": "intent_accuracy",
+      "expected": "refund",
+      "predicted": "other"
+    },
+    {
+      "case_id": "case_refu_014",
+      "metric": "must_human_review_accuracy",
+      "expected": "False",
+      "predicted": "True"
+    },
+    {
+      "case_id": "case_refu_014",
+      "metric": "risk_flags",
+      "expected": "",
+      "predicted": "low_confidence"
+    },
+    {
+      "case_id": "case_refu_015",
+      "metric": "evidence_doc_type_recall",
+      "expected": "Case,Policy",
+      "predicted": "CASE,FAQ,POLICY"
+    },
+    {
+      "case_id": "case_refu_015",
+      "metric": "risk_flags",
+      "expected": "compensation_risk,complaint_risk,legal_risk",
+      "predicted": ""
+    },
+    {
+      "case_id": "case_refu_015",
+      "metric": "severity_accuracy",
+      "expected": "HIGH",
+      "predicted": "LOW"
+    },
+    {
+      "case_id": "case_refu_016",
+      "metric": "evidence_doc_type_recall",
+      "expected": "Case,Policy",
+      "predicted": "CASE,FAQ,POLICY"
+    },
+    {
+      "case_id": "case_refu_016",
+      "metric": "intent_accuracy",
+      "expected": "refund",
+      "predicted": "other"
+    },
+    {
+      "case_id": "case_refu_016",
+      "metric": "risk_flags",
+      "expected": "policy_conflict",
+      "predicted": "low_confidence"
+    },
+    {
+      "case_id": "case_refu_016",
+      "metric": "severity_accuracy",
+      "expected": "MEDIUM",
+      "predicted": "LOW"
+    },
+    {
+      "case_id": "case_retu_001",
+      "metric": "evidence_doc_type_recall",
+      "expected": "FAQ,Policy",
+      "predicted": "CASE,FAQ,POLICY"
+    },
+    {
+      "case_id": "case_retu_001",
+      "metric": "intent_accuracy",
+      "expected": "return_exchange",
+      "predicted": "other"
+    },
+    {
+      "case_id": "case_retu_001",
+      "metric": "must_human_review_accuracy",
+      "expected": "False",
+      "predicted": "True"
+    },
+    {
+      "case_id": "case_retu_001",
+      "metric": "risk_flags",
+      "expected": "",
+      "predicted": "low_confidence"
+    },
+    {
+      "case_id": "case_retu_002",
+      "metric": "evidence_doc_type_recall",
+      "expected": "FAQ,Policy",
+      "predicted": "CASE,FAQ,POLICY"
+    },
+    {
+      "case_id": "case_retu_002",
+      "metric": "intent_accuracy",
+      "expected": "return_exchange",
+      "predicted": "other"
+    },
+    {
+      "case_id": "case_retu_002",
+      "metric": "must_human_review_accuracy",
+      "expected": "False",
+      "predicted": "True"
+    },
+    {
+      "case_id": "case_retu_002",
+      "metric": "risk_flags",
+      "expected": "",
+      "predicted": "low_confidence"
+    },
+    {
+      "case_id": "case_retu_003",
+      "metric": "evidence_doc_type_recall",
+      "expected": "Case,FAQ,Policy",
+      "predicted": "CASE,FAQ,POLICY"
+    },
+    {
+      "case_id": "case_retu_003",
+      "metric": "risk_flags",
+      "expected": "complaint_risk",
+      "predicted": ""
+    },
+    {
+      "case_id": "case_retu_004",
+      "metric": "evidence_doc_type_recall",
+      "expected": "Case,Policy",
+      "predicted": "CASE,FAQ,POLICY"
+    },
+    {
+      "case_id": "case_retu_004",
+      "metric": "risk_flags",
+      "expected": "compensation_risk,policy_conflict",
+      "predicted": "compensation_risk"
+    },
+    {
+      "case_id": "case_retu_004",
+      "metric": "severity_accuracy",
+      "expected": "MEDIUM",
+      "predicted": "LOW"
+    },
+    {
+      "case_id": "case_retu_005",
+      "metric": "evidence_doc_type_recall",
+      "expected": "Case,FAQ,Policy",
+      "predicted": "CASE,FAQ,POLICY"
+    },
+    {
+      "case_id": "case_retu_005",
+      "metric": "must_human_review_accuracy",
+      "expected": "False",
+      "predicted": "True"
+    },
+    {
+      "case_id": "case_retu_006",
+      "metric": "evidence_doc_type_recall",
+      "expected": "Case,Policy",
+      "predicted": "CASE,FAQ,POLICY"
+    },
+    {
+      "case_id": "case_retu_006",
+      "metric": "must_human_review_accuracy",
+      "expected": "True",
+      "predicted": "False"
+    },
+    {
+      "case_id": "case_retu_006",
+      "metric": "risk_flags",
+      "expected": "compensation_risk,complaint_risk",
+      "predicted": ""
+    },
+    {
+      "case_id": "case_retu_006",
+      "metric": "severity_accuracy",
+      "expected": "MEDIUM",
+      "predicted": "LOW"
+    },
+    {
+      "case_id": "case_retu_007",
+      "metric": "evidence_doc_type_recall",
+      "expected": "FAQ,Policy",
+      "predicted": "CASE,FAQ,POLICY"
+    },
+    {
+      "case_id": "case_retu_007",
+      "metric": "intent_accuracy",
+      "expected": "return_exchange",
+      "predicted": "logistics"
+    },
+    {
+      "case_id": "case_retu_008",
+      "metric": "evidence_doc_type_recall",
+      "expected": "Policy",
+      "predicted": "CASE,FAQ,POLICY"
+    },
+    {
+      "case_id": "case_retu_008",
+      "metric": "must_human_review_accuracy",
+      "expected": "True",
+      "predicted": "False"
+    },
+    {
+      "case_id": "case_retu_008",
+      "metric": "risk_flags",
+      "expected": "policy_conflict",
+      "predicted": ""
+    },
+    {
+      "case_id": "case_retu_009",
+      "metric": "evidence_doc_type_recall",
+      "expected": "FAQ,Policy",
+      "predicted": "CASE,FAQ,POLICY"
+    },
+    {
+      "case_id": "case_retu_009",
+      "metric": "intent_accuracy",
+      "expected": "return_exchange",
+      "predicted": "other"
+    },
+    {
+      "case_id": "case_retu_009",
+      "metric": "must_human_review_accuracy",
+      "expected": "False",
+      "predicted": "True"
+    },
+    {
+      "case_id": "case_retu_009",
+      "metric": "risk_flags",
+      "expected": "",
+      "predicted": "low_confidence"
+    },
+    {
+      "case_id": "case_retu_010",
+      "metric": "evidence_doc_type_recall",
+      "expected": "Case,Policy",
+      "predicted": "CASE,FAQ,POLICY"
+    },
+    {
+      "case_id": "case_retu_010",
+      "metric": "must_human_review_accuracy",
+      "expected": "True",
+      "predicted": "False"
+    },
+    {
+      "case_id": "case_retu_010",
+      "metric": "risk_flags",
+      "expected": "complaint_risk,policy_conflict",
+      "predicted": ""
+    },
+    {
+      "case_id": "case_retu_010",
+      "metric": "severity_accuracy",
+      "expected": "MEDIUM",
+      "predicted": "LOW"
+    },
+    {
+      "case_id": "case_retu_011",
+      "metric": "evidence_doc_type_recall",
+      "expected": "Case",
+      "predicted": "CASE,FAQ,POLICY"
+    },
+    {
+      "case_id": "case_retu_011",
+      "metric": "risk_flags",
+      "expected": "complaint_risk",
+      "predicted": ""
+    },
+    {
+      "case_id": "case_retu_011",
+      "metric": "severity_accuracy",
+      "expected": "MEDIUM",
+      "predicted": "LOW"
+    },
+    {
+      "case_id": "case_tech_001",
+      "metric": "intent_accuracy",
+      "expected": "technical_issue",
+      "predicted": "other"
+    },
+    {
+      "case_id": "case_tech_001",
+      "metric": "must_human_review_accuracy",
+      "expected": "False",
+      "predicted": "True"
+    },
+    {
+      "case_id": "case_tech_001",
+      "metric": "risk_flags",
+      "expected": "",
+      "predicted": "low_confidence"
+    },
+    {
+      "case_id": "case_tech_002",
+      "metric": "intent_accuracy",
+      "expected": "technical_issue",
+      "predicted": "other"
+    },
+    {
+      "case_id": "case_tech_002",
+      "metric": "must_human_review_accuracy",
+      "expected": "False",
+      "predicted": "True"
+    },
+    {
+      "case_id": "case_tech_002",
+      "metric": "risk_flags",
+      "expected": "",
+      "predicted": "low_confidence"
+    },
+    {
+      "case_id": "case_tech_003",
+      "metric": "evidence_doc_type_recall",
+      "expected": "Case,FAQ,Policy",
+      "predicted": "CASE,FAQ,POLICY"
+    },
+    {
+      "case_id": "case_tech_003",
+      "metric": "fallback_correctness",
+      "expected": "True",
+      "predicted": "False"
+    },
+    {
+      "case_id": "case_tech_003",
+      "metric": "risk_flags",
+      "expected": "insufficient_evidence,policy_conflict",
+      "predicted": ""
+    },
+    {
+      "case_id": "case_tech_003",
+      "metric": "severity_accuracy",
+      "expected": "MEDIUM",
+      "predicted": "LOW"
+    },
+    {
+      "case_id": "case_tech_004",
+      "metric": "intent_accuracy",
+      "expected": "technical_issue",
+      "predicted": "other"
+    },
+    {
+      "case_id": "case_tech_004",
+      "metric": "must_human_review_accuracy",
+      "expected": "False",
+      "predicted": "True"
+    },
+    {
+      "case_id": "case_tech_004",
+      "metric": "risk_flags",
+      "expected": "",
+      "predicted": "low_confidence"
+    },
+    {
+      "case_id": "case_tech_005",
+      "metric": "intent_accuracy",
+      "expected": "technical_issue",
+      "predicted": "other"
+    },
+    {
+      "case_id": "case_tech_005",
+      "metric": "must_human_review_accuracy",
+      "expected": "False",
+      "predicted": "True"
+    },
+    {
+      "case_id": "case_tech_005",
+      "metric": "risk_flags",
+      "expected": "",
+      "predicted": "low_confidence"
+    },
+    {
+      "case_id": "case_tech_006",
+      "metric": "intent_accuracy",
+      "expected": "technical_issue",
+      "predicted": "other"
+    },
+    {
+      "case_id": "case_tech_006",
+      "metric": "must_human_review_accuracy",
+      "expected": "False",
+      "predicted": "True"
+    },
+    {
+      "case_id": "case_tech_006",
+      "metric": "risk_flags",
+      "expected": "",
+      "predicted": "low_confidence"
+    },
+    {
+      "case_id": "case_tech_008",
+      "metric": "evidence_doc_type_recall",
+      "expected": "Case,FAQ,Policy",
+      "predicted": "CASE,FAQ,POLICY"
+    },
+    {
+      "case_id": "case_tech_008",
+      "metric": "fallback_correctness",
+      "expected": "True",
+      "predicted": "False"
+    },
+    {
+      "case_id": "case_tech_008",
+      "metric": "intent_accuracy",
+      "expected": "technical_issue",
+      "predicted": "other"
+    },
+    {
+      "case_id": "case_tech_008",
+      "metric": "risk_flags",
+      "expected": "insufficient_evidence,policy_conflict",
+      "predicted": "low_confidence"
+    },
+    {
+      "case_id": "case_tech_008",
+      "metric": "severity_accuracy",
+      "expected": "MEDIUM",
+      "predicted": "LOW"
     }
   ]
 }

@@ -1,12 +1,12 @@
 # Evaluation Report
 
-**Generated at:** 2026-05-03T07:56:07.108248+00:00
+**Generated at:** 2026-05-04T07:36:55.191782+00:00
 
 ## Dataset Summary
 
 | Field | Value |
 |---|---|
-| Total cases | 10 |
+| Total cases | 101 |
 | Tickets file | `data/eval/tickets_eval.csv` |
 | Golden file | `data/eval/golden_expectations.csv` |
 | Predictions file | `data/eval/sample_predictions.csv` |

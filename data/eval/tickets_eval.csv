@@ -1,11 +1,102 @@
 case_id,original_text,customer_id,submitted_at,scenario_type,notes
-case_refund_001,我要退款，订单号：123456，商品质量有问题。,CUST001,2026-05-01T10:00:00Z,refund,Standard refund request with order number
-case_return_ex_001,我想退货换货，订单号：654321，尺码不合适。,CUST002,2026-05-01T10:05:00Z,return_exchange,Return and exchange request due to size issue
-case_acct_001,我的账号被冻结了，无法登录，请帮忙解决，订单号：112233。,CUST003,2026-05-01T10:10:00Z,account_issue,Account frozen and unable to login
-case_logistics_001,快递一直没有送到，单号：987654321，麻烦查一下物流信息。,CUST004,2026-05-01T10:15:00Z,logistics,Delivery not received tracking request
-case_complaint_001,客服态度差，我要投诉！订单号：555666，要求赔偿。,CUST005,2026-05-01T10:20:00Z,complaint,Complaint about service attitude with compensation demand
-case_privacy_001,我的个人信息被泄露了，手机号被他人使用，要求立即处理。,CUST006,2026-05-01T10:25:00Z,privacy,Privacy leak and account security concern
-case_no_evidence_001,退款。,CUST007,2026-05-01T10:30:00Z,no_evidence,Very short refund request without evidence
-case_high_risk_001,你们这是欺诈，我已经找律师了，准备起诉。要求3倍赔偿。,CUST008,2026-05-01T10:35:00Z,high_risk_complaint,High-risk complaint with legal threat and compensation demand
-case_technical_001,APP打不开，显示系统错误，订单号：777888。,CUST009,2026-05-01T10:40:00Z,technical_issue,Technical issue with app displaying system error
-case_consulting_001,请问产品规格参数能发一下吗？这个怎么使用？,CUST010,2026-05-01T10:45:00Z,product_consulting,Product specification and usage inquiry
+case_refu_001,我申请退款已经三天了还没到账，订单号是 12345。你们再不处理我就投诉。,CUST011,2026-05-04T09:00:00Z,refund,Customer complains refund not received and threatens to comp
+case_refu_002,买的手机收到是坏的，屏幕裂了，我要退款。订单号 23456。,CUST012,2026-05-04T09:05:00Z,refund,Customer received damaged phone and wants a refund.
+case_refu_003,我要求退款，但你们说超过七天不给退。我买的时候你们没说清楚，这不合理。,CUST013,2026-05-04T09:10:00Z,refund,Customer demands refund past the 7-day return window and dis
+case_refu_004,我买了三件衣服，两件不合适想退，订单号 34567。能上门取件吗？,CUST014,2026-05-04T09:15:00Z,refund,"Customer bought three clothes items, wants to return two and"
+case_refu_005,退款怎么还没到？已经一个星期了，订单号 45678。你们是不是骗钱的？,CUST015,2026-05-04T09:20:00Z,refund,Customer hasn't received refund for a week and accuses the p
+case_refu_006,之前申请退款的订单 56789，你们说三到五天到账，现在都十天了，我要投诉到12315。,CUST016,2026-05-04T09:25:00Z,refund+complaint,Customer threatens 12315 complaint after 10-day refund delay
+case_refu_007,我买的东西还没发货就要退款，订单号 67890。快点处理。,CUST017,2026-05-04T09:30:00Z,refund,Customer wants to cancel and refund an unshipped order.
+case_refu_008,你们给我发错货了，我买的是红色，收到的是蓝色。我要退款，运费你们出。,CUST018,2026-05-04T09:35:00Z,refund,Customer received wrong color and demands refund with free r
+case_refu_009,我请了律师，你们再不给退款就走法律程序。订单号 78901。,CUST019,2026-05-04T09:40:00Z,refund,Customer threatens legal action if refund is not processed.
+case_refu_010,之前买的家电用了三天就坏了，订单号 89012。我要退款，不接受换货。,CUST020,2026-05-04T09:45:00Z,refund,"Customer's appliance broke after 3 days, demands refund not "
+case_refu_011,孩子误操作买了个游戏机，订单号 90123。能不能退款？刚下单十分钟。,CUST021,2026-05-04T09:50:00Z,refund,"Customer's child accidentally purchased a game console, want"
+case_refu_012,双十一买的衣服到现在没发货，申请退款客服一直不处理。订单号 01234。,CUST022,2026-05-04T09:55:00Z,refund+complaint,Customer can't get refund for unshipped order from Nov 11 sa
+case_refu_013,我在你们平台买了个包，怀疑是假货，我要退款并赔偿。订单号 11223。,CUST023,2026-05-04T10:00:00Z,refund,Customer suspects counterfeit bag and demands refund plus co
+case_refu_014,一个订单买了五样东西，我只想退其中两样，可以吗？订单号 22334。,CUST024,2026-05-04T10:05:00Z,refund,Customer wants to return only 2 of 5 items in one order.
+case_refu_015,申请退款一个多月了，钱没退回来，客服电话也打不通。你们公司是不是要跑路了？,CUST025,2026-05-04T10:10:00Z,refund,Customer hasn't received refund for over a month and客服 is un
+case_retu_001,买的鞋子尺码小了，想换大一码的。订单号 33445。,CUST026,2026-05-04T10:15:00Z,return_exchange,Customer ordered wrong size shoes and wants to exchange.
+case_retu_002,收到的衣服有污渍，我要换一件新的。订单号 44556。,CUST027,2026-05-04T10:20:00Z,return_exchange,Customer received stained clothing and wants a replacement.
+case_retu_003,换货申请提交一个星期了，没人联系我。订单号 55667。,CUST028,2026-05-04T10:25:00Z,return_exchange,Customer's exchange request has been ignored for a week.
+case_retu_004,我想换货，但你们说没库存了。那我要退款，再补偿我优惠券。订单号 66778。,CUST029,2026-05-04T10:30:00Z,return_exchange,Customer wants refund and coupon when exchange is out of sto
+case_retu_005,买的电饭煲用了一次就坏了，我想换货。订单号 77889。,CUST030,2026-05-04T10:35:00Z,return_exchange,"Customer's rice cooker broke after one use, wants exchange."
+case_retu_006,换货收到又是坏的，你们质检怎么做的？订单号 88990。,CUST031,2026-05-04T10:40:00Z,return_exchange,Customer received a replacement that is also defective.
+case_retu_007,我想换一个颜色，订单号 99001。已经发货了能拦截吗？,CUST032,2026-05-04T10:45:00Z,return_exchange,Customer wants to change color after order shipped.
+case_retu_008,换货的运费谁出？你们发错货了，不应该我出运费。订单号 00112。,CUST033,2026-05-04T10:50:00Z,return_exchange,Customer disputes paying return shipping for a seller-caused
+case_retu_009,我买了两件同样的衣服，想退一件换一件不同颜色的。订单号 11224。,CUST034,2026-05-04T10:55:00Z,return_exchange,Customer wants to return one item and exchange another for d
+case_retu_010,七天无理由退换，我申请了你们驳回，凭什么？订单号 22335。,CUST035,2026-05-04T11:00:00Z,return_exchange,Customer's 7-day no-reason return was rejected and they dema
+case_retu_011,换货申请了半个月，你们一直说在处理。到底什么时候能换？订单号 33446。,CUST036,2026-05-04T11:05:00Z,return_exchange,Customer's exchange request has been 'in processing' for hal
+case_acco_001,我的账号被盗了，有人用我的账号下了单。帮我把账号找回来。,CUST037,2026-05-04T11:10:00Z,account_issue,Customer's account was stolen and used to place orders.
+case_acco_002,手机突然收不到验证码了，账号登不上去。订单号 44557。,CUST038,2026-05-04T11:15:00Z,account_issue,Customer can't log in because SMS verification codes are not
+case_acco_003,我的手机号被泄漏了，最近一直收到骚扰电话。肯定是你们平台泄露的。,CUST039,2026-05-04T11:20:00Z,account+privacy,Customer's phone number was leaked and they blame the platfo
+case_acco_004,我的收货地址被人改了，是不是账号被盗了？快点帮我查一下。,CUST040,2026-05-04T11:25:00Z,account_issue,Customer found their shipping address changed without author
+case_acco_005,我忘了密码，但是绑定的手机号早就不用了。怎么找回账号？,CUST041,2026-05-04T11:30:00Z,account_issue,Customer forgot password and no longer has access to绑定 phone
+case_acco_006,我的实名认证信息被别人用了，显示已认证但我没操作过。,CUST042,2026-05-04T11:35:00Z,account_issue,Customer's real-name verification was used by someone else w
+case_acco_007,登录一直提示密码错误，重置链接发到邮箱了但邮箱也登不上去。,CUST043,2026-05-04T11:40:00Z,account_issue,Customer can't log in due to password error and can't access
+case_acco_008,我的账号今天被异地登录了，IP 显示是外省。赶紧帮我冻结账号。,CUST044,2026-05-04T11:45:00Z,account_issue,Customer's account was logged into from another province.
+case_acco_009,账号被永久封禁了，说我违规。我什么都没做，申诉也没用。,CUST045,2026-05-04T11:50:00Z,account_issue,Customer's account was permanently banned and appeals were r
+case_acco_010,我想注销账号，但找不到入口。帮我处理一下。,CUST046,2026-05-04T11:55:00Z,account_issue,Customer wants to delete their account but can't find the op
+case_acco_011,我改了手机号，现在收不到验证码了。怎么更新绑定手机？,CUST047,2026-05-04T12:00:00Z,account_issue,Customer changed their phone number and can't receive verifi
+case_acco_012,我的实名信息被别人绑定了，怀疑是你们平台泄露了我的身份证信息。,CUST048,2026-05-04T12:05:00Z,account+privacy,Customer's ID info was used by another account and suspects 
+case_tech_001,APP 一直闪退，重新安装了也没用。订单号 55668。,CUST049,2026-05-04T12:10:00Z,technical_issue,Customer's app keeps crashing even after reinstallation.
+case_tech_002,支付页面一直转圈，付不了款。订单号 66779。,CUST050,2026-05-04T12:15:00Z,technical_issue,Customer can't complete payment due to loading issue.
+case_tech_003,下单时提示系统错误，扣了钱但没有订单号。,CUST051,2026-05-04T12:20:00Z,technical_issue,Customer was charged but no order was created due to system 
+case_tech_004,上传图片一直失败，想发凭证发不了。怎么处理？,CUST052,2026-05-04T12:25:00Z,technical_issue,Customer can't upload images as evidence due to upload failu
+case_tech_005,你们的网页加载特别慢，换个网络也不行。是不是服务器有问题？,CUST053,2026-05-04T12:30:00Z,technical_issue,Customer reports extremely slow website loading.
+case_tech_006,下单时选不了地址，一直提示系统繁忙。订单号 77880。,CUST054,2026-05-04T12:35:00Z,technical_issue,Customer can't select shipping address during checkout.
+case_tech_007,我刚更新了 APP，现在所有订单记录都看不到了，是不是更新出 bug 了？,CUST055,2026-05-04T12:40:00Z,technical_issue,Customer can't see any order history after updating the app.
+case_tech_008,微信支付成功了，但你们系统显示未支付。订单号 88991。,CUST056,2026-05-04T12:45:00Z,technical_issue,Customer's WeChat payment went through but the system shows 
+case_prod_001,请问这款手机支持双卡双待吗？我看详情页没有写清楚。,CUST057,2026-05-04T12:50:00Z,product_consulting,Customer asks whether a phone supports dual SIM.
+case_prod_002,这个冰箱的尺寸是多少？我家厨房门比较窄，怕进不去。,CUST058,2026-05-04T12:55:00Z,product_consulting,Customer asks refrigerator dimensions to check if it fits th
+case_prod_003,你们这个会员怎么开？开了之后有什么优惠？,CUST059,2026-05-04T13:00:00Z,product_consulting,Customer asks how to open membership and what benefits it of
+case_prod_004,这款护肤品适合敏感肌吗？我用了会不会过敏？,CUST060,2026-05-04T13:05:00Z,product_consulting,Customer asks if a skincare product is suitable for sensitiv
+case_prod_005,我看中了两款洗衣机，能帮我对比一下有什么区别吗？,CUST061,2026-05-04T13:10:00Z,product_consulting,Customer asks for a comparison between two washing machine m
+case_prod_006,这个电脑的保修期是多久？延保怎么买？,CUST062,2026-05-04T13:15:00Z,product_consulting,Customer asks about warranty period and extended warranty pu
+case_prod_007,你们家这款耳机和另一个品牌比哪个音质好？有评测吗？,CUST063,2026-05-04T13:20:00Z,product_consulting,Customer asks for sound quality comparison with competitor.
+case_prod_008,我买这个电视要壁挂，你们提供安装服务吗？收费吗？,CUST064,2026-05-04T13:25:00Z,product_consulting,Customer asks about TV wall-mount installation service and f
+case_logi_001,我的快递好几天没动了，物流信息一直不更新。订单号 99002。,CUST065,2026-05-04T13:30:00Z,logistics,Customer's package tracking hasn't updated for days.
+case_logi_002,快递显示已签收但我没收到，是不是送错了？订单号 00113。,CUST066,2026-05-04T13:35:00Z,logistics,Customer didn't receive package despite tracking showing del
+case_logi_003,能不能改地址？我已经下单了但发现地址写错了。订单号 11225。,CUST067,2026-05-04T13:40:00Z,logistics,Customer wants to change shipping address after placing orde
+case_logi_004,物流显示在派送了，但今天家里没人，能改天配送吗？,CUST068,2026-05-04T13:45:00Z,logistics,Customer wants to reschedule delivery because no one will be
+case_logi_005,快递破损了，外包装都烂了。我拒收了，接下来怎么处理？订单号 22336。,CUST069,2026-05-04T13:50:00Z,logistics,Customer refused damaged package and asks about next steps.
+case_logi_006,我两个订单合并发货了，但我只收到一个。订单号 33447 和 33448。,CUST070,2026-05-04T13:55:00Z,logistics,Customer received only one of two combined shipments.
+case_logi_007,你们发的圆通，我们这里圆通送不到。能不能换顺丰？,CUST071,2026-05-04T14:00:00Z,logistics,Customer asks to change carrier because YTO doesn't deliver 
+case_logi_008,快递已经到网点三天了，一直不派送。你们的物流是摆设吗？订单号 44558。,CUST072,2026-05-04T14:05:00Z,logistics,Customer's package has been at local hub for 3 days without 
+case_logi_009,国际物流的关税谁承担？订单是含税价吗？订单号 55669。,CUST073,2026-05-04T14:10:00Z,logistics,Customer asks who pays customs duties for international ship
+case_logi_010,你们送的货跟订单地址不一致，送到隔壁小区了。订单号 66770。,CUST074,2026-05-04T14:15:00Z,logistics,Customer's package was delivered to a different address.
+case_logi_011,我下单时选了次日达，现在都第三天了还没到。你们赔我运费。订单号 77881。,CUST075,2026-05-04T14:20:00Z,logistics,Customer demands shipping fee compensation for failed next-d
+case_comp_001,客服态度极其恶劣，我要投诉工号 10086。不解决我就曝光到网上。,CUST076,2026-05-04T14:25:00Z,complaint,Customer complains about客服 attitude and threatens to expose 
+case_comp_002,你们平台卖假货，我要投诉到市场监管局。,CUST077,2026-05-04T14:30:00Z,complaint,Customer accuses platform of selling counterfeits and threat
+case_comp_003,你们的活动太坑人了，说好的满减结果不能用。虚假宣传！,CUST078,2026-05-04T14:35:00Z,complaint,Customer complains that promotion discount was not honored.
+case_comp_004,我要求你们公司书面道歉，并且赔偿我的损失。不然我起诉你们。,CUST079,2026-05-04T14:40:00Z,complaint,Customer demands written apology and compensation or will su
+case_comp_005,你们泄露我的个人信息，我现在每天收到几十个骚扰电话。这事没完。,CUST080,2026-05-04T14:45:00Z,complaint,Customer's personal data was leaked causing massive spam cal
+case_comp_006,你们这个平台的处理效率太低了，一个问题拖了半个月。我要投诉到消协。,CUST081,2026-05-04T14:50:00Z,complaint,Customer threatens to complain to consumer association about
+case_comp_007,我收到的商品跟描述的完全不一样，这属于欺诈。我要退货加赔偿。,CUST082,2026-05-04T14:55:00Z,complaint,Customer claims product doesn't match description and demand
+case_comp_008,你们的售后电话永远打不通，在线客服排队两小时。这是做生意吗？,CUST083,2026-05-04T15:00:00Z,complaint,Customer complains that after-sales phone and chat are both 
+case_comp_009,我在你们店买了东西，结果店家关门了。你们平台要负责。订单号 88992。,CUST084,2026-05-04T15:05:00Z,complaint,Customer demands platform take responsibility after seller c
+case_othe_001,请问你们招不招兼职客服？我想应聘。,CUST085,2026-05-04T15:10:00Z,other,Customer asks about part-time客服 job openings.
+case_comp_010,我想投诉但找不到投诉入口，你们能不能给我一个投诉链接？,CUST086,2026-05-04T15:15:00Z,complaint,Customer wants to submit a complaint but can't find the入口.
+case_othe_002,可以开发票吗？我公司报销需要。订单号 99003。,CUST087,2026-05-04T15:20:00Z,invoice,Customer needs an invoice for company expense reimbursement.
+case_othe_003,发票抬头写错了，能重开吗？订单号 00114。,CUST088,2026-05-04T15:25:00Z,invoice,Customer needs invoice reissued with corrected company name.
+case_othe_004,你们平台有线下门店吗？我想去实体店看看。,CUST089,2026-05-04T15:30:00Z,other,Customer asks if the platform has physical stores.
+case_othe_005,能帮我查一下我的积分余额吗？我不会在 APP 上找。,CUST090,2026-05-04T15:35:00Z,other,Customer can't find their points balance in the app.
+case_othe_006,你们的优惠券怎么用？我领了但下单时没看到抵扣。,CUST091,2026-05-04T15:40:00Z,billing,Customer's coupon didn't apply during checkout.
+case_acco_013,我原来的账号想注销重新注册，但提示手机号已被注册。怎么办？,CUST092,2026-05-04T15:45:00Z,account_issue,Customer can't re-register because phone is already绑定了 old a
+case_comp_011,你们这个平台的字体太小了，老年人根本看不清。能调大吗？,CUST093,2026-05-04T15:50:00Z,complaint,Customer complains font size is too small for elderly users.
+case_comp_012,我想投诉快递员态度不好，能提供快递员电话吗？,CUST094,2026-05-04T15:55:00Z,complaint,Customer wants to complain about a delivery person's attitud
+case_othe_007,你们有没有微信群或者客服群？我想加群方便咨询。,CUST095,2026-05-04T16:00:00Z,other,Customer asks if there is a WeChat group for customer inquir
+case_othe_008,我之前提的建议你们采纳了吗？就是关于包装改进的那个。,CUST096,2026-05-04T16:05:00Z,other,Customer follows up on a packaging improvement suggestion.
+case_othe_009,我重复付款了，同一个订单付了两次。退我一份钱。订单号 11226。,CUST097,2026-05-04T16:10:00Z,billing+dispute,Customer was charged twice for the same order.
+case_othe_010,我付了钱但是订单显示未支付，钱已经扣了。订单号 22337。,CUST098,2026-05-04T16:15:00Z,billing+dispute,Customer's payment was deducted but order still shows unpaid
+case_othe_011,发票已经申请一个月了还没开出来，财务一直在催。订单号 33449。,CUST099,2026-05-04T16:20:00Z,invoice,Customer's invoice request has been pending for a month.
+case_othe_012,发票金额开少了，我实际付了 500 但发票只开了 300。订单号 44559。,CUST100,2026-05-04T16:25:00Z,invoice,Customer received invoice for 300 but actually paid 500.
+case_refu_016,我买的东西降价了，能退差价吗？下单才三天。订单号 55670。,CUST101,2026-05-04T16:30:00Z,billing,Customer asks for price difference refund after item price d
+case_tech_009,电子发票下载不了，一直提示系统错误。订单号 66771。,CUST102,2026-05-04T16:35:00Z,technical_issue,Customer can't download e-invoice due to system error.
+case_othe_013,我要求开发票，但你们说个人不能开。我买东西为什么不能开发票？,CUST103,2026-05-04T16:40:00Z,invoice,Customer was told individuals can't get invoices and dispute
+case_acco_014,有人用我的身份证开了账号，我根本不知情。你们怎么审核的？,CUST104,2026-05-04T16:45:00Z,account_issue,Someone opened an account using customer's ID without their 
+case_comp_013,我的家庭地址被泄露了，现在有人寄恐吓信到我家。你们必须负责。,CUST105,2026-05-04T16:50:00Z,complaint,Customer's home address was leaked and they received threate
+case_acco_015,我的账号被恶意差评了，根本没有这个订单。是不是账号被盗了？,CUST106,2026-05-04T16:55:00Z,account_issue,Customer received a negative review for an order they never 
+case_edge_001,退,CUST107,2026-05-04T12:00:00Z,refund,Edge case: single-character text
+case_edge_002,你好！！！！！！！！！！请问我这个订单 #999999999999 已经付了款但是你们系统一直说没收到钱。我已经打了十几次客服电话都没人接，发邮件也没人回。我是在你们双十一活动期间下的单，当时说好的满200减50优惠券也没有自动抵扣。我买了三件商品分别是499元、299元和159元，然后用了我的VIP会员折扣码VIP888 supposed to give me an additional 15% off but it didn't apply either. 现在客服说让我等24-48小时，但是已经过去72小时了。我要求你们立即退款或者给我一个明确的处理时间，不然我就去12315投诉你们欺诈消费者。我的订单号是 OD20260504123456789。如果今天之内得不到解决，我会在微博和知乎上曝光你们的行为。谢谢。 补充一下，我试过重新登录、清缓存、换手机、换网络，都是一样的问题。我还找了你们在线客服三次，每次都让我重新描述问题，说转给技术部门处理，然后就没有然后了。我也是一个老用户了，从2019年就开始用你们平台，消费了至少有五六万块钱，第一次遇到这么差的服务体验。你们要是不解决这个问题，我只能去黑猫投诉、消费保投诉，还要发朋友圈告诉所有朋友不要用你们的平台了。真的太过分了，一个订单问题拖了一个星期。订单号也给你们了，系统记录也能查到，为什么就这么难处理？,CUST108,2026-05-04T12:05:00Z,refund+complaint,Edge case: very long text with mixed Chinese/English
+case_edge_003,!!! @@@ ### $$$ %%% ^^^ &&& *** ((( ))),CUST109,2026-05-04T12:10:00Z,other,Edge case: special characters only
+case_edge_004,我@#￥%……&*（）——+【】{}|：“；”‘《》？,CUST110,2026-05-04T12:15:00Z,other,Edge case: Chinese with special characters
+case_edge_005,2026-05-04 15:30:00 #123456 @客服 ￥999.00 100%,CUST111,2026-05-04T12:20:00Z,other,Edge case: numbers and symbols only

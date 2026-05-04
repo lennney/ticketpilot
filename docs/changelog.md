@@ -1,6 +1,107 @@
 # TicketPilot Changelog
 
 
+## 2026-05-04 — Phase 7B-2: Build Adaptation Candidate Pool (add-mvp-evidence-pack)
+
+### Added
+- `data/eval/adaptation_candidates.csv` — 96 synthetic adaptation candidates covering 8 issue types, 8 risk flags, 3 demo scenario groups (refund_complaint, privacy_account, invoice_payment)
+- `docs/data/phase7_candidate_pool_summary.md` — candidate pool distribution summary with issue type, risk flag, scenario group tables and key candidates requiring human review
+
+### Why
+- Create an intermediate adaptation candidate layer between AI extraction and final eval tickets
+- All 96 candidates marked human_review_status=pending and ready_for_final_eval=false — no data is prematurely treated as final evaluation data
+- Provide structured pool for human review in Phase 7B-3
+
+### Data
+- All candidates are synthetic Chinese single-turn support tickets; no real customer data
+- High-risk scenarios include legal threats, compensation demands, privacy leaks, account theft, payment disputes, and policy conflicts
+
+## 2026-05-04 — Phase 7B-3: Migrate Candidates to Final Eval Datasets (add-mvp-evidence-pack)
+
+### Added
+- `data/eval/tickets_eval.csv` — expanded from 10 to 101 synthetic Chinese customer service tickets (96 migrated candidates + 5 edge cases)
+- `data/eval/golden_expectations.csv` — expanded from 10 to 101 entries, one per eval ticket
+- `data/eval/sample_predictions.csv` — regenerated with all predicted_no_auto_send=true
+- `reports/eval/evaluation_report.json` + `.md` — CSV-mode evaluation report (101 cases, no_auto_send_compliance=1.0)
+- `reports/eval/current_pipeline_report.json` + `.md` — pipeline-mode evaluation report (101 cases, no_auto_send_compliance=1.0)
+
+### Changed
+- `data/eval/golden_expectations.csv`: All 101 entries now have expected_no_auto_send=true (architecture-level invariant)
+- `data/eval/sample_predictions.csv`: All 101 entries now have predicted_no_auto_send=true
+- `tests/unit/test_run_eval_cli.py`: Updated hardcoded ticket count assertion (10→dynamic)
+- `tests/integration/test_evaluation_pipeline.py`: Replaced hardcoded case IDs with dynamic CSV loading; fixed risk flag assertions to match pipeline behavior
+
+### Coverage
+- All 8 issue types: refund(17), return_exchange(11), account_issue(15), technical_issue(9), product_consulting(8), logistics(11), complaint(14), other(16)
+- All 8 risk flags: complaint_risk, compensation_risk, legal_risk, privacy_risk, account_security_risk, policy_conflict, insufficient_evidence, low_confidence
+- All 3 severity levels: LOW(53), MEDIUM(33), HIGH(15)
+- Billing/invoice/payment_dispute: 9 tickets (invoice=5, billing=2, payment_dispute=2)
+- Multi-intent: 7 tickets (refund+complaint=3, account+privacy=2, billing+dispute=2)
+- Edge cases: single-char, very long(589 chars), special chars only, Chinese+special chars, numbers/symbols only
+
+### Cleanup
+- Removed `scripts/generate_adaptation_candidates.py` (generator, not needed in repo)
+- Removed `scripts/migrate_candidates.py` (one-time migration script)
+
+### Validation
+- OpenSpec validate --all: 16/16 passed
+- Ruff: All checks passed
+- Tests: 761 passed
+- Coverage: 87%
+
+## 2026-05-04 — Phase 7B-1: Baseline Audit and Adaptation Workbook Template (add-mvp-evidence-pack)
+
+### Added
+- `docs/data/phase7_baseline_audit.md` — baseline audit recording current eval tickets (10), golden expectations (10), sample predictions (10), knowledge records (36), no-auto-send compliance (CSV: 1.0, pipeline: 0.5), and Phase 7 targets
+- `docs/data/templates/adaptation_candidates.template.csv` — adaptation workbook template with header and 1 example row (synthetic refund+complaint scenario)
+- `docs/data/ai_extraction_prompt.md` — reusable AI field extraction prompt with input format, allowed values, JSON output schema, and candidate-only positioning
+
+### Why
+- Establish a measurable baseline before expanding eval data
+- Create an adaptation candidate layer between AI extraction and final eval tickets, preventing "AI labels AI" evaluation contamination
+- Provide a reusable prompt for consistently structured field extraction from diverse source types
+
+### Docs / Spec
+- Baseline audit records all current counts from actual files, not estimates
+- Adaptation workbook template defines 21 fields covering source reference, AI extraction, human review tracking
+- AI extraction prompt includes 8 allowed issue types, 8 risk flags, 3 evidence doc types, and explicit constraints
+- No source code, no eval data, no knowledge data, no reports modified
+
+## 2026-05-04 — Phase 7B-0: AI-assisted Field Extraction and Ticket Adaptation Layer (add-mvp-evidence-pack)
+
+### Added
+- `docs/data/ai_field_extraction_adaptation.md` — defines the AI-assisted field extraction and ticket adaptation layer: source reference schema, AI extraction candidate fields, final eval ticket fields, golden expectation fields, AI vs human responsibility matrix, human review trigger rules, and prohibited practices
+
+### Why
+- Before expanding eval data to ~100 tickets, define a structured pipeline from public source → AI extraction → human review → final ticket
+- Ensure AI is positioned as a data preparation assistant, not the final annotator
+- Clarify which fields can be AI-suggested and which must be human-confirmed
+- Prevent AI-only golden labels, raw external data commits, and overclaim
+
+### Docs / Spec
+- New document under `docs/data/` covers the full extraction-to-adaptation pipeline with field definitions
+- OpenSpec data spec updated to reference the new AI extraction layer
+- No source code, no eval data, no knowledge data, no reports modified
+
+## 2026-05-04 — Phase 7A: Data Source & Evaluation Dataset Definition (add-mvp-evidence-pack)
+
+### Added
+- `docs/data/evidence_pack_sources.md` — source registry documenting all external datasets used as reference (CSDS, Kaggle, Chinese Chatbot Corpus, public policy pages), with usage purpose, limitations, and license/access notes per source
+- `docs/data/evaluation_dataset_methodology.md` — construction pipeline from public reference sources → synthetic Chinese single-turn eval tickets, scenario/risk coverage targets (~100 tickets), ticket construction rules, and 3 strong demo scenario definitions
+- `docs/data/golden_expectation_annotation_guide.md` — field definitions for all golden expectation columns, annotation principles (risk recall, evidence support, escalation preference, unsupported demands, product policy alignment), and no-auto-send architecture-level compliance definition
+- `openspec/changes/add-mvp-evidence-pack/specs/data/spec.md` — data sources and methodology spec registered under the add-mvp-evidence-pack OpenSpec change
+
+### Why
+- Establish a clear data provenance policy before expanding the eval dataset to ~100 tickets
+- Ensure no raw external data is committed without license compliance
+- Formalize the golden expectation annotation process for consistent labeling
+- Document the no-auto-send metric as an architecture-level invariant (always true, not per-case)
+
+### Docs / Spec
+- Three new documents under `docs/data/` cover source provenance, methodology, and annotation guide
+- OpenSpec change now has 4 specs: evaluation, knowledge-base, demo, and data
+- No source code, no eval data, no knowledge data, no reports modified
+
 ## 2026-05-03 — Local Run Verification Report
 
 ### Added
