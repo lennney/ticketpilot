@@ -1,6 +1,24 @@
 # TicketPilot Changelog
 
 
+## 2026-05-05 (4) — Validation Policy: OpenSpec Scoped vs Full Validation
+
+### Added
+- `docs/technical/validation_policy.md` — four-level validation policy (Level 1–4):
+  - Level 1: Docs/portfolio only — content review, no OpenSpec/pytest required
+  - Level 2: Single OpenSpec change — `openspec validate <change-id> --strict`
+  - Level 3: Multiple/base OpenSpec — `openspec validate --all`
+  - Level 4: Full quality gate — core pipeline, DB, data, archive, pre-push
+
+### Changed
+- `.claude/CLAUDE.md` — added validation policy reference and scope summary table at top of file
+
+### Design Notes
+- Docs-only changes no longer default to `openspec validate --all`
+- Single active change → scoped `--strict`, not full `--all`
+- Full quality gate still required for core pipeline, DB, schema, archive, pre-push
+- "Skip `--all`" does not mean "skip validation" — choose the appropriate scoped check
+
 ## 2026-05-05 (3) — Phase 8 Archive (add-real-retrieval-upgrade)
 
 ### Changed

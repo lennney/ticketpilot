@@ -1,5 +1,16 @@
 # TicketPilot — CLAUDE.md
 
+## 验证策略选择
+
+变更范围决定验证级别。详细规则见 `docs/technical/validation_policy.md`，摘要如下：
+
+| 范围 | OpenSpec | 测试 | Quality Gate |
+|---|---|---|---|
+| Docs/portfolio only | 不要求 | 不要求 | 不要求 |
+| 单 OpenSpec change | `--strict` scoped | 模块级 | 不要求 |
+| Core pipeline / DB / data | `--all` | 全量 | 必须（0 skip） |
+| Pre-push / archive / 阶段收口 | `--all` | 全量 | 必须（0 skip） |
+
 ## 测试选择指南
 
 总则：改哪个模块就只跑对应测试文件。642 个测试全跑太慢，按模块精确测试。
