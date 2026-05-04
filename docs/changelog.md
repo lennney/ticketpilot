@@ -1,6 +1,18 @@
 # TicketPilot Changelog
 
 
+## 2026-05-05 (5) — Phase 8 Portfolio Snapshot
+
+### Added
+- `docs/portfolio/phase8_real_retrieval_snapshot.md` — Phase 8 portfolio snapshot with:
+  - Provider architecture, rebuild workflow, and security design
+  - Fake vs real comparison metrics table (Top-1 +10.9%, MRR +0.0799)
+  - Wrong-case analysis and product interpretation
+  - Resume bullets and interview talking points (1-min / 3-min)
+
+### Changed
+- `docs/portfolio/ticketpilot_product_case_onepager.md` — updated Phase 8 status from "已规划，未开始" to completed with key metrics and boundary statement
+
 ## 2026-05-05 (4) — Validation Policy: OpenSpec Scoped vs Full Validation
 
 ### Added
