@@ -146,7 +146,7 @@ Key design decisions:
 
 ```bash
 # Clone the repository
-git clone https://github.com/your-username/ticketpilot.git
+git clone https://github.com/lennney/ticketpilot.git
 cd ticketpilot
 
 # Install dependencies (including dev dependencies)

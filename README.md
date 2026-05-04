@@ -146,7 +146,7 @@ Streamlit 人工审核控制台
 
 ```bash
 # 克隆仓库
-git clone https://github.com/your-username/ticketpilot.git
+git clone https://github.com/lennney/ticketpilot.git
 cd ticketpilot
 
 # 安装依赖（包括开发依赖）
