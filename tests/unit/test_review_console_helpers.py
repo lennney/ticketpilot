@@ -9,6 +9,8 @@ import tempfile
 from datetime import datetime
 from uuid import uuid4
 
+import pytest
+
 from ticketpilot.drafting.schemas import (
     Citation,
     DraftedTicketResult,
@@ -16,6 +18,8 @@ from ticketpilot.drafting.schemas import (
 )
 from ticketpilot.retrieval.schema.knowledge import DocType
 from ticketpilot.review.console import (
+    DEMO_TICKET_JSON,
+    _parse_raw_ticket,
     build_review_decision,
     determine_trigger_reasons,
 )
@@ -113,6 +117,43 @@ def _make_result(
         ticket_output=ticket_output,
         draft_reply=draft_reply,
     )
+
+
+class TestParseRawTicket:
+    """Tests for _parse_raw_ticket()."""
+
+    def test_valid_json_parses(self):
+        """Well-formed RawTicket JSON should parse successfully."""
+        ticket = _parse_raw_ticket(DEMO_TICKET_JSON)
+        assert isinstance(ticket, RawTicket)
+        assert ticket.original_text == "我要退款，订单号是 12345，请帮我处理。"
+        assert ticket.customer_id == "cust-001"
+
+    def test_empty_input_raises_value_error(self):
+        """Empty input should raise ValueError with Chinese message."""
+        with pytest.raises(ValueError, match="请输入工单 JSON"):
+            _parse_raw_ticket("")
+
+    def test_whitespace_input_raises_value_error(self):
+        """Whitespace-only input should raise ValueError with Chinese message."""
+        with pytest.raises(ValueError, match="请输入工单 JSON"):
+            _parse_raw_ticket("   \n  \t  ")
+
+    def test_invalid_json_raises_value_error(self):
+        """Malformed JSON should raise ValueError with Chinese message."""
+        with pytest.raises(ValueError, match="请输入有效 JSON"):
+            _parse_raw_ticket("not json at all")
+
+    def test_invalid_json_structure_raises_error(self):
+        """Valid JSON that doesn't match RawTicket schema should raise."""
+        with pytest.raises(ValueError):
+            _parse_raw_ticket('{"foo": "bar"}')
+
+    def test_whitespace_around_valid_json_is_accepted(self):
+        """Leading/trailing whitespace around valid JSON should be tolerated."""
+        ticket = _parse_raw_ticket(f"  \n  {DEMO_TICKET_JSON}  \n  ")
+        assert isinstance(ticket, RawTicket)
+        assert ticket.original_text == "我要退款，订单号是 12345，请帮我处理。"
 
 
 class TestDetermineTriggerReasons:

@@ -14,6 +14,16 @@ from ticketpilot.review.schemas import ReviewAction, ReviewDecision
 from ticketpilot.review.store import ReviewStore
 from ticketpilot.schema.ticket import RawTicket, RiskSeverity
 
+DEMO_TICKET_JSON = json.dumps(
+    {
+        "original_text": "我要退款，订单号是 12345，请帮我处理。",
+        "submitted_at": "2026-05-02T10:00:00",
+        "customer_id": "cust-001",
+    },
+    ensure_ascii=False,
+    indent=2,
+)
+
 DEFAULT_STORE_PATH = "reviews.jsonl"
 
 
@@ -103,8 +113,17 @@ def _parse_raw_ticket(json_str: str) -> RawTicket:
     The JSON should contain fields matching the RawTicket schema:
     ``original_text`` (str), ``submitted_at`` (ISO datetime string),
     and optionally ``customer_id`` (str).
+
+    Strips whitespace around input.  Empty input or invalid JSON
+    raises ``ValueError`` with a Chinese user-facing message.
     """
-    data = json.loads(json_str)
+    stripped = json_str.strip()
+    if not stripped:
+        raise ValueError("请输入工单 JSON")
+    try:
+        data = json.loads(stripped)
+    except json.JSONDecodeError:
+        raise ValueError("请输入有效 JSON，示例格式见输入框。")
     return RawTicket.model_validate(data)
 
 
@@ -275,31 +294,22 @@ def main() -> None:
     # Input section
     st.header("输入工单")
     input_json = st.text_area(
-        "粘贴工单 JSON",
+        "工单 JSON",
+        value=DEMO_TICKET_JSON,
         height=150,
-        placeholder=json.dumps(
-            {
-                "original_text": "我要退款，订单号是 12345，请帮我处理。",
-                "submitted_at": "2026-05-02T10:00:00",
-                "customer_id": "cust-001",
-            },
-            ensure_ascii=False,
-            indent=2,
-        ),
     )
 
     if st.button("处理工单", type="primary"):
-        if not input_json.strip():
-            st.error("请输入工单 JSON")
-        else:
-            try:
-                raw_ticket = _parse_raw_ticket(input_json)
-                with st.spinner("正在处理工单..."):
-                    result = run_pipeline_with_draft(raw_ticket)
-                st.session_state.result = result
-                st.success("工单处理完成")
-            except Exception as e:
-                st.error(f"处理失败: {e}")
+        try:
+            raw_ticket = _parse_raw_ticket(input_json)
+            with st.spinner("正在处理工单..."):
+                result = run_pipeline_with_draft(raw_ticket)
+            st.session_state.result = result
+            st.success("工单处理完成")
+        except ValueError as e:
+            st.error(str(e))
+        except Exception as e:
+            st.error(f"处理失败: {e}")
 
     # Display results if available
     if st.session_state.result:
