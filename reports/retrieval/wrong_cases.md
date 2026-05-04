@@ -14,15 +14,15 @@ What the real provider *does* improve: ranking quality within the correct cases.
 
 ## Distribution by Intent
 
-| Intent | Wrong Cases | % of Intent Cases |
-|--------|-------------|-------------------|
-| complaint | 10 | ? |
-| refund | 8 | ? |
-| account | 5 | ? |
-| return | 5 | ? |
-| edge | 5 | ? |
-| logistics | 4 | ? |
-| other | 4 | ? |
+| Intent | Wrong Cases | Total Cases | % of Intent |
+|--------|-------------|-------------|-------------|
+| complaint | 10 | 13 | 77% |
+| refund | 8 | 16 | 50% |
+| return | 5 | 11 | 45% |
+| account | 5 | 15 | 33% |
+| logistics | 4 | 11 | 36% |
+| other | 4 | 13 | 31% |
+| edge | 5 | 5 | 100% |
 
 ## Failure Categories
 
