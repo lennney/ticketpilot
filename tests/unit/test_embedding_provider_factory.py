@@ -98,16 +98,29 @@ class TestProviderFactory:
         vec = provider.embed("test")
         assert len(vec) == 384
 
-    def test_openai_compatible_raises_not_implemented(self):
-        """OpenAI-compatible provider should raise NotImplementedError."""
+    def test_openai_compatible_missing_api_key_fails(self):
+        """OpenAI-compatible provider without API key should raise ValueError."""
         config = EmbeddingConfig(
             provider="openai_compatible",
             model="text-embedding-3-small",
             dimension=1536,
+            base_url="http://localhost:1234/v1",
         )
-        with pytest.raises(NotImplementedError) as exc:
+        with pytest.raises(ValueError) as exc:
             create_embedding_provider(config)
-        assert "not yet implemented" in str(exc.value).lower()
+        assert "API key" in str(exc.value)
+
+    def test_openai_compatible_missing_base_url_uses_default(self):
+        """Factory should use default base_url when none configured."""
+        config = EmbeddingConfig(
+            provider="openai_compatible",
+            api_key="sk-test",
+            model="test-model",
+            dimension=4,
+        )
+        # Factory provides default base_url, so this should succeed
+        provider = create_embedding_provider(config)
+        assert provider.provider_name == "openai_compatible"
 
     def test_unknown_provider_raises_value_error(self):
         """Unknown provider should raise ValueError."""

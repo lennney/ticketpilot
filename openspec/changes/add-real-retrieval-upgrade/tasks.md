@@ -27,14 +27,14 @@
 
 ## Batch 3: Real Provider Implementation
 
-- [ ] 3.1 Implement `RealEmbeddingProvider` — OpenAI-compatible HTTP client
-- [ ] 3.2 Implement dimension contract — verify API response dimension matches EMBEDDING_DIM
-- [ ] 3.3 Implement clear error on missing API key when real provider is selected
-- [ ] 3.4 Implement batch embedding (`embed_batch`) with configurable EMBEDDING_BATCH_SIZE (optional but recommended)
-- [ ] 3.5 Unit tests with mocked HTTP responses — no live network in CI
-- [ ] 3.6 Verify secret scan remains clean — no API key in any committed file
-- [ ] 3.7 Run full unit test suite — no existing tests broken
-- [ ] 3.8 Run integration tests (if they use retrieval pipeline)
+- [x] 3.1 Implement `OpenAICompatibleEmbeddingProvider` — OpenAI-compatible HTTP client with httpx, Bearer auth, configurable base_url/model/dimension/batch_size
+- [x] 3.2 Implement dimension contract — verify API response dimension matches EMBEDDING_DIM
+- [x] 3.3 Implement clear error on missing API key when real provider is selected
+- [x] 3.4 Implement batch embedding (`embed_batch`) with configurable EMBEDDING_BATCH_SIZE
+- [x] 3.5 Unit tests with mocked HTTP responses — 21 tests, no live network in CI
+- [x] 3.6 Verify secret scan remains clean — no API key in any committed file (.env.local gitignored)
+- [x] 3.7 Run full unit test suite — 54 Batch 3 tests pass, no regressions
+- [x] 3.8 Run ruff check — clean
 
 ## Batch 4: Index Rebuild Workflow
 

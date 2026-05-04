@@ -6,9 +6,13 @@ FakeEmbeddingProvider is the default; real providers are opt-in.
 
 from ticketpilot.retrieval.embedding_config import EmbeddingConfig
 from ticketpilot.retrieval.providers.fake_embedding import FakeEmbeddingProvider
+from ticketpilot.retrieval.providers.openai_compatible import (
+    OpenAICompatibleEmbeddingProvider,
+)
 
 __all__ = [
     "FakeEmbeddingProvider",
+    "OpenAICompatibleEmbeddingProvider",
     "create_embedding_provider",
     "get_embedding_provider",
 ]
@@ -19,7 +23,7 @@ def _get_provider_dimension(provider) -> int:
     return provider.DIM if hasattr(provider, "DIM") else len(provider.embed(""))
 
 
-def create_embedding_provider(config: EmbeddingConfig) -> FakeEmbeddingProvider:
+def create_embedding_provider(config: EmbeddingConfig):
     """Create an embedding provider based on configuration.
 
     Args:
@@ -37,9 +41,17 @@ def create_embedding_provider(config: EmbeddingConfig) -> FakeEmbeddingProvider:
     if provider_name == "fake":
         provider = FakeEmbeddingProvider()
     elif provider_name == "openai_compatible":
-        raise NotImplementedError(
-            "OpenAI-compatible provider is not yet implemented. "
-            "It will be available in Phase 8 Batch 3."
+        if not config.api_key:
+            raise ValueError(
+                "API key is required for openai_compatible provider. "
+                "Set EMBEDDING_API_KEY in environment or .env.local."
+            )
+        provider = OpenAICompatibleEmbeddingProvider(
+            base_url=config.base_url or "https://api.openai.com/v1",
+            api_key=config.api_key,
+            model=config.model,
+            dimension=config.dimension,
+            batch_size=config.batch_size,
         )
     else:
         raise ValueError(
@@ -62,12 +74,10 @@ def create_embedding_provider(config: EmbeddingConfig) -> FakeEmbeddingProvider:
 
 # Module-level singleton cache
 _default_config: EmbeddingConfig | None = None
-_default_provider: FakeEmbeddingProvider | None = None
+_default_provider = None  # Any EmbeddingProvider instance, set on first call
 
 
-def get_embedding_provider(
-    config: EmbeddingConfig | None = None,
-) -> FakeEmbeddingProvider:
+def get_embedding_provider(config: EmbeddingConfig | None = None):
     """Get the embedding provider (cached singleton per config).
 
     Args:

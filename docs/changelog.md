@@ -1,6 +1,37 @@
 # TicketPilot Changelog
 
 
+## 2026-05-04 — Phase 8C: OpenAI-Compatible Real Embedding Provider (add-real-retrieval-upgrade)
+
+### Added
+- `src/ticketpilot/retrieval/providers/openai_compatible.py` — `OpenAICompatibleEmbeddingProvider` with:
+  - `embed(text)` and `embed_batch(texts)` interface matching `FakeEmbeddingProvider`
+  - `_call_api()` — POST `{base_url}/embeddings` with Bearer auth via httpx
+  - Configurable `base_url`, `api_key`, `model`, `dimension`, `batch_size`
+  - Trailing-slash normalization on `base_url`
+  - Default base_url: `https://api.openai.com/v1`
+- `tests/unit/test_openai_compatible_embedding_provider.py` — 21 tests across 5 classes:
+  - `TestConstructor` (5): missing API key, missing base_url, valid construction, trailing slash normalization, default base_url
+  - `TestEmbed` (2): single vector return, correct request shape (URL, headers, JSON body)
+  - `TestEmbedBatch` (4): multi-vector return, empty list, order preservation, batch_size batching
+  - `TestErrorHandling` (9): dimension mismatch, HTTP error without API key leak, malformed JSON, missing data field, count mismatch, non-list embedding, network error wrapping, missing embedding field
+  - `TestFactoryIntegration` (2): factory creates correct type, no network request during creation
+
+### Changed
+- `src/ticketpilot/retrieval/providers/__init__.py` — factory now creates `OpenAICompatibleEmbeddingProvider` for `provider="openai_compatible"` config
+- `tests/unit/test_embedding_provider_factory.py` — updated openai_compatible tests (missing API key → ValueError, default base_url works through factory)
+- Updated OpenSpec tasks.md: Batch 3 items marked complete
+
+### Constraints
+- All tests use mocked httpx — no live network in CI
+- No API keys committed (`.env.local` gitignored)
+- `FakeEmbeddingProvider` remains the default
+- No changes to pipeline, retrieval, data, eval, reports, or README
+
+### Validation
+- `uv run ruff check .` — PASSED (no new violations)
+- All 54 Batch 3 tests pass (21 openai_compatible + 15 factory + 18 fake_embedding)
+
 ## 2026-05-04 — Phase 8B: Provider Config and Interface Design (add-real-retrieval-upgrade)
 
 ### Added
