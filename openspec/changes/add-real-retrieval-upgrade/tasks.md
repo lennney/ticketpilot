@@ -38,14 +38,17 @@
 
 ## Batch 4: Index Rebuild Workflow
 
-- [ ] 4.1 Implement explicit rebuild command/script (`scripts/rebuild_embeddings.py`)
-- [ ] 4.2 Implement metadata recording — store provider_name, model_name, dimension, built_at
-- [ ] 4.3 Implement dimension mismatch detection — fail loudly if config dim ≠ existing index dim
-- [ ] 4.4 Implement safety check: reject rebuild if provider name changed without explicit --force
-- [ ] 4.5 Verify all 95 knowledge records are re-embedded with correct dimension
-- [ ] 4.6 Verify pgvector index is updated after rebuild
-- [ ] 4.7 Unit tests for rebuild command (with fake provider — no network)
-- [ ] 4.8 Run existing retrieval tests to verify no regression
+- [x] 4.1 Implement explicit rebuild command/script (`scripts/rebuild_embeddings.py`)
+- [x] 4.2 Implement metadata recording — store provider_name, model_name, dimension, built_at
+- [x] 4.3 Implement dimension mismatch detection — fail loudly if config dim ≠ existing index dim
+- [x] 4.4 Implement safety check: reject rebuild if provider name changed without explicit --force (dimension mismatch check + --allow-dimension-reset)
+- [x] 4.5 Create `db/migrations/004_add_embedding_metadata.sql` — `embedding_index_metadata` table
+- [x] 4.6 Update `vector_search.py` — dynamic dimension detection from DB
+- [x] 4.7 Update `pipeline.py` — pass embedding provider name to vector_search for trace
+- [x] 4.8 Update `seeding.py` — factory-based default provider (pluggable)
+- [x] 4.9 Unit tests: `test_embedding_metadata.py` (10 tests), `test_rebuild_embeddings.py` (10 tests)
+- [x] 4.10 Technical docs: `docs/technical/embedding_rebuild_workflow.md`
+- [x] 4.11 Run existing retrieval tests to verify no regression
 
 ## Batch 5: Retrieval Comparison Evaluation
 

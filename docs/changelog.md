@@ -1,6 +1,49 @@
 # TicketPilot Changelog
 
 
+## 2026-05-04 — Phase 8D: Index Rebuild Workflow (add-real-retrieval-upgrade)
+
+### Added
+- `scripts/rebuild_embeddings.py` — CLI workflow for rebuilding knowledge chunk embeddings:
+  - `--dry-run` (default): shows what would be done without writing
+  - `--confirm`: actually write changes to database
+  - `--allow-dimension-reset`: change vector column dimension (drops/recreates HNSW index)
+  - Provider/model/dimension/batch-size overrides via CLI args
+  - Flow: create provider → read metadata → check DB dimension → fetch chunks → (dry-run/confirm gate) → drop HNSW index → ALTER COLUMN → embed_batch → UPDATE chunks → recreate HNSW index → write metadata
+- `src/ticketpilot/retrieval/embedding_metadata.py` — `EmbeddingIndexMetadata` dataclass + DB helpers:
+  - Auto-computed SHA-256 fingerprint from provider|model|dimension
+  - `fingerprint_matches_config()` for quick config comparison
+  - `to_dict()` / `from_dict()` for serialization
+  - `ensure_metadata_table()`, `read_metadata()`, `write_metadata()` — metadata persistence
+  - `get_vector_dimension_from_db()` — queries pg_attribute for column dimension
+  - `get_vector_dimension_from_data()` — queries vector_dims() fallback
+- `db/migrations/004_add_embedding_metadata.sql` — `embedding_index_metadata` table with provider_name, model_name, dimension, batch_size, built_at, source/chunk/embedding counts, config_fingerprint
+- `docs/technical/embedding_rebuild_workflow.md` — CLI usage, workflow steps, return statuses, metadata tracking
+
+### Changed
+- `src/ticketpilot/retrieval/vector_search.py` — added `embedding_dim` and `embedding_provider_name` params for dynamic dimension support
+- `src/ticketpilot/retrieval/pipeline.py` — passes `embedding_provider_name` to vector_search for accurate trace metadata
+- `src/ticketpilot/retrieval/db/seeding.py` — added `_default_embedding_provider()` using config factory; `seed_knowledge_chunks()` uses factory-based default instead of `FakeEmbeddingProvider()` directly
+- `scripts/__init__.py` — package marker for test imports
+
+### Tests
+- `tests/unit/test_rebuild_embeddings.py` — 10 tests across 4 classes:
+  - `TestDryRunBehavior` (2): dry-run status display, confirm required for write
+  - `TestDimensionHandling` (2): mismatch fails without reset flag, succeeds with reset flag
+  - `TestEdgeCases` (4): empty chunks skipped, provider failure handled, config from args, metadata fingerprint match noted
+  - `TestFullRebuildFlow` (2): metadata written on success, provider.embed_batch called with correct texts
+- `tests/unit/test_embedding_metadata.py` — 10 tests: fingerprint computation/config matching, to_dict/from_dict round-trip, built_at handling, explicit fingerprint preservation
+
+### Constraints
+- All rebuild tests use mocked DB connections (no real database in unit tests)
+- All metadata tests are pure dataclass tests (no DB, no network)
+- FakeEmbeddingProvider remains the default
+- Migration is idempotent (CREATE TABLE IF NOT EXISTS)
+
+### Validation
+- `uv run ruff check .` — PASSED
+- All 20 Batch 4 tests pass (10 rebuild + 10 metadata)
+
 ## 2026-05-04 — Phase 8C: OpenAI-Compatible Real Embedding Provider (add-real-retrieval-upgrade)
 
 ### Added

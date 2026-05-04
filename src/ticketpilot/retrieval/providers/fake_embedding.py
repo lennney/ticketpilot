@@ -48,6 +48,7 @@ class FakeEmbeddingProvider:
     DIM: int = FAKE_EMBEDDING_DIM
     provider_name: str = "fake"
     model_name: str = "sha-256"
+    batch_size: int = 32
 
     def embed(self, text: str) -> list[float]:
         """

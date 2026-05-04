@@ -56,12 +56,16 @@ def hybrid_retrieval(
     )
     keyword_latency_ms = int((time.perf_counter() - keyword_start) * 1000)
 
+    # Get provider name for trace (handles both FakeEmbeddingProvider and others)
+    provider_name = getattr(embedding_provider, "provider_name", "unknown")
+
     # Vector search
     vector_start = time.perf_counter()
     vector_results, vector_latency_ms = vector_search(
         query_embedding=query_embedding,
         top_k=top_k * 2,  # Fetch more to account for fusion
         doc_types=doc_types,
+        embedding_provider_name=provider_name,
     )
     vector_latency_ms = int((time.perf_counter() - vector_start) * 1000)
 
@@ -95,7 +99,7 @@ def hybrid_retrieval(
         rrf_k=rrf_k,
         final_evidence_ids=final_evidence_ids,
         total_latency_ms=total_latency_ms,
-        embedding_provider="fake",
+        embedding_provider=provider_name,
         hnsw_params=get_hnsw_params(),
         top_k=top_k,
     )

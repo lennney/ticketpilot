@@ -17,6 +17,8 @@ def vector_search(
     top_k: int = 10,
     doc_types: Optional[list[DocType]] = None,
     ef_search: int = HNSW_EF_SEARCH,
+    embedding_dim: Optional[int] = None,
+    embedding_provider_name: str = "fake",
 ) -> tuple[list[VectorResult], int]:
     """
     Perform vector search using pgvector HNSW index.
@@ -24,10 +26,13 @@ def vector_search(
     Uses cosine similarity: 1 - (embedding <=> query_vector)
 
     Args:
-        query_embedding: 384-d query embedding vector
+        query_embedding: Query embedding vector
         top_k: Maximum number of results to return
         doc_types: Optional filter by document types
         ef_search: HNSW ef_search parameter (default: 100)
+        embedding_dim: Expected embedding dimension. If None, detected from
+                       the DB column or defaults to 384.
+        embedding_provider_name: Embedding provider identifier for trace
 
     Returns:
         Tuple of (list of VectorResult, latency_ms)
@@ -35,12 +40,16 @@ def vector_search(
     # Lazy import to avoid dependency at module load
     from ticketpilot.retrieval.db.connection import get_db_connection
 
+    # Detect expected dimension if not provided
+    if embedding_dim is None:
+        embedding_dim = _detect_embedding_dim()
+
     start_time = time.perf_counter()
 
     # Validate embedding dimension
-    if len(query_embedding) != 384:
+    if len(query_embedding) != embedding_dim:
         raise ValueError(
-            f"Expected 384-d embedding, got {len(query_embedding)}-d"
+            f"Expected {embedding_dim}-d embedding, got {len(query_embedding)}-d"
         )
 
     # Build doc_types filter if provided
@@ -87,7 +96,7 @@ def vector_search(
                         content=row[3],
                         score=float(row[4]),
                         rank=int(row[5]),
-                        embedding_provider="fake",
+                        embedding_provider=embedding_provider_name,
                     )
                 )
 
@@ -114,6 +123,34 @@ def vector_search_for_testing(
     """
     results, _ = vector_search(query_embedding, top_k, doc_types)
     return results
+
+
+def _detect_embedding_dim() -> int:
+    """Detect the embedding dimension from the DB column or metadata.
+
+    Tries:
+    1. pg_attribute vector dimension from knowledge_chunks.embedding column
+    2. vector_dims() from actual data
+    3. Fallback to 384
+
+    Returns:
+        Detected dimension (defaults to 384 on failure).
+    """
+    try:
+        from ticketpilot.retrieval.embedding_metadata import (
+            get_vector_dimension_from_db,
+            get_vector_dimension_from_data,
+        )
+
+        dim = get_vector_dimension_from_db()
+        if dim is not None and dim > 0:
+            return dim
+        dim = get_vector_dimension_from_data()
+        if dim is not None and dim > 0:
+            return dim
+    except Exception:
+        pass
+    return 384
 
 
 def get_hnsw_params() -> dict[str, int]:

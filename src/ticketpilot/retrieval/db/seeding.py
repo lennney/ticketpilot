@@ -10,6 +10,8 @@ from typing import Optional
 
 from ticketpilot.retrieval.chunker import chunk_text
 from ticketpilot.retrieval.db.connection import get_db_connection
+from ticketpilot.retrieval.embedding_config import EmbeddingConfig
+from ticketpilot.retrieval.providers import create_embedding_provider
 from ticketpilot.retrieval.providers.fake_embedding import FakeEmbeddingProvider
 from ticketpilot.retrieval.schema.knowledge import (
     BusinessDomain,
@@ -24,7 +26,6 @@ from ticketpilot.retrieval.schema.seeds import (
 
 EMBEDDING_DIM = 384
 
-# Source table names
 SOURCE_FAQ = "knowledge_faq"
 SOURCE_POLICY = "knowledge_policy"
 SOURCE_CASE = "knowledge_case"
@@ -38,7 +39,7 @@ def _document_to_chunks(
     business_domain: BusinessDomain,
     content: str,
     risk_level: Optional[RiskLevel] = None,
-    embedding_provider: Optional[FakeEmbeddingProvider] = None,
+    embedding_provider=None,
 ) -> list[tuple]:
     """Convert a document to chunk tuples ready for database insertion.
 
@@ -142,8 +143,14 @@ def _insert_source_documents(conn, clear_existing: bool = False) -> tuple[int, i
     return faq_count, policy_count, case_count
 
 
+def _default_embedding_provider():
+    """Create the default embedding provider from environment config."""
+    config = EmbeddingConfig()
+    return create_embedding_provider(config)
+
+
 def seed_knowledge_chunks(
-    embedding_provider: Optional[FakeEmbeddingProvider] = None,
+    embedding_provider=None,
     clear_existing: bool = False,
 ) -> dict:
     """Seed source tables and knowledge_chunks from seed data files.
@@ -153,14 +160,14 @@ def seed_knowledge_chunks(
       2. Chunk each document and insert into knowledge_chunks with source refs
 
     Args:
-        embedding_provider: Embedding provider (default: FakeEmbeddingProvider)
+        embedding_provider: Embedding provider (default: from env config, falls back to FakeEmbeddingProvider)
         clear_existing: If True, delete existing rows before seeding
 
     Returns:
         Dictionary with seeding statistics
     """
     if embedding_provider is None:
-        embedding_provider = FakeEmbeddingProvider()
+        embedding_provider = _default_embedding_provider()
 
     all_chunks: list[tuple] = []
 
