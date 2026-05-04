@@ -71,19 +71,19 @@
 
 ## Batch 3: Expand Knowledge Base
 
-- [ ] 3.1 Expand `data/knowledge/faq_seed.json` from 12 to ~40 records:
+- [x] 3.1 Expand `data/knowledge/faq_seed.json` from 12 to ~40 records:
   - Add FAQ entries for billing/invoice (5–8), payment_dispute (5–8), privacy/data_protection (5–8)
   - Expand existing domains with additional entries (8–12)
   - Each FAQ: id, doc_type=FAQ, business_domain, title, content, intent_tags
-- [ ] 3.2 Expand `data/knowledge/policy_seed.json` from 12 to ~30 records:
+- [x] 3.2 Expand `data/knowledge/policy_seed.json` from 12 to ~30 records:
   - Add policy entries for new domains: billing, refund_extension, privacy, data_retention
   - Each policy: id, doc_type=POLICY, business_domain, policy_code, title, content, effective_date
-- [ ] 3.3 Expand `data/knowledge/case_seed.json` from 12 to ~25 records:
+- [x] 3.3 Expand `data/knowledge/case_seed.json` from 12 to ~25 records:
   - Add case entries for new domains with realistic resolutions
   - Each case: id, doc_type=CASE, business_domain, case_id, issue_summary, resolution, risk_level, compensation_amount
-- [ ] 3.4 Verify knowledge data loads without error (via `scripts/ingest_knowledge.py` or direct import)
-- [ ] 3.5 Run OpenSpec validate --all — expect 15/15
-- [ ] 3.6 Run quality gate — must pass
+- [x] 3.4 Verify knowledge data loads without error: DB re-seeded, verify_seeding() confirms FAQ=40, Policy=30, Case=25, total_chunks=95, all with source refs and embeddings
+- [x] 3.5 Run OpenSpec validate --all — 16/16 passed
+- [x] 3.6 Run quality gate — 642 unit, 119 integration (0 skipped), 84.22% coverage, PASSED
 
 ## Batch 4: Align No-Auto-Send Metric
 

@@ -1,6 +1,36 @@
 # TicketPilot Changelog
 
 
+## 2026-05-04 — Phase 7B-4: Knowledge Base Expansion (add-mvp-evidence-pack)
+
+### Added
+- `data/knowledge/faq_seed.json` — expanded from 12 to 40 FAQ records covering refund, return_exchange, account, technical, product_consulting, logistics, complaint, invoice/payment, privacy/security
+- `data/knowledge/policy_seed.json` — expanded from 12 to 30 policy records covering all business domains with policy codes (X.Y.Z)
+- `data/knowledge/case_seed.json` — expanded from 12 to 25 case records with realistic resolutions, risk levels, and compensation amounts
+- `docs/data/phase7_knowledge_base_expansion_summary.md` — expansion summary documenting counts, topic coverage, risk coverage, and data origin
+
+### Changed
+- `data/knowledge/faq_seed.json`: 12→40 records (28 new: billing, invoice, payment disputes, privacy, account security, logistics delays, legal threats, technical issues)
+- `data/knowledge/policy_seed.json`: 12→30 records (18 new: opened-product returns, refund timing, invoice rules, duplicate payment, privacy leak escalation, legal threats, compensation handling, price protection)
+- `data/knowledge/case_seed.json`: 12→25 records (13 new: lawyer letter compensation, 12315 complaint, privacy leak, account hijacking, duplicate payment, invoice dispute, insufficient evidence, price guarantee)
+
+### Coverage
+- FAQ=40, Policy=30, Case=25, Total source records=95, knowledge_chunks=95
+- All chunks have source refs and embeddings (FakeEmbeddingProvider, 384-dim)
+- 10 eval scenarios supported: refund, refund_complaint, return_exchange, account_issue, technical_issue, product_consulting, logistics, complaint, invoice/payment, privacy/account_security
+- 8 risk flags covered: complaint_risk, compensation_risk, legal_risk, privacy_risk, account_security_risk, policy_conflict, insufficient_evidence, low_confidence
+
+### Data Origin
+- All knowledge records are synthetic / manually adapted content — no real enterprise data
+- FakeEmbeddingProvider generates deterministic 384-dim vectors for pipeline mechanics only
+- Topic coverage biased toward eval scenarios (101 tickets), not toward actual business volume
+
+### Validation
+- DB re-seeded and verified: 95 source docs, 95 chunks, all with embeddings and source refs
+- OpenSpec validate add-mvp-evidence-pack --strict: PASSED
+- OpenSpec validate --all: 16/16 passed
+- Quality gate: PASSED (642 unit, 119 integration, 0 skipped, 84.22% coverage, Ruff clean, secret scan clean)
+
 ## 2026-05-04 — Phase 7B-2: Build Adaptation Candidate Pool (add-mvp-evidence-pack)
 
 ### Added

@@ -226,6 +226,30 @@ The system SHALL provide an adaptation candidate pool at `data/eval/adaptation_c
 - WHEN `docs/data/phase7_candidate_pool_summary.md` is read
 - THEN it documents total count, distribution tables, and key candidates requiring human review
 
+### Requirement: Knowledge Base Expansion
+The system SHALL expand the knowledge base from 36 to approximately 95 synthetic records covering FAQ, Policy, and Case document types across all business domains.
+
+#### Scenario: Knowledge base expanded to ~95 total records
+- WHEN the knowledge base is loaded via seed data loaders
+- THEN FAQ count is >= 38
+- AND Policy count is >= 28
+- AND Case count is >= 23
+- AND total source records is >= 90
+
+#### Scenario: All business domains have FAQ coverage
+- WHEN FAQ seed data is loaded
+- THEN each BusinessDomain (refund, return_exchange, account, technical, product_consulting, logistics, complaint, other) has at least 2 FAQ entries
+
+#### Scenario: Expansion summary document exists
+- WHEN `docs/data/phase7_knowledge_base_expansion_summary.md` is read
+- THEN it documents before/after counts, topic coverage, risk coverage, and data origin
+
+#### Scenario: All chunks have source references and embeddings
+- WHEN `verify_seeding()` is called
+- THEN total_knowledge_chunks >= 90
+- AND all chunks have non-empty source_table and source_id values
+- AND all chunks have embedding vectors
+
 ### Requirement: Data Spec Registration in OpenSpec Change
 The system SHALL register the data sources and methodology spec under the `add-mvp-evidence-pack` OpenSpec change.
 

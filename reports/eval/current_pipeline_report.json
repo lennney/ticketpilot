@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-04T07:37:14.089832+00:00",
+  "generated_at": "2026-05-04T10:02:34.621624+00:00",
   "metadata": {
     "prediction_mode": "pipeline",
     "tickets_path": "data/eval/tickets_eval.csv",
@@ -10,7 +10,7 @@
   "aggregate_metrics": {
     "intent_accuracy": 0.5346534653465347,
     "severity_accuracy": 0.5445544554455446,
-    "must_human_review_accuracy": 0.594059405940594,
+    "must_human_review_accuracy": 0.5346534653465347,
     "evidence_doc_type_recall": 0.4323432343234324,
     "fallback_correctness": 0.900990099009901,
     "no_auto_send_compliance": 1.0
@@ -79,7 +79,7 @@
         "predicted_issue_type": "account_issue",
         "predicted_risk_flags": [],
         "predicted_severity": "LOW",
-        "predicted_must_human_review": true,
+        "predicted_must_human_review": false,
         "predicted_evidence_doc_types": [
           "CASE",
           "FAQ",
@@ -91,7 +91,7 @@
       "metrics": {
         "intent_accuracy": true,
         "severity_accuracy": false,
-        "must_human_review_accuracy": true,
+        "must_human_review_accuracy": false,
         "risk_flag_metrics": {
           "precision": 1.0,
           "recall": 0.0,
@@ -107,6 +107,11 @@
           "metric": "severity_accuracy",
           "expected": "MEDIUM",
           "predicted": "LOW"
+        },
+        {
+          "metric": "must_human_review_accuracy",
+          "expected": "True",
+          "predicted": "False"
         },
         {
           "metric": "risk_flags",
@@ -238,7 +243,8 @@
         "predicted_must_human_review": true,
         "predicted_evidence_doc_types": [
           "CASE",
-          "FAQ"
+          "FAQ",
+          "POLICY"
         ],
         "predicted_fallback_required": false,
         "predicted_no_auto_send": true
@@ -271,7 +277,7 @@
         {
           "metric": "evidence_doc_type_recall",
           "expected": "FAQ,Policy",
-          "predicted": "CASE,FAQ"
+          "predicted": "CASE,FAQ,POLICY"
         },
         {
           "metric": "fallback_correctness",
@@ -1659,7 +1665,7 @@
         "predicted_issue_type": "logistics",
         "predicted_risk_flags": [],
         "predicted_severity": "LOW",
-        "predicted_must_human_review": true,
+        "predicted_must_human_review": false,
         "predicted_evidence_doc_types": [
           "CASE",
           "FAQ",
@@ -1671,7 +1677,7 @@
       "metrics": {
         "intent_accuracy": true,
         "severity_accuracy": false,
-        "must_human_review_accuracy": true,
+        "must_human_review_accuracy": false,
         "risk_flag_metrics": {
           "precision": 1.0,
           "recall": 0.0,
@@ -1687,6 +1693,11 @@
           "metric": "severity_accuracy",
           "expected": "MEDIUM",
           "predicted": "LOW"
+        },
+        {
+          "metric": "must_human_review_accuracy",
+          "expected": "True",
+          "predicted": "False"
         },
         {
           "metric": "risk_flags",
@@ -1765,7 +1776,7 @@
         "predicted_issue_type": "logistics",
         "predicted_risk_flags": [],
         "predicted_severity": "LOW",
-        "predicted_must_human_review": true,
+        "predicted_must_human_review": false,
         "predicted_evidence_doc_types": [
           "CASE",
           "FAQ",
@@ -1777,7 +1788,7 @@
       "metrics": {
         "intent_accuracy": true,
         "severity_accuracy": true,
-        "must_human_review_accuracy": false,
+        "must_human_review_accuracy": true,
         "risk_flag_metrics": {
           "precision": 1.0,
           "recall": 1.0,
@@ -1788,13 +1799,7 @@
         "fallback_correctness": true,
         "no_auto_send_compliance": true
       },
-      "mismatches": [
-        {
-          "metric": "must_human_review_accuracy",
-          "expected": "False",
-          "predicted": "True"
-        }
-      ]
+      "mismatches": []
     },
     {
       "case_id": "case_logi_005",
@@ -1963,8 +1968,7 @@
         "predicted_must_human_review": false,
         "predicted_evidence_doc_types": [
           "CASE",
-          "FAQ",
-          "POLICY"
+          "FAQ"
         ],
         "predicted_fallback_required": false,
         "predicted_no_auto_send": true
@@ -2002,7 +2006,7 @@
         {
           "metric": "evidence_doc_type_recall",
           "expected": "Case",
-          "predicted": "CASE,FAQ,POLICY"
+          "predicted": "CASE,FAQ"
         }
       ]
     },
@@ -2012,9 +2016,8 @@
         "predicted_issue_type": "logistics",
         "predicted_risk_flags": [],
         "predicted_severity": "LOW",
-        "predicted_must_human_review": true,
+        "predicted_must_human_review": false,
         "predicted_evidence_doc_types": [
-          "CASE",
           "FAQ",
           "POLICY"
         ],
@@ -2024,7 +2027,7 @@
       "metrics": {
         "intent_accuracy": true,
         "severity_accuracy": true,
-        "must_human_review_accuracy": true,
+        "must_human_review_accuracy": false,
         "risk_flag_metrics": {
           "precision": 1.0,
           "recall": 0.0,
@@ -2037,6 +2040,11 @@
       },
       "mismatches": [
         {
+          "metric": "must_human_review_accuracy",
+          "expected": "True",
+          "predicted": "False"
+        },
+        {
           "metric": "risk_flags",
           "expected": "policy_conflict",
           "predicted": ""
@@ -2044,7 +2052,7 @@
         {
           "metric": "evidence_doc_type_recall",
           "expected": "FAQ,Policy",
-          "predicted": "CASE,FAQ,POLICY"
+          "predicted": "FAQ,POLICY"
         }
       ]
     },
@@ -2210,6 +2218,7 @@
         "predicted_severity": "LOW",
         "predicted_must_human_review": true,
         "predicted_evidence_doc_types": [
+          "CASE",
           "FAQ",
           "POLICY"
         ],
@@ -2239,7 +2248,7 @@
         {
           "metric": "evidence_doc_type_recall",
           "expected": "FAQ,Policy",
-          "predicted": "FAQ,POLICY"
+          "predicted": "CASE,FAQ,POLICY"
         }
       ]
     },
@@ -2389,8 +2398,7 @@
         "predicted_must_human_review": false,
         "predicted_evidence_doc_types": [
           "CASE",
-          "FAQ",
-          "POLICY"
+          "FAQ"
         ],
         "predicted_fallback_required": false,
         "predicted_no_auto_send": true
@@ -3673,7 +3681,7 @@
         "predicted_issue_type": "logistics",
         "predicted_risk_flags": [],
         "predicted_severity": "LOW",
-        "predicted_must_human_review": true,
+        "predicted_must_human_review": false,
         "predicted_evidence_doc_types": [
           "CASE",
           "FAQ",
@@ -3685,7 +3693,7 @@
       "metrics": {
         "intent_accuracy": false,
         "severity_accuracy": false,
-        "must_human_review_accuracy": true,
+        "must_human_review_accuracy": false,
         "risk_flag_metrics": {
           "precision": 1.0,
           "recall": 0.0,
@@ -3706,6 +3714,11 @@
           "metric": "severity_accuracy",
           "expected": "MEDIUM",
           "predicted": "LOW"
+        },
+        {
+          "metric": "must_human_review_accuracy",
+          "expected": "True",
+          "predicted": "False"
         },
         {
           "metric": "risk_flags",
@@ -4042,7 +4055,7 @@
         "predicted_issue_type": "return_exchange",
         "predicted_risk_flags": [],
         "predicted_severity": "LOW",
-        "predicted_must_human_review": true,
+        "predicted_must_human_review": false,
         "predicted_evidence_doc_types": [
           "CASE",
           "FAQ",
@@ -4054,7 +4067,7 @@
       "metrics": {
         "intent_accuracy": true,
         "severity_accuracy": true,
-        "must_human_review_accuracy": true,
+        "must_human_review_accuracy": false,
         "risk_flag_metrics": {
           "precision": 1.0,
           "recall": 0.0,
@@ -4066,6 +4079,11 @@
         "no_auto_send_compliance": true
       },
       "mismatches": [
+        {
+          "metric": "must_human_review_accuracy",
+          "expected": "True",
+          "predicted": "False"
+        },
         {
           "metric": "risk_flags",
           "expected": "complaint_risk",
@@ -4133,7 +4151,7 @@
         "predicted_issue_type": "return_exchange",
         "predicted_risk_flags": [],
         "predicted_severity": "LOW",
-        "predicted_must_human_review": true,
+        "predicted_must_human_review": false,
         "predicted_evidence_doc_types": [
           "CASE",
           "FAQ",
@@ -4145,7 +4163,7 @@
       "metrics": {
         "intent_accuracy": true,
         "severity_accuracy": true,
-        "must_human_review_accuracy": false,
+        "must_human_review_accuracy": true,
         "risk_flag_metrics": {
           "precision": 1.0,
           "recall": 1.0,
@@ -4157,11 +4175,6 @@
         "no_auto_send_compliance": true
       },
       "mismatches": [
-        {
-          "metric": "must_human_review_accuracy",
-          "expected": "False",
-          "predicted": "True"
-        },
         {
           "metric": "evidence_doc_type_recall",
           "expected": "Case,FAQ,Policy",
@@ -4227,7 +4240,7 @@
         "predicted_issue_type": "logistics",
         "predicted_risk_flags": [],
         "predicted_severity": "LOW",
-        "predicted_must_human_review": false,
+        "predicted_must_human_review": true,
         "predicted_evidence_doc_types": [
           "CASE",
           "FAQ",
@@ -4239,7 +4252,7 @@
       "metrics": {
         "intent_accuracy": false,
         "severity_accuracy": true,
-        "must_human_review_accuracy": true,
+        "must_human_review_accuracy": false,
         "risk_flag_metrics": {
           "precision": 1.0,
           "recall": 1.0,
@@ -4255,6 +4268,11 @@
           "metric": "intent_accuracy",
           "expected": "return_exchange",
           "predicted": "logistics"
+        },
+        {
+          "metric": "must_human_review_accuracy",
+          "expected": "False",
+          "predicted": "True"
         },
         {
           "metric": "evidence_doc_type_recall",
@@ -4422,7 +4440,7 @@
         "predicted_issue_type": "return_exchange",
         "predicted_risk_flags": [],
         "predicted_severity": "LOW",
-        "predicted_must_human_review": true,
+        "predicted_must_human_review": false,
         "predicted_evidence_doc_types": [
           "CASE",
           "FAQ",
@@ -4434,7 +4452,7 @@
       "metrics": {
         "intent_accuracy": true,
         "severity_accuracy": false,
-        "must_human_review_accuracy": true,
+        "must_human_review_accuracy": false,
         "risk_flag_metrics": {
           "precision": 1.0,
           "recall": 0.0,
@@ -4450,6 +4468,11 @@
           "metric": "severity_accuracy",
           "expected": "MEDIUM",
           "predicted": "LOW"
+        },
+        {
+          "metric": "must_human_review_accuracy",
+          "expected": "True",
+          "predicted": "False"
         },
         {
           "metric": "risk_flags",
@@ -4567,7 +4590,7 @@
         "predicted_issue_type": "technical_issue",
         "predicted_risk_flags": [],
         "predicted_severity": "LOW",
-        "predicted_must_human_review": true,
+        "predicted_must_human_review": false,
         "predicted_evidence_doc_types": [
           "CASE",
           "FAQ",
@@ -4579,7 +4602,7 @@
       "metrics": {
         "intent_accuracy": true,
         "severity_accuracy": false,
-        "must_human_review_accuracy": true,
+        "must_human_review_accuracy": false,
         "risk_flag_metrics": {
           "precision": 1.0,
           "recall": 0.0,
@@ -4595,6 +4618,11 @@
           "metric": "severity_accuracy",
           "expected": "MEDIUM",
           "predicted": "LOW"
+        },
+        {
+          "metric": "must_human_review_accuracy",
+          "expected": "True",
+          "predicted": "False"
         },
         {
           "metric": "risk_flags",
@@ -4673,8 +4701,7 @@
         "predicted_must_human_review": true,
         "predicted_evidence_doc_types": [
           "CASE",
-          "FAQ",
-          "POLICY"
+          "FAQ"
         ],
         "predicted_fallback_required": false,
         "predicted_no_auto_send": true
@@ -4915,6 +4942,12 @@
     },
     {
       "case_id": "case_acco_002",
+      "metric": "must_human_review_accuracy",
+      "expected": "True",
+      "predicted": "False"
+    },
+    {
+      "case_id": "case_acco_002",
       "metric": "risk_flags",
       "expected": "account_security_risk",
       "predicted": ""
@@ -4977,7 +5010,7 @@
       "case_id": "case_acco_005",
       "metric": "evidence_doc_type_recall",
       "expected": "FAQ,Policy",
-      "predicted": "CASE,FAQ"
+      "predicted": "CASE,FAQ,POLICY"
     },
     {
       "case_id": "case_acco_005",
@@ -5491,6 +5524,12 @@
     },
     {
       "case_id": "case_logi_002",
+      "metric": "must_human_review_accuracy",
+      "expected": "True",
+      "predicted": "False"
+    },
+    {
+      "case_id": "case_logi_002",
       "metric": "risk_flags",
       "expected": "insufficient_evidence",
       "predicted": ""
@@ -5524,12 +5563,6 @@
       "metric": "risk_flags",
       "expected": "",
       "predicted": "low_confidence"
-    },
-    {
-      "case_id": "case_logi_004",
-      "metric": "must_human_review_accuracy",
-      "expected": "False",
-      "predicted": "True"
     },
     {
       "case_id": "case_logi_005",
@@ -5607,7 +5640,7 @@
       "case_id": "case_logi_008",
       "metric": "evidence_doc_type_recall",
       "expected": "Case",
-      "predicted": "CASE,FAQ,POLICY"
+      "predicted": "CASE,FAQ"
     },
     {
       "case_id": "case_logi_008",
@@ -5631,7 +5664,13 @@
       "case_id": "case_logi_009",
       "metric": "evidence_doc_type_recall",
       "expected": "FAQ,Policy",
-      "predicted": "CASE,FAQ,POLICY"
+      "predicted": "FAQ,POLICY"
+    },
+    {
+      "case_id": "case_logi_009",
+      "metric": "must_human_review_accuracy",
+      "expected": "True",
+      "predicted": "False"
     },
     {
       "case_id": "case_logi_009",
@@ -5703,7 +5742,7 @@
       "case_id": "case_othe_002",
       "metric": "evidence_doc_type_recall",
       "expected": "FAQ,Policy",
-      "predicted": "FAQ,POLICY"
+      "predicted": "CASE,FAQ,POLICY"
     },
     {
       "case_id": "case_othe_002",
@@ -6235,6 +6274,12 @@
     },
     {
       "case_id": "case_refu_012",
+      "metric": "must_human_review_accuracy",
+      "expected": "True",
+      "predicted": "False"
+    },
+    {
+      "case_id": "case_refu_012",
       "metric": "risk_flags",
       "expected": "complaint_risk,insufficient_evidence",
       "predicted": ""
@@ -6385,6 +6430,12 @@
     },
     {
       "case_id": "case_retu_003",
+      "metric": "must_human_review_accuracy",
+      "expected": "True",
+      "predicted": "False"
+    },
+    {
+      "case_id": "case_retu_003",
       "metric": "risk_flags",
       "expected": "complaint_risk",
       "predicted": ""
@@ -6412,12 +6463,6 @@
       "metric": "evidence_doc_type_recall",
       "expected": "Case,FAQ,Policy",
       "predicted": "CASE,FAQ,POLICY"
-    },
-    {
-      "case_id": "case_retu_005",
-      "metric": "must_human_review_accuracy",
-      "expected": "False",
-      "predicted": "True"
     },
     {
       "case_id": "case_retu_006",
@@ -6454,6 +6499,12 @@
       "metric": "intent_accuracy",
       "expected": "return_exchange",
       "predicted": "logistics"
+    },
+    {
+      "case_id": "case_retu_007",
+      "metric": "must_human_review_accuracy",
+      "expected": "False",
+      "predicted": "True"
     },
     {
       "case_id": "case_retu_008",
@@ -6529,6 +6580,12 @@
     },
     {
       "case_id": "case_retu_011",
+      "metric": "must_human_review_accuracy",
+      "expected": "True",
+      "predicted": "False"
+    },
+    {
+      "case_id": "case_retu_011",
       "metric": "risk_flags",
       "expected": "complaint_risk",
       "predicted": ""
@@ -6584,6 +6641,12 @@
     {
       "case_id": "case_tech_003",
       "metric": "fallback_correctness",
+      "expected": "True",
+      "predicted": "False"
+    },
+    {
+      "case_id": "case_tech_003",
+      "metric": "must_human_review_accuracy",
       "expected": "True",
       "predicted": "False"
     },

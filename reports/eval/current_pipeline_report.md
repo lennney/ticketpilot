@@ -1,6 +1,6 @@
 # Evaluation Report
 
-**Generated at:** 2026-05-04T07:37:14.110738+00:00
+**Generated at:** 2026-05-04T10:02:34.661825+00:00
 
 ## Dataset Summary
 
@@ -11,7 +11,7 @@
 | Golden file | `data/eval/golden_expectations.csv` |
 | Predictions file | `pipeline (generated from local TicketPilot pipeline)` |
 | Prediction mode | pipeline (local) |
-| Mismatches found | 300 |
+| Mismatches found | 306 |
 
 ## Aggregate Metrics
 
@@ -19,7 +19,7 @@
 |---|---|
 | Intent accuracy | 53.5% |
 | Severity accuracy | 54.5% |
-| Must-human-review accuracy | 59.4% |
+| Must-human-review accuracy | 53.5% |
 | Evidence doc type recall | 43.2% |
 | Fallback correctness | 90.1% |
 | No-auto-send compliance | 100.0% |
@@ -41,6 +41,7 @@
 | case_acco_001 | risk_flags | account_security_risk |  |
 | case_acco_001 | severity_accuracy | HIGH | LOW |
 | case_acco_002 | evidence_doc_type_recall | FAQ,Policy | CASE,FAQ,POLICY |
+| case_acco_002 | must_human_review_accuracy | True | False |
 | case_acco_002 | risk_flags | account_security_risk |  |
 | case_acco_002 | severity_accuracy | MEDIUM | LOW |
 | case_acco_003 | evidence_doc_type_recall | Case,Policy | CASE,FAQ,POLICY |
@@ -51,7 +52,7 @@
 | case_acco_004 | intent_accuracy | account_issue | logistics |
 | case_acco_004 | risk_flags | account_security_risk,privacy_risk |  |
 | case_acco_004 | severity_accuracy | HIGH | LOW |
-| case_acco_005 | evidence_doc_type_recall | FAQ,Policy | CASE,FAQ |
+| case_acco_005 | evidence_doc_type_recall | FAQ,Policy | CASE,FAQ,POLICY |
 | case_acco_005 | fallback_correctness | True | False |
 | case_acco_005 | risk_flags | insufficient_evidence | privacy_risk |
 | case_acco_005 | severity_accuracy | MEDIUM | LOW |
@@ -137,13 +138,13 @@
 | case_logi_001 | evidence_doc_type_recall | Case,FAQ | CASE,FAQ,POLICY |
 | case_logi_002 | evidence_doc_type_recall | Case,FAQ | CASE,FAQ,POLICY |
 | case_logi_002 | fallback_correctness | True | False |
+| case_logi_002 | must_human_review_accuracy | True | False |
 | case_logi_002 | risk_flags | insufficient_evidence |  |
 | case_logi_002 | severity_accuracy | MEDIUM | LOW |
 | case_logi_003 | evidence_doc_type_recall | FAQ,Policy | CASE,FAQ,POLICY |
 | case_logi_003 | intent_accuracy | logistics | other |
 | case_logi_003 | must_human_review_accuracy | False | True |
 | case_logi_003 | risk_flags |  | low_confidence |
-| case_logi_004 | must_human_review_accuracy | False | True |
 | case_logi_005 | evidence_doc_type_recall | Case,Policy | CASE,FAQ,POLICY |
 | case_logi_005 | risk_flags | compensation_risk |  |
 | case_logi_005 | severity_accuracy | MEDIUM | LOW |
@@ -156,11 +157,12 @@
 | case_logi_007 | intent_accuracy | logistics | other |
 | case_logi_007 | must_human_review_accuracy | False | True |
 | case_logi_007 | risk_flags |  | low_confidence |
-| case_logi_008 | evidence_doc_type_recall | Case | CASE,FAQ,POLICY |
+| case_logi_008 | evidence_doc_type_recall | Case | CASE,FAQ |
 | case_logi_008 | must_human_review_accuracy | True | False |
 | case_logi_008 | risk_flags | complaint_risk |  |
 | case_logi_008 | severity_accuracy | MEDIUM | LOW |
-| case_logi_009 | evidence_doc_type_recall | FAQ,Policy | CASE,FAQ,POLICY |
+| case_logi_009 | evidence_doc_type_recall | FAQ,Policy | FAQ,POLICY |
+| case_logi_009 | must_human_review_accuracy | True | False |
 | case_logi_009 | risk_flags | policy_conflict |  |
 | case_logi_010 | evidence_doc_type_recall | Case,Policy | CASE,FAQ,POLICY |
 | case_logi_010 | intent_accuracy | logistics | other |
@@ -172,7 +174,7 @@
 | case_logi_011 | severity_accuracy | MEDIUM | LOW |
 | case_othe_001 | must_human_review_accuracy | False | True |
 | case_othe_001 | risk_flags |  | low_confidence |
-| case_othe_002 | evidence_doc_type_recall | FAQ,Policy | FAQ,POLICY |
+| case_othe_002 | evidence_doc_type_recall | FAQ,Policy | CASE,FAQ,POLICY |
 | case_othe_002 | risk_flags | policy_conflict | low_confidence |
 | case_othe_003 | evidence_doc_type_recall | FAQ,Policy | CASE,FAQ,POLICY |
 | case_othe_003 | must_human_review_accuracy | False | True |
@@ -261,6 +263,7 @@
 | case_refu_012 | evidence_doc_type_recall | Case,FAQ,Policy | CASE,FAQ,POLICY |
 | case_refu_012 | fallback_correctness | True | False |
 | case_refu_012 | intent_accuracy | refund | logistics |
+| case_refu_012 | must_human_review_accuracy | True | False |
 | case_refu_012 | risk_flags | complaint_risk,insufficient_evidence |  |
 | case_refu_012 | severity_accuracy | MEDIUM | LOW |
 | case_refu_013 | evidence_doc_type_recall | Case,Policy | CASE,FAQ,POLICY |
@@ -286,18 +289,19 @@
 | case_retu_002 | must_human_review_accuracy | False | True |
 | case_retu_002 | risk_flags |  | low_confidence |
 | case_retu_003 | evidence_doc_type_recall | Case,FAQ,Policy | CASE,FAQ,POLICY |
+| case_retu_003 | must_human_review_accuracy | True | False |
 | case_retu_003 | risk_flags | complaint_risk |  |
 | case_retu_004 | evidence_doc_type_recall | Case,Policy | CASE,FAQ,POLICY |
 | case_retu_004 | risk_flags | compensation_risk,policy_conflict | compensation_risk |
 | case_retu_004 | severity_accuracy | MEDIUM | LOW |
 | case_retu_005 | evidence_doc_type_recall | Case,FAQ,Policy | CASE,FAQ,POLICY |
-| case_retu_005 | must_human_review_accuracy | False | True |
 | case_retu_006 | evidence_doc_type_recall | Case,Policy | CASE,FAQ,POLICY |
 | case_retu_006 | must_human_review_accuracy | True | False |
 | case_retu_006 | risk_flags | compensation_risk,complaint_risk |  |
 | case_retu_006 | severity_accuracy | MEDIUM | LOW |
 | case_retu_007 | evidence_doc_type_recall | FAQ,Policy | CASE,FAQ,POLICY |
 | case_retu_007 | intent_accuracy | return_exchange | logistics |
+| case_retu_007 | must_human_review_accuracy | False | True |
 | case_retu_008 | evidence_doc_type_recall | Policy | CASE,FAQ,POLICY |
 | case_retu_008 | must_human_review_accuracy | True | False |
 | case_retu_008 | risk_flags | policy_conflict |  |
@@ -310,6 +314,7 @@
 | case_retu_010 | risk_flags | complaint_risk,policy_conflict |  |
 | case_retu_010 | severity_accuracy | MEDIUM | LOW |
 | case_retu_011 | evidence_doc_type_recall | Case | CASE,FAQ,POLICY |
+| case_retu_011 | must_human_review_accuracy | True | False |
 | case_retu_011 | risk_flags | complaint_risk |  |
 | case_retu_011 | severity_accuracy | MEDIUM | LOW |
 | case_tech_001 | intent_accuracy | technical_issue | other |
@@ -320,6 +325,7 @@
 | case_tech_002 | risk_flags |  | low_confidence |
 | case_tech_003 | evidence_doc_type_recall | Case,FAQ,Policy | CASE,FAQ,POLICY |
 | case_tech_003 | fallback_correctness | True | False |
+| case_tech_003 | must_human_review_accuracy | True | False |
 | case_tech_003 | risk_flags | insufficient_evidence,policy_conflict |  |
 | case_tech_003 | severity_accuracy | MEDIUM | LOW |
 | case_tech_004 | intent_accuracy | technical_issue | other |

@@ -9,6 +9,7 @@
 - Evaluation report total_cases: 10
 - Full baseline audit: `docs/data/phase7_baseline_audit.md` (recorded 2026-05-04)
 - Adaptation candidate pool: `data/eval/adaptation_candidates.csv` (96 candidates, pending human review)
+- Knowledge records: 36 expanded to 95 (FAQ=40, Policy=30, Case=25) — Phase 7B-4
 
 ## ADDED Requirements
 
