@@ -115,16 +115,16 @@
 
 ## Batch 6: Limitations/README Update and Final Quality Gate
 
-- [ ] 6.1 Create or update limitations documentation:
+- [x] 6.1 Create or update limitations documentation:
   - Data: synthetic/manufactured Chinese customer service scenarios, not real enterprise data
   - System: local demo/portfolio project, not production-ready
   - Embedding: deterministic fake embedding (384-dim hash), no semantic retrieval quality
   - Real semantic retrieval comparison deferred to Phase 8
   - All replies are drafts requiring human review — no auto-send (architecture-level guarantee)
-- [ ] 6.2 Update README.md and README.en.md if ticket/knowledge counts are referenced
-- [ ] 6.3 Update docs/changelog.md with Phase 7 entry
-- [ ] 6.4 Run OpenSpec validate --all — expect 15/15
-- [ ] 6.5 Run quality gate — must pass (Ruff ✓, 642 unit ✓, 119 integration ✓, coverage ≥70%)
+- [x] 6.2 Update README.md and README.en.md with Phase 7 data scale (95 knowledge, 101 tickets), demo scenario refs, and pipeline metrics note
+- [x] 6.3 Update docs/changelog.md with Phase 7B-6 entry
+- [x] 6.4 Run OpenSpec validate --all — 16/16 passed
+- [x] 6.5 Run quality gate — 642 unit, 119 integration (0 skipped), 84.22% coverage, PASSED
 - [ ] 6.6 Final commit and push
 
 ## Total Batch Summary

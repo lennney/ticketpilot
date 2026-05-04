@@ -32,8 +32,9 @@ TicketPilot is not a chatbot or simple document QA. Key differences from common 
 
 **Key limitations:**
 - Uses **fake embeddings** (384-dim deterministic hash vectors) — cosine similarity has no semantic meaning, only verifies pipeline connectivity
-- Evaluation based on **10 seed tickets**, not representative of real-world performance
+- Evaluation based on **101 synthetic tickets** and **95 knowledge records**, not representative of real-world performance
 - System is **local demo / portfolio-ready**, not for production use
+- Current intent accuracy (~53%) and severity accuracy (~54%) reflect deterministic behavior of fake embeddings and rule-based components, not production-level metrics
 
 ## 3. Core workflow
 
@@ -84,7 +85,7 @@ Offline evaluation pipeline
 | **Layered Retrieval** | Keyword FTS + pgvector HNSW + RRF fusion; supports FAQ / Policy / Case doc types | Unit + integration tests |
 | **Draft Generation** | Template-driven (zero LLM, zero network); evidence-cited; no-evidence fallback; high-risk forced human review | Unit tests |
 | **Human Review** | Streamlit console; approve/edit/escalate/reject; ReviewDecision JSONL audit trail | Unit + integration tests |
-| **Evaluation Pipeline** | CSV prediction mode; pipeline prediction mode; 7 metrics (intent accuracy, severity accuracy, risk flag F1, evidence recall, etc.); JSON + Markdown reports | Unit + integration tests (85) |
+| **Evaluation Pipeline** | CSV prediction mode; pipeline prediction mode; 7 metrics (intent accuracy, severity accuracy, risk flag F1, evidence recall, etc.); JSON + Markdown reports | 101-ticket evaluation coverage |
 | **Quality Gate** | Ruff + unit tests + integration tests (skip=fail) + coverage≥70% + OpenSpec validation | Fully automated |
 
 **Safety constraints:**
@@ -231,7 +232,8 @@ print(f'Severity: {output.risk_assessment.severity.value}')
 | Directory | Contents |
 |-----------|----------|
 | `docs/technical/` | Technical design docs: system architecture, data contracts, retrieval design, risk rules, quality gate, evaluation pipeline |
-| `docs/demo/` | Demo guide: step-by-step instructions for 3 demo lines with sample tickets |
+| `docs/demo/` | Demo guide: step-by-step instructions for 3 demo lines; 3 strong demo scenario docs (refund complaint, privacy/account, invoice/payment dispute) |
+| `docs/limitations.md` | Known limitations for the current release (data, embedding, evaluation, UI, etc.) |
 | `docs/github_release_checklist.md` | Pre-publication checklist for GitHub release |
 | `docs/development_trace/` | Development process records and project retrospectives |
 | `docs/portfolio/` | Portfolio materials: case studies (CN/EN), demo script, interview talking points, limitations and roadmap |
@@ -247,7 +249,8 @@ print(f'Severity: {output.risk_assessment.severity.value}')
 ## 8. Current Limitations
 
 - **Local demo / portfolio level**: This is an architecture-first functional demonstration, not a production customer-service system.
-- **Seed data only**: Knowledge base has 36 seed documents; evaluation has 10 seed tickets. Does not reflect enterprise data scale or diversity.
+- **Seed data only**: Knowledge base has 95 seed records (FAQ=40, Policy=30, Case=25); evaluation has 101 synthetic tickets. Does not reflect enterprise data scale or diversity.
+- **Pipeline metrics note**: Current intent accuracy (~53%) and severity accuracy (~54%) reflect deterministic behavior of fake embeddings and rule-based components. These indicate the evaluation framework is established, not production-level performance. No-auto-send compliance=100% is an architectural constraint, not a reply quality metric. See [docs/limitations.md](docs/limitations.md).
 - **Fake embeddings**: Vector search uses deterministic fake embeddings (384-dim SHA-256 hash vectors). Cosine similarity scores have no semantic meaning — they verify pipeline connectivity only.
 - **No real LLM**: Draft generation uses deterministic templates, no LLM API calls. All `LLM_PROVIDER` config entries are currently unused placeholders.
 - **No auto-send**: See section 10.

@@ -32,8 +32,9 @@ TicketPilot 不是聊天机器人，也不是简单的文档 QA。它与常见 R
 
 **关键限制：**
 - 使用 **fake embeddings**（384 维确定性的哈希向量）— 余弦相似度无语义含义，仅验证管道连通性
-- 评估基于 **10 条种子数据**，不反映真实世界性能
+- 评估基于 **101 条合成工单**和 **95 条知识记录**，不反映真实世界性能
 - 系统是 **本地演示 / 作品集级别**，不适用于生产
+- 当前 intent accuracy (~53%) 和 severity accuracy (~54%) 反映 fake embedding 和规则组件的确定性行为，不是生产级效果指标
 
 ## 3. 核心流程
 
@@ -84,7 +85,7 @@ Streamlit 人工审核控制台
 | **分层检索** | 关键词全文搜索 + pgvector HNSW + RRF 融合；支持 FAQ / Policy / Case 三种文档类型 | 单元 + 集成测试 |
 | **草稿生成** | 模板驱动（零 LLM、零网络调用）；引用证据；无证据时自动降级；高风险标记强制人工审核 | 单元测试覆盖 |
 | **人工审核** | Streamlit 控制台；批准 / 编辑 / 升级 / 拒绝操作；ReviewDecision JSONL 审计追踪 | 单元 + 集成测试 |
-| **评估流水线** | CSV 预测模式；Pipeline 预测模式；7 项指标（意图准确率、严重度准确率、风险标记 F1、证据召回率等）；JSON + Markdown 报告 | 单元 + 集成测试 85 项 |
+| **评估流水线** | CSV 预测模式；Pipeline 预测模式；7 项指标（意图准确率、严重度准确率、风险标记 F1、证据召回率等）；JSON + Markdown 报告 | 101 条工单评估覆盖 |
 | **质量门禁** | Ruff + 单元测试 + 集成测试（跳过=失败）+ 覆盖率≥70% + OpenSpec 验证 | 全自动化 |
 
 **安全约束：**
@@ -231,7 +232,8 @@ print(f'严重程度: {output.risk_assessment.severity.value}')
 | 目录 | 说明 |
 |------|------|
 | `docs/technical/` | 技术设计文档：系统架构、数据契约、检索设计、风险规则、质量门禁、评估流水线等 |
-| `docs/demo/` | 演示指南：三条演示线的分步说明和示例工单 |
+| `docs/demo/` | 演示指南：三条演示线的分步说明和示例工单；三个强 demo 场景文档（退款投诉、隐私/账号异常、发票/支付争议） |
+| `docs/limitations.md` | 当前版本已知限制（数据、嵌入、评估、UI 等） |
 | `docs/github_release_checklist.md` | GitHub 发布前检查清单 |
 | `docs/development_trace/` | 各阶段开发过程记录和项目复盘 |
 | `docs/portfolio/` | 作品集材料：项目案例（中/英）、演示脚本、面试要点、限制与路线图 |
@@ -247,7 +249,8 @@ print(f'严重程度: {output.risk_assessment.severity.value}')
 ## 8. 当前限制
 
 - **本地演示 / 作品集级别**：本项目是架构优先的功能演示，不是生产级客服系统。
-- **种子数据**：知识库仅含 36 条种子文档，评估仅含 10 条种子工单。不反映真实企业数据规模和多样性。
+- **种子数据**：知识库含 95 条种子记录（FAQ=40, Policy=30, Case=25），评估含 101 条合成工单。不反映真实企业数据规模和多样性。
+- **Pipeline 指标说明**：当前 intent accuracy (~53%) 和 severity accuracy (~54%) 反映 fake embedding 和基于规则的组件的确定性行为。这些指标说明了评测体系已建立，不能被包装为生产级效果。no-auto-send compliance=100% 是架构约束，不是自动回复质量。详见 [docs/limitations.md](docs/limitations.md)。
 - **Fake embeddings**：向量检索使用确定性 fake embeddings（384 维 SHA-256 哈希向量），余弦相似度无语义含义，仅验证管道连通性。
 - **无真实 LLM**：草稿生成使用模板，不调用任何 LLM API。所有 `LLM_PROVIDER` 配置项当前均为未使用的占位。
 - **不自动发送回复（no auto-send）**：详见第 10 节。

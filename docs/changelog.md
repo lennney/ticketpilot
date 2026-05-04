@@ -1,6 +1,26 @@
 # TicketPilot Changelog
 
 
+## 2026-05-04 — Phase 7B-6: Limitations Doc, README Update, and Final Packaging (add-mvp-evidence-pack)
+
+### Added
+- `docs/limitations.md` — comprehensive limitations document covering: project maturity, data (synthetic/seed), embedding (fake/deterministic), draft generation (template/zero-LLM), evaluation (offline/101-ticket), UI (MVP Streamlit), architecture constraints, and Phase 8+ roadmap
+
+### Changed
+- `README.md` — updated Phase 7 data scale: knowledge=95 records, eval=101 tickets; added demo scenario refs (refund complaint, privacy/account, invoice/payment); added pipeline metrics note (intent ~53%, severity ~54%) as limitations not production claims; added docs/limitations.md to doc map
+- `README.en.md` — synchronized with all above changes
+- Updated OpenSpec tasks.md: Batch 6 items marked complete
+
+### Constraints
+- No src/ or tests/ files modified
+- No data/eval/ or data/knowledge/ files modified
+- No reports regenerated
+- No overclaim introduced
+
+### Validation
+- OpenSpec validate --all: 16/16 passed
+- Quality gate: PASSED (642 unit, 119 integration 0 skipped, 84.22% coverage)
+
 ## 2026-05-04 — Phase 7B-5: Three Strong Demo Scenario Docs (add-mvp-evidence-pack)
 
 ### Added
