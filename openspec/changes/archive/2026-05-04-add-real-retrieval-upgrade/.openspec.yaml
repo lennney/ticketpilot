@@ -1,0 +1,34 @@
+schema: spec-driven
+created: 2026-05-04
+title: Real Retrieval Upgrade
+summary: Add real Chinese embedding provider support with provider config, index rebuild workflow, and fake-vs-real retrieval comparison evaluation on the Phase 7 dataset. Fake provider remains the default test provider.
+state: planning
+owner: ticketpilot-team
+affected_modules:
+  - retrieval
+  - embedding
+  - config
+  - evaluation
+affected_specs:
+  - embedding
+  - config
+  - retrieval-evaluation
+constraints:
+  - fake-provider-remains-default
+  - no-real-llm
+  - no-api-keys-in-repo
+  - no-modify-src-except-planned-provider-and-config
+  - no-modify-tests-except-new-provider-tests
+  - no-modify-phase7-eval-data
+  - no-modify-phase7-knowledge
+  - no-modify-reports
+  - no-modify-readme-until-batch-7
+  - no-auto-send
+  - no-production-deployment
+  - no-reranker
+  - no-langgraph-refactor
+  - no-multi-provider-benchmark
+  - no-fine-tuning
+  - dimension-mismatch-must-fail-loudly
+  - index-rebuild-required-on-provider-change
+  - network-tests-not-in-default-ci

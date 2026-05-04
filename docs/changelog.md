@@ -1,6 +1,12 @@
 # TicketPilot Changelog
 
 
+## 2026-05-05 (3) — Phase 8 Archive (add-real-retrieval-upgrade)
+
+### Changed
+- `openspec/changes/add-real-retrieval-upgrade/` archived as `openspec/changes/archive/2026-05-04-add-real-retrieval-upgrade/`
+- OpenSpec active changes: 0
+
 ## 2026-05-05 (2) — Phase 8B: Fake vs Real Retrieval Comparison Run
 
 ### Added
