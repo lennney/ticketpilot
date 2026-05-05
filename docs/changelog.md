@@ -1,6 +1,34 @@
 # TicketPilot Changelog
 
 
+## 2026-05-05 (11) — Phase 9.5: Evaluation Rerun — Expanded Knowledge Coverage
+
+### Added
+- `reports/retrieval/phase9_retrieval_rows.json` — Phase 9 pipeline export (106 records, 101 eval tickets)
+- `reports/retrieval/phase9_evaluation_metrics.json` — Phase 9 vs Phase 8 metrics comparison
+- `reports/retrieval/phase9_evaluation_rerun.md` — Phase 9.5 evaluation rerun report
+- `reports/retrieval/phase9_wrong_case_comparison.md` — Wrong case comparison Phase 8 vs Phase 9
+
+### Changed
+- Database re-seeded with 106 knowledge records (was 95) — full re-chunk + fake embeddings
+- `openspec/changes/add-evaluation-driven-knowledge-coverage/tasks.md` — Phase 9.5 tasks (5.1–5.7) marked complete
+
+### Metrics
+| Metric | Phase 8 (95) | Phase 9 (106) | Delta |
+|--------|-------------|--------------|-------|
+| Top-1 hit rate | 31.7% | 26.7% | -5.0% |
+| Top-3 hit rate | 47.5% | 45.5% | -2.0% |
+| Top-5 hit rate | 53.5% | 54.5% | +1.0% |
+| Top-10 hit rate | 59.4% | 59.4% | 0.0% |
+| MRR (doc_type) | 0.4114 | 0.3777 | -0.0337 |
+| Wrong cases | 41 | 41 | 0 |
+
+### Design Notes
+- Small metric shifts are within the noise floor of fake (deterministic random) embeddings — adding 11 documents shifts the vector space without improving semantic relevance
+- Wrong case set is identical (41 → 41, 0 fixed, 0 regressed) — expected, since fake embeddings cannot leverage document semantics
+- Real embedding provider needed to measure actual impact of knowledge expansion
+- Seed data unchanged from Phase 9.4.1 (no new knowledge in this phase)
+
 ## 2026-05-05 (10) — Phase 9.4.1: P0 Knowledge Expansion (11 Records)
 
 ### Added

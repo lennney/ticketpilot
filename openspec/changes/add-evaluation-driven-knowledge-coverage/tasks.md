@@ -67,17 +67,17 @@
 
 ## Phase 9.5 — Evaluation Rerun
 
-- [ ] 5.1 Rebuild embeddings on expanded knowledge base (fake provider default; real provider opt-in)
-- [ ] 5.2 Rerun pipeline-backed offline evaluation on same 101 eval tickets
-- [ ] 5.3 Compute Phase 9 metrics: Top-1 / Top-3 / Top-5 / Top-10 hit rate, MRR
-- [ ] 5.4 Compute refined wrong-case distribution on Phase 9 results
-- [ ] 5.5 Compare Phase 8 baseline vs Phase 9 expanded-knowledge result:
-  - Delta in Top-K hit rates
-  - Delta in MRR
-  - Delta in wrong-case count and category distribution
-  - Which categories improved, which persist
-- [ ] 5.6 Output before-vs-after comparison report to `reports/retrieval/phase9_*`
-- [ ] 5.7 Report missing_doc_type reduction from Phase 8 baseline (41)
+- [x] 5.1 Rebuild embeddings on expanded knowledge base (fake provider default; real provider opt-in)
+- [x] 5.2 Rerun pipeline-backed offline evaluation on same 101 eval tickets
+- [x] 5.3 Compute Phase 9 metrics: Top-1 / Top-3 / Top-5 / Top-10 hit rate, MRR
+- [x] 5.4 Compute refined wrong-case distribution on Phase 9 results
+- [x] 5.5 Compare Phase 8 baseline vs Phase 9 expanded-knowledge result:
+  - Delta in Top-K hit rates: -5.0% (Top-1), -2.0% (Top-3), +1.0% (Top-5), 0.0% (Top-10)
+  - Delta in MRR: -0.0337
+  - Delta in wrong-case count: 0 (41 → 41, identical set)
+  - No categories improved — same 41 wrong cases persist
+- [x] 5.6 Output before-vs-after comparison report to `reports/retrieval/phase9_*`
+- [x] 5.7 Report missing_doc_type reduction from Phase 8 baseline — **0 reduction** (41 → 41, identical wrong cases). Fake embeddings cannot leverage semantic content of new records; the wrong case count is driven by knowledge coverage gaps that require a real embedding provider to surface.
 
 ## Phase 9.6 — Portfolio Summary
 
