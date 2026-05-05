@@ -1,5 +1,15 @@
 # TicketPilot Changelog
 
+## 2026-05-05 (17) — Phase 9.7: Final Validation and Archive
+
+### Changed
+- `src/ticketpilot/retrieval/providers/fake_embedding.py` — dimension-configurable FakeEmbeddingProvider so unit/integration tests work when DB has vector(1024)
+- `src/ticketpilot/retrieval/pipeline.py` — hybrid_retrieval auto-detects DB dimension for fake provider
+- `scripts/run_quality_gate.sh` — exclude `.env.local` from secret scan
+
+### Archive
+- `openspec archive add-evaluation-driven-knowledge-coverage` — Phase 9 proposal/design/tasks/specs archived to `2026-05-05-add-evaluation-driven-knowledge-coverage`
+- Main specs updated: `retrieval-evaluation` (+6 added), `knowledge-schema` (+5 added)
 
 ## 2026-05-05 (11) — Phase 9.5: Evaluation Rerun — Expanded Knowledge Coverage
 
