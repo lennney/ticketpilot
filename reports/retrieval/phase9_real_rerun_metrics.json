@@ -1,0 +1,459 @@
+{
+  "generated_at": "2026-05-05T12:26:08.824654+00:00",
+  "config": {
+    "top_k": [
+      1,
+      3,
+      5,
+      10
+    ]
+  },
+  "golden_path": "data/eval/golden_expectations.csv",
+  "fake": {
+    "rows_path": "reports/retrieval/real_retrieval_rows.json",
+    "total_cases": 101,
+    "hit_rate_doc_type": {
+      "1": 0.42574257425742573,
+      "3": 0.5643564356435643,
+      "5": 0.5841584158415841,
+      "10": 0.594059405940594
+    },
+    "mrr_doc_type": 0.4913366336633664,
+    "wrong_case_count": 41
+  },
+  "real": {
+    "rows_path": "reports/retrieval/phase9_real_retrieval_rows.json",
+    "total_cases": 101,
+    "hit_rate_doc_type": {
+      "1": 0.44554455445544555,
+      "3": 0.5445544554455446,
+      "5": 0.5742574257425742,
+      "10": 0.594059405940594
+    },
+    "mrr_doc_type": 0.49954424013829957,
+    "wrong_case_count": 41
+  },
+  "delta": {
+    "hit_rate_doc_type": {
+      "1": 0.0198,
+      "3": -0.0198,
+      "5": -0.0099,
+      "10": 0.0
+    },
+    "mrr_doc_type": 0.0082
+  },
+  "wrong_cases_fake": [
+    {
+      "case_id": "case_acco_003",
+      "failure_mode": "missing_doc_type",
+      "details": "Expected doc_types: [Case, Policy] | Retrieved: CASE(c4444444-4444-4444-4444-444444444444)@1, FAQ(eeeeeeee-5555-5555-5555-555555555555)@2, POLICY(ad0d0d0d-6666-6666-6666-666666666666)@3, CASE(c5555555-5555-5555-5555-555555555555)@4, POLICY(ae0e0e0e-7777-7777-7777-777777777777)@5, FAQ(eeeeeeee-4444-4444-4444-444444444444)@6, POLICY(a5555555-5555-5555-5555-555555555555)@7, FAQ(eeeeeeee-3333-3333-3333-333333333333)@8, CASE(b5555555-5555-5555-5555-555555555555)@9, FAQ(44444444-4444-4444-4444-444444444444)@10"
+    },
+    {
+      "case_id": "case_acco_006",
+      "failure_mode": "missing_doc_type",
+      "details": "Expected doc_types: [Case, Policy] | Retrieved: FAQ(eeeeeeee-3333-3333-3333-333333333333)@1, CASE(c4444444-4444-4444-4444-444444444444)@2, CASE(c5555555-5555-5555-5555-555555555555)@3, CASE(b5555555-5555-5555-5555-555555555555)@4, CASE(b4444444-4444-4444-4444-444444444444)@5, CASE(bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb)@6, FAQ(eeeeeeee-4444-4444-4444-444444444444)@7, FAQ(44444444-4444-4444-4444-444444444444)@8, FAQ(eeeeeeee-5555-5555-5555-555555555555)@9, CASE(b9999999-9999-9999-9999-999999999999)@10"
+    },
+    {
+      "case_id": "case_acco_009",
+      "failure_mode": "missing_doc_type",
+      "details": "Expected doc_types: [Case, Policy] | Retrieved: POLICY(a5555555-5555-5555-5555-555555555555)@1, FAQ(44444444-4444-4444-4444-444444444444)@2, FAQ(eeeeeeee-4444-4444-4444-444444444444)@3, CASE(c5555555-5555-5555-5555-555555555555)@4, POLICY(ad0d0d0d-7777-7777-7777-777777777777)@5, POLICY(a6666666-6666-6666-6666-666666666666)@6, CASE(b4444444-4444-4444-4444-444444444444)@7, FAQ(ffffffff-6666-6666-6666-666666666666)@8, CASE(b5555555-5555-5555-5555-555555555555)@9, CASE(c4444444-4444-4444-4444-444444444444)@10"
+    },
+    {
+      "case_id": "case_acco_012",
+      "failure_mode": "missing_doc_type",
+      "details": "Expected doc_types: [Case, Policy] | Retrieved: FAQ(eeeeeeee-5555-5555-5555-555555555555)@1, CASE(c4444444-4444-4444-4444-444444444444)@2, POLICY(ad0d0d0d-6666-6666-6666-666666666666)@3, FAQ(eeeeeeee-3333-3333-3333-333333333333)@4, CASE(c5555555-5555-5555-5555-555555555555)@5, POLICY(ae0e0e0e-7777-7777-7777-777777777777)@6, POLICY(a5555555-5555-5555-5555-555555555555)@7, FAQ(eeeeeeee-4444-4444-4444-444444444444)@8, CASE(b5555555-5555-5555-5555-555555555555)@9, CASE(b4444444-4444-4444-4444-444444444444)@10"
+    },
+    {
+      "case_id": "case_acco_014",
+      "failure_mode": "missing_doc_type",
+      "details": "Expected doc_types: [Case, Policy] | Retrieved: POLICY(a5555555-5555-5555-5555-555555555555)@1, CASE(c5555555-5555-5555-5555-555555555555)@2, FAQ(eeeeeeee-4444-4444-4444-444444444444)@3, CASE(b5555555-5555-5555-5555-555555555555)@4, FAQ(44444444-4444-4444-4444-444444444444)@5, FAQ(eeeeeeee-5555-5555-5555-555555555555)@6, FAQ(ffffffff-6666-6666-6666-666666666666)@7, FAQ(eeeeeeee-3333-3333-3333-333333333333)@8, CASE(b4444444-4444-4444-4444-444444444444)@9, CASE(c4444444-4444-4444-4444-444444444444)@10"
+    },
+    {
+      "case_id": "case_comp_001",
+      "failure_mode": "missing_doc_type",
+      "details": "Expected doc_types: [Case] | Retrieved: FAQ(eeeeeeee-6666-6666-6666-666666666666)@1, POLICY(ad0d0d0d-8888-8888-8888-888888888888)@2, CASE(baaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa)@3, CASE(c3333333-3333-3333-3333-333333333333)@4, FAQ(ffffffff-4444-4444-4444-444444444444)@5, FAQ(eeeeeeee-7777-7777-7777-777777777777)@6, FAQ(aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa)@7, POLICY(a9999999-9999-9999-9999-999999999999)@8, POLICY(ae0e0e0e-3333-3333-3333-333333333333)@9, POLICY(ae0e0e0e-6666-6666-6666-666666666666)@10"
+    },
+    {
+      "case_id": "case_comp_002",
+      "failure_mode": "missing_doc_type",
+      "details": "Expected doc_types: [Case, Policy] | Retrieved: CASE(c3333333-3333-3333-3333-333333333333)@1, POLICY(ad0d0d0d-8888-8888-8888-888888888888)@2, FAQ(eeeeeeee-7777-7777-7777-777777777777)@3, FAQ(eeeeeeee-6666-6666-6666-666666666666)@4, CASE(c1111111-1111-1111-1111-111111111111)@5, FAQ(ffffffff-4444-4444-4444-444444444444)@6, CASE(baaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa)@7, FAQ(aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa)@8, CASE(c2222222-2222-2222-2222-222222222222)@9, CASE(ca0a0a0a-1111-1111-1111-111111111111)@10"
+    },
+    {
+      "case_id": "case_comp_003",
+      "failure_mode": "missing_doc_type",
+      "details": "Expected doc_types: [Case, Policy] | Retrieved: CASE(ca0a0a0a-4444-4444-4444-444444444444)@1, CASE(ca0a0a0a-2222-2222-2222-222222222222)@2, POLICY(ae0e0e0e-8888-8888-8888-888888888888)@3, CASE(b1111111-1111-1111-1111-111111111111)@4, POLICY(ae0e0e0e-9999-9999-9999-999999999999)@5, CASE(c2222222-2222-2222-2222-222222222222)@6, POLICY(accccccc-cccc-cccc-cccc-cccccccccccc)@7, FAQ(ffffffff-3333-3333-3333-333333333333)@8, FAQ(ffffffff-9999-9999-9999-999999999999)@9, FAQ(eeeeeeee-9999-9999-9999-999999999999)@10"
+    },
+    {
+      "case_id": "case_comp_004",
+      "failure_mode": "missing_doc_type",
+      "details": "Expected doc_types: [Case, Policy] | Retrieved: CASE(c1111111-1111-1111-1111-111111111111)@1, POLICY(a8888888-8888-8888-8888-888888888888)@2, CASE(ca0a0a0a-1111-1111-1111-111111111111)@3, CASE(c2222222-2222-2222-2222-222222222222)@4, CASE(b8888888-8888-8888-8888-888888888888)@5, CASE(c3333333-3333-3333-3333-333333333333)@6, POLICY(ae0e0e0e-1111-1111-1111-111111111111)@7, POLICY(ad0d0d0d-8888-8888-8888-888888888888)@8, FAQ(ffffffff-4444-4444-4444-444444444444)@9, POLICY(ad0d0d0d-9999-9999-9999-999999999999)@10"
+    },
+    {
+      "case_id": "case_comp_005",
+      "failure_mode": "missing_doc_type",
+      "details": "Expected doc_types: [Case, Policy] | Retrieved: CASE(c4444444-4444-4444-4444-444444444444)@1, FAQ(eeeeeeee-5555-5555-5555-555555555555)@2, POLICY(ad0d0d0d-6666-6666-6666-666666666666)@3, POLICY(ae0e0e0e-7777-7777-7777-777777777777)@4, CASE(c5555555-5555-5555-5555-555555555555)@5, POLICY(a5555555-5555-5555-5555-555555555555)@6, FAQ(eeeeeeee-3333-3333-3333-333333333333)@7, FAQ(eeeeeeee-4444-4444-4444-444444444444)@8, CASE(ca0a0a0a-3333-3333-3333-333333333333)@9, CASE(b5555555-5555-5555-5555-555555555555)@10"
+    },
+    {
+      "case_id": "case_comp_006",
+      "failure_mode": "missing_doc_type",
+      "details": "Expected doc_types: [Case] | Retrieved: FAQ(eeeeeeee-6666-6666-6666-666666666666)@1, CASE(c3333333-3333-3333-3333-333333333333)@2, POLICY(ad0d0d0d-8888-8888-8888-888888888888)@3, FAQ(ffffffff-4444-4444-4444-444444444444)@4, CASE(baaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa)@5, FAQ(eeeeeeee-7777-7777-7777-777777777777)@6, CASE(c1111111-1111-1111-1111-111111111111)@7, POLICY(a9999999-9999-9999-9999-999999999999)@8, CASE(c2222222-2222-2222-2222-222222222222)@9, FAQ(aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa)@10"
+    },
+    {
+      "case_id": "case_comp_007",
+      "failure_mode": "missing_doc_type",
+      "details": "Expected doc_types: [Case, Policy] | Retrieved: CASE(b8888888-8888-8888-8888-888888888888)@1, CASE(ca0a0a0a-1111-1111-1111-111111111111)@2, CASE(c3333333-3333-3333-3333-333333333333)@3, CASE(c1111111-1111-1111-1111-111111111111)@4, FAQ(eeeeeeee-9999-9999-9999-999999999999)@5, POLICY(a8888888-8888-8888-8888-888888888888)@6, CASE(b1111111-1111-1111-1111-111111111111)@7, POLICY(a4444444-4444-4444-4444-444444444444)@8, FAQ(eeeeeeee-6666-6666-6666-666666666666)@9, POLICY(ae0e0e0e-4444-4444-4444-444444444444)@10"
+    },
+    {
+      "case_id": "case_comp_008",
+      "failure_mode": "missing_doc_type",
+      "details": "Expected doc_types: [Case] | Retrieved: FAQ(aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa)@1, CASE(baaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa)@2, POLICY(aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa)@3, CASE(c3333333-3333-3333-3333-333333333333)@4, POLICY(a9999999-9999-9999-9999-999999999999)@5, FAQ(dddddddd-2222-2222-2222-222222222222)@6, CASE(c9999999-9999-9999-9999-999999999999)@7, CASE(c4444444-4444-4444-4444-444444444444)@8, FAQ(eeeeeeee-6666-6666-6666-666666666666)@9, FAQ(dddddddd-5555-5555-5555-555555555555)@10"
+    },
+    {
+      "case_id": "case_comp_009",
+      "failure_mode": "missing_doc_type",
+      "details": "Expected doc_types: [Case, Policy] | Retrieved: FAQ(dddddddd-6666-6666-6666-666666666666)@1, FAQ(eeeeeeee-1111-1111-1111-111111111111)@2, CASE(ca0a0a0a-1111-1111-1111-111111111111)@3, FAQ(eeeeeeee-9999-9999-9999-999999999999)@4, CASE(c3333333-3333-3333-3333-333333333333)@5, FAQ(eeeeeeee-7777-7777-7777-777777777777)@6, CASE(c2222222-2222-2222-2222-222222222222)@7, FAQ(ffffffff-2222-2222-2222-222222222222)@8, CASE(c1111111-1111-1111-1111-111111111111)@9, CASE(b4444444-4444-4444-4444-444444444444)@10"
+    },
+    {
+      "case_id": "case_comp_013",
+      "failure_mode": "missing_doc_type",
+      "details": "Expected doc_types: [Case, Policy] | Retrieved: FAQ(eeeeeeee-5555-5555-5555-555555555555)@1, CASE(c4444444-4444-4444-4444-444444444444)@2, POLICY(ad0d0d0d-6666-6666-6666-666666666666)@3, CASE(c5555555-5555-5555-5555-555555555555)@4, POLICY(ae0e0e0e-7777-7777-7777-777777777777)@5, POLICY(a5555555-5555-5555-5555-555555555555)@6, FAQ(eeeeeeee-4444-4444-4444-444444444444)@7, FAQ(eeeeeeee-3333-3333-3333-333333333333)@8, CASE(b5555555-5555-5555-5555-555555555555)@9, CASE(ca0a0a0a-3333-3333-3333-333333333333)@10"
+    },
+    {
+      "case_id": "case_edge_001",
+      "failure_mode": "missing_doc_type",
+      "details": "Expected doc_types: [] | Retrieved: CASE(c9999999-9999-9999-9999-999999999999)@1, FAQ(ffffffff-3333-3333-3333-333333333333)@2, CASE(b7777777-7777-7777-7777-777777777777)@3, FAQ(ffffffff-2222-2222-2222-222222222222)@4, FAQ(dddddddd-2222-2222-2222-222222222222)@5, FAQ(ffffffff-6666-6666-6666-666666666666)@6, CASE(ca0a0a0a-2222-2222-2222-222222222222)@7, FAQ(eeeeeeee-8888-8888-8888-888888888888)@8, CASE(c3333333-3333-3333-3333-333333333333)@9, CASE(c6666666-6666-6666-6666-666666666666)@10"
+    },
+    {
+      "case_id": "case_edge_002",
+      "failure_mode": "missing_doc_type",
+      "details": "Expected doc_types: [Case, Policy] | Retrieved: "
+    },
+    {
+      "case_id": "case_edge_003",
+      "failure_mode": "missing_doc_type",
+      "details": "Expected doc_types: [] | Retrieved: "
+    },
+    {
+      "case_id": "case_edge_004",
+      "failure_mode": "missing_doc_type",
+      "details": "Expected doc_types: [] | Retrieved: "
+    },
+    {
+      "case_id": "case_edge_005",
+      "failure_mode": "missing_doc_type",
+      "details": "Expected doc_types: [] | Retrieved: "
+    },
+    {
+      "case_id": "case_logi_005",
+      "failure_mode": "missing_doc_type",
+      "details": "Expected doc_types: [Case, Policy] | Retrieved: FAQ(dddddddd-6666-6666-6666-666666666666)@1, FAQ(eeeeeeee-1111-1111-1111-111111111111)@2, CASE(c8888888-8888-8888-8888-888888888888)@3, POLICY(ae0e0e0e-6666-6666-6666-666666666666)@4, CASE(b8888888-8888-8888-8888-888888888888)@5, CASE(b2222222-2222-2222-2222-222222222222)@6, FAQ(dddddddd-5555-5555-5555-555555555555)@7, FAQ(99999999-9999-9999-9999-999999999999)@8, POLICY(a8888888-8888-8888-8888-888888888888)@9, POLICY(ae0e0e0e-4444-4444-4444-444444444444)@10"
+    },
+    {
+      "case_id": "case_logi_008",
+      "failure_mode": "missing_doc_type",
+      "details": "Expected doc_types: [Case] | Retrieved: FAQ(dddddddd-6666-6666-6666-666666666666)@1, FAQ(eeeeeeee-1111-1111-1111-111111111111)@2, FAQ(dddddddd-5555-5555-5555-555555555555)@3, CASE(b2222222-2222-2222-2222-222222222222)@4, POLICY(a7777777-7777-7777-7777-777777777777)@5, POLICY(ae0e0e0e-6666-6666-6666-666666666666)@6, CASE(c8888888-8888-8888-8888-888888888888)@7, CASE(b8888888-8888-8888-8888-888888888888)@8, FAQ(ffffffff-7777-7777-7777-777777777777)@9, FAQ(99999999-9999-9999-9999-999999999999)@10"
+    },
+    {
+      "case_id": "case_logi_010",
+      "failure_mode": "missing_doc_type",
+      "details": "Expected doc_types: [Case, Policy] | Retrieved: FAQ(dddddddd-6666-6666-6666-666666666666)@1, FAQ(eeeeeeee-1111-1111-1111-111111111111)@2, CASE(b2222222-2222-2222-2222-222222222222)@3, FAQ(88888888-8888-8888-8888-888888888888)@4, POLICY(a7777777-7777-7777-7777-777777777777)@5, CASE(b8888888-8888-8888-8888-888888888888)@6, FAQ(dddddddd-5555-5555-5555-555555555555)@7, CASE(b1111111-1111-1111-1111-111111111111)@8, FAQ(ffffffff-7777-7777-7777-777777777777)@9, POLICY(ae0e0e0e-4444-4444-4444-444444444444)@10"
+    },
+    {
+      "case_id": "case_logi_011",
+      "failure_mode": "missing_doc_type",
+      "details": "Expected doc_types: [Case, Policy] | Retrieved: FAQ(dddddddd-6666-6666-6666-666666666666)@1, FAQ(eeeeeeee-1111-1111-1111-111111111111)@2, FAQ(dddddddd-5555-5555-5555-555555555555)@3, CASE(b8888888-8888-8888-8888-888888888888)@4, POLICY(a7777777-7777-7777-7777-777777777777)@5, CASE(c8888888-8888-8888-8888-888888888888)@6, CASE(b2222222-2222-2222-2222-222222222222)@7, FAQ(ffffffff-7777-7777-7777-777777777777)@8, FAQ(dddddddd-3333-3333-3333-333333333333)@9, CASE(c3333333-3333-3333-3333-333333333333)@10"
+    },
+    {
+      "case_id": "case_othe_009",
+      "failure_mode": "missing_doc_type",
+      "details": "Expected doc_types: [Case, Policy] | Retrieved: FAQ(eeeeeeee-1111-1111-1111-111111111111)@1, FAQ(dddddddd-6666-6666-6666-666666666666)@2, CASE(c6666666-6666-6666-6666-666666666666)@3, FAQ(dddddddd-9999-9999-9999-999999999999)@4, CASE(b7777777-7777-7777-7777-777777777777)@5, POLICY(ad0d0d0d-4444-4444-4444-444444444444)@6, FAQ(ffffffff-3333-3333-3333-333333333333)@7, CASE(b1111111-1111-1111-1111-111111111111)@8, FAQ(eeeeeeee-8888-8888-8888-888888888888)@9, FAQ(eeeeeeee-9999-9999-9999-999999999999)@10"
+    },
+    {
+      "case_id": "case_othe_011",
+      "failure_mode": "missing_doc_type",
+      "details": "Expected doc_types: [Case, Policy] | Retrieved: FAQ(eeeeeeee-1111-1111-1111-111111111111)@1, FAQ(dddddddd-6666-6666-6666-666666666666)@2, FAQ(dddddddd-7777-7777-7777-777777777777)@3, POLICY(ad0d0d0d-3333-3333-3333-333333333333)@4, FAQ(dddddddd-8888-8888-8888-888888888888)@5, CASE(c7777777-7777-7777-7777-777777777777)@6, FAQ(dddddddd-5555-5555-5555-555555555555)@7, FAQ(dddddddd-1111-1111-1111-111111111111)@8, FAQ(11111111-1111-1111-1111-111111111111)@9, FAQ(ffffffff-2222-2222-2222-222222222222)@10"
+    },
+    {
+      "case_id": "case_othe_012",
+      "failure_mode": "missing_doc_type",
+      "details": "Expected doc_types: [Case, Policy] | Retrieved: FAQ(eeeeeeee-1111-1111-1111-111111111111)@1, FAQ(dddddddd-6666-6666-6666-666666666666)@2, POLICY(ad0d0d0d-3333-3333-3333-333333333333)@3, FAQ(dddddddd-8888-8888-8888-888888888888)@4, CASE(c7777777-7777-7777-7777-777777777777)@5, FAQ(dddddddd-7777-7777-7777-777777777777)@6, FAQ(dddddddd-9999-9999-9999-999999999999)@7, CASE(b1111111-1111-1111-1111-111111111111)@8, CASE(ca0a0a0a-4444-4444-4444-444444444444)@9, FAQ(ffffffff-3333-3333-3333-333333333333)@10"
+    },
+    {
+      "case_id": "case_othe_013",
+      "failure_mode": "missing_doc_type",
+      "details": "Expected doc_types: [Case, Policy] | Retrieved: CASE(c7777777-7777-7777-7777-777777777777)@1, POLICY(ad0d0d0d-3333-3333-3333-333333333333)@2, FAQ(dddddddd-7777-7777-7777-777777777777)@3, FAQ(dddddddd-8888-8888-8888-888888888888)@4, CASE(baaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa)@5, CASE(c3333333-3333-3333-3333-333333333333)@6, FAQ(ffffffff-2222-2222-2222-222222222222)@7, FAQ(eeeeeeee-8888-8888-8888-888888888888)@8, CASE(bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb)@9, CASE(ca0a0a0a-1111-1111-1111-111111111111)@10"
+    },
+    {
+      "case_id": "case_refu_001",
+      "failure_mode": "missing_doc_type",
+      "details": "Expected doc_types: [Case, Policy] | Retrieved: CASE(c3333333-3333-3333-3333-333333333333)@1, CASE(ca0a0a0a-1111-1111-1111-111111111111)@2, POLICY(ae0e0e0e-3333-3333-3333-333333333333)@3, FAQ(eeeeeeee-6666-6666-6666-666666666666)@4, CASE(c8888888-8888-8888-8888-888888888888)@5, POLICY(ae0e0e0e-5555-5555-5555-555555555555)@6, FAQ(eeeeeeee-7777-7777-7777-777777777777)@7, CASE(baaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa)@8, POLICY(a1111111-1111-1111-1111-111111111111)@9, FAQ(eeeeeeee-8888-8888-8888-888888888888)@10"
+    },
+    {
+      "case_id": "case_refu_003",
+      "failure_mode": "missing_doc_type",
+      "details": "Expected doc_types: [Case, Policy] | Retrieved: POLICY(accccccc-cccc-cccc-cccc-cccccccccccc)@1, POLICY(a1111111-1111-1111-1111-111111111111)@2, FAQ(dddddddd-2222-2222-2222-222222222222)@3, FAQ(eeeeeeee-8888-8888-8888-888888888888)@4, CASE(bcccccc1-cccc-cccc-cccc-cccccccccccc)@5, POLICY(a2222222-2222-2222-2222-222222222222)@6, FAQ(ffffffff-3333-3333-3333-333333333333)@7, CASE(ca0a0a0a-1111-1111-1111-111111111111)@8, POLICY(ae0e0e0e-3333-3333-3333-333333333333)@9, POLICY(ae0e0e0e-8888-8888-8888-888888888888)@10"
+    },
+    {
+      "case_id": "case_refu_006",
+      "failure_mode": "missing_doc_type",
+      "details": "Expected doc_types: [Case, Policy] | Retrieved: CASE(c3333333-3333-3333-3333-333333333333)@1, FAQ(eeeeeeee-6666-6666-6666-666666666666)@2, CASE(ca0a0a0a-1111-1111-1111-111111111111)@3, POLICY(ae0e0e0e-3333-3333-3333-333333333333)@4, CASE(c8888888-8888-8888-8888-888888888888)@5, FAQ(eeeeeeee-7777-7777-7777-777777777777)@6, POLICY(ae0e0e0e-5555-5555-5555-555555555555)@7, CASE(baaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa)@8, POLICY(a1111111-1111-1111-1111-111111111111)@9, CASE(c1111111-1111-1111-1111-111111111111)@10"
+    },
+    {
+      "case_id": "case_refu_008",
+      "failure_mode": "missing_doc_type",
+      "details": "Expected doc_types: [Case, Policy] | Retrieved: POLICY(ae0e0e0e-4444-4444-4444-444444444444)@1, POLICY(accccccc-cccc-cccc-cccc-cccccccccccc)@2, POLICY(a2222222-2222-2222-2222-222222222222)@3, CASE(bcccccc1-cccc-cccc-cccc-cccccccccccc)@4, FAQ(ffffffff-5555-5555-5555-555555555555)@5, POLICY(a1111111-1111-1111-1111-111111111111)@6, FAQ(ffffffff-3333-3333-3333-333333333333)@7, FAQ(dddddddd-2222-2222-2222-222222222222)@8, FAQ(eeeeeeee-8888-8888-8888-888888888888)@9, CASE(ca0a0a0a-1111-1111-1111-111111111111)@10"
+    },
+    {
+      "case_id": "case_refu_009",
+      "failure_mode": "missing_doc_type",
+      "details": "Expected doc_types: [Case, Policy] | Retrieved: POLICY(a1111111-1111-1111-1111-111111111111)@1, POLICY(accccccc-cccc-cccc-cccc-cccccccccccc)@2, POLICY(a2222222-2222-2222-2222-222222222222)@3, FAQ(eeeeeeee-8888-8888-8888-888888888888)@4, FAQ(ffffffff-3333-3333-3333-333333333333)@5, FAQ(dddddddd-2222-2222-2222-222222222222)@6, FAQ(dddddddd-1111-1111-1111-111111111111)@7, CASE(ca0a0a0a-1111-1111-1111-111111111111)@8, FAQ(11111111-1111-1111-1111-111111111111)@9, CASE(c3333333-3333-3333-3333-333333333333)@10"
+    },
+    {
+      "case_id": "case_refu_013",
+      "failure_mode": "missing_doc_type",
+      "details": "Expected doc_types: [Case, Policy] | Retrieved: CASE(ca0a0a0a-1111-1111-1111-111111111111)@1, CASE(c3333333-3333-3333-3333-333333333333)@2, POLICY(a1111111-1111-1111-1111-111111111111)@3, POLICY(accccccc-cccc-cccc-cccc-cccccccccccc)@4, CASE(bcccccc1-cccc-cccc-cccc-cccccccccccc)@5, POLICY(a2222222-2222-2222-2222-222222222222)@6, FAQ(ffffffff-5555-5555-5555-555555555555)@7, FAQ(11111111-1111-1111-1111-111111111111)@8, FAQ(dddddddd-1111-1111-1111-111111111111)@9, POLICY(ae0e0e0e-4444-4444-4444-444444444444)@10"
+    },
+    {
+      "case_id": "case_refu_015",
+      "failure_mode": "missing_doc_type",
+      "details": "Expected doc_types: [Case, Policy] | Retrieved: POLICY(accccccc-cccc-cccc-cccc-cccccccccccc)@1, POLICY(a1111111-1111-1111-1111-111111111111)@2, FAQ(eeeeeeee-8888-8888-8888-888888888888)@3, CASE(ca0a0a0a-1111-1111-1111-111111111111)@4, FAQ(dddddddd-2222-2222-2222-222222222222)@5, POLICY(a2222222-2222-2222-2222-222222222222)@6, CASE(c3333333-3333-3333-3333-333333333333)@7, FAQ(dddddddd-1111-1111-1111-111111111111)@8, POLICY(ae0e0e0e-3333-3333-3333-333333333333)@9, FAQ(11111111-1111-1111-1111-111111111111)@10"
+    },
+    {
+      "case_id": "case_refu_016",
+      "failure_mode": "missing_doc_type",
+      "details": "Expected doc_types: [Case, Policy] | Retrieved: CASE(ca0a0a0a-2222-2222-2222-222222222222)@1, FAQ(eeeeeeee-1111-1111-1111-111111111111)@2, POLICY(ae0e0e0e-9999-9999-9999-999999999999)@3, FAQ(dddddddd-6666-6666-6666-666666666666)@4, FAQ(ffffffff-3333-3333-3333-333333333333)@5, POLICY(a2222222-2222-2222-2222-222222222222)@6, FAQ(dddddddd-2222-2222-2222-222222222222)@7, FAQ(eeeeeeee-9999-9999-9999-999999999999)@8, CASE(c9999999-9999-9999-9999-999999999999)@9, CASE(b1111111-1111-1111-1111-111111111111)@10"
+    },
+    {
+      "case_id": "case_retu_004",
+      "failure_mode": "missing_doc_type",
+      "details": "Expected doc_types: [Case, Policy] | Retrieved: FAQ(ffffffff-5555-5555-5555-555555555555)@1, CASE(c3333333-3333-3333-3333-333333333333)@2, POLICY(a1111111-1111-1111-1111-111111111111)@3, POLICY(a2222222-2222-2222-2222-222222222222)@4, POLICY(ae0e0e0e-4444-4444-4444-444444444444)@5, POLICY(accccccc-cccc-cccc-cccc-cccccccccccc)@6, FAQ(eeeeeeee-8888-8888-8888-888888888888)@7, POLICY(a4444444-4444-4444-4444-444444444444)@8, CASE(ca0a0a0a-1111-1111-1111-111111111111)@9, FAQ(dddddddd-4444-4444-4444-444444444444)@10"
+    },
+    {
+      "case_id": "case_retu_006",
+      "failure_mode": "missing_doc_type",
+      "details": "Expected doc_types: [Case, Policy] | Retrieved: FAQ(eeeeeeee-1111-1111-1111-111111111111)@1, FAQ(ffffffff-5555-5555-5555-555555555555)@2, FAQ(dddddddd-6666-6666-6666-666666666666)@3, POLICY(a4444444-4444-4444-4444-444444444444)@4, FAQ(dddddddd-4444-4444-4444-444444444444)@5, FAQ(33333333-3333-3333-3333-333333333333)@6, CASE(b3333333-3333-3333-3333-333333333333)@7, POLICY(a3333333-3333-3333-3333-333333333333)@8, FAQ(dddddddd-2222-2222-2222-222222222222)@9, POLICY(ae0e0e0e-4444-4444-4444-444444444444)@10"
+    },
+    {
+      "case_id": "case_retu_008",
+      "failure_mode": "missing_doc_type",
+      "details": "Expected doc_types: [Policy] | Retrieved: FAQ(eeeeeeee-1111-1111-1111-111111111111)@1, FAQ(dddddddd-3333-3333-3333-333333333333)@2, FAQ(dddddddd-6666-6666-6666-666666666666)@3, POLICY(a4444444-4444-4444-4444-444444444444)@4, POLICY(ae0e0e0e-4444-4444-4444-444444444444)@5, CASE(b3333333-3333-3333-3333-333333333333)@6, FAQ(dddddddd-4444-4444-4444-444444444444)@7, FAQ(ffffffff-5555-5555-5555-555555555555)@8, FAQ(ffffffff-3333-3333-3333-333333333333)@9, FAQ(33333333-3333-3333-3333-333333333333)@10"
+    },
+    {
+      "case_id": "case_retu_010",
+      "failure_mode": "missing_doc_type",
+      "details": "Expected doc_types: [Case, Policy] | Retrieved: FAQ(dddddddd-2222-2222-2222-222222222222)@1, FAQ(eeeeeeee-1111-1111-1111-111111111111)@2, FAQ(dddddddd-6666-6666-6666-666666666666)@3, FAQ(eeeeeeee-8888-8888-8888-888888888888)@4, FAQ(cccccccc-cccc-cccc-cccc-cccccccccccc)@5, FAQ(33333333-3333-3333-3333-333333333333)@6, FAQ(eeeeeeee-9999-9999-9999-999999999999)@7, POLICY(a3333333-3333-3333-3333-333333333333)@8, CASE(c9999999-9999-9999-9999-999999999999)@9, FAQ(ffffffff-3333-3333-3333-333333333333)@10"
+    },
+    {
+      "case_id": "case_retu_011",
+      "failure_mode": "missing_doc_type",
+      "details": "Expected doc_types: [Case] | Retrieved: FAQ(eeeeeeee-1111-1111-1111-111111111111)@1, FAQ(dddddddd-4444-4444-4444-444444444444)@2, FAQ(33333333-3333-3333-3333-333333333333)@3, FAQ(dddddddd-6666-6666-6666-666666666666)@4, POLICY(a4444444-4444-4444-4444-444444444444)@5, CASE(b3333333-3333-3333-3333-333333333333)@6, POLICY(a3333333-3333-3333-3333-333333333333)@7, FAQ(dddddddd-2222-2222-2222-222222222222)@8, FAQ(ffffffff-5555-5555-5555-555555555555)@9, FAQ(22222222-2222-2222-2222-222222222222)@10"
+    }
+  ],
+  "wrong_cases_real": [
+    {
+      "case_id": "case_acco_003",
+      "failure_mode": "missing_doc_type",
+      "details": "Expected doc_types: [Case, Policy] | Retrieved: CASE(c4444444-4444-4444-4444-444444444444)@1, CASE(ca0a0a0a-aaaa-aaaa-aaaa-aaaaaaaaaaaa)@2, FAQ(eeeeeeee-5555-5555-5555-555555555555)@3, POLICY(ad0d0d0d-6666-6666-6666-666666666666)@4, POLICY(ae0e0e0e-bbbb-bbbb-bbbb-bbbbbbbbbbbb)@5, CASE(c5555555-5555-5555-5555-555555555555)@6, POLICY(ae0e0e0e-7777-7777-7777-777777777777)@7, FAQ(eeeeeeee-4444-4444-4444-444444444444)@8, POLICY(a5555555-5555-5555-5555-555555555555)@9, FAQ(eeeeeeee-3333-3333-3333-333333333333)@10"
+    },
+    {
+      "case_id": "case_acco_006",
+      "failure_mode": "missing_doc_type",
+      "details": "Expected doc_types: [Case, Policy] | Retrieved: FAQ(eeeeeeee-3333-3333-3333-333333333333)@1, CASE(c4444444-4444-4444-4444-444444444444)@2, CASE(c5555555-5555-5555-5555-555555555555)@3, CASE(b5555555-5555-5555-5555-555555555555)@4, CASE(b4444444-4444-4444-4444-444444444444)@5, CASE(bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb)@6, FAQ(eeeeeeee-4444-4444-4444-444444444444)@7, FAQ(44444444-4444-4444-4444-444444444444)@8, FAQ(eeeeeeee-5555-5555-5555-555555555555)@9, CASE(b9999999-9999-9999-9999-999999999999)@10"
+    },
+    {
+      "case_id": "case_acco_009",
+      "failure_mode": "missing_doc_type",
+      "details": "Expected doc_types: [Case, Policy] | Retrieved: POLICY(a5555555-5555-5555-5555-555555555555)@1, FAQ(44444444-4444-4444-4444-444444444444)@2, FAQ(eeeeeeee-4444-4444-4444-444444444444)@3, CASE(c5555555-5555-5555-5555-555555555555)@4, POLICY(ad0d0d0d-7777-7777-7777-777777777777)@5, POLICY(a6666666-6666-6666-6666-666666666666)@6, CASE(b4444444-4444-4444-4444-444444444444)@7, FAQ(ffffffff-6666-6666-6666-666666666666)@8, CASE(b5555555-5555-5555-5555-555555555555)@9, CASE(c4444444-4444-4444-4444-444444444444)@10"
+    },
+    {
+      "case_id": "case_acco_012",
+      "failure_mode": "missing_doc_type",
+      "details": "Expected doc_types: [Case, Policy] | Retrieved: FAQ(eeeeeeee-5555-5555-5555-555555555555)@1, CASE(c4444444-4444-4444-4444-444444444444)@2, POLICY(ad0d0d0d-6666-6666-6666-666666666666)@3, POLICY(ae0e0e0e-bbbb-bbbb-bbbb-bbbbbbbbbbbb)@4, FAQ(eeeeeeee-3333-3333-3333-333333333333)@5, CASE(ca0a0a0a-aaaa-aaaa-aaaa-aaaaaaaaaaaa)@6, CASE(c5555555-5555-5555-5555-555555555555)@7, POLICY(ae0e0e0e-7777-7777-7777-777777777777)@8, POLICY(a5555555-5555-5555-5555-555555555555)@9, FAQ(eeeeeeee-4444-4444-4444-444444444444)@10"
+    },
+    {
+      "case_id": "case_acco_014",
+      "failure_mode": "missing_doc_type",
+      "details": "Expected doc_types: [Case, Policy] | Retrieved: POLICY(a5555555-5555-5555-5555-555555555555)@1, CASE(c5555555-5555-5555-5555-555555555555)@2, FAQ(eeeeeeee-4444-4444-4444-444444444444)@3, CASE(b5555555-5555-5555-5555-555555555555)@4, FAQ(44444444-4444-4444-4444-444444444444)@5, FAQ(eeeeeeee-5555-5555-5555-555555555555)@6, FAQ(ffffffff-6666-6666-6666-666666666666)@7, FAQ(eeeeeeee-3333-3333-3333-333333333333)@8, CASE(b4444444-4444-4444-4444-444444444444)@9, CASE(c4444444-4444-4444-4444-444444444444)@10"
+    },
+    {
+      "case_id": "case_comp_001",
+      "failure_mode": "missing_doc_type",
+      "details": "Expected doc_types: [Case] | Retrieved: POLICY(ad0d0d0d-8888-8888-8888-888888888888)@1, FAQ(ffffffff-4444-4444-4444-444444444444)@2, CASE(c3333333-3333-3333-3333-333333333333)@3, FAQ(eeeeeeee-6666-6666-6666-666666666666)@4, CASE(ca0a0a0a-9999-9999-9999-999999999999)@5, POLICY(a9999999-9999-9999-9999-999999999999)@6, POLICY(ae0e0e0e-1111-1111-1111-111111111111)@7, CASE(c2222222-2222-2222-2222-222222222222)@8, CASE(c8888888-8888-8888-8888-888888888888)@9, CASE(ca0a0a0a-aaaa-aaaa-aaaa-aaaaaaaaaaaa)@10"
+    },
+    {
+      "case_id": "case_comp_002",
+      "failure_mode": "missing_doc_type",
+      "details": "Expected doc_types: [Case, Policy] | Retrieved: CASE(ca0a0a0a-9999-9999-9999-999999999999)@1, CASE(c3333333-3333-3333-3333-333333333333)@2, POLICY(ad0d0d0d-8888-8888-8888-888888888888)@3, FAQ(ffffffff-4444-4444-4444-444444444444)@4, FAQ(eeeeeeee-6666-6666-6666-666666666666)@5, CASE(c2222222-2222-2222-2222-222222222222)@6, POLICY(a9999999-9999-9999-9999-999999999999)@7, CASE(c1111111-1111-1111-1111-111111111111)@8, POLICY(ae0e0e0e-1111-1111-1111-111111111111)@9, CASE(b8888888-8888-8888-8888-888888888888)@10"
+    },
+    {
+      "case_id": "case_comp_003",
+      "failure_mode": "missing_doc_type",
+      "details": "Expected doc_types: [Case, Policy] | Retrieved: CASE(ca0a0a0a-4444-4444-4444-444444444444)@1, CASE(ca0a0a0a-7777-7777-7777-777777777777)@2, CASE(ca0a0a0a-2222-2222-2222-222222222222)@3, POLICY(ae0e0e0e-8888-8888-8888-888888888888)@4, CASE(b1111111-1111-1111-1111-111111111111)@5, POLICY(ae0e0e0e-9999-9999-9999-999999999999)@6, CASE(c2222222-2222-2222-2222-222222222222)@7, POLICY(accccccc-cccc-cccc-cccc-cccccccccccc)@8, FAQ(ffffffff-3333-3333-3333-333333333333)@9, FAQ(ffffffff-9999-9999-9999-999999999999)@10"
+    },
+    {
+      "case_id": "case_comp_004",
+      "failure_mode": "missing_doc_type",
+      "details": "Expected doc_types: [Case, Policy] | Retrieved: POLICY(ae0e0e0e-1111-1111-1111-111111111111)@1, CASE(c2222222-2222-2222-2222-222222222222)@2, POLICY(a8888888-8888-8888-8888-888888888888)@3, CASE(ca0a0a0a-9999-9999-9999-999999999999)@4, CASE(b8888888-8888-8888-8888-888888888888)@5, POLICY(ad0d0d0d-9999-9999-9999-999999999999)@6, FAQ(ffffffff-4444-4444-4444-444444444444)@7, CASE(c1111111-1111-1111-1111-111111111111)@8, CASE(c3333333-3333-3333-3333-333333333333)@9, POLICY(ad0d0d0d-8888-8888-8888-888888888888)@10"
+    },
+    {
+      "case_id": "case_comp_005",
+      "failure_mode": "missing_doc_type",
+      "details": "Expected doc_types: [Case, Policy] | Retrieved: CASE(c4444444-4444-4444-4444-444444444444)@1, FAQ(eeeeeeee-5555-5555-5555-555555555555)@2, POLICY(ad0d0d0d-6666-6666-6666-666666666666)@3, CASE(ca0a0a0a-aaaa-aaaa-aaaa-aaaaaaaaaaaa)@4, POLICY(ae0e0e0e-7777-7777-7777-777777777777)@5, POLICY(ae0e0e0e-bbbb-bbbb-bbbb-bbbbbbbbbbbb)@6, CASE(c5555555-5555-5555-5555-555555555555)@7, POLICY(a5555555-5555-5555-5555-555555555555)@8, FAQ(eeeeeeee-3333-3333-3333-333333333333)@9, FAQ(eeeeeeee-4444-4444-4444-444444444444)@10"
+    },
+    {
+      "case_id": "case_comp_006",
+      "failure_mode": "missing_doc_type",
+      "details": "Expected doc_types: [Case] | Retrieved: CASE(c3333333-3333-3333-3333-333333333333)@1, CASE(ca0a0a0a-9999-9999-9999-999999999999)@2, FAQ(eeeeeeee-6666-6666-6666-666666666666)@3, FAQ(ffffffff-4444-4444-4444-444444444444)@4, POLICY(ad0d0d0d-8888-8888-8888-888888888888)@5, POLICY(a9999999-9999-9999-9999-999999999999)@6, CASE(c2222222-2222-2222-2222-222222222222)@7, POLICY(ae0e0e0e-1111-1111-1111-111111111111)@8, CASE(c1111111-1111-1111-1111-111111111111)@9, POLICY(ae0e0e0e-aaaa-aaaa-aaaa-aaaaaaaaaaaa)@10"
+    },
+    {
+      "case_id": "case_comp_007",
+      "failure_mode": "missing_doc_type",
+      "details": "Expected doc_types: [Case, Policy] | Retrieved: CASE(b8888888-8888-8888-8888-888888888888)@1, CASE(c3333333-3333-3333-3333-333333333333)@2, CASE(ca0a0a0a-1111-1111-1111-111111111111)@3, CASE(ca0a0a0a-6666-6666-6666-666666666666)@4, POLICY(ae0e0e0e-1111-1111-1111-111111111111)@5, FAQ(eeeeeeee-9999-9999-9999-999999999999)@6, POLICY(ad0d0d0d-9999-9999-9999-999999999999)@7, CASE(b1111111-1111-1111-1111-111111111111)@8, POLICY(a4444444-4444-4444-4444-444444444444)@9, FAQ(99999999-9999-9999-9999-999999999999)@10"
+    },
+    {
+      "case_id": "case_comp_008",
+      "failure_mode": "missing_doc_type",
+      "details": "Expected doc_types: [Case] | Retrieved: CASE(ca0a0a0a-8888-8888-8888-888888888888)@1, FAQ(aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa)@2, CASE(baaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa)@3, POLICY(aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa)@4, CASE(ca0a0a0a-5555-5555-5555-555555555555)@5, CASE(c3333333-3333-3333-3333-333333333333)@6, POLICY(a9999999-9999-9999-9999-999999999999)@7, FAQ(dddddddd-2222-2222-2222-222222222222)@8, CASE(c9999999-9999-9999-9999-999999999999)@9, CASE(c4444444-4444-4444-4444-444444444444)@10"
+    },
+    {
+      "case_id": "case_comp_009",
+      "failure_mode": "missing_doc_type",
+      "details": "Expected doc_types: [Case, Policy] | Retrieved: FAQ(dddddddd-6666-6666-6666-666666666666)@1, CASE(ca0a0a0a-aaaa-aaaa-aaaa-aaaaaaaaaaaa)@2, FAQ(eeeeeeee-1111-1111-1111-111111111111)@3, CASE(ca0a0a0a-1111-1111-1111-111111111111)@4, CASE(ca0a0a0a-9999-9999-9999-999999999999)@5, FAQ(eeeeeeee-9999-9999-9999-999999999999)@6, CASE(c3333333-3333-3333-3333-333333333333)@7, FAQ(eeeeeeee-7777-7777-7777-777777777777)@8, CASE(c2222222-2222-2222-2222-222222222222)@9, FAQ(ffffffff-2222-2222-2222-222222222222)@10"
+    },
+    {
+      "case_id": "case_comp_013",
+      "failure_mode": "missing_doc_type",
+      "details": "Expected doc_types: [Case, Policy] | Retrieved: FAQ(eeeeeeee-5555-5555-5555-555555555555)@1, CASE(c4444444-4444-4444-4444-444444444444)@2, CASE(ca0a0a0a-aaaa-aaaa-aaaa-aaaaaaaaaaaa)@3, POLICY(ad0d0d0d-6666-6666-6666-666666666666)@4, CASE(c5555555-5555-5555-5555-555555555555)@5, POLICY(ae0e0e0e-7777-7777-7777-777777777777)@6, POLICY(ae0e0e0e-bbbb-bbbb-bbbb-bbbbbbbbbbbb)@7, POLICY(a5555555-5555-5555-5555-555555555555)@8, FAQ(eeeeeeee-4444-4444-4444-444444444444)@9, FAQ(eeeeeeee-3333-3333-3333-333333333333)@10"
+    },
+    {
+      "case_id": "case_edge_001",
+      "failure_mode": "missing_doc_type",
+      "details": "Expected doc_types: [] | Retrieved: CASE(c9999999-9999-9999-9999-999999999999)@1, FAQ(ffffffff-3333-3333-3333-333333333333)@2, CASE(b7777777-7777-7777-7777-777777777777)@3, FAQ(ffffffff-2222-2222-2222-222222222222)@4, FAQ(dddddddd-2222-2222-2222-222222222222)@5, FAQ(ffffffff-6666-6666-6666-666666666666)@6, CASE(ca0a0a0a-2222-2222-2222-222222222222)@7, FAQ(eeeeeeee-8888-8888-8888-888888888888)@8, CASE(c3333333-3333-3333-3333-333333333333)@9, CASE(c6666666-6666-6666-6666-666666666666)@10"
+    },
+    {
+      "case_id": "case_edge_002",
+      "failure_mode": "missing_doc_type",
+      "details": "Expected doc_types: [Case, Policy] | Retrieved: "
+    },
+    {
+      "case_id": "case_edge_003",
+      "failure_mode": "missing_doc_type",
+      "details": "Expected doc_types: [] | Retrieved: "
+    },
+    {
+      "case_id": "case_edge_004",
+      "failure_mode": "missing_doc_type",
+      "details": "Expected doc_types: [] | Retrieved: "
+    },
+    {
+      "case_id": "case_edge_005",
+      "failure_mode": "missing_doc_type",
+      "details": "Expected doc_types: [] | Retrieved: "
+    },
+    {
+      "case_id": "case_logi_005",
+      "failure_mode": "missing_doc_type",
+      "details": "Expected doc_types: [Case, Policy] | Retrieved: FAQ(dddddddd-6666-6666-6666-666666666666)@1, CASE(c8888888-8888-8888-8888-888888888888)@2, FAQ(eeeeeeee-1111-1111-1111-111111111111)@3, POLICY(ae0e0e0e-6666-6666-6666-666666666666)@4, CASE(b8888888-8888-8888-8888-888888888888)@5, CASE(b2222222-2222-2222-2222-222222222222)@6, FAQ(dddddddd-5555-5555-5555-555555555555)@7, FAQ(99999999-9999-9999-9999-999999999999)@8, POLICY(a8888888-8888-8888-8888-888888888888)@9, POLICY(ae0e0e0e-4444-4444-4444-444444444444)@10"
+    },
+    {
+      "case_id": "case_logi_008",
+      "failure_mode": "missing_doc_type",
+      "details": "Expected doc_types: [Case] | Retrieved: FAQ(dddddddd-6666-6666-6666-666666666666)@1, FAQ(eeeeeeee-1111-1111-1111-111111111111)@2, FAQ(dddddddd-5555-5555-5555-555555555555)@3, CASE(b2222222-2222-2222-2222-222222222222)@4, POLICY(a7777777-7777-7777-7777-777777777777)@5, POLICY(ae0e0e0e-6666-6666-6666-666666666666)@6, CASE(c8888888-8888-8888-8888-888888888888)@7, CASE(b8888888-8888-8888-8888-888888888888)@8, FAQ(ffffffff-7777-7777-7777-777777777777)@9, FAQ(99999999-9999-9999-9999-999999999999)@10"
+    },
+    {
+      "case_id": "case_logi_010",
+      "failure_mode": "missing_doc_type",
+      "details": "Expected doc_types: [Case, Policy] | Retrieved: FAQ(dddddddd-6666-6666-6666-666666666666)@1, CASE(b2222222-2222-2222-2222-222222222222)@2, FAQ(eeeeeeee-1111-1111-1111-111111111111)@3, FAQ(88888888-8888-8888-8888-888888888888)@4, POLICY(a7777777-7777-7777-7777-777777777777)@5, CASE(b8888888-8888-8888-8888-888888888888)@6, FAQ(dddddddd-5555-5555-5555-555555555555)@7, CASE(b1111111-1111-1111-1111-111111111111)@8, FAQ(ffffffff-7777-7777-7777-777777777777)@9, POLICY(ae0e0e0e-4444-4444-4444-444444444444)@10"
+    },
+    {
+      "case_id": "case_logi_011",
+      "failure_mode": "missing_doc_type",
+      "details": "Expected doc_types: [Case, Policy] | Retrieved: FAQ(dddddddd-6666-6666-6666-666666666666)@1, FAQ(dddddddd-5555-5555-5555-555555555555)@2, FAQ(eeeeeeee-1111-1111-1111-111111111111)@3, CASE(b8888888-8888-8888-8888-888888888888)@4, POLICY(a7777777-7777-7777-7777-777777777777)@5, CASE(c8888888-8888-8888-8888-888888888888)@6, CASE(b2222222-2222-2222-2222-222222222222)@7, FAQ(ffffffff-7777-7777-7777-777777777777)@8, FAQ(dddddddd-3333-3333-3333-333333333333)@9, CASE(c3333333-3333-3333-3333-333333333333)@10"
+    },
+    {
+      "case_id": "case_othe_009",
+      "failure_mode": "missing_doc_type",
+      "details": "Expected doc_types: [Case, Policy] | Retrieved: FAQ(eeeeeeee-1111-1111-1111-111111111111)@1, FAQ(dddddddd-6666-6666-6666-666666666666)@2, CASE(c6666666-6666-6666-6666-666666666666)@3, FAQ(dddddddd-9999-9999-9999-999999999999)@4, CASE(b7777777-7777-7777-7777-777777777777)@5, POLICY(ad0d0d0d-4444-4444-4444-444444444444)@6, FAQ(ffffffff-3333-3333-3333-333333333333)@7, CASE(b1111111-1111-1111-1111-111111111111)@8, FAQ(eeeeeeee-8888-8888-8888-888888888888)@9, FAQ(eeeeeeee-9999-9999-9999-999999999999)@10"
+    },
+    {
+      "case_id": "case_othe_011",
+      "failure_mode": "missing_doc_type",
+      "details": "Expected doc_types: [Case, Policy] | Retrieved: FAQ(eeeeeeee-1111-1111-1111-111111111111)@1, FAQ(dddddddd-6666-6666-6666-666666666666)@2, FAQ(dddddddd-7777-7777-7777-777777777777)@3, POLICY(ad0d0d0d-3333-3333-3333-333333333333)@4, FAQ(dddddddd-8888-8888-8888-888888888888)@5, CASE(c7777777-7777-7777-7777-777777777777)@6, FAQ(dddddddd-5555-5555-5555-555555555555)@7, FAQ(dddddddd-1111-1111-1111-111111111111)@8, FAQ(11111111-1111-1111-1111-111111111111)@9, FAQ(ffffffff-2222-2222-2222-222222222222)@10"
+    },
+    {
+      "case_id": "case_othe_012",
+      "failure_mode": "missing_doc_type",
+      "details": "Expected doc_types: [Case, Policy] | Retrieved: FAQ(eeeeeeee-1111-1111-1111-111111111111)@1, FAQ(dddddddd-6666-6666-6666-666666666666)@2, POLICY(ad0d0d0d-3333-3333-3333-333333333333)@3, FAQ(dddddddd-8888-8888-8888-888888888888)@4, CASE(c7777777-7777-7777-7777-777777777777)@5, FAQ(dddddddd-7777-7777-7777-777777777777)@6, CASE(ca0a0a0a-7777-7777-7777-777777777777)@7, FAQ(dddddddd-9999-9999-9999-999999999999)@8, CASE(b1111111-1111-1111-1111-111111111111)@9, CASE(ca0a0a0a-4444-4444-4444-444444444444)@10"
+    },
+    {
+      "case_id": "case_othe_013",
+      "failure_mode": "missing_doc_type",
+      "details": "Expected doc_types: [Case, Policy] | Retrieved: CASE(c7777777-7777-7777-7777-777777777777)@1, POLICY(ad0d0d0d-3333-3333-3333-333333333333)@2, FAQ(dddddddd-7777-7777-7777-777777777777)@3, FAQ(dddddddd-8888-8888-8888-888888888888)@4, CASE(baaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa)@5, CASE(c3333333-3333-3333-3333-333333333333)@6, FAQ(ffffffff-2222-2222-2222-222222222222)@7, CASE(ca0a0a0a-8888-8888-8888-888888888888)@8, FAQ(eeeeeeee-8888-8888-8888-888888888888)@9, CASE(bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb)@10"
+    },
+    {
+      "case_id": "case_refu_001",
+      "failure_mode": "missing_doc_type",
+      "details": "Expected doc_types: [Case, Policy] | Retrieved: CASE(c3333333-3333-3333-3333-333333333333)@1, CASE(ca0a0a0a-9999-9999-9999-999999999999)@2, POLICY(ae0e0e0e-aaaa-aaaa-aaaa-aaaaaaaaaaaa)@3, POLICY(ae0e0e0e-3333-3333-3333-333333333333)@4, CASE(ca0a0a0a-1111-1111-1111-111111111111)@5, CASE(c8888888-8888-8888-8888-888888888888)@6, FAQ(eeeeeeee-6666-6666-6666-666666666666)@7, POLICY(ae0e0e0e-5555-5555-5555-555555555555)@8, POLICY(ae0e0e0e-6666-6666-6666-666666666666)@9, POLICY(ae0e0e0e-dddd-dddd-dddd-dddddddddddd)@10"
+    },
+    {
+      "case_id": "case_refu_003",
+      "failure_mode": "missing_doc_type",
+      "details": "Expected doc_types: [Case, Policy] | Retrieved: FAQ(dddddddd-2222-2222-2222-222222222222)@1, CASE(b1111111-1111-1111-1111-111111111111)@2, CASE(c9999999-9999-9999-9999-999999999999)@3, POLICY(a1111111-1111-1111-1111-111111111111)@4, POLICY(ae0e0e0e-aaaa-aaaa-aaaa-aaaaaaaaaaaa)@5, FAQ(22222222-2222-2222-2222-222222222222)@6, POLICY(ad0d0d0d-2222-2222-2222-222222222222)@7, CASE(c3333333-3333-3333-3333-333333333333)@8, POLICY(ae0e0e0e-3333-3333-3333-333333333333)@9, POLICY(ae0e0e0e-dddd-dddd-dddd-dddddddddddd)@10"
+    },
+    {
+      "case_id": "case_refu_006",
+      "failure_mode": "missing_doc_type",
+      "details": "Expected doc_types: [Case, Policy] | Retrieved: CASE(c3333333-3333-3333-3333-333333333333)@1, CASE(ca0a0a0a-9999-9999-9999-999999999999)@2, POLICY(ae0e0e0e-aaaa-aaaa-aaaa-aaaaaaaaaaaa)@3, FAQ(eeeeeeee-6666-6666-6666-666666666666)@4, POLICY(ae0e0e0e-3333-3333-3333-333333333333)@5, CASE(c8888888-8888-8888-8888-888888888888)@6, CASE(ca0a0a0a-1111-1111-1111-111111111111)@7, CASE(ca0a0a0a-6666-6666-6666-666666666666)@8, POLICY(ae0e0e0e-6666-6666-6666-666666666666)@9, POLICY(ae0e0e0e-dddd-dddd-dddd-dddddddddddd)@10"
+    },
+    {
+      "case_id": "case_refu_008",
+      "failure_mode": "missing_doc_type",
+      "details": "Expected doc_types: [Case, Policy] | Retrieved: CASE(b1111111-1111-1111-1111-111111111111)@1, FAQ(dddddddd-2222-2222-2222-222222222222)@2, POLICY(ae0e0e0e-4444-4444-4444-444444444444)@3, FAQ(ffffffff-5555-5555-5555-555555555555)@4, FAQ(22222222-2222-2222-2222-222222222222)@5, POLICY(a1111111-1111-1111-1111-111111111111)@6, CASE(bcccccc1-cccc-cccc-cccc-cccccccccccc)@7, CASE(c9999999-9999-9999-9999-999999999999)@8, POLICY(ae0e0e0e-dddd-dddd-dddd-dddddddddddd)@9, FAQ(dddddddd-4444-4444-4444-444444444444)@10"
+    },
+    {
+      "case_id": "case_refu_009",
+      "failure_mode": "missing_doc_type",
+      "details": "Expected doc_types: [Case, Policy] | Retrieved: POLICY(ae0e0e0e-dddd-dddd-dddd-dddddddddddd)@1, FAQ(dddddddd-2222-2222-2222-222222222222)@2, POLICY(a1111111-1111-1111-1111-111111111111)@3, CASE(b1111111-1111-1111-1111-111111111111)@4, CASE(ca0a0a0a-9999-9999-9999-999999999999)@5, CASE(c3333333-3333-3333-3333-333333333333)@6, CASE(c9999999-9999-9999-9999-999999999999)@7, FAQ(ffffffff-2222-2222-2222-222222222222)@8, FAQ(dddddddd-4444-4444-4444-444444444444)@9, FAQ(eeeeeeee-9999-9999-9999-999999999999)@10"
+    },
+    {
+      "case_id": "case_refu_013",
+      "failure_mode": "missing_doc_type",
+      "details": "Expected doc_types: [Case, Policy] | Retrieved: CASE(c3333333-3333-3333-3333-333333333333)@1, CASE(ca0a0a0a-6666-6666-6666-666666666666)@2, CASE(ca0a0a0a-9999-9999-9999-999999999999)@3, CASE(ca0a0a0a-1111-1111-1111-111111111111)@4, CASE(b1111111-1111-1111-1111-111111111111)@5, FAQ(eeeeeeee-9999-9999-9999-999999999999)@6, POLICY(ae0e0e0e-3333-3333-3333-333333333333)@7, POLICY(a1111111-1111-1111-1111-111111111111)@8, POLICY(ae0e0e0e-6666-6666-6666-666666666666)@9, FAQ(ffffffff-3333-3333-3333-333333333333)@10"
+    },
+    {
+      "case_id": "case_refu_015",
+      "failure_mode": "missing_doc_type",
+      "details": "Expected doc_types: [Case, Policy] | Retrieved: FAQ(dddddddd-2222-2222-2222-222222222222)@1, CASE(c3333333-3333-3333-3333-333333333333)@2, POLICY(ae0e0e0e-dddd-dddd-dddd-dddddddddddd)@3, POLICY(ae0e0e0e-aaaa-aaaa-aaaa-aaaaaaaaaaaa)@4, CASE(c9999999-9999-9999-9999-999999999999)@5, POLICY(a1111111-1111-1111-1111-111111111111)@6, FAQ(22222222-2222-2222-2222-222222222222)@7, POLICY(ad0d0d0d-2222-2222-2222-222222222222)@8, CASE(b1111111-1111-1111-1111-111111111111)@9, POLICY(ae0e0e0e-3333-3333-3333-333333333333)@10"
+    },
+    {
+      "case_id": "case_refu_016",
+      "failure_mode": "missing_doc_type",
+      "details": "Expected doc_types: [Case, Policy] | Retrieved: FAQ(eeeeeeee-1111-1111-1111-111111111111)@1, CASE(ca0a0a0a-2222-2222-2222-222222222222)@2, FAQ(dddddddd-6666-6666-6666-666666666666)@3, POLICY(ae0e0e0e-9999-9999-9999-999999999999)@4, FAQ(ffffffff-3333-3333-3333-333333333333)@5, CASE(ca0a0a0a-7777-7777-7777-777777777777)@6, POLICY(a2222222-2222-2222-2222-222222222222)@7, FAQ(dddddddd-2222-2222-2222-222222222222)@8, FAQ(eeeeeeee-9999-9999-9999-999999999999)@9, CASE(c9999999-9999-9999-9999-999999999999)@10"
+    },
+    {
+      "case_id": "case_retu_004",
+      "failure_mode": "missing_doc_type",
+      "details": "Expected doc_types: [Case, Policy] | Retrieved: FAQ(dddddddd-4444-4444-4444-444444444444)@1, CASE(c3333333-3333-3333-3333-333333333333)@2, FAQ(ffffffff-5555-5555-5555-555555555555)@3, CASE(b1111111-1111-1111-1111-111111111111)@4, FAQ(f0f0f0f0-2222-2222-2222-222222222222)@5, CASE(ca0a0a0a-9999-9999-9999-999999999999)@6, POLICY(a4444444-4444-4444-4444-444444444444)@7, POLICY(ae0e0e0e-3333-3333-3333-333333333333)@8, POLICY(ae0e0e0e-6666-6666-6666-666666666666)@9, FAQ(dddddddd-2222-2222-2222-222222222222)@10"
+    },
+    {
+      "case_id": "case_retu_006",
+      "failure_mode": "missing_doc_type",
+      "details": "Expected doc_types: [Case, Policy] | Retrieved: FAQ(ffffffff-5555-5555-5555-555555555555)@1, FAQ(eeeeeeee-1111-1111-1111-111111111111)@2, FAQ(dddddddd-6666-6666-6666-666666666666)@3, POLICY(a4444444-4444-4444-4444-444444444444)@4, FAQ(dddddddd-4444-4444-4444-444444444444)@5, FAQ(33333333-3333-3333-3333-333333333333)@6, CASE(b3333333-3333-3333-3333-333333333333)@7, POLICY(a3333333-3333-3333-3333-333333333333)@8, FAQ(dddddddd-2222-2222-2222-222222222222)@9, POLICY(ae0e0e0e-4444-4444-4444-444444444444)@10"
+    },
+    {
+      "case_id": "case_retu_008",
+      "failure_mode": "missing_doc_type",
+      "details": "Expected doc_types: [Policy] | Retrieved: FAQ(dddddddd-3333-3333-3333-333333333333)@1, FAQ(eeeeeeee-1111-1111-1111-111111111111)@2, FAQ(dddddddd-6666-6666-6666-666666666666)@3, POLICY(a4444444-4444-4444-4444-444444444444)@4, POLICY(ae0e0e0e-4444-4444-4444-444444444444)@5, CASE(b3333333-3333-3333-3333-333333333333)@6, FAQ(dddddddd-4444-4444-4444-444444444444)@7, FAQ(ffffffff-5555-5555-5555-555555555555)@8, FAQ(ffffffff-3333-3333-3333-333333333333)@9, FAQ(f0f0f0f0-2222-2222-2222-222222222222)@10"
+    },
+    {
+      "case_id": "case_retu_010",
+      "failure_mode": "missing_doc_type",
+      "details": "Expected doc_types: [Case, Policy] | Retrieved: FAQ(dddddddd-2222-2222-2222-222222222222)@1, FAQ(eeeeeeee-1111-1111-1111-111111111111)@2, FAQ(dddddddd-6666-6666-6666-666666666666)@3, FAQ(eeeeeeee-8888-8888-8888-888888888888)@4, FAQ(cccccccc-cccc-cccc-cccc-cccccccccccc)@5, FAQ(33333333-3333-3333-3333-333333333333)@6, FAQ(eeeeeeee-9999-9999-9999-999999999999)@7, POLICY(a3333333-3333-3333-3333-333333333333)@8, CASE(c9999999-9999-9999-9999-999999999999)@9, FAQ(ffffffff-3333-3333-3333-333333333333)@10"
+    },
+    {
+      "case_id": "case_retu_011",
+      "failure_mode": "missing_doc_type",
+      "details": "Expected doc_types: [Case] | Retrieved: FAQ(f0f0f0f0-2222-2222-2222-222222222222)@1, FAQ(eeeeeeee-1111-1111-1111-111111111111)@2, FAQ(dddddddd-6666-6666-6666-666666666666)@3, FAQ(dddddddd-4444-4444-4444-444444444444)@4, FAQ(33333333-3333-3333-3333-333333333333)@5, POLICY(a4444444-4444-4444-4444-444444444444)@6, CASE(b3333333-3333-3333-3333-333333333333)@7, POLICY(a3333333-3333-3333-3333-333333333333)@8, FAQ(dddddddd-2222-2222-2222-222222222222)@9, FAQ(ffffffff-5555-5555-5555-555555555555)@10"
+    }
+  ]
+}

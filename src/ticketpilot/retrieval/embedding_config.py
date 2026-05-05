@@ -57,6 +57,15 @@ class EmbeddingConfig:
         """Whether the configured provider is OpenAI-compatible."""
         return self.provider == "openai_compatible"
 
+    def __repr__(self) -> str:
+        """Safe repr — redacts api_key."""
+        key_display = "****" if self.api_key else None
+        return (
+            f"EmbeddingConfig(provider={self.provider!r}, model={self.model!r}, "
+            f"dimension={self.dimension}, base_url={self.base_url!r}, "
+            f"api_key={key_display!r}, batch_size={self.batch_size})"
+        )
+
 
 def load_embedding_config_from_env() -> EmbeddingConfig:
     """Load embedding config from environment variables.

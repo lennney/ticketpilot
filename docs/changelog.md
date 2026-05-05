@@ -82,6 +82,34 @@
 ### Changed
 - `reports/retrieval/phase9_real_provider_readiness.md` — Status changed from SKIPPED to READY; real-provider rerun now executable
 
+## 2026-05-05 (15) — Phase 9.5.3: Provider Identity Audit + Real Rerun
+
+### Fixed
+- `src/ticketpilot/retrieval/embedding_config.py` — Added `__repr__` that redacts `api_key` (shows `****`); confirmed `load_dotenv(override=False)` shell env priority
+
+### Added
+- `tests/unit/test_embedding_config.py` — 10 tests: fallback, .env.local loading, shell env priority, API key leak prevention, module path resolution
+- `reports/retrieval/phase9_provider_identity_audit.md` — Confirmed Phase 8 real baseline is genuine `openai_compatible / text-embedding-v4 / 1024`; no reports mislabeled
+- `reports/retrieval/phase9_real_retrieval_rows.json` — Phase 9 real export (106 records, openai_compatible, 101 cases)
+- `reports/retrieval/phase9_real_rerun_metrics.json` — Phase 8 real vs Phase 9 real comparison metrics
+- `reports/retrieval/phase9_real_rerun.md` — Complete real-provider evaluation analysis
+
+### Changed
+- DB rebuilt: 106 chunks re-embedded with `openai_compatible / text-embedding-v4 / 1024-dim`
+
+### Key Findings
+- Phase 8 real baseline confirmed trustworthy (openai_compatible via trace + DB metadata)
+- P0 hit rate: **12/16 (75%)** real vs 3/16 (18.8%) fake — 4× improvement under real embeddings
+- Top-1: +2.0% (real) vs -5.0% (fake) — fake evaluation was directionally misleading
+- Wrong cases: 41 → 41 — knowledge expansion alone insufficient without ranking/query changes
+- 0 wrong cases fixed despite 75% P0 hit rate — P0 records surface but targeted cases were already passing
+
+### Design Notes
+- `.env.local` loading bug (`c7d3c3a`) was the root cause: Phase 9 couldn't use real provider because `.env.local` was never loaded into `os.environ`
+- Phase 8 real baseline was unaffected — the user must have had env vars exported in shell at that time
+- Fake embedding evaluation is not just inconclusive; it can be directionally misleading for Top-1
+- Knowledge coverage expansion (95→106) has measurable impact under real embeddings but insufficient to fix wrong cases without retrieval ranking improvements
+
 ## 2026-05-05 (10) — Phase 9.4.1: P0 Knowledge Expansion (11 Records)
 
 ### Added

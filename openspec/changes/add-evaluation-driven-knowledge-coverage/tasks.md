@@ -109,7 +109,22 @@
 - [x] 5.1.20 Run embedding/provider tests (33 passed)
 - [x] 5.1.21 Update `phase9_real_provider_readiness.md` to READY
 - [x] 5.1.22 Update `docs/changelog.md`
-- [ ] 5.1.23 Commit and push
+- [x] 5.1.23 Commit and push
+
+### Phase 9.5.3 — Embedding Config Fix + Provider Identity Audit + Real Rerun
+
+- [x] 5.1.24 Fix `embedding_config.py`: explicit `.env.local` loading, `override=False`, API key redacted in `__repr__`
+- [x] 5.1.25 Add `tests/unit/test_embedding_config.py`: 10 tests (fallback, .env.local loading, shell env priority, API key leak)
+- [x] 5.1.26 Provider identity audit: Phase 8 real baseline confirmed genuine openai_compatible; no reports mislabeled
+- [x] 5.1.27 Rebuild real embeddings: 106 chunks → dashscope text-embedding-v4 (1024-dim)
+- [x] 5.1.28 Export Phase 9 real retrieval rows: 101 cases, openai_compatible
+- [x] 5.1.29 Compare Phase 8 real (95) vs Phase 9 real (106): Top-1 +2.0%, MRR +0.0082, wrong cases 41→41
+- [x] 5.1.30 P0 added-record hit audit (real): 12/16 (75%) vs 3/16 (18.8%) fake — 4× improvement
+- [x] 5.1.31 Create reports: `phase9_provider_identity_audit.md`, `phase9_real_rerun.md`, `phase9_real_rerun_metrics.json`
+- [x] 5.1.32 Validation: OpenSpec `--strict` PASSED, ruff CLEAN, 29/29 tests passed, secret scan CLEAN
+- [x] 5.1.33 Update `docs/changelog.md` with entry 15
+- [x] 5.1.34 Update `tasks.md`
+- [ ] 5.1.35 Commit and push
 
 ## Phase 9.6 — Portfolio Summary
 
