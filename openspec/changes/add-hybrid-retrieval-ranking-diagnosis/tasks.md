@@ -22,17 +22,17 @@
 
 ## Phase 10.3 — P0 Trace Export
 
-- [ ] 3.1 Write export script that captures per-case RetrievalTrace for all P0-related cases (~16 cases)
-- [ ] 3.2 Export must include: keyword results (full list), vector results (full list), fused results (full list), final evidence IDs, provider identity
-- [ ] 3.3 Cross-reference P0 added record chunk_ids against each trace layer
-- [ ] 3.4 Export P0 record best-rank per case: best keyword rank, best vector rank, best fused rank (or None if absent)
-- [ ] 3.5 Output to `reports/retrieval/phase10_p0_layered_traces.json`
-- [ ] 3.6 Do not change retrieval algorithm, RRF, query builder, or embedding provider
-- [ ] 3.7 Use real provider for semantic ranking conclusions; fake provider for pipeline mechanics only
+- [x] 3.1 Write export script that captures per-case RetrievalTrace for all P0-related cases (~14 cases)
+- [x] 3.2 Export must include: keyword results (full list), vector results (full list), fused results (full list), final evidence IDs, provider identity
+- [x] 3.3 Cross-reference P0 added record chunk_ids against each trace layer
+- [x] 3.4 Export P0 record best-rank per case: best keyword rank, best vector rank, best fused rank (or None if absent)
+- [x] 3.5 Output to `reports/retrieval/phase10_p0_layered_traces.json`
+- [x] 3.6 Do not change retrieval algorithm, RRF, query builder, or embedding provider
+- [x] 3.7 Use real provider for semantic ranking conclusions (OpenAICompatible, 1024-d)
 
 ## Phase 10.4 — Bottleneck Classification
 
-- [ ] 4.1 Classify each P0 case using the 8-category bottleneck taxonomy:
+- [x] 4.1 Classify each P0 case using the 8-category bottleneck taxonomy:
   - `keyword_not_recalled` — programmatic: chunk_id absent from keyword results
   - `vector_not_recalled` — programmatic: chunk_id absent from vector results
   - `recalled_but_fused_low` — programmatic: in keyword/vector but fused rank > top_k
@@ -41,9 +41,9 @@
   - `query_expansion_gap` — manual: query underspecified for existing knowledge
   - `empty_retrieval` — programmatic: both retrievers return empty
   - `provider_identity_issue` — programmatic: trace provider differs from expected
-- [ ] 4.2 Produce `reports/retrieval/phase10_p0_ranking_diagnosis.md` with per-case bottleneck and evidence
-- [ ] 4.3 Include recommendation for each case: doc_level_label / query_expansion / rrf_tuning / reranker / limitation
-- [ ] 4.4 No changes to golden labels, retrieval code, or knowledge base
+- [x] 4.2 Produce `reports/retrieval/phase10_p0_bottleneck_classification.md` with per-case bottleneck and evidence
+- [x] 4.3 Include recommendation for each case: doc_level_label / query_expansion / rrf_tuning / reranker / limitation
+- [x] 4.4 No changes to golden labels, retrieval code, or knowledge base
 
 ## Phase 10.5 — Recommendation Report
 

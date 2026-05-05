@@ -260,6 +260,7 @@ def _run_pipeline_export(args: argparse.Namespace) -> None:
         docs = []
         for i, cand in enumerate(output.evidence_candidates, start=1):
             docs.append({
+                "chunk_id": str(cand.id),
                 "doc_id": str(cand.doc_id),
                 "doc_type": cand.doc_type.value if hasattr(cand.doc_type, "value") else str(cand.doc_type),
                 "rank": i,
@@ -268,13 +269,51 @@ def _run_pipeline_export(args: argparse.Namespace) -> None:
 
         trace_info: dict[str, Any] = {"available": False}
         if output.retrieval_trace is not None:
+            t = output.retrieval_trace
             trace_info = {
                 "available": True,
-                "keyword_count": len(output.retrieval_trace.keyword_results),
-                "vector_count": len(output.retrieval_trace.vector_results),
-                "fused_count": len(output.retrieval_trace.fused_results),
-                "total_latency_ms": output.retrieval_trace.total_latency_ms,
-                "embedding_provider": output.retrieval_trace.embedding_provider,
+                "keyword_count": len(t.keyword_results),
+                "vector_count": len(t.vector_results),
+                "fused_count": len(t.fused_results),
+                "total_latency_ms": t.total_latency_ms,
+                "embedding_provider": t.embedding_provider,
+                "keyword_results": [
+                    {
+                        "chunk_id": str(r.chunk_id),
+                        "doc_id": str(r.doc_id),
+                        "doc_type": r.doc_type.value if hasattr(r.doc_type, "value") else str(r.doc_type),
+                        "score": r.score,
+                        "rank": r.rank,
+                        "search_method": r.search_method,
+                    }
+                    for r in t.keyword_results
+                ],
+                "vector_results": [
+                    {
+                        "chunk_id": str(r.chunk_id),
+                        "doc_id": str(r.doc_id),
+                        "doc_type": r.doc_type.value if hasattr(r.doc_type, "value") else str(r.doc_type),
+                        "score": r.score,
+                        "rank": r.rank,
+                        "embedding_provider": r.embedding_provider,
+                    }
+                    for r in t.vector_results
+                ],
+                "fused_results": [
+                    {
+                        "chunk_id": str(r.chunk_id),
+                        "doc_id": str(r.doc_id),
+                        "doc_type": r.doc_type.value if hasattr(r.doc_type, "value") else str(r.doc_type),
+                        "rrf_score": r.rrf_score,
+                        "keyword_rank": r.keyword_rank,
+                        "keyword_contribution": r.keyword_contribution,
+                        "vector_rank": r.vector_rank,
+                        "vector_contribution": r.vector_contribution,
+                        "sources": r.sources,
+                    }
+                    for r in t.fused_results
+                ],
+                "final_evidence_ids": [str(eid) for eid in t.final_evidence_ids],
             }
 
         rows.append({

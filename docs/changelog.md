@@ -1,5 +1,25 @@
 # TicketPilot Changelog
 
+## 2026-05-06 — Phase 10.3/10.4: P0 Layered Trace Export + Bottleneck Classification
+
+### Added
+- `reports/retrieval/phase10_p0_layered_trace_export.md` — per-ranker trace analysis for 14 P0-related cases (16 record-case pairs) using OpenAICompatible provider
+- `reports/retrieval/phase10_p0_bottleneck_classification.md` — 8-category classification with per-case recommendations
+- `reports/retrieval/phase10_ranking_diagnosis_summary.md` — consolidated findings, bottleneck distribution, and recommended next steps
+- `reports/retrieval/phase10_p0_layered_traces.json` — structured trace export with per-layer cross-reference
+- `scripts/export_p0_layered_trace.py` — targeted export script for P0-related cases only
+
+### Changed
+- `scripts/run_retrieval_comparison.py` — export mode now includes full keyword_results, vector_results, fused_results, final_evidence_ids serialization, plus chunk_id in retrieved_docs (reporting-only enhancement)
+- `openspec/changes/add-hybrid-retrieval-ranking-diagnosis/tasks.md` — Phase 10.3 and 10.4 tasks marked complete
+
+### Key Findings
+- **Vector recall: 93.8%** — real embedding provider works effectively for P0 records
+- **Keyword recall: 31.2%** — most P0 records are vector-only, making them vulnerable to RRF dual-source bias
+- **Fused top-10: 75.0%** — 3/16 records with good vector rank pushed out by dual-contribution items
+- **75% of "wrong" cases are actually metric granularity problem**: P0 records reach final evidence, but the case expects multiple doc_types and only one type was expanded
+- **Primary recommendation**: Add doc-level golden labels (`expected_relevant_doc_ids`) to enable precise doc_id-level metrics
+
 ## 2026-05-06 — Phase 10.2: Trace Data Audit
 
 ### Added
