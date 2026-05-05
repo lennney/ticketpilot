@@ -5,21 +5,25 @@ import sys
 from contextlib import contextmanager
 from typing import Generator, Optional
 
-# Add psycopg_binary.libs to DLL search path on Windows
+# Copy psycopg DLLs to local temp dir on Windows (WSL UNC paths cannot load DLLs)
 if sys.platform == "win32":
-    import site
-
-    def _add_psycopg_dll_dir():
-        """Add psycopg binary libs to DLL search path."""
-        for sp in site.getsitepackages():
-            psycopg_bin_dir = os.path.join(sp, "psycopg_binary.libs")
-            if os.path.exists(psycopg_bin_dir):
-                os.add_dll_directory(psycopg_bin_dir)
-                # Also add to PATH as fallback
-                os.environ["PATH"] = psycopg_bin_dir + os.pathsep + os.environ.get("PATH", "")
-                break
-
-    _add_psycopg_dll_dir()
+    import shutil as _shutil
+    import site as _site
+    import tempfile as _tempfile
+    for _sp in _site.getsitepackages():
+        _d = os.path.join(_sp, "psycopg_binary.libs")
+        if os.path.exists(_d):
+            _cache = os.path.join(_tempfile.gettempdir(), "ticketpilot_dlls")
+            os.makedirs(_cache, exist_ok=True)
+            for _f in os.listdir(_d):
+                _src = os.path.join(_d, _f)
+                _dst = os.path.join(_cache, _f)
+                if not os.path.exists(_dst):
+                    _shutil.copy2(_src, _dst)
+            os.add_dll_directory(_cache)
+            os.environ["PATH"] = _cache + os.pathsep + os.environ.get("PATH", "")
+            break
+    del _shutil, _site, _tempfile, _sp, _d, _cache, _f, _src, _dst
 
 from psycopg import Connection
 from psycopg_pool import ConnectionPool

@@ -30,21 +30,23 @@ class TestVectorSearchLogic:
         imports db.connection. If DB is not available, this test will be skipped.
         """
         try:
-            import ticketpilot.retrieval.db.connection  # noqa: F401
-        except ImportError:
+            from ticketpilot.retrieval.vector_search import _detect_embedding_dim
+            expected_dim = _detect_embedding_dim()
+        except Exception:
             pytest.skip("Database not available")
 
         wrong_dim_embedding = [0.1] * 100  # Wrong dimension
 
-        with pytest.raises(ValueError, match="Expected 384-d embedding"):
+        with pytest.raises(ValueError, match=f"Expected {expected_dim}-d embedding"):
             vector_search(wrong_dim_embedding, top_k=10)
 
-    def test_fake_embedding_produces_384d(self):
+    def test_fake_embedding_produces_default_dim(self):
         """Test that fake embeddings have correct dimension."""
-        provider = FakeEmbeddingProvider()
+        from ticketpilot.retrieval.providers.fake_embedding import FAKE_EMBEDDING_DIM
+        provider = FakeEmbeddingProvider(dimension=FAKE_EMBEDDING_DIM)
         vec = provider.embed("test")
 
-        assert len(vec) == 384
+        assert len(vec) == FAKE_EMBEDDING_DIM
 
 
 class TestVectorSearchMocked:
@@ -118,12 +120,18 @@ class TestVectorSearchIntegration:
         except Exception as e:
             pytest.skip(f"Could not seed database: {e}")
 
-    def test_vector_search_returns_results(self, db_available, ensure_seeded):
+    @pytest.fixture
+    def expected_dim(self, db_available):
+        """Get expected embedding dimension from DB."""
+        from ticketpilot.retrieval.vector_search import _detect_embedding_dim
+        return _detect_embedding_dim()
+
+    def test_vector_search_returns_results(self, db_available, ensure_seeded, expected_dim):
         """Test vector search returns results."""
         if not db_available:
             pytest.skip("Database not available")
 
-        provider = FakeEmbeddingProvider()
+        provider = FakeEmbeddingProvider(dimension=expected_dim)
         query_embedding = provider.embed("退款如何申请")
 
         results, latency_ms = vector_search(query_embedding, top_k=5)
@@ -132,12 +140,12 @@ class TestVectorSearchIntegration:
         assert latency_ms >= 0
         assert all(isinstance(r, VectorResult) for r in results)
 
-    def test_vector_search_ranks_by_similarity(self, db_available, ensure_seeded):
+    def test_vector_search_ranks_by_similarity(self, db_available, ensure_seeded, expected_dim):
         """Test that vector results are ranked by similarity."""
         if not db_available:
             pytest.skip("Database not available")
 
-        provider = FakeEmbeddingProvider()
+        provider = FakeEmbeddingProvider(dimension=expected_dim)
         query_embedding = provider.embed("退款政策")
 
         results, _ = vector_search(query_embedding, top_k=10)
@@ -146,12 +154,12 @@ class TestVectorSearchIntegration:
             # First result should have higher or equal similarity
             assert results[0].score >= results[1].score
 
-    def test_vector_search_with_doc_type_filter(self, db_available, ensure_seeded):
+    def test_vector_search_with_doc_type_filter(self, db_available, ensure_seeded, expected_dim):
         """Test vector search with doc_type filter."""
         if not db_available:
             pytest.skip("Database not available")
 
-        provider = FakeEmbeddingProvider()
+        provider = FakeEmbeddingProvider(dimension=expected_dim)
         query_embedding = provider.embed("退款")
 
         results, _ = vector_search(
@@ -162,12 +170,12 @@ class TestVectorSearchIntegration:
 
         assert all(r.doc_type == DocType.POLICY for r in results)
 
-    def test_vector_search_returns_trace_fields(self, db_available, ensure_seeded):
+    def test_vector_search_returns_trace_fields(self, db_available, ensure_seeded, expected_dim):
         """Test that vector results have all required fields."""
         if not db_available:
             pytest.skip("Database not available")
 
-        provider = FakeEmbeddingProvider()
+        provider = FakeEmbeddingProvider(dimension=expected_dim)
         query_embedding = provider.embed("退款")
 
         results, _ = vector_search(query_embedding, top_k=5)
@@ -182,12 +190,12 @@ class TestVectorSearchIntegration:
             assert result.rank >= 1
             assert result.embedding_provider == "fake"
 
-    def test_vector_search_scores_are_cosine_similarity(self, db_available, ensure_seeded):
+    def test_vector_search_scores_are_cosine_similarity(self, db_available, ensure_seeded, expected_dim):
         """Test that vector scores are valid cosine similarities."""
         if not db_available:
             pytest.skip("Database not available")
 
-        provider = FakeEmbeddingProvider()
+        provider = FakeEmbeddingProvider(dimension=expected_dim)
 
         # Query with same text should give score of 1.0
         text = "退款如何申请"

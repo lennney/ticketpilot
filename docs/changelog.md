@@ -1,5 +1,30 @@
 # TicketPilot Changelog
 
+## 2026-05-06 — Phase 9.7.1: Post-Archive Validation Repair
+
+### Fixed
+- 54 integration tests skipped with "Database not available" — root cause: (1) `psycopg-binary` not installed, (2) WSL UNC path (`\\wsl.localhost\...`) breaks `os.add_dll_directory()` for native DLLs, (3) `uv run pytest` vs `python -m pytest` entry point difference
+- `src/ticketpilot/retrieval/db/connection.py` — copy psycopg DLLs to local Windows temp dir when running on WSL
+- `tests/conftest.py` — same DLL copy logic for pytest bootstrap
+- 8 dimension-mismatch failures — tests hardcoded `384` but DB uses `vector(1024)`; fixed by using `_detect_embedding_dim()` and `FAKE_EMBEDDING_DIM` in all integration tests
+
+### Removed
+- `tests/_debug_add_dll.py`, `tests/debug_dll_paths.py` — debug artifacts from DLL investigation
+
+### Added
+- `docs/technical/phase9_post_archive_validation_repair.md` — repair report with root cause analysis, fixes applied, and verification results
+
+### Validation
+| Check | Result |
+|-------|--------|
+| Ruff | PASSED |
+| Unit tests | 770 passed |
+| Integration tests | 119 passed, 0 skipped |
+| Coverage | 85.29% |
+| OpenSpec | 15/15 passed |
+| Secret scan | CLEAN |
+| Quality gate | PASSED |
+
 ## 2026-05-05 (17) — Phase 9.7: Final Validation and Archive
 
 ### Changed

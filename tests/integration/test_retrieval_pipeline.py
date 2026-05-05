@@ -143,11 +143,14 @@ class TestPipelineIntegration:
         if not db_available:
             pytest.skip("Database not available")
 
+        from ticketpilot.retrieval.vector_search import _detect_embedding_dim
+        expected_dim = _detect_embedding_dim()
+
         trace = hybrid_retrieval("退款如何申请", top_k=5)
 
         assert isinstance(trace, RetrievalTrace)
         assert trace.query == "退款如何申请"
-        assert len(trace.query_embedding) == 384
+        assert len(trace.query_embedding) == expected_dim
 
     def test_pipeline_combines_keyword_and_vector(self, db_available, ensure_seeded):
         """Test that pipeline combines keyword and vector results."""

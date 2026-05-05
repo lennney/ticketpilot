@@ -200,11 +200,13 @@ class TestRetrievalTraceIntegration:
             pytest.skip("Database not available")
 
         from ticketpilot.retrieval.pipeline import hybrid_retrieval
+        from ticketpilot.retrieval.vector_search import _detect_embedding_dim
+        expected_dim = _detect_embedding_dim()
 
         trace = hybrid_retrieval("退款政策", top_k=5)
 
         assert trace.query == "退款政策"
-        assert len(trace.query_embedding) == 384
+        assert len(trace.query_embedding) == expected_dim
         assert all(isinstance(x, float) for x in trace.query_embedding)
 
     def test_trace_captures_keyword_results(self, db_available, ensure_seeded):
