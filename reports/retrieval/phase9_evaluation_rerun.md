@@ -4,7 +4,7 @@
 
 ## Overview
 
-Phase 9.4.1 added 11 P0 knowledge records (FAQ+2, Policy+4, Case+6) to close identified knowledge
+Phase 9.4.1 added 11 P0 knowledge records (FAQ+1, Policy+4, Case+6) to close identified knowledge
 gaps. This report compares retrieval metrics **before** (Phase 8 baseline, 95 records) and **after**
 (Phase 9, 106 records) the expansion, using identical fake embeddings (Fake 384-d) on 101 eval tickets.
 

@@ -51,7 +51,6 @@ from ticketpilot.evaluation.retrieval_comparison import (
     write_markdown_report,
 )
 from ticketpilot.evaluation.retrieval_metrics import (
-    DEFAULT_KS,
     RetrievedDoc,
     RetrievalComparisonCase,
     compute_retrieval_comparison_summary,
@@ -384,8 +383,8 @@ def _run_compare_mode(args: argparse.Namespace) -> None:
 
     lines.append("## Providers")
     lines.append("")
-    lines.append(f"| Metric | Fake | Real |")
-    lines.append(f"|--------|------|------|")
+    lines.append("| Metric | Fake | Real |")
+    lines.append("|--------|------|------|")
     lines.append(f"| File | `{args.fake_run_json}` | `{args.real_run_json}` |")
     lines.append(f"| Generated | {fake_data.get('generated_at', '?')} | {real_data.get('generated_at', '?')} |")
 
@@ -441,8 +440,8 @@ def _run_compare_mode(args: argparse.Namespace) -> None:
     # Wrong cases
     lines.append("## Wrong Cases")
     lines.append("")
-    lines.append(f"| Metric | Fake | Real |")
-    lines.append(f"|--------|------|------|")
+    lines.append("| Metric | Fake | Real |")
+    lines.append("|--------|------|------|")
     lines.append(f"| Wrong cases | {len(fake_summary.wrong_cases)} | {len(real_summary.wrong_cases)} |")
 
     if fake_summary.wrong_cases or real_summary.wrong_cases:
@@ -456,8 +455,8 @@ def _run_compare_mode(args: argparse.Namespace) -> None:
         for w in real_summary.wrong_cases:
             r_modes[w.failure_mode] = r_modes.get(w.failure_mode, 0) + 1
         all_modes = sorted(set(list(f_modes.keys()) + list(r_modes.keys())))
-        lines.append(f"| Failure Mode | Fake | Real |")
-        lines.append(f"|--------------|------|------|")
+        lines.append("| Failure Mode | Fake | Real |")
+        lines.append("|--------------|------|------|")
         for mode in all_modes:
             lines.append(f"| {mode} | {f_modes.get(mode, 0)} | {r_modes.get(mode, 0)} |")
         lines.append("")
@@ -527,7 +526,7 @@ def _run_compare_mode(args: argparse.Namespace) -> None:
 
     print(f"JSON report written to {args.out_json}")
     print(f"Markdown report written to {args.out_md}")
-    print(f"\nTop-K Doc Type Hit Rate:")
+    print("\nTop-K Doc Type Hit Rate:")
     for k in ks:
         f_rate = fake_summary.hit_rate_doc_type.get(k, 0.0)
         r_rate = real_summary.hit_rate_doc_type.get(k, 0.0)

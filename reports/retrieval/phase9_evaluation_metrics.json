@@ -1,5 +1,6 @@
 {
   "generated_at": "2026-05-05T11:15:55.297957+00:00",
+  "comparison_type": "knowledge_expansion_fake_vs_fake",
   "config": {
     "top_k": [
       1,
@@ -9,7 +10,8 @@
     ]
   },
   "golden_path": "data/eval/golden_expectations.csv",
-  "fake": {
+  "phase8": {
+    "label": "Phase 8 baseline — 95 knowledge records, Fake 384-d",
     "rows_path": "reports/retrieval/fake_retrieval_rows.json",
     "total_cases": 101,
     "hit_rate_doc_type": {
@@ -21,7 +23,8 @@
     "mrr_doc_type": 0.41140971239981133,
     "wrong_case_count": 41
   },
-  "real": {
+  "phase9": {
+    "label": "Phase 9 expanded — 106 knowledge records, Fake 384-d",
     "rows_path": "reports/retrieval/phase9_retrieval_rows.json",
     "total_cases": 101,
     "hit_rate_doc_type": {
@@ -42,7 +45,7 @@
     },
     "mrr_doc_type": -0.0337
   },
-  "wrong_cases_fake": [
+  "wrong_cases_phase8": [
     {
       "case_id": "case_acco_003",
       "failure_mode": "missing_doc_type",
@@ -249,7 +252,7 @@
       "details": "Expected doc_types: [Case] | Retrieved: FAQ(dddddddd-6666-6666-6666-666666666666)@1, FAQ(eeeeeeee-1111-1111-1111-111111111111)@2, POLICY(ae0e0e0e-7777-7777-7777-777777777777)@3, CASE(bcccccc1-cccc-cccc-cccc-cccccccccccc)@4, POLICY(ad0d0d0d-8888-8888-8888-888888888888)@5, FAQ(eeeeeeee-2222-2222-2222-222222222222)@6, FAQ(eeeeeeee-9999-9999-9999-999999999999)@7, FAQ(66666666-6666-6666-6666-666666666666)@8, FAQ(11111111-1111-1111-1111-111111111111)@9, CASE(c7777777-7777-7777-7777-777777777777)@10"
     }
   ],
-  "wrong_cases_real": [
+  "wrong_cases_phase9": [
     {
       "case_id": "case_acco_003",
       "failure_mode": "missing_doc_type",

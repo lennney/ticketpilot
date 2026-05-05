@@ -91,6 +91,17 @@
 - [x] 5.1.8 Update `openspec/changes/add-evaluation-driven-knowledge-coverage/tasks.md` — mark Phase 9.5.1 complete
 - [x] 5.1.9 Commit and push
 
+### Phase 9.5.1 Round 2 — P0 Hit Audit & Semantics Repair
+
+- [x] 5.1.10 Fix Phase 9.5 report semantics (FAQ+2→FAQ+1 typo, phase8/phase9 field labels, comparison_type metadata)
+- [x] 5.1.11 P0 added-record hit audit: cross-reference 11 new records × 16 wrong-case pairs in Phase 9 retrieval rows
+- [x] 5.1.12 Create `reports/retrieval/phase9_p0_added_record_hit_audit.md` — 3/16 partial hits, 0 wrong cases fixed
+- [x] 5.1.13 Check real embedding provider env (all `EMBEDDING_*` unset), overwrite `phase9_real_provider_readiness.md`
+- [x] 5.1.14 Run validation: OpenSpec `--strict` PASSED, secret scan CLEAN, ruff —fix (8 pre-existing errors in scripts/)
+- [x] 5.1.15 Update `docs/changelog.md` with entry 13
+- [x] 5.1.16 Update `openspec/changes/add-evaluation-driven-knowledge-coverage/tasks.md`
+- [ ] 5.1.17 Commit and push
+
 ## Phase 9.6 — Portfolio Summary
 
 - [ ] 6.1 Create Phase 9 portfolio snapshot (`docs/portfolio/phase9_knowledge_coverage_snapshot.md`)

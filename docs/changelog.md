@@ -56,6 +56,24 @@
 - Phase 9 fake-provider conclusion stands: impact of P0 knowledge expansion is inconclusive under fake embeddings
 - Real-provider rerun steps documented in `phase9_real_evaluation_readiness.md` for future execution
 
+## 2026-05-05 (13) — Phase 9.5.1 Round 2: P0 Added-Record Hit Audit & Report Semantics Repair
+
+### Added
+- `reports/retrieval/phase9_p0_added_record_hit_audit.md` — P0 hit audit: 11 new records × 16 related wrong-case pairs, 3/16 partial hits, 0 wrong cases fixed
+- `reports/retrieval/phase9_real_provider_readiness.md` — Real-provider readiness report (all `EMBEDDING_*` vars unset, setup steps documented)
+
+### Changed
+- `reports/retrieval/phase9_evaluation_rerun.md` — Fixed FAQ+2→FAQ+1 typo in overview
+- `reports/retrieval/phase9_evaluation_metrics.json` — Renamed misleading "fake"/"real" field labels to "phase8"/"phase9" (both runs use fake embeddings); added `comparison_type`, `baseline_label`, `expanded_label` metadata
+
+### Fixed
+- 8 pre-existing ruff errors in `scripts/run_retrieval_comparison.py` (unused import + 7 f-string no-placeholder)
+
+### Design Notes
+- P0 audit is inconclusive for semantic impact: all 3 hits are partial (other expected doc type still missing from top-10)
+- 13 misses are expected under fake embeddings — semantic content has zero influence on ranking
+- Real-provider rerun required to measure actual knowledge expansion impact on wrong-case resolution
+
 ## 2026-05-05 (10) — Phase 9.4.1: P0 Knowledge Expansion (11 Records)
 
 ### Added
