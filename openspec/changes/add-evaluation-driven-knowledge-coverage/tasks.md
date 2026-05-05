@@ -100,7 +100,16 @@
 - [x] 5.1.14 Run validation: OpenSpec `--strict` PASSED, secret scan CLEAN, ruff —fix (8 pre-existing errors in scripts/)
 - [x] 5.1.15 Update `docs/changelog.md` with entry 13
 - [x] 5.1.16 Update `openspec/changes/add-evaluation-driven-knowledge-coverage/tasks.md`
-- [ ] 5.1.17 Commit and push
+- [x] 5.1.17 Commit and push
+
+### Phase 9.5.1 Round 3 — Fix `.env.local` Auto-Load
+
+- [x] 5.1.18 Add `load_dotenv()` to `embedding_config.py` — `.env.local` was never loaded, all `EMBEDDING_*` vars always read as unset
+- [x] 5.1.19 Verify config loads correctly (provider=openai_compatible, model=text-embedding-v4, dim=1024)
+- [x] 5.1.20 Run embedding/provider tests (33 passed)
+- [x] 5.1.21 Update `phase9_real_provider_readiness.md` to READY
+- [x] 5.1.22 Update `docs/changelog.md`
+- [ ] 5.1.23 Commit and push
 
 ## Phase 9.6 — Portfolio Summary
 

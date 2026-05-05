@@ -1,36 +1,33 @@
 # Phase 9 Real-Provider Evaluation Readiness
 
 *Generated at 2026-05-05*
+*Updated 2026-05-05 — `.env.local` auto-load fixed*
 
-## Status: SKIPPED — No Real Embedding Provider Configured
+## Status: READY — Real Embedding Provider Configured via `.env.local`
 
 | Variable | Status |
 |----------|--------|
-| `EMBEDDING_PROVIDER` | unset |
-| `EMBEDDING_MODEL` | unset |
-| `EMBEDDING_DIM` | unset |
-| `EMBEDDING_BASE_URL` | unset |
-| `EMBEDDING_API_KEY` | not present |
+| `EMBEDDING_PROVIDER` | `openai_compatible` |
+| `EMBEDDING_MODEL` | `text-embedding-v4` |
+| `EMBEDDING_DIM` | `1024` |
+| `EMBEDDING_BASE_URL` | `https://dashscope.aliyuncs.com/compatible-mode/v1` |
+| `EMBEDDING_API_KEY` | present (`.env.local`, gitignored) |
+| `EMBEDDING_BATCH_SIZE` | `10` |
 
-All five required environment variables are unset. No real embedding provider can be
-instantiated without them.
+All five required environment variables are configured in `.env.local` and
+auto-loaded via `load_dotenv()` in `embedding_config.py`.
 
-## Required Configuration
+## Recent Fix
 
-Set the following in the shell environment or `.env.local` (not committed):
+`src/ticketpilot/retrieval/embedding_config.py` now calls `load_dotenv()` on
+import to load `.env.local` from the project root. Previously, the config
+only read from `os.environ` directly, ignoring the `.env.local` file even
+though `python-dotenv` was already a dependency.
 
-| Variable | Example Value | Purpose |
-|----------|--------------|---------|
-| `EMBEDDING_PROVIDER` | `openai_compatible` | Provider factory selection |
-| `EMBEDDING_BASE_URL` | `https://api.example.com/v1` | API endpoint |
-| `EMBEDDING_MODEL` | `text-embedding-v4` | Model identifier |
-| `EMBEDDING_DIM` | `1024` | Vector dimension |
-| `EMBEDDING_API_KEY` | `sk-...` | Authentication key |
-
-## Execution Steps When Ready
+## Execution Steps
 
 ```bash
-# 1. Rebuild embeddings with real provider
+# 1. Rebuild embeddings with real provider (will call dashscope API)
 uv run python scripts/rebuild_embeddings.py --confirm
 
 # 2. Export Phase 9 real-provider retrieval rows
@@ -48,7 +45,6 @@ uv run python scripts/run_retrieval_comparison.py compare \
     --out-md reports/retrieval/phase9_real_evaluation_rerun.md
 
 # 4. Re-run P0 hit audit on real-provider results
-# (check if P0 records surface for their intended queries)
 ```
 
 ## Expected Behavior
@@ -76,4 +72,4 @@ Under a real embedding provider, the Phase 9 knowledge expansion (95→106 recor
   (metric deltas -5% to +1% within noise floor, 0 wrong cases fixed)
 - **P0 added-record hit audit**: 3/16 partial hits, 0 wrong cases fixed
   (records exist but fake embeddings cannot leverage semantic content)
-- **Real-provider rerun**: pending configuration of `EMBEDDING_*` env vars
+- **Real-provider rerun**: now executable — `.env.local` is auto-loaded by `embedding_config.py`

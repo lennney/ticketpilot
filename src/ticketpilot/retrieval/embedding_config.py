@@ -2,6 +2,14 @@
 
 import os
 from dataclasses import dataclass
+from pathlib import Path
+
+from dotenv import load_dotenv
+
+# Load .env.local from project root (two levels up from this file)
+_env_local = Path(__file__).resolve().parent.parent.parent.parent / ".env.local"
+if _env_local.exists():
+    load_dotenv(_env_local)
 
 
 # Environment variable names (matching OpenSpec config spec)

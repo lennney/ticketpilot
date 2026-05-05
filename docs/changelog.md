@@ -74,6 +74,14 @@
 - 13 misses are expected under fake embeddings — semantic content has zero influence on ranking
 - Real-provider rerun required to measure actual knowledge expansion impact on wrong-case resolution
 
+## 2026-05-05 (14) — Fix `.env.local` Auto-Load (Real Provider Unblocked)
+
+### Fixed
+- `src/ticketpilot/retrieval/embedding_config.py` — Added `load_dotenv()` to load `.env.local` on import. `python-dotenv` was already a dependency but `.env.local` was never loaded, causing all `EMBEDDING_*` env vars to always read as unset (defaulting to fake provider). Real provider is now configured: `openai_compatible` → dashscope API, `text-embedding-v4`, 1024-dim.
+
+### Changed
+- `reports/retrieval/phase9_real_provider_readiness.md` — Status changed from SKIPPED to READY; real-provider rerun now executable
+
 ## 2026-05-05 (10) — Phase 9.4.1: P0 Knowledge Expansion (11 Records)
 
 ### Added
