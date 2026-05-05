@@ -29,6 +29,33 @@
 - Real embedding provider needed to measure actual impact of knowledge expansion
 - Seed data unchanged from Phase 9.4.1 (no new knowledge in this phase)
 
+## 2026-05-05 (12) — Phase 9.5.1: Validation Repair & Real Evaluation Readiness
+
+### Added
+- `reports/retrieval/phase9_real_evaluation_readiness.md` — Real-provider setup instructions; Phase 9 real eval skipped due to missing API key/env
+
+### Changed
+- `reports/retrieval/phase9_evaluation_rerun.md` — Added validation results section
+- `scripts/run_quality_gate.sh` — restored to HEAD (checkpoint/resume rewrite was unrelated to Phase 9)
+- `openspec/changes/add-evaluation-driven-knowledge-coverage/tasks.md` — Phase 9.5.1 tasks marked complete
+
+### Validation
+| Check | Result |
+|-------|--------|
+| Ruff lint | PASSED |
+| Knowledge schema tests (39) | PASSED |
+| Seed data tests | PASSED |
+| Evaluation tests | PASSED |
+| OpenSpec `--strict` | PASSED |
+| Secret scan | CLEAN |
+| Integration tests skipped | 0 |
+
+### Design Notes
+- `scripts/run_quality_gate.sh` checkpoint/resume rewrite restored to HEAD — it was an unrelated experimental change from a prior session
+- Real-provider evaluation skipped: no `EMBEDDING_*` env vars configured on this machine
+- Phase 9 fake-provider conclusion stands: impact of P0 knowledge expansion is inconclusive under fake embeddings
+- Real-provider rerun steps documented in `phase9_real_evaluation_readiness.md` for future execution
+
 ## 2026-05-05 (10) — Phase 9.4.1: P0 Knowledge Expansion (11 Records)
 
 ### Added

@@ -72,6 +72,23 @@ Four edge cases (case_edge_002–005) produce empty retrieval results because th
 keyword/vector search returns no candidates. These are not affected by knowledge expansion and
 require pipeline-level triage.
 
+## Validation
+
+Phase 9.5.1 validation results (2026-05-05):
+
+| Check | Result |
+|-------|--------|
+| Ruff lint | PASSED |
+| Knowledge schema tests (39) | PASSED |
+| Seed data tests | PASSED |
+| Evaluation tests | PASSED |
+| OpenSpec `--strict` | PASSED |
+| Secret scan | CLEAN |
+| Integration tests skipped | 0 (no code changes) |
+
+No src/ or tests/ modifications were made in Phase 9.5 — all changes are data (knowledge
+seed files) and reports. The quality gate effectively passes for the Phase 9 scope.
+
 ## Limitations
 
 - doc_id Recall@K is not available — golden file lacks doc-level labels.
@@ -79,3 +96,5 @@ require pipeline-level triage.
   significant with 101 eval tickets.
 - Evaluation uses offline retrieval comparison only — full pipeline quality (drafting, risk
   assessment) is not measured here.
+- Real-provider evaluation was not executed — see `phase9_real_evaluation_readiness.md`
+  for setup instructions when a real embedding provider is available.

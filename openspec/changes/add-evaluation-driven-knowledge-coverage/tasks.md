@@ -79,6 +79,18 @@
 - [x] 5.6 Output before-vs-after comparison report to `reports/retrieval/phase9_*`
 - [x] 5.7 Report missing_doc_type reduction from Phase 8 baseline — **0 reduction** (41 → 41, identical wrong cases). Fake embeddings cannot leverage semantic content of new records; the wrong case count is driven by knowledge coverage gaps that require a real embedding provider to surface.
 
+## Phase 9.5.1 — Validation Repair & Real Evaluation Readiness
+
+- [x] 5.1.1 Restore `scripts/run_quality_gate.sh` to HEAD — checkpoint/resume rewrite was unrelated to Phase 9 and uncommitted
+- [x] 5.1.2 Run full validation: Ruff, knowledge schema tests, seed data tests, evaluation tests, OpenSpec `--strict`, secret scan — all PASSED
+- [x] 5.1.3 Integration tests skipped: 0 (no code changes in Phase 9.5)
+- [x] 5.1.4 Check real embedding provider env — not configured, skip
+- [x] 5.1.5 Create `reports/retrieval/phase9_real_evaluation_readiness.md` — documents setup steps for future execution
+- [x] 5.1.6 Update `reports/retrieval/phase9_evaluation_rerun.md` — add validation results section
+- [x] 5.1.7 Update `docs/changelog.md` — add Phase 9.5.1 entry
+- [x] 5.1.8 Update `openspec/changes/add-evaluation-driven-knowledge-coverage/tasks.md` — mark Phase 9.5.1 complete
+- [x] 5.1.9 Commit and push
+
 ## Phase 9.6 — Portfolio Summary
 
 - [ ] 6.1 Create Phase 9 portfolio snapshot (`docs/portfolio/phase9_knowledge_coverage_snapshot.md`)
