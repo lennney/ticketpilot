@@ -1,6 +1,34 @@
 # TicketPilot Changelog
 
 
+## 2026-05-05 (10) — Phase 9.4.1: P0 Knowledge Expansion (11 Records)
+
+### Added
+- `data/knowledge/faq_seed.json` — +1 FAQ record for retu_004 exchange-out-of-stock gap (ID: `f0f0f0f0-2222-...`)
+- `data/knowledge/policy_seed.json` — +4 Policy records for KG-POL-001/002/003/005 gaps:
+  - 7.3.10: Refund escalation complaint handling (refu_001/006)
+  - 8.1.4: Personal data leak and identity theft (acco_003/006/012)
+  - 7.3.11: Counterfeit goods authentication and compensation (refu_013)
+  - 7.3.12: Legal threat during refund process (refu_009 partial)
+- `data/knowledge/case_seed.json` — +6 Case records for KG-CASE-001/002/003/006 + KG-RISK-001/003 gaps:
+  - CASE-2024-026: Agent attitude complaint — medium risk, 50元 compensation
+  - CASE-2024-027: Counterfeit goods accusation — high risk, 3600元 compensation
+  - CASE-2024-028: Promotion discount not honored — low risk, 30元 compensation
+  - CASE-2024-029: After-sales channel unreachable — medium risk, 50元 compensation
+  - CASE-2024-030: Legal threat + lawyer letter — high risk, 200元 compensation
+  - CASE-2024-031: Phone number leak leading to harassment — high risk, 500元 compensation
+- `reports/retrieval/phase9_p0_knowledge_expansion_summary.md` — P0 batch summary with traceability table, gap coverage map, and validation results
+
+### Changed
+- `openspec/changes/add-evaluation-driven-knowledge-coverage/tasks.md` — Phase 9.4.1 tasks (4.1–4.11) marked complete
+
+### Design Notes
+- P0 batch: 1 FAQ + 4 Policy + 6 Case = 11 new records, addressing 12 unique wrong cases across 10 gap IDs
+- Knowledge base expanded: 95 → 106 records
+- Complaint domain coverage strengthened most (6 Case records), addressing 77% wrong-rate intent
+- No src/, tests/, or baseline report modifications — strictly data addition
+- All records synthetic, no real customer data, secret scan clean, all tests passed
+
 ## 2026-05-05 (9) — Phase 9.4.0: Knowledge Data Schema / Seed Flow Audit
 
 ### Added

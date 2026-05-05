@@ -53,17 +53,17 @@
 
 ### Phase 9.4.1 — Knowledge Records (next batch)
 
-- [ ] 4.1 Write new FAQ records for identified FAQ gaps
-- [ ] 4.2 Write new Policy records for identified Policy gaps
-- [ ] 4.3 Write new Case records for identified Case gaps
-- [ ] 4.4 Ensure each new record follows existing schema (UUID, doc_type, business_domain, intent_tags/risk_level as appropriate)
-- [ ] 4.5 Preserve FAQ / Policy / Case physical separation in seed files
-- [ ] 4.6 Preserve parent-child traceability (1 source record ≈ 1 chunk for current short records)
-- [ ] 4.7 Document traceability: which new record addresses which wrong case gaps
-- [ ] 4.8 Do NOT modify Phase 7/8 baseline reports
-- [ ] 4.9 Do NOT change chunking architecture
-- [ ] 4.10 Run secret scan — ensure no real customer data or API keys in seed files
-- [ ] 4.11 Run knowledge schema tests to verify new records validate
+- [x] 4.1 Write new FAQ records for identified FAQ gaps — added 1 FAQ (retu_004, return_exchange, KG-FAQ-003)
+- [x] 4.2 Write new Policy records for identified Policy gaps — added 4 Policy (refund escalation, privacy, counterfeit, legal-risk)
+- [x] 4.3 Write new Case records for identified Case gaps — added 6 Case (complaint service failure, escalation, counterfeit, privacy, high-risk)
+- [x] 4.4 Ensure each new record follows existing schema (UUID, doc_type, business_domain, intent_tags/risk_level as appropriate)
+- [x] 4.5 Preserve FAQ / Policy / Case physical separation in seed files
+- [x] 4.6 Preserve parent-child traceability (1 source record ≈ 1 chunk for current short records)
+- [x] 4.7 Document traceability: which new record addresses which wrong case gaps
+- [x] 4.8 Do NOT modify Phase 7/8 baseline reports
+- [x] 4.9 Do NOT change chunking architecture
+- [x] 4.10 Run secret scan — ensure no real customer data or API keys in seed files
+- [x] 4.11 Run knowledge schema tests to verify new records validate
 
 ## Phase 9.5 — Evaluation Rerun
 

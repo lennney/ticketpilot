@@ -248,5 +248,65 @@
     "resolution": "经核实为系统优惠券叠加逻辑错误导致部分用户未享受满减，技术修复后向受影响用户补发差额优惠券并致歉",
     "risk_level": "medium",
     "compensation_amount": 50.00
+  },
+  {
+    "id": "ca0a0a0a-5555-5555-5555-555555555555",
+    "doc_type": "CASE",
+    "business_domain": "complaint",
+    "case_id": "CASE-2024-026",
+    "issue_summary": "用户投诉客服服务态度恶劣，沟通过程中使用不耐烦语气并提前挂断电话",
+    "resolution": "调取通话录音核实客服确实存在语气不耐烦、未充分解答用户问题即挂断电话的行为。向用户电话道歉并安排专属客服跟进，对涉事客服进行再培训并扣除当月绩效，向用户发放50元补偿券",
+    "risk_level": "medium",
+    "compensation_amount": 50.00
+  },
+  {
+    "id": "ca0a0a0a-6666-6666-6666-666666666666",
+    "doc_type": "CASE",
+    "business_domain": "complaint",
+    "case_id": "CASE-2024-027",
+    "issue_summary": "用户购买品牌商品后怀疑为假货，要求平台出具鉴定报告并索赔",
+    "resolution": "经协调品牌方进行鉴定，确认商品为仿冒品。平台对商家进行处罚并关店，为用户办理全额退款并按商品价格三倍赔偿共计3600元，用户接受处理方案不再追究",
+    "risk_level": "high",
+    "compensation_amount": 3600.00
+  },
+  {
+    "id": "ca0a0a0a-7777-7777-7777-777777777777",
+    "doc_type": "CASE",
+    "business_domain": "complaint",
+    "case_id": "CASE-2024-028",
+    "issue_summary": "用户参加平台满300减50促销活动，下单后优惠未生效，按原价扣款",
+    "resolution": "核查为促销系统与购物车结算逻辑对接异常导致优惠券未正确应用。技术团队紧急修复，向用户致歉并退还差价50元，额外补偿30元优惠券",
+    "risk_level": "low",
+    "compensation_amount": 30.00
+  },
+  {
+    "id": "ca0a0a0a-8888-8888-8888-888888888888",
+    "doc_type": "CASE",
+    "business_domain": "complaint",
+    "case_id": "CASE-2024-029",
+    "issue_summary": "用户连续3天无法通过在线客服和客服电话联系到售后人员，售后问题无人处理",
+    "resolution": "核查为客服系统升级期间电话线路故障且在线客服队列溢出导致。启用应急备用线路，优先处理积压工单，为用户加急处理售后问题并赠送50元补偿券",
+    "risk_level": "medium",
+    "compensation_amount": 50.00
+  },
+  {
+    "id": "ca0a0a0a-9999-9999-9999-999999999999",
+    "doc_type": "CASE",
+    "business_domain": "complaint",
+    "case_id": "CASE-2024-030",
+    "issue_summary": "用户因退款纠纷发出律师函要求平台三倍赔偿，并在社交媒体发布投诉帖",
+    "resolution": "升级至法务团队评估后认为平台在本次交易中无明显过错，但为维护声誉同意协商解决。法务与用户代理人沟通后达成和解：退还商品金额并补偿200元，用户删除社交媒体投诉帖",
+    "risk_level": "high",
+    "compensation_amount": 200.00
+  },
+  {
+    "id": "ca0a0a0a-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
+    "doc_type": "CASE",
+    "business_domain": "account",
+    "case_id": "CASE-2024-031",
+    "issue_summary": "用户手机号在平台订单信息中被泄露，收到骚扰电话和诈骗短信，要求平台承担责任",
+    "resolution": "技术排查发现为商家后台导出订单数据时违反数据安全规定导致用户信息外泄。对涉事商家暂停营业并罚款，协助用户屏蔽骚扰号码，向用户正式道歉并赔偿500元",
+    "risk_level": "high",
+    "compensation_amount": 500.00
   }
 ]
