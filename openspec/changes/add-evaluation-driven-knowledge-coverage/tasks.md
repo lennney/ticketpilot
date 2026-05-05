@@ -124,9 +124,27 @@
 - [x] 5.1.32 Validation: OpenSpec `--strict` PASSED, ruff CLEAN, 29/29 tests passed, secret scan CLEAN
 - [x] 5.1.33 Update `docs/changelog.md` with entry 15
 - [x] 5.1.34 Update `tasks.md`
-- [ ] 5.1.35 Commit and push
+- [x] 5.1.35 Commit and push
 
-## Phase 9.6 — Portfolio Summary
+### Phase 9.6 — Mechanism Consolidation & Portfolio Snapshot
+
+- [x] 6.1 Create `docs/technical/provider_identity_gate.md` — provider audit, priority chain, API key safety, fake/real boundaries
+- [x] 6.2 Create `docs/technical/evaluation_mechanism_phase9.md` — three evaluation modes, added-record hit audit, three-layer diagnosis
+- [x] 6.3 Create `docs/portfolio/phase9_evaluation_driven_knowledge_snapshot.md` — full portfolio snapshot with metrics, findings, PM perspective, interview versions
+- [x] 6.4 Update `docs/changelog.md` with entry 16
+- [x] 6.5 Update `openspec/changes/add-evaluation-driven-knowledge-coverage/tasks.md`
+- [ ] 6.6 Commit and push
+
+## Phase 9.7 — Final Validation and Archive
+
+- [ ] 7.1 Run `openspec validate add-evaluation-driven-knowledge-coverage --strict`
+- [ ] 7.2 Run `openspec validate --all`
+- [ ] 7.3 Run full quality gate: `bash scripts/run_quality_gate.sh`
+- [ ] 7.4 Verify 0 skipped integration tests
+- [ ] 7.5 Verify coverage ≥70%
+- [ ] 7.6 Secret scan clean
+- [ ] 7.7 Archive change: `openspec archive add-evaluation-driven-knowledge-coverage`
+- [ ] 7.8 Git commit and push
 
 - [ ] 6.1 Create Phase 9 portfolio snapshot (`docs/portfolio/phase9_knowledge_coverage_snapshot.md`)
 - [ ] 6.2 Document product-manager interpretation:

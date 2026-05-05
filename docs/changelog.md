@@ -110,6 +110,18 @@
 - Fake embedding evaluation is not just inconclusive; it can be directionally misleading for Top-1
 - Knowledge coverage expansion (95→106) has measurable impact under real embeddings but insufficient to fix wrong cases without retrieval ranking improvements
 
+## 2026-05-05 (16) — Phase 9.6: Mechanism Consolidation & Portfolio Snapshot
+
+### Added
+- `docs/technical/provider_identity_gate.md` — Provider audit methodology, .env.local fix, priority chain, API key safety, fake/real boundaries
+- `docs/technical/evaluation_mechanism_phase9.md` — Three evaluation modes, added-record hit audit, hybrid retrieval three-layer diagnosis
+- `docs/portfolio/phase9_evaluation_driven_knowledge_snapshot.md` — Phase 9 iteration chain, key metrics, findings, PM perspective, resume/interview versions
+
+### Design Notes
+- Phase 9 mechanism now formally consolidated: Provider Identity Gate, Added-Record Hit Audit, Real-Provider Evaluation Gate
+- Bottleneck shifted from knowledge coverage → retrieval ranking for future phases
+- Docs only — no code, data, or baseline changes
+
 ## 2026-05-05 (10) — Phase 9.4.1: P0 Knowledge Expansion (11 Records)
 
 ### Added
