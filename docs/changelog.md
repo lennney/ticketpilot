@@ -1,17 +1,38 @@
 # TicketPilot Changelog
 
 
+## 2026-05-05 (8) — Phase 9.3: Knowledge Gap Mapping
+
+### Added
+- `reports/retrieval/phase9_knowledge_gap_map.md` — 24 gap IDs mapping Phase 9.2 taxonomy to actionable knowledge needs:
+  - FAQ gaps: 1 wrong-case (KG-FAQ-003) + 2 preventive (KG-FAQ-001/002), P1-P2 priority
+  - Policy gaps: 5 (KG-POL-001 ~ 005), P0-P1 priority
+  - Case gaps: 10 (KG-CASE-001 ~ 010), P0-P1 priority
+  - Cross-type gaps: 3 (KG-MIX-001 ~ 003), P0 priority
+  - Risk-level gaps: 3 (KG-RISK-001 ~ 003), P0-P1 priority
+  - Non-knowledge workstream: golden_label_gap (4), query_expansion_gap (4), doc_type_mismatch (2)
+  - Manual-review-only: needs_manual_review (1) — case_edge_002 empty retrieval
+
+### Changed
+- `openspec/changes/add-evaluation-driven-knowledge-coverage/tasks.md` — Phase 9.3 tasks marked complete
+
+### Design Notes
+- 30 knowledge-related + 10 non-knowledge + 1 manual-review-only = 41 wrong cases total
+- Recommended expansion: 10-13 Case + 5-7 Policy + 1-3 FAQ + 3-5 cross-type = 21-31 new records (95 → 116-126 total)
+- Priority: complaint Case (P0) > refund-escalation Policy (P0) > cross-type legal threat (P0) > invoice Policy (P1) > logistics Case (P1) > FAQ (P2, preventive)
+- 3 non-knowledge workstreams + 1 manual review should be addressed before or during Phase 9.4
+
 ## 2026-05-05 (7) — Phase 9.2: Wrong-case Taxonomy Analysis
 
 ### Added
 - `reports/retrieval/phase9_wrong_case_taxonomy.md` — refined wrong-case taxonomy applying 8 categories to Phase 8's 41 wrong cases:
-  - `missing_case` 10 (24.4%) — largest category, complaint scenarios dominate
-  - `missing_policy` 8 (19.5%) — privacy, invoice, refund escalation gaps
+  - `missing_case` 11 (26.8%) — largest category, complaint scenarios dominate
+  - `missing_policy` 9 (22.0%) — privacy, invoice, refund escalation gaps
   - `business_domain_gap` 6 (14.6%) — legal threat, counterfeit, data leak
   - `golden_label_gap` 4 (9.8%) — edge cases with empty golden expectations
-  - `risk_level_gap` 4 (9.8%) — HIGH-risk tickets missing matched-risk evidence
-  - `missing_faq` 3 (7.3%) — UI navigation and accessibility
-  - `query_expansion_gap` 3 (7.3%) — knowledge exists but query misses
+  - `risk_level_gap` 3 (7.3%) — HIGH-risk tickets missing matched-risk evidence
+  - `missing_faq` 1 (2.4%) — exchange-out-of-stock scenario
+  - `query_expansion_gap` 4 (9.8%) — knowledge exists but query misses
   - `doc_type_mismatch` 2 (4.9%) — Policy/Faq retrieval balance
   - `needs_manual_review` 1 (2.4%) — case_edge_002 empty retrieval
 
@@ -19,7 +40,7 @@
 - `openspec/changes/add-evaluation-driven-knowledge-coverage/tasks.md` — Phase 9.2 tasks updated: taxonomy analysis completed; runtime code changes (2.4/2.5/2.6/2.7) deferred to later sub-phase
 
 ### Design Notes
-- 7 of 41 wrong cases would NOT be fixed by adding knowledge (golden labels + query expansion + edge)
+- 10 non-knowledge + 1 manual-review-only = 11 of 41 wrong cases would NOT be fixed by adding knowledge (golden labels + query expansion + doc_type mismatch; manual review requires pipeline investigation)
 - Knowledge expansion priority: Case (highest) → Policy → cross-type → FAQ (lowest)
 - No runtime code, test, data, or baseline report changes in this batch
 

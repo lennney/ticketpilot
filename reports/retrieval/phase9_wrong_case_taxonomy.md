@@ -82,20 +82,20 @@
 
 | Taxonomy | Count | % of 41 | Primary Intent Cluster |
 |----------|-------|---------|----------------------|
-| `missing_case` | 10 | 24.4% | complaint (6), refund (2), logistics (1), return (1) |
-| `missing_policy` | 8 | 19.5% | refund (4), account (2), return (1), other (1) |
-| `missing_faq` | 3 | 7.3% | complaint (2), return (1) |
+| `missing_case` | 11 | 26.8% | complaint (6), refund (1), logistics (1), return (3) |
+| `missing_policy` | 9 | 22.0% | account (3), refund (2), other (3), return (1) |
+| `missing_faq` | 1 | 2.4% | return (1) |
 | `business_domain_gap` | 6 | 14.6% | refund (3), account (2), complaint (1) |
-| `risk_level_gap` | 4 | 9.8% | complaint (2), refund (1), account (1) |
+| `risk_level_gap` | 3 | 7.3% | complaint (2), refund (1) |
 | `golden_label_gap` | 4 | 9.8% | edge (4) |
-| `query_expansion_gap` | 3 | 7.3% | logistics (2), other (1) |
+| `query_expansion_gap` | 4 | 9.8% | logistics (3), other (1) |
 | `doc_type_mismatch` | 2 | 4.9% | refund (1), return (1) |
 | `needs_manual_review` | 1 | 2.4% | edge (1) |
 | **Total** | **41** | **100%** | — |
 
 ### Analysis: Why These Categories?
 
-#### `missing_case` (10 cases) — Largest Single Category
+#### `missing_case` (11 cases) — Largest Single Category
 
 **Pattern:** Tickets expected Case evidence but no relevant Case document was retrieved. The knowledge base has 25 Case records, but coverage is biased toward consumer-favorable scenarios (refund granted, exchange processed). Many complaint scenarios lack matching Case precedents:
 
@@ -109,7 +109,7 @@
 
 **Next action:** Add ~8-10 targeted Case records covering complaint escalation, legal threats, counterfeit goods, invoice disputes, and logistics delay precedents.
 
-#### `missing_policy` (8 cases) — Second Largest
+#### `missing_policy` (9 cases) — Second Largest
 
 **Pattern:** Tickets expected Policy evidence but the relevant policy was not retrieved. Current 30 policies cover the basics but miss nuanced scenarios:
 
@@ -123,15 +123,15 @@
 
 **Next action:** Add ~5-7 targeted Policy records covering counterfeit procedure, refund-escalation-length scenarios, invoice-discrepancy handling, and exchange-out-of-stock compensation rules.
 
-#### `missing_faq` (3 cases)
+#### `missing_faq` (1 case)
 
 | Cases | Scenario | Gap |
 |-------|----------|-----|
-| comp_010 | 找不到投诉入口 | No FAQ about "how to find the complaint button" — FAQ covers投诉 response time and merchant投诉 but not the UI entry |
-| comp_011 | 字体太小老人看不清 | No FAQ about font size or accessibility settings |
-| retu_004 (partial) | 换货无货要求补偿 | FAQ has return policy but not "exchange out of stock" scenario |
+| retu_004 | 换货无货要求补偿 | FAQ has return policy but not "exchange out of stock" scenario |
 
-**Next action:** Add ~2-3 targeted FAQ records covering UI navigation and accessibility.
+> **Note:** `comp_010` (找不到投诉入口) and `comp_011` (字体太小) were identified as FAQ gaps during analysis but are NOT among the 41 wrong cases. They could be added as preventive coverage in Phase 9.4 but would not fix existing wrong cases.
+
+**Next action:** Add 1 FAQ for exchange-out-of-stock scenario.
 
 #### `business_domain_gap` (6 cases)
 
@@ -145,7 +145,7 @@
 
 **Next action:** This requires cross-type expansion rather than single-type fixes. Add 1-2 FAQ + 1-2 Policy + 1-2 Case for each hot domain.
 
-#### `risk_level_gap` (4 cases)
+#### `risk_level_gap` (3 cases)
 
 **Pattern:** The ticket has HIGH or MEDIUM risk flags (legal_risk, compensation_risk, complaint_risk) and the retrieved evidence lacks risk-appropriate Case/Policy records:
 
@@ -170,7 +170,7 @@
 
 **Next action:** Review and add reasonable `expected_evidence_doc_types` for edge cases. Edge_001 could be marked as "FAQ" since documents IS retrieved.
 
-#### `query_expansion_gap` (3 cases)
+#### `query_expansion_gap` (4 cases)
 
 **Pattern:** The knowledge base has relevant records, but the retrieval query does not surface them:
 
@@ -183,19 +183,12 @@
 
 #### `doc_type_mismatch` (2 cases)
 
-**Pattern:** Retrieved docs exist but the expected doc_type was not among them:
+**Pattern:** Retrieved docs exist but the expected doc_type is nearly buried or absent from the retrieved set. In both cases, FAQ and Case documents dominate top ranks, and the relevant Policy type is either at the bottom of Top-10 or absent:
 
-| Cases | Expected | Retrieved (primary) |
+| Cases | Expected | Retrieved Pattern |
 |-------|----------|-------------------|
-| retu_008 | Policy | FAQ and Case dominated top results — Policy was at rank 4+ in fake results |
-| refu_010 (not in wrong list — correctly handled) | | |
-
-Wait, retu_008 expects [Policy] only. Looking at fake results: top-1 is FAQ, top-2 CASE, etc. Policy(ae0e0e0e-5555) is at rank 9. So Policy IS in top-10. Hmm.
-
-For retu_008 (exchange shipping cost dispute): expect [Policy]. In fake results: FAQ@1, CASE@2, FAQ@3, CASE@4, CASE@5, FAQ@6, FAQ@7, CASE@8, POLICY@9, POLICY@10.
-Policy IS at rank 9-10. So Policy is present but barely. The "mismatch" is that non-Policy types dominate ranks 1-8.
-
-I'll categorize this as doc_type_mismatch since the relevant Policy type is nearly buried.
+| refu_008 | [Policy] | FAQ+CASE dominate ranks 1-8; Policy appears at rank 9-10 |
+| refu_016 | [Case, Policy] | Price-difference Policy not surfaced; FAQ dominates |
 
 #### `needs_manual_review` (1 case)
 
@@ -289,9 +282,8 @@ Below is the full per-case mapping of all 41 wrong cases with refined taxonomy a
 **Golden label fixes needed (4 cases):**
 - `case_edge_001, case_edge_003, case_edge_004, case_edge_005` — add `expected_evidence_doc_types` to golden CSV
 
-**Query expansion fixes needed (3 cases):**
-- `case_logi_005, case_logi_010, case_logi_011` — knowledge exists but query doesn't surface it
-- `case_othe_009` — duplicate charge FAQ/Policy exist but query misses
+**Query expansion fixes needed (4 cases):**
+- `case_logi_005, case_logi_010, case_logi_011, case_othe_009` — knowledge exists (logistics Cases/Policies, duplicate-charge FAQ+Policy) but query doesn't surface it
 
 **Doc type mismatch (2 cases):**
 - `case_refu_008, case_refu_016` — relevant Policy exists but FAQ/Case dominate top ranks. This is a retrieval balance issue, not missing knowledge.
@@ -303,13 +295,13 @@ Below is the full per-case mapping of all 41 wrong cases with refined taxonomy a
 
 | Action | Count | % of 41 |
 |--------|-------|---------|
-| Add Case records | 10 | 24.4% |
-| Add Policy records | 8 | 19.5% |
-| Add FAQ records | 3 | 7.3% |
+| Add Case records | 11 | 26.8% |
+| Add Policy records | 9 | 22.0% |
+| Add FAQ records | 1 | 2.4% |
 | Add cross-type records (business_domain_gap) | 6 | 14.6% |
-| Add risk-tagged records (risk_level_gap) | 4 | 9.8% |
+| Add risk-tagged records (risk_level_gap) | 3 | 7.3% |
 | Fix golden labels | 4 | 9.8% |
-| Fix query expansion | 3 | 7.3% |
+| Fix query expansion | 4 | 9.8% |
 | Fix retrieval balance (doc_type_mismatch) | 2 | 4.9% |
 | Manual review | 1 | 2.4% |
 
@@ -331,14 +323,14 @@ Blindly adding more FAQ/Policy/Case records risks:
 3. **False positives** — adding knowledge that changes correct cases into wrong ones (regression)
 4. **Diminishing returns** — adding records for scenarios already covered by existing knowledge
 
-The taxonomy analysis shows that knowledge gaps are concentrated: 10 of 41 wrong cases need Case expansion, 8 need Policy expansion, and only 3 need FAQ expansion. Blind bulk addition would waste effort.
+The taxonomy analysis shows that knowledge gaps are concentrated: 11 of 41 wrong cases need Case expansion, 9 need Policy expansion, and only 1 is a pure FAQ gap. Blind bulk addition would waste effort.
 
 ### Why Taxonomy First
 
 The Phase 9.2 taxonomy refines a single `missing_doc_type` bucket into 8 actionable categories:
 
 1. **It prevents "shooting in the dark."** Without this breakdown, "add more knowledge" is a guess. With the breakdown, we know complaint-related Case records are the single highest-impact addition.
-2. **It separates knowledge problems from non-knowledge problems.** 7 of 41 wrong cases (golden labels + query expansion + edge manual review) would NOT be fixed by adding knowledge. Adding records for these would be wasted effort.
+2. **It separates knowledge problems from non-knowledge problems.** 10 non-knowledge + 1 manual-review-only = 11 of 41 wrong cases would NOT be fixed by adding knowledge. Adding records for these would be wasted effort.
 3. **It prioritizes by business impact.** complaint (77% wrong rate) and refund (50%) are the highest-traffic intent classes. The taxonomy shows these are also the most under-covered in Case evidence.
 4. **It creates a baseline for Phase 9.3.** The gap mapping can start with concrete per-category counts rather than a generic "we need more docs."
 
@@ -378,11 +370,11 @@ This sequencing prevents a common anti-pattern: optimizing ranking against an in
 
 | Type | Count | Range |
 |------|-------|-------|
-| New Case records | 8-10 | Addresses `missing_case` + partial `business_domain_gap` |
-| New Policy records | 5-7 | Addresses `missing_policy` + partial `risk_level_gap` |
-| New FAQ records | 2-3 | Addresses `missing_faq` + partial UI navigation |
+| New Case records | 11 | Addresses `missing_case` + partial `business_domain_gap` |
+| New Policy records | 8-9 | Addresses `missing_policy` + partial `risk_level_gap` |
+| New FAQ records | 1-3 | Addresses `missing_faq`; optional preventive additions (comp_010, comp_011) |
 | Cross-type records | 3-5 | Addresses `business_domain_gap` (legal threat, counterfeit, data leak) |
-| **Total new records** | **18-25** | **Expands from 95 → ~113-120 knowledge records** |
+| **Total new records** | **23-28** | **Expands from 95 → ~118-123 knowledge records** |
 
 ### Should We Add Doc-Level Golden Labels?
 

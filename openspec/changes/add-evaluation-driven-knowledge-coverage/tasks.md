@@ -16,13 +16,13 @@
 - [x] 2.1 Inspect current fake vs real wrong-case reports (`reports/retrieval/wrong_cases.md`)
 - [x] 2.2 Inspect per-case retrieval traces (`reports/retrieval/fake_vs_real_comparison.json`) for the 41 wrong cases
 - [x] 2.3 Refine `missing_doc_type` into 8 actionable categories — done in taxonomy report:
-  - `missing_faq` — 3 cases (7.3%): complaint UI/accessibility gaps
-  - `missing_policy` — 8 cases (19.5%): privacy, invoice, refund escalation
-  - `missing_case` — 10 cases (24.4%): complaint scenarios, logistics delay
+  - `missing_faq` — 1 case (2.4%): exchange-out-of-stock scenario
+  - `missing_policy` — 9 cases (22.0%): privacy, invoice, refund escalation
+  - `missing_case` — 11 cases (26.8%): complaint scenarios, logistics delay
   - `doc_type_mismatch` — 2 cases (4.9%): Policy buried under FAQ/Case
   - `business_domain_gap` — 6 cases (14.6%): legal threat, counterfeit, data leak
-  - `risk_level_gap` — 4 cases (9.8%): HIGH-risk tickets need matched-risk evidence
-  - `query_expansion_gap` — 3 cases (7.3%): knowledge exists but query misses
+  - `risk_level_gap` — 3 cases (7.3%): HIGH-risk tickets need matched-risk evidence
+  - `query_expansion_gap` — 4 cases (9.8%): knowledge exists but query misses
   - `golden_label_gap` — 4 cases (9.8%): edge cases with empty golden labels
   - `needs_manual_review` — 1 case (2.4%): case_edge_002 empty retrieval
 - [ ] 2.4 *SKIP in this batch* — Update `src/ticketpilot/evaluation/retrieval_metrics.py` (runtime change, needs Phase 9.4+)
@@ -33,11 +33,11 @@
 
 ## Phase 9.3 — Knowledge Gap Mapping
 
-- [ ] 3.1 Map each wrong case to required FAQ / Policy / Case coverage
-- [ ] 3.2 Identify overlapping gaps (multiple cases needing same knowledge area)
-- [ ] 3.3 Produce gap report: per-intent gap summary, per-domain gap summary, prioritized expansion list
-- [ ] 3.4 Document which gaps are addressable via synthetic/adapted records and which are inherently out-of-scope
-- [ ] 3.5 No external data, no raw scraping, no real customer data
+- [x] 3.1 Map each wrong case to required FAQ / Policy / Case coverage — done in gap map with Gap IDs KG-FAQ-001 to KG-CASE-010
+- [x] 3.2 Identify overlapping gaps — 3 cross-type (KG-MIX-001/002/003), 3 risk-level (KG-RISK-001/002/003), overlapping cases noted (e.g., refu_013 appears in KG-CASE-002 + KG-POL-002)
+- [x] 3.3 Produce gap report: created `reports/retrieval/phase9_knowledge_gap_map.md` with 24 gap IDs across FAQ (1 + 2 preventive), Policy (5), Case (10), Cross-type (3), Risk (3), plus non-knowledge workstream (label, query, mismatch) and 1 manual-review-only case
+- [x] 3.4 Document addressable vs non-addressable — 30 knowledge-related gaps (73.2%) addressable via synthetic records; 10 non-knowledge gaps (24.4%) separated into golden labels, query expansion, doc_type mismatch; plus 1 manual-review-only case (2.4%)
+- [x] 3.5 No external data, no raw scraping, no real customer data — confirmed
 
 ## Phase 9.4 — Targeted Knowledge Expansion
 
