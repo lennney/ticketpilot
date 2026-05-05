@@ -13,11 +13,12 @@
 
 ## Phase 10.2 — Trace Data Audit
 
-- [ ] 2.1 Inspect current `RetrievalTrace` fields: verify keyword/vector/fused results include chunk_id, doc_id, doc_type, score, rank
-- [ ] 2.2 Identify any missing trace fields needed for bottleneck classification
-- [ ] 2.3 Verify trace captures embedding provider identity
-- [ ] 2.4 Verify trace captures RRF contributions per result
-- [ ] 2.5 Document trace field gaps (if any) in audit note — no schema changes in this phase
+- [x] 2.1 Inspect current `RetrievalTrace` fields: verify keyword/vector/fused results include chunk_id, doc_id, doc_type, score, rank
+- [x] 2.2 Identify any missing trace fields needed for bottleneck classification — only gap is export serialization, not trace schema
+- [x] 2.3 Verify trace captures embedding provider identity — present in both RetrievalTrace and VectorResult
+- [x] 2.4 Verify trace captures RRF contributions per result — FusedResult has keyword_rank/contribution, vector_rank/contribution, sources
+- [x] 2.5 Document trace field gaps in audit note — created `reports/retrieval/phase10_trace_data_audit.md`
+- [x] 2.6 Key finding: RetrievalTrace at runtime already contains all data needed. Missing serialization in export script (keyword_results, vector_results, fused_results not currently exported)
 
 ## Phase 10.3 — P0 Trace Export
 

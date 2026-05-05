@@ -1,5 +1,19 @@
 # TicketPilot Changelog
 
+## 2026-05-06 — Phase 10.2: Trace Data Audit
+
+### Added
+- `reports/retrieval/phase10_trace_data_audit.md` — comprehensive trace schema audit confirming RetrievalTrace has all fields needed for layered diagnosis; only gap is export serialization (keyword_results, vector_results, fused_results not serialized in current export format)
+
+### Changed
+- `openspec/changes/add-hybrid-retrieval-ranking-diagnosis/tasks.md` — Phase 10.2 tasks marked complete
+
+### Key Finding
+- **RetrievalTrace at runtime already contains all data needed for Phase 10.3.** keyword_results, vector_results, fused_results all have chunk_id, doc_id, doc_type, score, rank. embedding_provider is in both trace and VectorResult.
+- **Only gap is in export script** (`run_retrieval_comparison.py`): current export only captures metadata (counts, latency) and fused final retrieved_docs, not per-ranker keyword/vector results or RRF contribution breakouts.
+- 15 P0-related cases identified for Phase 10.3 trace export.
+- No retrieval algorithm changes, no RRF tuning, no schema changes.
+
 ## 2026-05-06 — Phase 10 Planning: Hybrid Retrieval Ranking Diagnosis
 
 ### Added
