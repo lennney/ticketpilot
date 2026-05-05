@@ -1,5 +1,21 @@
 # TicketPilot Changelog
 
+## 2026-05-06 — Phase 10 Planning: Hybrid Retrieval Ranking Diagnosis
+
+### Added
+- `openspec/changes/add-hybrid-retrieval-ranking-diagnosis/proposal.md` — Phase 10 proposal: trace-first diagnosis of keyword/vector/RRF ranking pipeline
+- `openspec/changes/add-hybrid-retrieval-ranking-diagnosis/design.md` — bottleneck taxonomy (8 categories), trace review, data flow, safety constraints
+- `openspec/changes/add-hybrid-retrieval-ranking-diagnosis/tasks.md` — 7 sub-phases: planning → trace audit → P0 trace export → bottleneck classification → recommendation → portfolio → archive
+- `openspec/changes/add-hybrid-retrieval-ranking-diagnosis/specs/retrieval-evaluation/spec.md` — layered trace export, bottleneck taxonomy, P0 rank tracking, recommendation report
+- `openspec/changes/add-hybrid-retrieval-ranking-diagnosis/specs/retrieval-trace/spec.md` — trace field completeness, cross-layer lookup, provider-aware export
+
+### Design Notes
+- Phase 10 is diagnosis-only — no retrieval algorithm changes, no RRF tuning, no knowledge expansion
+- Existing RetrievalTrace already captures keyword/vector/fused per-ranker results with ranks and RRF contributions
+- Bottleneck taxonomy: keyword_not_recalled, vector_not_recalled, recalled_but_fused_low, fused_top10_but_metric_still_wrong, doc_level_label_missing, query_expansion_gap, empty_retrieval, provider_identity_issue
+- Provider Identity Gate from Phase 9 remains mandatory; fake provider diagnosis must carry disclaimer
+- No src/, tests/, data/, reports/, or baseline files modified
+
 ## 2026-05-06 — Phase 9.7.1: Post-Archive Validation Repair
 
 ### Fixed
