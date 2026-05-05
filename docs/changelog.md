@@ -1,6 +1,21 @@
 # TicketPilot Changelog
 
 
+## 2026-05-05 (6) — Phase 9 OpenSpec Planning Created
+
+### Added
+- `openspec/changes/add-evaluation-driven-knowledge-coverage/proposal.md` — Phase 9 proposal: problem, goal, non-goals, scope, success criteria, risks, validation plan
+- `openspec/changes/add-evaluation-driven-knowledge-coverage/design.md` — architecture constraints, data flow, wrong-case taxonomy design, safety constraints
+- `openspec/changes/add-evaluation-driven-knowledge-coverage/tasks.md` — task breakdown across 7 sub-phases (Planning → Archive)
+- `openspec/changes/add-evaluation-driven-knowledge-coverage/specs/retrieval-evaluation/spec.md` — refined wrong-case taxonomy (8 categories), doc-level golden labels, Phase-9 comparison requirements
+- `openspec/changes/add-evaluation-driven-knowledge-coverage/specs/knowledge-schema/spec.md` — knowledge expansion traceability, seed data rules, schema compatibility
+
+### Design Notes
+- Phase 8 wrong cases remain 41/41 `missing_doc_type` after real embedding — knowledge coverage is the ceiling
+- Phase 9 isolates knowledge base size as the independent variable (not embedding provider)
+- Refined taxonomy: missing_faq, missing_policy, missing_case, doc_type_mismatch, business_domain_gap, risk_level_gap, query_expansion_gap, golden_label_gap
+- Implementation gate: no src/data changes in this planning batch
+
 ## 2026-05-05 (5) — Phase 8 Portfolio Snapshot
 
 ### Added
