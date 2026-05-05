@@ -1,6 +1,28 @@
 # TicketPilot Changelog
 
 
+## 2026-05-05 (7) — Phase 9.2: Wrong-case Taxonomy Analysis
+
+### Added
+- `reports/retrieval/phase9_wrong_case_taxonomy.md` — refined wrong-case taxonomy applying 8 categories to Phase 8's 41 wrong cases:
+  - `missing_case` 10 (24.4%) — largest category, complaint scenarios dominate
+  - `missing_policy` 8 (19.5%) — privacy, invoice, refund escalation gaps
+  - `business_domain_gap` 6 (14.6%) — legal threat, counterfeit, data leak
+  - `golden_label_gap` 4 (9.8%) — edge cases with empty golden expectations
+  - `risk_level_gap` 4 (9.8%) — HIGH-risk tickets missing matched-risk evidence
+  - `missing_faq` 3 (7.3%) — UI navigation and accessibility
+  - `query_expansion_gap` 3 (7.3%) — knowledge exists but query misses
+  - `doc_type_mismatch` 2 (4.9%) — Policy/Faq retrieval balance
+  - `needs_manual_review` 1 (2.4%) — case_edge_002 empty retrieval
+
+### Changed
+- `openspec/changes/add-evaluation-driven-knowledge-coverage/tasks.md` — Phase 9.2 tasks updated: taxonomy analysis completed; runtime code changes (2.4/2.5/2.6/2.7) deferred to later sub-phase
+
+### Design Notes
+- 7 of 41 wrong cases would NOT be fixed by adding knowledge (golden labels + query expansion + edge)
+- Knowledge expansion priority: Case (highest) → Policy → cross-type → FAQ (lowest)
+- No runtime code, test, data, or baseline report changes in this batch
+
 ## 2026-05-05 (6) — Phase 9 OpenSpec Planning Created
 
 ### Added

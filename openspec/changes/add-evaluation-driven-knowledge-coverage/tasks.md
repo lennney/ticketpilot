@@ -13,22 +13,23 @@
 
 ## Phase 9.2 — Wrong-Case Taxonomy Refinement
 
-- [ ] 2.1 Inspect current fake vs real wrong-case reports (`reports/retrieval/wrong_cases.md`)
-- [ ] 2.2 Inspect per-case retrieval traces (`reports/retrieval/retrieval_traces.jsonl`) for the 41 wrong cases
-- [ ] 2.3 Refine `missing_doc_type` into 8 actionable categories:
-  - `missing_faq` — no FAQ record covers the intent/domain
-  - `missing_policy` — no Policy covers the rule/compliance topic
-  - `missing_case` — no Case covers the scenario/precedent
-  - `doc_type_mismatch` — wrong type retrieved (e.g., FAQ instead of Policy)
-  - `business_domain_gap` — entire domain sparse or missing
-  - `risk_level_gap` — knowledge lacks risk-annotated records
-  - `query_expansion_gap` — query underspecified for existing knowledge
-  - `golden_label_gap` — golden expectations incomplete or empty
-- [ ] 2.4 Update `src/ticketpilot/evaluation/retrieval_metrics.py` — extend `summarize_wrong_cases()` with refined categories
-- [ ] 2.5 Update `src/ticketpilot/evaluation/retrieval_comparison.py` — report refined categories in comparison output
-- [ ] 2.6 Add/update unit tests for refined taxonomy (`test_retrieval_metrics.py`)
-- [ ] 2.7 Re-run wrong-case analysis with refined categories on Phase 8 baseline data
-- [ ] 2.8 Output refined wrong-case report (preserve Phase 8 original)
+- [x] 2.1 Inspect current fake vs real wrong-case reports (`reports/retrieval/wrong_cases.md`)
+- [x] 2.2 Inspect per-case retrieval traces (`reports/retrieval/fake_vs_real_comparison.json`) for the 41 wrong cases
+- [x] 2.3 Refine `missing_doc_type` into 8 actionable categories — done in taxonomy report:
+  - `missing_faq` — 3 cases (7.3%): complaint UI/accessibility gaps
+  - `missing_policy` — 8 cases (19.5%): privacy, invoice, refund escalation
+  - `missing_case` — 10 cases (24.4%): complaint scenarios, logistics delay
+  - `doc_type_mismatch` — 2 cases (4.9%): Policy buried under FAQ/Case
+  - `business_domain_gap` — 6 cases (14.6%): legal threat, counterfeit, data leak
+  - `risk_level_gap` — 4 cases (9.8%): HIGH-risk tickets need matched-risk evidence
+  - `query_expansion_gap` — 3 cases (7.3%): knowledge exists but query misses
+  - `golden_label_gap` — 4 cases (9.8%): edge cases with empty golden labels
+  - `needs_manual_review` — 1 case (2.4%): case_edge_002 empty retrieval
+- [ ] 2.4 *SKIP in this batch* — Update `src/ticketpilot/evaluation/retrieval_metrics.py` (runtime change, needs Phase 9.4+)
+- [ ] 2.5 *SKIP in this batch* — Update `src/ticketpilot/evaluation/retrieval_comparison.py` (runtime change)
+- [ ] 2.6 *SKIP in this batch* — Add/update unit tests (tests/ change)
+- [ ] 2.7 *SKIP in this batch* — Re-run wrong-case analysis (needs code change + data)
+- [x] 2.8 Output refined wrong-case report — created `reports/retrieval/phase9_wrong_case_taxonomy.md`
 
 ## Phase 9.3 — Knowledge Gap Mapping
 
