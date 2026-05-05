@@ -1,6 +1,20 @@
 # TicketPilot Changelog
 
 
+## 2026-05-05 (9) — Phase 9.4.0: Knowledge Data Schema / Seed Flow Audit
+
+### Added
+- `reports/retrieval/phase9_knowledge_seed_audit.md` — audit of seed files, schema fields, tests, ingestion flow, P0 mini-batch proposal, and traceability requirements
+
+### Changed
+- `openspec/changes/add-evaluation-driven-knowledge-coverage/tasks.md` — Phase 9.4.0 audit tasks marked complete; Phase 9.4.1 knowledge record tasks deferred to next batch
+
+### Design Notes
+- Seed inventory confirmed: 40 FAQ + 30 Policy + 25 Case = 95 records across 8 business domains
+- Schema validation is handled by Pydantic models in `schema/knowledge.py` — no schema changes needed
+- P0 mini-batch (11 records) proposed: 1 FAQ + 4 Policy + 6 Case, addressing 13 wrong cases
+- No data, src, tests, or baseline report changes in this batch
+
 ## 2026-05-05 (8) — Phase 9.3: Knowledge Gap Mapping
 
 ### Added

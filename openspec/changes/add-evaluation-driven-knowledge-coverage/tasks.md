@@ -41,6 +41,18 @@
 
 ## Phase 9.4 — Targeted Knowledge Expansion
 
+### Phase 9.4.0 — Knowledge Data Schema / Seed Flow Audit (current batch)
+
+- [x] 4.0.1 Inventory current knowledge seed files and record counts
+- [x] 4.0.2 Audit schema required fields for FAQ / Policy / Case / Chunk
+- [x] 4.0.3 Identify relevant tests and validation commands
+- [x] 4.0.4 Map ingestion / rebuild flow from seed files to embeddings
+- [x] 4.0.5 Propose P0 mini-batch (≤12 records) based on gap map priorities
+- [x] 4.0.6 Define traceability requirements for Phase 9.4 records
+- [x] 4.0.7 Output audit to `reports/retrieval/phase9_knowledge_seed_audit.md`
+
+### Phase 9.4.1 — Knowledge Records (next batch)
+
 - [ ] 4.1 Write new FAQ records for identified FAQ gaps
 - [ ] 4.2 Write new Policy records for identified Policy gaps
 - [ ] 4.3 Write new Case records for identified Case gaps
