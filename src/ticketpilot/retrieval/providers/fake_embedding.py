@@ -34,7 +34,7 @@ class FakeEmbeddingProvider:
     to ensure the same text always produces the same embedding.
 
     Attributes:
-        DIM: Fixed embedding dimension (384)
+        DIM: Embedding dimension (configurable, default 384)
         provider_name: "fake"
         model_name: "sha-256" (indicating deterministic hash-based generation)
 
@@ -45,10 +45,13 @@ class FakeEmbeddingProvider:
         >>> vec1 == vec2  # True - deterministic
     """
 
-    DIM: int = FAKE_EMBEDDING_DIM
+    DIM: int
     provider_name: str = "fake"
     model_name: str = "sha-256"
     batch_size: int = 32
+
+    def __init__(self, dimension: int = FAKE_EMBEDDING_DIM):
+        self.DIM = dimension
 
     def embed(self, text: str) -> list[float]:
         """
@@ -86,11 +89,18 @@ class FakeEmbeddingProvider:
 
 # Singleton instance for convenience
 _default_provider: FakeEmbeddingProvider | None = None
+_default_provider_dim: int | None = None
 
 
-def get_fake_embedding_provider() -> FakeEmbeddingProvider:
-    """Get the default fake embedding provider instance."""
-    global _default_provider
-    if _default_provider is None:
-        _default_provider = FakeEmbeddingProvider()
+def get_fake_embedding_provider(dimension: int = FAKE_EMBEDDING_DIM) -> FakeEmbeddingProvider:
+    """Get the default fake embedding provider instance.
+
+    Args:
+        dimension: Embedding dimension (default 384). If the dimension changes,
+                   a new provider is created.
+    """
+    global _default_provider, _default_provider_dim
+    if _default_provider is None or _default_provider_dim != dimension:
+        _default_provider = FakeEmbeddingProvider(dimension=dimension)
+        _default_provider_dim = dimension
     return _default_provider

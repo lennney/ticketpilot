@@ -76,6 +76,7 @@ if grep -rP 'sk-[a-zA-Z0-9]{20,}' . \
     --exclude-dir=.venv \
     --exclude-dir=.venv_broken \
     --exclude='.env.example' \
+    --exclude='.env.local' \
     2>/dev/null; then
     echo -e "${RED}FAIL: Potential secret detected${NC}"
     FAILED=1

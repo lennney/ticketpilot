@@ -40,9 +40,11 @@ def hybrid_retrieval(
     """
     total_start_time = time.perf_counter()
 
-    # Use provided embedding provider or default
+    # Use provided embedding provider or default (matching DB dimension)
     if embedding_provider is None:
-        embedding_provider = get_fake_embedding_provider()
+        from ticketpilot.retrieval.vector_search import _detect_embedding_dim
+        dim = _detect_embedding_dim()
+        embedding_provider = get_fake_embedding_provider(dimension=dim)
 
     # Generate query embedding
     query_embedding = embedding_provider.embed(query)
