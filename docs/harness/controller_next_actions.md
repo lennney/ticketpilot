@@ -5,6 +5,42 @@
 
 ---
 
+## Completed Batch: Phase 12C — Optional Real Provider Run
+
+### What Was Done
+
+- Checked real provider env (TICKETPILOT_LLM_PROVIDER not set)
+- Ran fake baseline comparison with FakeLLMProvider: 25/25 cases successful
+- Generated canonical reports: summary JSON, rows JSON, markdown report
+- Full quality gate passed: 1069 unit + 146 integration, 0 skipped, 86.71% coverage
+- OpenSpec --all: 21/21 passed
+
+### Files Created
+
+- `reports/eval/phase12_llm_provider_comparison_summary.json`
+- `reports/eval/phase12_llm_provider_comparison_rows.json`
+- `reports/eval/phase12_llm_provider_comparison_report.md`
+
+### Key Findings
+
+- **Real provider not configured**: TICKETPILOT_LLM_PROVIDER, TICKETPILOT_LLM_BASE_URL, TICKETPILOT_LLM_API_KEY, TICKETPILOT_LLM_MODEL all unset
+- **Fake baseline validated**: 25/25 cases, avg confidence 0.85, 8 human review triggers
+- **Real provider run pending**: local env configuration required
+
+### Validation
+
+- Quality gate: ✅ PASSED — 1069 unit + 146 integration, 0 skipped, 86.71% coverage
+- ruff check: ✅ Clean
+- openspec validate --all: ✅ 21/21 passed
+- Secret scan: ✅ Clean
+- Overclaim scan: ✅ Clean
+
+### Commit
+
+`pending`
+
+---
+
 ## Completed Batch: Phase 10.7.5 — Full-Dataset Real Pipeline Doc-Level Evaluation
 
 ### What Was Done

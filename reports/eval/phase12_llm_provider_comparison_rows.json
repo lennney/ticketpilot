@@ -1,0 +1,227 @@
+[
+  {
+    "case_id": "p12_001",
+    "scenario": "ordinary_product_consulting",
+    "provider": "fake",
+    "confidence": 0.85,
+    "human_review": false,
+    "has_citations": true,
+    "draft_text_length": 136
+  },
+  {
+    "case_id": "p12_002",
+    "scenario": "ordinary_product_consulting",
+    "provider": "fake",
+    "confidence": 0.85,
+    "human_review": false,
+    "has_citations": true,
+    "draft_text_length": 136
+  },
+  {
+    "case_id": "p12_003",
+    "scenario": "refund",
+    "provider": "fake",
+    "confidence": 0.85,
+    "human_review": false,
+    "has_citations": true,
+    "draft_text_length": 132
+  },
+  {
+    "case_id": "p12_004",
+    "scenario": "refund",
+    "provider": "fake",
+    "confidence": 0.85,
+    "human_review": false,
+    "has_citations": true,
+    "draft_text_length": 132
+  },
+  {
+    "case_id": "p12_005",
+    "scenario": "return_exchange",
+    "provider": "fake",
+    "confidence": 0.85,
+    "human_review": false,
+    "has_citations": true,
+    "draft_text_length": 133
+  },
+  {
+    "case_id": "p12_006",
+    "scenario": "return_exchange",
+    "provider": "fake",
+    "confidence": 0.85,
+    "human_review": false,
+    "has_citations": true,
+    "draft_text_length": 133
+  },
+  {
+    "case_id": "p12_007",
+    "scenario": "logistics",
+    "provider": "fake",
+    "confidence": 0.85,
+    "human_review": false,
+    "has_citations": true,
+    "draft_text_length": 135
+  },
+  {
+    "case_id": "p12_008",
+    "scenario": "logistics",
+    "provider": "fake",
+    "confidence": 0.85,
+    "human_review": false,
+    "has_citations": true,
+    "draft_text_length": 133
+  },
+  {
+    "case_id": "p12_009",
+    "scenario": "complaint",
+    "provider": "fake",
+    "confidence": 0.85,
+    "human_review": false,
+    "has_citations": true,
+    "draft_text_length": 127
+  },
+  {
+    "case_id": "p12_010",
+    "scenario": "complaint",
+    "provider": "fake",
+    "confidence": 0.85,
+    "human_review": false,
+    "has_citations": true,
+    "draft_text_length": 127
+  },
+  {
+    "case_id": "p12_011",
+    "scenario": "privacy_risk",
+    "provider": "fake",
+    "confidence": 0.85,
+    "human_review": true,
+    "has_citations": true,
+    "draft_text_length": 133
+  },
+  {
+    "case_id": "p12_012",
+    "scenario": "privacy_risk",
+    "provider": "fake",
+    "confidence": 0.85,
+    "human_review": true,
+    "has_citations": true,
+    "draft_text_length": 133
+  },
+  {
+    "case_id": "p12_013",
+    "scenario": "account_security_risk",
+    "provider": "fake",
+    "confidence": 0.85,
+    "human_review": true,
+    "has_citations": true,
+    "draft_text_length": 134
+  },
+  {
+    "case_id": "p12_014",
+    "scenario": "account_security_risk",
+    "provider": "fake",
+    "confidence": 0.85,
+    "human_review": true,
+    "has_citations": true,
+    "draft_text_length": 134
+  },
+  {
+    "case_id": "p12_015",
+    "scenario": "legal_complaint",
+    "provider": "fake",
+    "confidence": 0.85,
+    "human_review": true,
+    "has_citations": true,
+    "draft_text_length": 133
+  },
+  {
+    "case_id": "p12_016",
+    "scenario": "legal_complaint",
+    "provider": "fake",
+    "confidence": 0.85,
+    "human_review": true,
+    "has_citations": true,
+    "draft_text_length": 133
+  },
+  {
+    "case_id": "p12_017",
+    "scenario": "compensation_risk",
+    "provider": "fake",
+    "confidence": 0.85,
+    "human_review": true,
+    "has_citations": true,
+    "draft_text_length": 136
+  },
+  {
+    "case_id": "p12_018",
+    "scenario": "compensation_risk",
+    "provider": "fake",
+    "confidence": 0.85,
+    "human_review": true,
+    "has_citations": true,
+    "draft_text_length": 136
+  },
+  {
+    "case_id": "p12_019",
+    "scenario": "evidence_insufficient",
+    "provider": "fake",
+    "confidence": 0.85,
+    "human_review": false,
+    "has_citations": true,
+    "draft_text_length": 132
+  },
+  {
+    "case_id": "p12_020",
+    "scenario": "evidence_insufficient",
+    "provider": "fake",
+    "confidence": 0.85,
+    "human_review": false,
+    "has_citations": true,
+    "draft_text_length": 133
+  },
+  {
+    "case_id": "p12_021",
+    "scenario": "policy_conflict",
+    "provider": "fake",
+    "confidence": 0.85,
+    "human_review": false,
+    "has_citations": true,
+    "draft_text_length": 132
+  },
+  {
+    "case_id": "p12_022",
+    "scenario": "policy_conflict",
+    "provider": "fake",
+    "confidence": 0.85,
+    "human_review": false,
+    "has_citations": true,
+    "draft_text_length": 132
+  },
+  {
+    "case_id": "p12_023",
+    "scenario": "technical_issue",
+    "provider": "fake",
+    "confidence": 0.85,
+    "human_review": false,
+    "has_citations": true,
+    "draft_text_length": 133
+  },
+  {
+    "case_id": "p12_024",
+    "scenario": "technical_issue",
+    "provider": "fake",
+    "confidence": 0.85,
+    "human_review": false,
+    "has_citations": true,
+    "draft_text_length": 133
+  },
+  {
+    "case_id": "p12_025",
+    "scenario": "ordinary_product_consulting",
+    "provider": "fake",
+    "confidence": 0.85,
+    "human_review": false,
+    "has_citations": true,
+    "draft_text_length": 133
+  }
+]

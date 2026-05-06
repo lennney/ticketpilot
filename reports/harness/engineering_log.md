@@ -4,6 +4,31 @@
 
 ---
 
+## 2026-05-07 — Phase 12C: Optional Real Provider Run
+
+**Problem**: Phase 12A established OpenAICompatibleProvider for offline comparison. Phase 12C attempts real provider run if env is configured, otherwise validates fake baseline and records pending status.
+
+**Approach**:
+- Check TICKETPILOT_LLM_PROVIDER, TICKETPILOT_LLM_BASE_URL, TICKETPILOT_LLM_API_KEY, TICKETPILOT_LLM_MODEL presence (without printing values)
+- If configured: run full comparison with sample (--limit 5) then full
+- If not configured: run fake baseline, generate canonical reports, record as pending
+
+**Key Decision**: Real provider is opt-in only. No failure if env is missing — this is expected for offline portfolio work.
+
+**Key Findings**:
+- Real provider env not configured in current environment
+- Fake baseline: 25/25 cases, avg confidence 0.85, 8 human review triggers
+- Canonical reports generated: summary JSON, rows JSON, markdown report
+
+**Files Created**:
+- `reports/eval/phase12_llm_provider_comparison_summary.json`
+- `reports/eval/phase12_llm_provider_comparison_rows.json`
+- `reports/eval/phase12_llm_provider_comparison_report.md`
+
+**Validation**: Full quality gate PASSED — 1069 unit + 146 integration, 0 skipped, 86.71% coverage
+
+---
+
 ## 2026-05-06 — Phase 11.10: Final Validation and Archive
 
 **Problem**: Phase 11 (Evidence-Grounded LLM Draft Generation) is complete across all 10 sub-phases (11.1-11.9). Needed full quality gate validation, archive OpenSpec change, and update all harness docs.

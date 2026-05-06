@@ -1,9 +1,29 @@
 # Controller Session Log — TicketPilot
 
-*Source of truth: GitHub docs/harness/*  
+*Source of truth: GitHub docs/harness/*
 *Structured handoff summaries only — no chat transcripts, no secrets, no raw conversation.*
 
 ---
+
+## 2026-05-07 — Phase 12C: Optional Real Provider Run
+
+**Summary**: Checked real provider env (all unset), ran fake baseline comparison with FakeLLMProvider (25/25 cases, avg confidence 0.85, 8 human review triggers), generated canonical reports (summary JSON, rows JSON, markdown report), and passed full quality gate (1069 unit + 146 integration, 0 skipped, 86.71% coverage). Real provider run pending local env configuration.
+
+**Key Deliverables**:
+- `reports/eval/phase12_llm_provider_comparison_summary.json` — Summary metrics
+- `reports/eval/phase12_llm_provider_comparison_rows.json` — Per-case rows
+- `reports/eval/phase12_llm_provider_comparison_report.md` — Markdown report
+
+**Key Findings**:
+- Real provider env not configured: TICKETPILOT_LLM_PROVIDER, TICKETPILOT_LLM_BASE_URL, TICKETPILOT_LLM_API_KEY, TICKETPILOT_LLM_MODEL all unset
+- Fake baseline validated: 25/25 cases, avg confidence 0.85, 8 human review triggers
+- Real provider run pending: local env configuration required
+
+**Validation**: Full quality gate PASSED — 1069 unit + 146 integration, 0 skipped, 86.71% coverage, ruff clean, OpenSpec --all 21/21
+
+**Phase Status**: Phase 12C complete.
+
+**Next Batch**: Phase 12D — TBD (next recommended phase after Phase 12 completion)
 
 ---
 

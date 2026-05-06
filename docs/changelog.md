@@ -1,4 +1,66 @@
 # TicketPilot Changelog
+# TicketPilot Changelog
+
+## 2026-05-07 -- Phase 12C: Optional Real Provider Run
+
+### Validation
+- Unit tests: 1069 passed
+- Integration tests: 146 passed, **0 skipped**
+- Coverage: 86.71% (>=70%)
+- Ruff: All checks passed
+- OpenSpec --all: 21/21 passed
+- Secret scan: Clean
+- Overclaim scan: Clean
+
+### Provider Comparison
+- Real provider configured: NO (TICKETPILOT_LLM_PROVIDER not set)
+- Real provider run: NO (env missing)
+- Fake baseline: 25/25 cases successful, avg confidence 0.85, 8 human review triggers
+- Real provider status: pending local env configuration
+
+### Generated Reports
+- reports/eval/phase12_llm_provider_comparison_summary.json -- Summary metrics
+- reports/eval/phase12_llm_provider_comparison_rows.json -- Per-case rows
+- reports/eval/phase12_llm_provider_comparison_report.md -- Markdown report
+
+### Design
+- Local demo / portfolio prototype - NOT a production benchmark
+- Offline fixture-based comparison
+- Draft-only, no auto-send, human-in-the-loop
+- No real customer data
+
+---
+
+## 2026-05-07 -- Phase 12B: Agent Error Memory and Repair Learning System
+
+### Added
+-  -- OpenSpec change with error-memory spec
+-  -- Structured error log (4 entries from verified existing logs)
+-  -- Categorized repair procedures
+-  -- Pre-batch rules
+-  -- Pre-batch verification steps
+-  -- Failure analysis template
+-  -- Periodic audit template
+
+### Changed
+-  -- Added Section 12: Error Memory and Learning System
+
+### Design
+- Harness/process improvement only -- no product runtime changes
+- No retrieval/RRF/embeddings/chunking/knowledge/golden label modifications
+- No archived report modifications
+- No secrets in error memory
+- No full chat transcript storage
+
+### Validation
+- OpenSpec --strict: PASSED
+- OpenSpec --all: 21/21 passed
+- Ruff: All checks passed
+- Secret scan: Clean
+- Overclaim scan: Clean
+
+---
+
 
 ## 2026-05-07 -- Phase 12B: Agent Error Memory and Repair Learning System
 

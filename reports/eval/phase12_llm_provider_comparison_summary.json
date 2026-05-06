@@ -1,0 +1,21 @@
+{
+  "generated": "2026-05-07T00:55:08.961497",
+  "scope": "local demo / portfolio prototype - NOT a production benchmark",
+  "provider": "FakeLLMProvider",
+  "cases": 25,
+  "success_count": 25,
+  "avg_confidence": 0.85,
+  "human_review_count": 8,
+  "real_provider_status": "not configured",
+  "boundary": [
+    "local demo / portfolio prototype",
+    "synthetic/adapted data",
+    "offline fixture-based comparison",
+    "draft-only",
+    "no auto-send",
+    "human-in-the-loop",
+    "no real customer data",
+    "not a real-world benchmark",
+    "not production-ready"
+  ]
+}
