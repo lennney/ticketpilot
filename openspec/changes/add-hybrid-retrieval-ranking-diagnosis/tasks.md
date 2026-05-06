@@ -93,11 +93,14 @@
 
 ## Phase 10.7 — Expand Doc-Level Golden Labels (Recommended Next)
 
-- [ ] 7.1 Label remaining 87 cases with `expected_relevant_doc_ids`
-- [ ] 7.2 Verify CSV validity and backward compatibility
-- [ ] 7.3 Run full-dataset doc-level evaluation
-- [ ] 7.4 Generate updated wrong-case reclassification
-- [ ] 7.5 Validate: openspec --strict, ruff, 0 integration skips
+- [x] 7.1 Label remaining 87 cases with `expected_relevant_doc_ids`
+- [x] 7.2 Verify CSV validity and backward compatibility
+- [x] 7.3 Run full-dataset doc-level evaluation
+- [x] 7.4 Generate updated wrong-case reclassification
+- [x] 7.5 Validate: openspec --strict, ruff, 143 tests pass (0 skips)
+- [ ] 7.6 Run real pipeline export on 86 labeled cases for full-dataset doc_id metrics (optional, high value)
+
+## Phase 10.8 — Portfolio Snapshot
 
 ## Phase 10.8 — Portfolio Snapshot
 

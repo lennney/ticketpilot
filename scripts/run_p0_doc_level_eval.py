@@ -1,16 +1,16 @@
 #!/usr/bin/env python
-"""P0 Doc-Level Evaluation — measure P0 added-record retrieval at doc_id granularity.
+"""Doc-Level Evaluation — measure knowledge record retrieval at doc_id granularity.
 
-This script evaluates whether P0 knowledge records (added in Phase 9.4.1) are
-correctly retrieved. It uses doc_id-level golden labels (expected_relevant_doc_ids)
-to measure hit rate at the document level, not just the doc_type level.
+Evaluates whether expected knowledge records are correctly retrieved. Uses
+doc_id-level golden labels (expected_relevant_doc_ids) to measure hit rate
+at the document level, not just the doc_type level.
 
-The key thesis: most "wrong" cases in Phase 10 are actually metric granularity
-problems — the right document is retrieved but has a different doc_type than
-expected. Doc-level metrics should show significantly higher hit rates.
+Modes:
+    p0: P0-only subset (default) — output to phase10_p0_* paths
+    full: Full 101-case dataset — output to phase10_full_doc_level_* paths
 
 Usage:
-    uv run python scripts/run_p0_doc_level_eval.py
+    uv run python scripts/run_p0_doc_level_eval.py [p0|full]
 """
 
 from __future__ import annotations
@@ -35,13 +35,27 @@ from ticketpilot.evaluation.retrieval_metrics import (
 
 
 # ---------------------------------------------------------------------------
+# Default mode: "p0" or "full"
+# ---------------------------------------------------------------------------
+
+MODE = (sys.argv[1] if len(sys.argv) > 1 else "p0").strip().lower()
+if MODE not in ("p0", "full"):
+    print(f"Error: unknown mode '{MODE}'. Use 'p0' or 'full'.", file=sys.stderr)
+    sys.exit(1)
+
+# ---------------------------------------------------------------------------
 # Paths
 # ---------------------------------------------------------------------------
 
 TICKETS_PATH = "data/eval/tickets_eval.csv"
 GOLDEN_PATH = "data/eval/golden_expectations.csv"
-OUT_JSON = "reports/retrieval/phase10_p0_doc_level_eval.json"
-OUT_MD = "reports/retrieval/phase10_p0_doc_level_eval.md"
+
+if MODE == "full":
+    OUT_JSON = "reports/retrieval/phase10_full_doc_level_eval_metrics.json"
+    OUT_MD = "reports/retrieval/phase10_full_doc_level_evaluation.md"
+else:
+    OUT_JSON = "reports/retrieval/phase10_p0_doc_level_eval.json"
+    OUT_MD = "reports/retrieval/phase10_p0_doc_level_eval.md"
 
 
 # ---------------------------------------------------------------------------
@@ -196,9 +210,10 @@ def main() -> None:
 
     # Write reports
     config = {
-        "eval_type": "p0_doc_level",
+        "eval_type": f"{MODE}_doc_level",
         "total_cases": total_cases,
         "p0_labeled_cases": p0_labeled,
+        "mode": MODE,
     }
     write_json_report(summary, OUT_JSON, tickets_path=TICKETS_PATH, golden_path=GOLDEN_PATH, config=config)
     print(f"JSON report: {OUT_JSON}")
@@ -209,7 +224,8 @@ def main() -> None:
     # Final summary
     print()
     print("=" * 60)
-    print("P0 Doc-Level Evaluation Complete")
+    mode_label = "Full-Dataset" if MODE == "full" else "P0"
+    print(f"{mode_label} Doc-Level Evaluation Complete")
     print("=" * 60)
     if summary.p0_added_record_hit_rate is not None:
         for k in sorted(summary.p0_added_record_hit_rate.keys()):

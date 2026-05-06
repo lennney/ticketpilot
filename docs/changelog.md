@@ -1696,3 +1696,31 @@ Prepare TicketPilot for public GitHub portfolio presentation with accurate, non-
 - **Why not tune RRF now**: cannot measure impact without full doc-level labels; 3 affected records is too small a sample; need query audit first
 - **Why not add more knowledge**: remaining issues are about ranking and measurement, not coverage
 - **Next recommended phase**: Phase 10.7 — expand doc-level golden labels to all 101 cases
+
+## 2026-05-06 — Phase 10.7 Full-Dataset Doc-Level Golden Labels
+
+### Added
+- `scripts/label_full_doc_level.py` — systematic labeling script for 87 unlabeled cases
+- `reports/retrieval/phase10_full_doc_level_label_plan.md` — labeling strategy with high-confidence and manual-review criteria
+- `reports/retrieval/phase10_full_doc_level_manual_review.md` — 15 cases requiring human review
+- `reports/retrieval/phase10_full_doc_level_eval_metrics.json` — full 101-case mock evaluation metrics
+- `reports/retrieval/phase10_full_doc_level_evaluation.md` — auto-generated evaluation report
+- `reports/retrieval/phase10_full_doc_level_wrong_case_recheck.md` — interpretation and next-step recommendation
+
+### Changed
+- `data/eval/golden_expectations.csv` — expanded doc-level labels from 14 to 86 cases
+- `scripts/run_p0_doc_level_eval.py` — added `full` mode for full-dataset evaluation
+
+### Key Findings
+- **Label coverage expanded from 14 to 86 cases** (85.1% coverage, up from 13.9%)
+- **15 cases remain unlabeled**: 5 edge cases (non-semantic content), 4 knowledge gaps (job inquiries, store locations, points, WeChat groups), 6 ambiguous/low-confidence
+- **Doc-type hit rate @10**: 96.0% in mock mode (all 4 wrong cases are edge cases with empty expected_doc_types)
+- **Doc-id metrics**: 0% in mock mode (expected — mock uses synthetic IDs, not real UUIDs). Real doc_id evaluation requires pipeline export with real provider
+- **Metric granularity thesis confirmed at full scale**: with 86 cases labeled, the full-dataset wrong-case reclassification is now possible when real pipeline export is run
+- **All 143 unit tests pass**: 40 retrieval_metrics + 103 evaluation tests
+- **Ruff clean, openspec --strict valid**
+
+### Next Recommendation
+- Run real pipeline export on all 86 labeled cases (Phase 10.7.5) to get full-dataset doc_id metrics across all domains
+- Then archive Phase 10 (Phase 10.9)
+

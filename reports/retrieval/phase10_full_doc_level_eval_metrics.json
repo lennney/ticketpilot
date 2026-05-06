@@ -1,0 +1,1630 @@
+{
+  "generated_at": "2026-05-06T03:54:06.454322+00:00",
+  "metadata": {
+    "tickets_path": "data/eval/tickets_eval.csv",
+    "golden_path": "data/eval/golden_expectations.csv"
+  },
+  "config": {
+    "eval_type": "full_doc_level",
+    "total_cases": 101,
+    "p0_labeled_cases": 86,
+    "mode": "full"
+  },
+  "total_cases": 101,
+  "aggregate_metrics": {
+    "hit_rate_doc_type": {
+      "1": 0.9603960396039604,
+      "3": 0.9603960396039604,
+      "5": 0.9603960396039604,
+      "10": 0.9603960396039604
+    },
+    "mrr_doc_type": 0.9603960396039604,
+    "hit_rate_doc_id": {
+      "1": 0.0,
+      "3": 0.0,
+      "5": 0.0,
+      "10": 0.0
+    },
+    "p0_added_record_hit_rate": {
+      "1": 0.0,
+      "3": 0.0,
+      "5": 0.0,
+      "10": 0.0
+    },
+    "mrr_doc_id": 0.0
+  },
+  "per_case_results": {
+    "case_acco_001": {
+      "top_k_doc_type_hit": {
+        "1": true,
+        "3": true,
+        "5": true,
+        "10": true
+      },
+      "reciprocal_rank_doc_type": 1.0,
+      "top_k_doc_id_hit": {
+        "1": false,
+        "3": false,
+        "5": false,
+        "10": false
+      },
+      "reciprocal_rank_doc_id": 0.0
+    },
+    "case_acco_002": {
+      "top_k_doc_type_hit": {
+        "1": true,
+        "3": true,
+        "5": true,
+        "10": true
+      },
+      "reciprocal_rank_doc_type": 1.0,
+      "top_k_doc_id_hit": {
+        "1": false,
+        "3": false,
+        "5": false,
+        "10": false
+      },
+      "reciprocal_rank_doc_id": 0.0
+    },
+    "case_acco_003": {
+      "top_k_doc_type_hit": {
+        "1": true,
+        "3": true,
+        "5": true,
+        "10": true
+      },
+      "reciprocal_rank_doc_type": 1.0,
+      "top_k_doc_id_hit": {
+        "1": false,
+        "3": false,
+        "5": false,
+        "10": false
+      },
+      "reciprocal_rank_doc_id": 0.0
+    },
+    "case_acco_004": {
+      "top_k_doc_type_hit": {
+        "1": true,
+        "3": true,
+        "5": true,
+        "10": true
+      },
+      "reciprocal_rank_doc_type": 1.0,
+      "top_k_doc_id_hit": {
+        "1": false,
+        "3": false,
+        "5": false,
+        "10": false
+      },
+      "reciprocal_rank_doc_id": 0.0
+    },
+    "case_acco_005": {
+      "top_k_doc_type_hit": {
+        "1": true,
+        "3": true,
+        "5": true,
+        "10": true
+      },
+      "reciprocal_rank_doc_type": 1.0,
+      "top_k_doc_id_hit": {
+        "1": false,
+        "3": false,
+        "5": false,
+        "10": false
+      },
+      "reciprocal_rank_doc_id": 0.0
+    },
+    "case_acco_006": {
+      "top_k_doc_type_hit": {
+        "1": true,
+        "3": true,
+        "5": true,
+        "10": true
+      },
+      "reciprocal_rank_doc_type": 1.0,
+      "top_k_doc_id_hit": {
+        "1": false,
+        "3": false,
+        "5": false,
+        "10": false
+      },
+      "reciprocal_rank_doc_id": 0.0
+    },
+    "case_acco_007": {
+      "top_k_doc_type_hit": {
+        "1": true,
+        "3": true,
+        "5": true,
+        "10": true
+      },
+      "reciprocal_rank_doc_type": 1.0,
+      "top_k_doc_id_hit": {
+        "1": false,
+        "3": false,
+        "5": false,
+        "10": false
+      },
+      "reciprocal_rank_doc_id": 0.0
+    },
+    "case_acco_008": {
+      "top_k_doc_type_hit": {
+        "1": true,
+        "3": true,
+        "5": true,
+        "10": true
+      },
+      "reciprocal_rank_doc_type": 1.0,
+      "top_k_doc_id_hit": {
+        "1": false,
+        "3": false,
+        "5": false,
+        "10": false
+      },
+      "reciprocal_rank_doc_id": 0.0
+    },
+    "case_acco_009": {
+      "top_k_doc_type_hit": {
+        "1": true,
+        "3": true,
+        "5": true,
+        "10": true
+      },
+      "reciprocal_rank_doc_type": 1.0,
+      "top_k_doc_id_hit": {
+        "1": false,
+        "3": false,
+        "5": false,
+        "10": false
+      },
+      "reciprocal_rank_doc_id": 0.0
+    },
+    "case_acco_010": {
+      "top_k_doc_type_hit": {
+        "1": true,
+        "3": true,
+        "5": true,
+        "10": true
+      },
+      "reciprocal_rank_doc_type": 1.0,
+      "top_k_doc_id_hit": {
+        "1": false,
+        "3": false,
+        "5": false,
+        "10": false
+      },
+      "reciprocal_rank_doc_id": 0.0
+    },
+    "case_acco_011": {
+      "top_k_doc_type_hit": {
+        "1": true,
+        "3": true,
+        "5": true,
+        "10": true
+      },
+      "reciprocal_rank_doc_type": 1.0,
+      "top_k_doc_id_hit": {
+        "1": false,
+        "3": false,
+        "5": false,
+        "10": false
+      },
+      "reciprocal_rank_doc_id": 0.0
+    },
+    "case_acco_012": {
+      "top_k_doc_type_hit": {
+        "1": true,
+        "3": true,
+        "5": true,
+        "10": true
+      },
+      "reciprocal_rank_doc_type": 1.0,
+      "top_k_doc_id_hit": {
+        "1": false,
+        "3": false,
+        "5": false,
+        "10": false
+      },
+      "reciprocal_rank_doc_id": 0.0
+    },
+    "case_acco_013": {
+      "top_k_doc_type_hit": {
+        "1": true,
+        "3": true,
+        "5": true,
+        "10": true
+      },
+      "reciprocal_rank_doc_type": 1.0,
+      "top_k_doc_id_hit": {
+        "1": false,
+        "3": false,
+        "5": false,
+        "10": false
+      },
+      "reciprocal_rank_doc_id": 0.0
+    },
+    "case_acco_014": {
+      "top_k_doc_type_hit": {
+        "1": true,
+        "3": true,
+        "5": true,
+        "10": true
+      },
+      "reciprocal_rank_doc_type": 1.0,
+      "top_k_doc_id_hit": {
+        "1": false,
+        "3": false,
+        "5": false,
+        "10": false
+      },
+      "reciprocal_rank_doc_id": 0.0
+    },
+    "case_acco_015": {
+      "top_k_doc_type_hit": {
+        "1": true,
+        "3": true,
+        "5": true,
+        "10": true
+      },
+      "reciprocal_rank_doc_type": 1.0,
+      "top_k_doc_id_hit": {
+        "1": false,
+        "3": false,
+        "5": false,
+        "10": false
+      },
+      "reciprocal_rank_doc_id": 0.0
+    },
+    "case_comp_001": {
+      "top_k_doc_type_hit": {
+        "1": true,
+        "3": true,
+        "5": true,
+        "10": true
+      },
+      "reciprocal_rank_doc_type": 1.0,
+      "top_k_doc_id_hit": {
+        "1": false,
+        "3": false,
+        "5": false,
+        "10": false
+      },
+      "reciprocal_rank_doc_id": 0.0
+    },
+    "case_comp_002": {
+      "top_k_doc_type_hit": {
+        "1": true,
+        "3": true,
+        "5": true,
+        "10": true
+      },
+      "reciprocal_rank_doc_type": 1.0,
+      "top_k_doc_id_hit": {
+        "1": false,
+        "3": false,
+        "5": false,
+        "10": false
+      },
+      "reciprocal_rank_doc_id": 0.0
+    },
+    "case_comp_003": {
+      "top_k_doc_type_hit": {
+        "1": true,
+        "3": true,
+        "5": true,
+        "10": true
+      },
+      "reciprocal_rank_doc_type": 1.0,
+      "top_k_doc_id_hit": {
+        "1": false,
+        "3": false,
+        "5": false,
+        "10": false
+      },
+      "reciprocal_rank_doc_id": 0.0
+    },
+    "case_comp_004": {
+      "top_k_doc_type_hit": {
+        "1": true,
+        "3": true,
+        "5": true,
+        "10": true
+      },
+      "reciprocal_rank_doc_type": 1.0,
+      "top_k_doc_id_hit": {
+        "1": false,
+        "3": false,
+        "5": false,
+        "10": false
+      },
+      "reciprocal_rank_doc_id": 0.0
+    },
+    "case_comp_005": {
+      "top_k_doc_type_hit": {
+        "1": true,
+        "3": true,
+        "5": true,
+        "10": true
+      },
+      "reciprocal_rank_doc_type": 1.0,
+      "top_k_doc_id_hit": {
+        "1": false,
+        "3": false,
+        "5": false,
+        "10": false
+      },
+      "reciprocal_rank_doc_id": 0.0
+    },
+    "case_comp_006": {
+      "top_k_doc_type_hit": {
+        "1": true,
+        "3": true,
+        "5": true,
+        "10": true
+      },
+      "reciprocal_rank_doc_type": 1.0,
+      "top_k_doc_id_hit": {
+        "1": false,
+        "3": false,
+        "5": false,
+        "10": false
+      },
+      "reciprocal_rank_doc_id": 0.0
+    },
+    "case_comp_007": {
+      "top_k_doc_type_hit": {
+        "1": true,
+        "3": true,
+        "5": true,
+        "10": true
+      },
+      "reciprocal_rank_doc_type": 1.0,
+      "top_k_doc_id_hit": {
+        "1": false,
+        "3": false,
+        "5": false,
+        "10": false
+      },
+      "reciprocal_rank_doc_id": 0.0
+    },
+    "case_comp_008": {
+      "top_k_doc_type_hit": {
+        "1": true,
+        "3": true,
+        "5": true,
+        "10": true
+      },
+      "reciprocal_rank_doc_type": 1.0,
+      "top_k_doc_id_hit": {
+        "1": false,
+        "3": false,
+        "5": false,
+        "10": false
+      },
+      "reciprocal_rank_doc_id": 0.0
+    },
+    "case_comp_009": {
+      "top_k_doc_type_hit": {
+        "1": true,
+        "3": true,
+        "5": true,
+        "10": true
+      },
+      "reciprocal_rank_doc_type": 1.0,
+      "top_k_doc_id_hit": {
+        "1": false,
+        "3": false,
+        "5": false,
+        "10": false
+      },
+      "reciprocal_rank_doc_id": 0.0
+    },
+    "case_comp_010": {
+      "top_k_doc_type_hit": {
+        "1": true,
+        "3": true,
+        "5": true,
+        "10": true
+      },
+      "reciprocal_rank_doc_type": 1.0,
+      "top_k_doc_id_hit": {
+        "1": false,
+        "3": false,
+        "5": false,
+        "10": false
+      },
+      "reciprocal_rank_doc_id": 0.0
+    },
+    "case_comp_011": {
+      "top_k_doc_type_hit": {
+        "1": true,
+        "3": true,
+        "5": true,
+        "10": true
+      },
+      "reciprocal_rank_doc_type": 1.0,
+      "top_k_doc_id_hit": {
+        "1": false,
+        "3": false,
+        "5": false,
+        "10": false
+      },
+      "reciprocal_rank_doc_id": 0.0
+    },
+    "case_comp_012": {
+      "top_k_doc_type_hit": {
+        "1": true,
+        "3": true,
+        "5": true,
+        "10": true
+      },
+      "reciprocal_rank_doc_type": 1.0,
+      "top_k_doc_id_hit": {
+        "1": false,
+        "3": false,
+        "5": false,
+        "10": false
+      },
+      "reciprocal_rank_doc_id": 0.0
+    },
+    "case_comp_013": {
+      "top_k_doc_type_hit": {
+        "1": true,
+        "3": true,
+        "5": true,
+        "10": true
+      },
+      "reciprocal_rank_doc_type": 1.0,
+      "top_k_doc_id_hit": {
+        "1": false,
+        "3": false,
+        "5": false,
+        "10": false
+      },
+      "reciprocal_rank_doc_id": 0.0
+    },
+    "case_edge_001": {
+      "top_k_doc_type_hit": {
+        "1": false,
+        "3": false,
+        "5": false,
+        "10": false
+      },
+      "reciprocal_rank_doc_type": 0.0
+    },
+    "case_edge_002": {
+      "top_k_doc_type_hit": {
+        "1": true,
+        "3": true,
+        "5": true,
+        "10": true
+      },
+      "reciprocal_rank_doc_type": 1.0
+    },
+    "case_edge_003": {
+      "top_k_doc_type_hit": {
+        "1": false,
+        "3": false,
+        "5": false,
+        "10": false
+      },
+      "reciprocal_rank_doc_type": 0.0
+    },
+    "case_edge_004": {
+      "top_k_doc_type_hit": {
+        "1": false,
+        "3": false,
+        "5": false,
+        "10": false
+      },
+      "reciprocal_rank_doc_type": 0.0
+    },
+    "case_edge_005": {
+      "top_k_doc_type_hit": {
+        "1": false,
+        "3": false,
+        "5": false,
+        "10": false
+      },
+      "reciprocal_rank_doc_type": 0.0
+    },
+    "case_logi_001": {
+      "top_k_doc_type_hit": {
+        "1": true,
+        "3": true,
+        "5": true,
+        "10": true
+      },
+      "reciprocal_rank_doc_type": 1.0,
+      "top_k_doc_id_hit": {
+        "1": false,
+        "3": false,
+        "5": false,
+        "10": false
+      },
+      "reciprocal_rank_doc_id": 0.0
+    },
+    "case_logi_002": {
+      "top_k_doc_type_hit": {
+        "1": true,
+        "3": true,
+        "5": true,
+        "10": true
+      },
+      "reciprocal_rank_doc_type": 1.0,
+      "top_k_doc_id_hit": {
+        "1": false,
+        "3": false,
+        "5": false,
+        "10": false
+      },
+      "reciprocal_rank_doc_id": 0.0
+    },
+    "case_logi_003": {
+      "top_k_doc_type_hit": {
+        "1": true,
+        "3": true,
+        "5": true,
+        "10": true
+      },
+      "reciprocal_rank_doc_type": 1.0,
+      "top_k_doc_id_hit": {
+        "1": false,
+        "3": false,
+        "5": false,
+        "10": false
+      },
+      "reciprocal_rank_doc_id": 0.0
+    },
+    "case_logi_004": {
+      "top_k_doc_type_hit": {
+        "1": true,
+        "3": true,
+        "5": true,
+        "10": true
+      },
+      "reciprocal_rank_doc_type": 1.0
+    },
+    "case_logi_005": {
+      "top_k_doc_type_hit": {
+        "1": true,
+        "3": true,
+        "5": true,
+        "10": true
+      },
+      "reciprocal_rank_doc_type": 1.0,
+      "top_k_doc_id_hit": {
+        "1": false,
+        "3": false,
+        "5": false,
+        "10": false
+      },
+      "reciprocal_rank_doc_id": 0.0
+    },
+    "case_logi_006": {
+      "top_k_doc_type_hit": {
+        "1": true,
+        "3": true,
+        "5": true,
+        "10": true
+      },
+      "reciprocal_rank_doc_type": 1.0,
+      "top_k_doc_id_hit": {
+        "1": false,
+        "3": false,
+        "5": false,
+        "10": false
+      },
+      "reciprocal_rank_doc_id": 0.0
+    },
+    "case_logi_007": {
+      "top_k_doc_type_hit": {
+        "1": true,
+        "3": true,
+        "5": true,
+        "10": true
+      },
+      "reciprocal_rank_doc_type": 1.0,
+      "top_k_doc_id_hit": {
+        "1": false,
+        "3": false,
+        "5": false,
+        "10": false
+      },
+      "reciprocal_rank_doc_id": 0.0
+    },
+    "case_logi_008": {
+      "top_k_doc_type_hit": {
+        "1": true,
+        "3": true,
+        "5": true,
+        "10": true
+      },
+      "reciprocal_rank_doc_type": 1.0,
+      "top_k_doc_id_hit": {
+        "1": false,
+        "3": false,
+        "5": false,
+        "10": false
+      },
+      "reciprocal_rank_doc_id": 0.0
+    },
+    "case_logi_009": {
+      "top_k_doc_type_hit": {
+        "1": true,
+        "3": true,
+        "5": true,
+        "10": true
+      },
+      "reciprocal_rank_doc_type": 1.0
+    },
+    "case_logi_010": {
+      "top_k_doc_type_hit": {
+        "1": true,
+        "3": true,
+        "5": true,
+        "10": true
+      },
+      "reciprocal_rank_doc_type": 1.0,
+      "top_k_doc_id_hit": {
+        "1": false,
+        "3": false,
+        "5": false,
+        "10": false
+      },
+      "reciprocal_rank_doc_id": 0.0
+    },
+    "case_logi_011": {
+      "top_k_doc_type_hit": {
+        "1": true,
+        "3": true,
+        "5": true,
+        "10": true
+      },
+      "reciprocal_rank_doc_type": 1.0,
+      "top_k_doc_id_hit": {
+        "1": false,
+        "3": false,
+        "5": false,
+        "10": false
+      },
+      "reciprocal_rank_doc_id": 0.0
+    },
+    "case_othe_001": {
+      "top_k_doc_type_hit": {
+        "1": true,
+        "3": true,
+        "5": true,
+        "10": true
+      },
+      "reciprocal_rank_doc_type": 1.0
+    },
+    "case_othe_002": {
+      "top_k_doc_type_hit": {
+        "1": true,
+        "3": true,
+        "5": true,
+        "10": true
+      },
+      "reciprocal_rank_doc_type": 1.0,
+      "top_k_doc_id_hit": {
+        "1": false,
+        "3": false,
+        "5": false,
+        "10": false
+      },
+      "reciprocal_rank_doc_id": 0.0
+    },
+    "case_othe_003": {
+      "top_k_doc_type_hit": {
+        "1": true,
+        "3": true,
+        "5": true,
+        "10": true
+      },
+      "reciprocal_rank_doc_type": 1.0,
+      "top_k_doc_id_hit": {
+        "1": false,
+        "3": false,
+        "5": false,
+        "10": false
+      },
+      "reciprocal_rank_doc_id": 0.0
+    },
+    "case_othe_004": {
+      "top_k_doc_type_hit": {
+        "1": true,
+        "3": true,
+        "5": true,
+        "10": true
+      },
+      "reciprocal_rank_doc_type": 1.0
+    },
+    "case_othe_005": {
+      "top_k_doc_type_hit": {
+        "1": true,
+        "3": true,
+        "5": true,
+        "10": true
+      },
+      "reciprocal_rank_doc_type": 1.0
+    },
+    "case_othe_006": {
+      "top_k_doc_type_hit": {
+        "1": true,
+        "3": true,
+        "5": true,
+        "10": true
+      },
+      "reciprocal_rank_doc_type": 1.0,
+      "top_k_doc_id_hit": {
+        "1": false,
+        "3": false,
+        "5": false,
+        "10": false
+      },
+      "reciprocal_rank_doc_id": 0.0
+    },
+    "case_othe_007": {
+      "top_k_doc_type_hit": {
+        "1": true,
+        "3": true,
+        "5": true,
+        "10": true
+      },
+      "reciprocal_rank_doc_type": 1.0
+    },
+    "case_othe_008": {
+      "top_k_doc_type_hit": {
+        "1": true,
+        "3": true,
+        "5": true,
+        "10": true
+      },
+      "reciprocal_rank_doc_type": 1.0
+    },
+    "case_othe_009": {
+      "top_k_doc_type_hit": {
+        "1": true,
+        "3": true,
+        "5": true,
+        "10": true
+      },
+      "reciprocal_rank_doc_type": 1.0,
+      "top_k_doc_id_hit": {
+        "1": false,
+        "3": false,
+        "5": false,
+        "10": false
+      },
+      "reciprocal_rank_doc_id": 0.0
+    },
+    "case_othe_010": {
+      "top_k_doc_type_hit": {
+        "1": true,
+        "3": true,
+        "5": true,
+        "10": true
+      },
+      "reciprocal_rank_doc_type": 1.0,
+      "top_k_doc_id_hit": {
+        "1": false,
+        "3": false,
+        "5": false,
+        "10": false
+      },
+      "reciprocal_rank_doc_id": 0.0
+    },
+    "case_othe_011": {
+      "top_k_doc_type_hit": {
+        "1": true,
+        "3": true,
+        "5": true,
+        "10": true
+      },
+      "reciprocal_rank_doc_type": 1.0,
+      "top_k_doc_id_hit": {
+        "1": false,
+        "3": false,
+        "5": false,
+        "10": false
+      },
+      "reciprocal_rank_doc_id": 0.0
+    },
+    "case_othe_012": {
+      "top_k_doc_type_hit": {
+        "1": true,
+        "3": true,
+        "5": true,
+        "10": true
+      },
+      "reciprocal_rank_doc_type": 1.0,
+      "top_k_doc_id_hit": {
+        "1": false,
+        "3": false,
+        "5": false,
+        "10": false
+      },
+      "reciprocal_rank_doc_id": 0.0
+    },
+    "case_othe_013": {
+      "top_k_doc_type_hit": {
+        "1": true,
+        "3": true,
+        "5": true,
+        "10": true
+      },
+      "reciprocal_rank_doc_type": 1.0,
+      "top_k_doc_id_hit": {
+        "1": false,
+        "3": false,
+        "5": false,
+        "10": false
+      },
+      "reciprocal_rank_doc_id": 0.0
+    },
+    "case_prod_001": {
+      "top_k_doc_type_hit": {
+        "1": true,
+        "3": true,
+        "5": true,
+        "10": true
+      },
+      "reciprocal_rank_doc_type": 1.0,
+      "top_k_doc_id_hit": {
+        "1": false,
+        "3": false,
+        "5": false,
+        "10": false
+      },
+      "reciprocal_rank_doc_id": 0.0
+    },
+    "case_prod_002": {
+      "top_k_doc_type_hit": {
+        "1": true,
+        "3": true,
+        "5": true,
+        "10": true
+      },
+      "reciprocal_rank_doc_type": 1.0,
+      "top_k_doc_id_hit": {
+        "1": false,
+        "3": false,
+        "5": false,
+        "10": false
+      },
+      "reciprocal_rank_doc_id": 0.0
+    },
+    "case_prod_003": {
+      "top_k_doc_type_hit": {
+        "1": true,
+        "3": true,
+        "5": true,
+        "10": true
+      },
+      "reciprocal_rank_doc_type": 1.0
+    },
+    "case_prod_004": {
+      "top_k_doc_type_hit": {
+        "1": true,
+        "3": true,
+        "5": true,
+        "10": true
+      },
+      "reciprocal_rank_doc_type": 1.0,
+      "top_k_doc_id_hit": {
+        "1": false,
+        "3": false,
+        "5": false,
+        "10": false
+      },
+      "reciprocal_rank_doc_id": 0.0
+    },
+    "case_prod_005": {
+      "top_k_doc_type_hit": {
+        "1": true,
+        "3": true,
+        "5": true,
+        "10": true
+      },
+      "reciprocal_rank_doc_type": 1.0,
+      "top_k_doc_id_hit": {
+        "1": false,
+        "3": false,
+        "5": false,
+        "10": false
+      },
+      "reciprocal_rank_doc_id": 0.0
+    },
+    "case_prod_006": {
+      "top_k_doc_type_hit": {
+        "1": true,
+        "3": true,
+        "5": true,
+        "10": true
+      },
+      "reciprocal_rank_doc_type": 1.0,
+      "top_k_doc_id_hit": {
+        "1": false,
+        "3": false,
+        "5": false,
+        "10": false
+      },
+      "reciprocal_rank_doc_id": 0.0
+    },
+    "case_prod_007": {
+      "top_k_doc_type_hit": {
+        "1": true,
+        "3": true,
+        "5": true,
+        "10": true
+      },
+      "reciprocal_rank_doc_type": 1.0,
+      "top_k_doc_id_hit": {
+        "1": false,
+        "3": false,
+        "5": false,
+        "10": false
+      },
+      "reciprocal_rank_doc_id": 0.0
+    },
+    "case_prod_008": {
+      "top_k_doc_type_hit": {
+        "1": true,
+        "3": true,
+        "5": true,
+        "10": true
+      },
+      "reciprocal_rank_doc_type": 1.0,
+      "top_k_doc_id_hit": {
+        "1": false,
+        "3": false,
+        "5": false,
+        "10": false
+      },
+      "reciprocal_rank_doc_id": 0.0
+    },
+    "case_refu_001": {
+      "top_k_doc_type_hit": {
+        "1": true,
+        "3": true,
+        "5": true,
+        "10": true
+      },
+      "reciprocal_rank_doc_type": 1.0,
+      "top_k_doc_id_hit": {
+        "1": false,
+        "3": false,
+        "5": false,
+        "10": false
+      },
+      "reciprocal_rank_doc_id": 0.0
+    },
+    "case_refu_002": {
+      "top_k_doc_type_hit": {
+        "1": true,
+        "3": true,
+        "5": true,
+        "10": true
+      },
+      "reciprocal_rank_doc_type": 1.0,
+      "top_k_doc_id_hit": {
+        "1": false,
+        "3": false,
+        "5": false,
+        "10": false
+      },
+      "reciprocal_rank_doc_id": 0.0
+    },
+    "case_refu_003": {
+      "top_k_doc_type_hit": {
+        "1": true,
+        "3": true,
+        "5": true,
+        "10": true
+      },
+      "reciprocal_rank_doc_type": 1.0,
+      "top_k_doc_id_hit": {
+        "1": false,
+        "3": false,
+        "5": false,
+        "10": false
+      },
+      "reciprocal_rank_doc_id": 0.0
+    },
+    "case_refu_004": {
+      "top_k_doc_type_hit": {
+        "1": true,
+        "3": true,
+        "5": true,
+        "10": true
+      },
+      "reciprocal_rank_doc_type": 1.0,
+      "top_k_doc_id_hit": {
+        "1": false,
+        "3": false,
+        "5": false,
+        "10": false
+      },
+      "reciprocal_rank_doc_id": 0.0
+    },
+    "case_refu_005": {
+      "top_k_doc_type_hit": {
+        "1": true,
+        "3": true,
+        "5": true,
+        "10": true
+      },
+      "reciprocal_rank_doc_type": 1.0,
+      "top_k_doc_id_hit": {
+        "1": false,
+        "3": false,
+        "5": false,
+        "10": false
+      },
+      "reciprocal_rank_doc_id": 0.0
+    },
+    "case_refu_006": {
+      "top_k_doc_type_hit": {
+        "1": true,
+        "3": true,
+        "5": true,
+        "10": true
+      },
+      "reciprocal_rank_doc_type": 1.0,
+      "top_k_doc_id_hit": {
+        "1": false,
+        "3": false,
+        "5": false,
+        "10": false
+      },
+      "reciprocal_rank_doc_id": 0.0
+    },
+    "case_refu_007": {
+      "top_k_doc_type_hit": {
+        "1": true,
+        "3": true,
+        "5": true,
+        "10": true
+      },
+      "reciprocal_rank_doc_type": 1.0,
+      "top_k_doc_id_hit": {
+        "1": false,
+        "3": false,
+        "5": false,
+        "10": false
+      },
+      "reciprocal_rank_doc_id": 0.0
+    },
+    "case_refu_008": {
+      "top_k_doc_type_hit": {
+        "1": true,
+        "3": true,
+        "5": true,
+        "10": true
+      },
+      "reciprocal_rank_doc_type": 1.0,
+      "top_k_doc_id_hit": {
+        "1": false,
+        "3": false,
+        "5": false,
+        "10": false
+      },
+      "reciprocal_rank_doc_id": 0.0
+    },
+    "case_refu_009": {
+      "top_k_doc_type_hit": {
+        "1": true,
+        "3": true,
+        "5": true,
+        "10": true
+      },
+      "reciprocal_rank_doc_type": 1.0,
+      "top_k_doc_id_hit": {
+        "1": false,
+        "3": false,
+        "5": false,
+        "10": false
+      },
+      "reciprocal_rank_doc_id": 0.0
+    },
+    "case_refu_010": {
+      "top_k_doc_type_hit": {
+        "1": true,
+        "3": true,
+        "5": true,
+        "10": true
+      },
+      "reciprocal_rank_doc_type": 1.0,
+      "top_k_doc_id_hit": {
+        "1": false,
+        "3": false,
+        "5": false,
+        "10": false
+      },
+      "reciprocal_rank_doc_id": 0.0
+    },
+    "case_refu_011": {
+      "top_k_doc_type_hit": {
+        "1": true,
+        "3": true,
+        "5": true,
+        "10": true
+      },
+      "reciprocal_rank_doc_type": 1.0,
+      "top_k_doc_id_hit": {
+        "1": false,
+        "3": false,
+        "5": false,
+        "10": false
+      },
+      "reciprocal_rank_doc_id": 0.0
+    },
+    "case_refu_012": {
+      "top_k_doc_type_hit": {
+        "1": true,
+        "3": true,
+        "5": true,
+        "10": true
+      },
+      "reciprocal_rank_doc_type": 1.0,
+      "top_k_doc_id_hit": {
+        "1": false,
+        "3": false,
+        "5": false,
+        "10": false
+      },
+      "reciprocal_rank_doc_id": 0.0
+    },
+    "case_refu_013": {
+      "top_k_doc_type_hit": {
+        "1": true,
+        "3": true,
+        "5": true,
+        "10": true
+      },
+      "reciprocal_rank_doc_type": 1.0,
+      "top_k_doc_id_hit": {
+        "1": false,
+        "3": false,
+        "5": false,
+        "10": false
+      },
+      "reciprocal_rank_doc_id": 0.0
+    },
+    "case_refu_014": {
+      "top_k_doc_type_hit": {
+        "1": true,
+        "3": true,
+        "5": true,
+        "10": true
+      },
+      "reciprocal_rank_doc_type": 1.0,
+      "top_k_doc_id_hit": {
+        "1": false,
+        "3": false,
+        "5": false,
+        "10": false
+      },
+      "reciprocal_rank_doc_id": 0.0
+    },
+    "case_refu_015": {
+      "top_k_doc_type_hit": {
+        "1": true,
+        "3": true,
+        "5": true,
+        "10": true
+      },
+      "reciprocal_rank_doc_type": 1.0,
+      "top_k_doc_id_hit": {
+        "1": false,
+        "3": false,
+        "5": false,
+        "10": false
+      },
+      "reciprocal_rank_doc_id": 0.0
+    },
+    "case_refu_016": {
+      "top_k_doc_type_hit": {
+        "1": true,
+        "3": true,
+        "5": true,
+        "10": true
+      },
+      "reciprocal_rank_doc_type": 1.0,
+      "top_k_doc_id_hit": {
+        "1": false,
+        "3": false,
+        "5": false,
+        "10": false
+      },
+      "reciprocal_rank_doc_id": 0.0
+    },
+    "case_retu_001": {
+      "top_k_doc_type_hit": {
+        "1": true,
+        "3": true,
+        "5": true,
+        "10": true
+      },
+      "reciprocal_rank_doc_type": 1.0,
+      "top_k_doc_id_hit": {
+        "1": false,
+        "3": false,
+        "5": false,
+        "10": false
+      },
+      "reciprocal_rank_doc_id": 0.0
+    },
+    "case_retu_002": {
+      "top_k_doc_type_hit": {
+        "1": true,
+        "3": true,
+        "5": true,
+        "10": true
+      },
+      "reciprocal_rank_doc_type": 1.0,
+      "top_k_doc_id_hit": {
+        "1": false,
+        "3": false,
+        "5": false,
+        "10": false
+      },
+      "reciprocal_rank_doc_id": 0.0
+    },
+    "case_retu_003": {
+      "top_k_doc_type_hit": {
+        "1": true,
+        "3": true,
+        "5": true,
+        "10": true
+      },
+      "reciprocal_rank_doc_type": 1.0,
+      "top_k_doc_id_hit": {
+        "1": false,
+        "3": false,
+        "5": false,
+        "10": false
+      },
+      "reciprocal_rank_doc_id": 0.0
+    },
+    "case_retu_004": {
+      "top_k_doc_type_hit": {
+        "1": true,
+        "3": true,
+        "5": true,
+        "10": true
+      },
+      "reciprocal_rank_doc_type": 1.0,
+      "top_k_doc_id_hit": {
+        "1": false,
+        "3": false,
+        "5": false,
+        "10": false
+      },
+      "reciprocal_rank_doc_id": 0.0
+    },
+    "case_retu_005": {
+      "top_k_doc_type_hit": {
+        "1": true,
+        "3": true,
+        "5": true,
+        "10": true
+      },
+      "reciprocal_rank_doc_type": 1.0,
+      "top_k_doc_id_hit": {
+        "1": false,
+        "3": false,
+        "5": false,
+        "10": false
+      },
+      "reciprocal_rank_doc_id": 0.0
+    },
+    "case_retu_006": {
+      "top_k_doc_type_hit": {
+        "1": true,
+        "3": true,
+        "5": true,
+        "10": true
+      },
+      "reciprocal_rank_doc_type": 1.0,
+      "top_k_doc_id_hit": {
+        "1": false,
+        "3": false,
+        "5": false,
+        "10": false
+      },
+      "reciprocal_rank_doc_id": 0.0
+    },
+    "case_retu_007": {
+      "top_k_doc_type_hit": {
+        "1": true,
+        "3": true,
+        "5": true,
+        "10": true
+      },
+      "reciprocal_rank_doc_type": 1.0,
+      "top_k_doc_id_hit": {
+        "1": false,
+        "3": false,
+        "5": false,
+        "10": false
+      },
+      "reciprocal_rank_doc_id": 0.0
+    },
+    "case_retu_008": {
+      "top_k_doc_type_hit": {
+        "1": true,
+        "3": true,
+        "5": true,
+        "10": true
+      },
+      "reciprocal_rank_doc_type": 1.0,
+      "top_k_doc_id_hit": {
+        "1": false,
+        "3": false,
+        "5": false,
+        "10": false
+      },
+      "reciprocal_rank_doc_id": 0.0
+    },
+    "case_retu_009": {
+      "top_k_doc_type_hit": {
+        "1": true,
+        "3": true,
+        "5": true,
+        "10": true
+      },
+      "reciprocal_rank_doc_type": 1.0,
+      "top_k_doc_id_hit": {
+        "1": false,
+        "3": false,
+        "5": false,
+        "10": false
+      },
+      "reciprocal_rank_doc_id": 0.0
+    },
+    "case_retu_010": {
+      "top_k_doc_type_hit": {
+        "1": true,
+        "3": true,
+        "5": true,
+        "10": true
+      },
+      "reciprocal_rank_doc_type": 1.0,
+      "top_k_doc_id_hit": {
+        "1": false,
+        "3": false,
+        "5": false,
+        "10": false
+      },
+      "reciprocal_rank_doc_id": 0.0
+    },
+    "case_retu_011": {
+      "top_k_doc_type_hit": {
+        "1": true,
+        "3": true,
+        "5": true,
+        "10": true
+      },
+      "reciprocal_rank_doc_type": 1.0,
+      "top_k_doc_id_hit": {
+        "1": false,
+        "3": false,
+        "5": false,
+        "10": false
+      },
+      "reciprocal_rank_doc_id": 0.0
+    },
+    "case_tech_001": {
+      "top_k_doc_type_hit": {
+        "1": true,
+        "3": true,
+        "5": true,
+        "10": true
+      },
+      "reciprocal_rank_doc_type": 1.0,
+      "top_k_doc_id_hit": {
+        "1": false,
+        "3": false,
+        "5": false,
+        "10": false
+      },
+      "reciprocal_rank_doc_id": 0.0
+    },
+    "case_tech_002": {
+      "top_k_doc_type_hit": {
+        "1": true,
+        "3": true,
+        "5": true,
+        "10": true
+      },
+      "reciprocal_rank_doc_type": 1.0,
+      "top_k_doc_id_hit": {
+        "1": false,
+        "3": false,
+        "5": false,
+        "10": false
+      },
+      "reciprocal_rank_doc_id": 0.0
+    },
+    "case_tech_003": {
+      "top_k_doc_type_hit": {
+        "1": true,
+        "3": true,
+        "5": true,
+        "10": true
+      },
+      "reciprocal_rank_doc_type": 1.0,
+      "top_k_doc_id_hit": {
+        "1": false,
+        "3": false,
+        "5": false,
+        "10": false
+      },
+      "reciprocal_rank_doc_id": 0.0
+    },
+    "case_tech_004": {
+      "top_k_doc_type_hit": {
+        "1": true,
+        "3": true,
+        "5": true,
+        "10": true
+      },
+      "reciprocal_rank_doc_type": 1.0,
+      "top_k_doc_id_hit": {
+        "1": false,
+        "3": false,
+        "5": false,
+        "10": false
+      },
+      "reciprocal_rank_doc_id": 0.0
+    },
+    "case_tech_005": {
+      "top_k_doc_type_hit": {
+        "1": true,
+        "3": true,
+        "5": true,
+        "10": true
+      },
+      "reciprocal_rank_doc_type": 1.0
+    },
+    "case_tech_006": {
+      "top_k_doc_type_hit": {
+        "1": true,
+        "3": true,
+        "5": true,
+        "10": true
+      },
+      "reciprocal_rank_doc_type": 1.0
+    },
+    "case_tech_007": {
+      "top_k_doc_type_hit": {
+        "1": true,
+        "3": true,
+        "5": true,
+        "10": true
+      },
+      "reciprocal_rank_doc_type": 1.0,
+      "top_k_doc_id_hit": {
+        "1": false,
+        "3": false,
+        "5": false,
+        "10": false
+      },
+      "reciprocal_rank_doc_id": 0.0
+    },
+    "case_tech_008": {
+      "top_k_doc_type_hit": {
+        "1": true,
+        "3": true,
+        "5": true,
+        "10": true
+      },
+      "reciprocal_rank_doc_type": 1.0,
+      "top_k_doc_id_hit": {
+        "1": false,
+        "3": false,
+        "5": false,
+        "10": false
+      },
+      "reciprocal_rank_doc_id": 0.0
+    },
+    "case_tech_009": {
+      "top_k_doc_type_hit": {
+        "1": true,
+        "3": true,
+        "5": true,
+        "10": true
+      },
+      "reciprocal_rank_doc_type": 1.0,
+      "top_k_doc_id_hit": {
+        "1": false,
+        "3": false,
+        "5": false,
+        "10": false
+      },
+      "reciprocal_rank_doc_id": 0.0
+    }
+  },
+  "wrong_cases": [
+    {
+      "case_id": "case_edge_001",
+      "failure_mode": "missing_doc_type",
+      "details": "Expected doc_types: [] | Retrieved: Policy(doc_policy_0018)@1, FAQ(doc_faq_0017)@2, Case(doc_case_0017)@3, FAQ(doc_faq_0006)@4, Policy(doc_policy_0005)@5, Policy(doc_policy_0020)@6, FAQ(doc_faq_0009)@7, FAQ(doc_faq_0013)@8, FAQ(doc_faq_0018)@9, Policy(doc_policy_0014)@10",
+      "top_k_doc_type_hit": {
+        "1": false,
+        "3": false,
+        "5": false,
+        "10": false
+      },
+      "reciprocal_rank_doc_type": 0.0
+    },
+    {
+      "case_id": "case_edge_003",
+      "failure_mode": "missing_doc_type",
+      "details": "Expected doc_types: [] | Retrieved: FAQ(doc_faq_0003)@1, Policy(doc_policy_0007)@2, Policy(doc_policy_0008)@3, Case(doc_case_0009)@4, Policy(doc_policy_0010)@5, Case(doc_case_0014)@6, FAQ(doc_faq_0013)@7, Case(doc_case_0006)@8, FAQ(doc_faq_0006)@9, Case(doc_case_0003)@10",
+      "top_k_doc_type_hit": {
+        "1": false,
+        "3": false,
+        "5": false,
+        "10": false
+      },
+      "reciprocal_rank_doc_type": 0.0
+    },
+    {
+      "case_id": "case_edge_004",
+      "failure_mode": "missing_doc_type",
+      "details": "Expected doc_types: [] | Retrieved: FAQ(doc_faq_0020)@1, Case(doc_case_0004)@2, FAQ(doc_faq_0005)@3, Policy(doc_policy_0011)@4, Policy(doc_policy_0014)@5, FAQ(doc_faq_0013)@6, Policy(doc_policy_0003)@7, FAQ(doc_faq_0011)@8, Case(doc_case_0020)@9, Policy(doc_policy_0016)@10",
+      "top_k_doc_type_hit": {
+        "1": false,
+        "3": false,
+        "5": false,
+        "10": false
+      },
+      "reciprocal_rank_doc_type": 0.0
+    },
+    {
+      "case_id": "case_edge_005",
+      "failure_mode": "missing_doc_type",
+      "details": "Expected doc_types: [] | Retrieved: Policy(doc_policy_0002)@1, FAQ(doc_faq_0008)@2, Policy(doc_policy_0008)@3, Policy(doc_policy_0015)@4, FAQ(doc_faq_0011)@5, Case(doc_case_0019)@6, FAQ(doc_faq_0009)@7, Policy(doc_policy_0018)@8, Case(doc_case_0018)@9, FAQ(doc_faq_0016)@10",
+      "top_k_doc_type_hit": {
+        "1": false,
+        "3": false,
+        "5": false,
+        "10": false
+      },
+      "reciprocal_rank_doc_type": 0.0
+    }
+  ],
+  "wrong_case_count": 4,
+  "doc_id_rechecks": [
+    {
+      "case_id": "case_edge_001",
+      "original_failure_mode": "missing_doc_type",
+      "doc_id_found": false,
+      "doc_id_found_rank": null,
+      "reclassified": null
+    },
+    {
+      "case_id": "case_edge_003",
+      "original_failure_mode": "missing_doc_type",
+      "doc_id_found": false,
+      "doc_id_found_rank": null,
+      "reclassified": null
+    },
+    {
+      "case_id": "case_edge_004",
+      "original_failure_mode": "missing_doc_type",
+      "doc_id_found": false,
+      "doc_id_found_rank": null,
+      "reclassified": null
+    },
+    {
+      "case_id": "case_edge_005",
+      "original_failure_mode": "missing_doc_type",
+      "doc_id_found": false,
+      "doc_id_found_rank": null,
+      "reclassified": null
+    }
+  ]
+}
