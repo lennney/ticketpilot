@@ -34,6 +34,31 @@
 
 ---
 
+---
+
+## 2026-05-06 — Phase 11.3: Evidence-Grounded Prompt Builder
+
+**Summary**: Implemented the evidence-grounded prompt/input builder for LLM draft generation. Creates structured prompts from ticket context + evidence candidates with deterministic evidence packing, safety instructions, and output format specification. 50 unit tests added. Full quality gate passed.
+
+**Key Deliverables**:
+- `src/ticketpilot/drafting/prompt_builder.py` — DraftPromptInput schema, build_prompt(), format_evidence_block(), build_safety_instructions(), build_output_format_instructions()
+- `tests/unit/test_prompt_builder.py` — 50 tests across 5 test classes
+
+**Key Design Decisions**:
+- Prompt builder is fully deterministic — same input always produces same output
+- Evidence packing: sorts by rank ascending, formats with chunk_id/doc_id/type/title/score, truncates at 200 chars (configurable), skips empty content, max count configurable (default 5)
+- Safety instructions adapt to risk flags, severity, and must_human_review state
+- Output format instructions align with existing DraftReply schema fields for future parsing
+- Empty ticket_text raises ValueError (fail-fast on invalid input)
+
+**Validation**: Quality gate PASSED — 857 unit, 119 integration (0 skip), 86.04% coverage, ruff clean, OpenSpec 17/17, secret scan clean, overclaim scan clean
+
+**Phase Status**: Phase 11.3 complete. Phase 11.4 pending (citation validator extension).
+
+**Next Batch**: Phase 11.4 — Citation Validator Extension
+
+---
+
 ## 2026-05-06 — Phase 11.1: Evidence-Grounded LLM Draft Generation Planning
 
 **Summary**: Created the OpenSpec planning layer for Phase 11 — Evidence-Grounded LLM Draft Generation. This planning batch produced 7 files: proposal, design, tasks, and 4 spec files (draft-generation, claim-guard, human-review, draft-evaluation). No code changes were made.

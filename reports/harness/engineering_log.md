@@ -4,6 +4,33 @@
 
 ---
 
+## 2026-05-06 — Phase 11.3: Evidence-Grounded Prompt Builder
+
+**Problem**: LLM provider interface (Phase 11.2) defines generate_draft() which takes ticket context + evidence, but doesn't specify how to structure the input prompt. Need a deterministic prompt builder that converts evidence candidates and ticket context into a structured prompt that constrains the LLM to evidence-grounded drafting.
+
+**Approach**:
+- DraftPromptInput schema: Pydantic model with ticket_text, issue_type, risk_flags, severity, must_human_review, evidence_candidates
+- format_evidence_block(): Sorts evidence by rank ascending, formats each with stable metadata (chunk_id, doc_id, doc_type, title, score/rank), truncates content at 200 chars, skips empty content, configurable max count
+- build_safety_instructions(): 8 rules covering draft-only language, citation requirement, forbidden promises, risk-flag-aware review escalation, severity awareness
+- build_output_format_instructions(): Structured output spec aligning with DraftReply fields
+- build_prompt(): Assembles 4 sections (system role, ticket context, evidence, safety + output format)
+
+**Key Engineering Decisions**:
+- Used Pydantic BaseModel for DraftPromptInput to maintain project consistency and get free validation
+- Evidence truncation at 200 chars matches Citation.evidence_excerpt max_length from existing schema
+- Evidence ID references use [证据 ID] notation consistent with Chinese-language prompt design
+- Empty content is silently skipped rather than raising — the LLM sees fewer evidence items but still gets a valid prompt
+- Fail-fast on empty ticket_text: raises ValueError rather than generating a meaningless prompt
+- Output format instructions use field names matching DraftReply (answer_text, cited_evidence_ids, etc.) for future structured parsing
+
+**Files**:
+- `src/ticketpilot/drafting/prompt_builder.py` (new, 157 lines)
+- `tests/unit/test_prompt_builder.py` (new, 338 lines, 50 tests)
+
+**Validation**: Quality gate PASSED — 857 unit, 119 integration (0 skip), 86.04% coverage, ruff clean, OpenSpec 17/17, secret scan clean, overclaim scan clean.
+
+---
+
 ## 2026-05-06 — Phase 11.1: Evidence-Grounded LLM Draft Generation Planning
 
 **Problem**: Template-based drafts (FakeDraftProvider) demonstrate pipeline connectivity but not portfolio-grade draft quality. The product needs evidence-grounded generation with safety guardrails.

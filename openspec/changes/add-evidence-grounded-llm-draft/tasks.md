@@ -75,7 +75,7 @@ uv run ruff check .
 
 ---
 
-### 11.3 — Evidence-Grounded Prompt Builder
+### 11.3 — Evidence-Grounded Prompt Builder ✅
 
 **Scope**: Implement prompt builder that converts evidence candidates + ticket context into structured LLM prompts.
 

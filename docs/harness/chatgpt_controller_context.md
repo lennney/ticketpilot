@@ -21,9 +21,9 @@
 
 | Check | Result |
 |---|---|
-| Unit tests | 807 passed |
+| Unit tests | 857 passed |
 | Integration tests | 119 passed, 0 skipped |
-| Coverage | 85.74% |
+| Coverage | 86.04% |
 | Ruff | All checks passed |
 | OpenSpec validate --all | 16/16 passed |
 | Secret scan | Clean |
@@ -41,7 +41,7 @@
 
 ## 4. Current Working Context
 
-**Phase 10 is complete and archived. Phase 11.2 code complete (draft schema + deterministic LLM provider).**
+**Phase 10 is complete and archived. Phase 11.3 code complete (evidence-grounded prompt builder).**
 
 ### Phase 10 Evidence Chain
 
@@ -79,12 +79,12 @@ The diagnosis followed 7 sub-phases in sequence:
 
 ## 5. Active OpenSpec Change
 
-**Phase 11.2 — Draft Schema and Deterministic Provider** (active)
-- 4 new files: llm_provider.py, provider_config.py, test_llm_provider.py (17 tests), test_llm_config.py (10 tests)
-- Extended DraftReply schema with provider_id, escalation_reason, safety_notes, cited_evidence_ids
-- LLMProvider ABC + FakeLLMProvider (deterministic, no network, no API keys, safe fallback)
-- Provider config + factory (TICKETPILOT_LLM_PROVIDER env var, default "fake")
-- Quality gate: ✅ PASSED — 807 unit, 119 integration, 0 skipped, 85.74% coverage
+**Phase 11.3 — Evidence-Grounded Prompt Builder** (active)
+- 2 new files: prompt_builder.py (65 lines), test_prompt_builder.py (50 tests)
+- DraftPromptInput schema, build_prompt() with evidence packing, safety instructions, output format
+- Prompt builder is fully deterministic — same input always produces same output
+- Evidence packing: rank-order, truncation at 200 chars, empty-content skip, configurable max count (default 5)
+- Quality gate: ✅ PASSED — 857 unit, 119 integration, 0 skipped, 86.04% coverage
 - OpenSpec --all: ✅ 17/17 passed
 
 ## 6. Current Decisions
@@ -106,7 +106,7 @@ See `docs/harness/controller_decision_log.md` for full log.
 
 | Priority | Action | Phase | Type | Status |
 |---|---|---|---|---|
-| 1 | Evidence-grounded LLM draft generation — Phase 11.3 prompt builder | 11.3 | Code | Next |
+| 1 | Evidence-grounded LLM draft generation — Phase 11.4 citation validator extension | 11.4 | Code | Next |
 | — | Query expansion audit (alternative if retrieval prioritized) | 11 | Analysis | Alternative |
 
 See `docs/harness/controller_next_actions.md` for full details with allowed/forbidden files and validation commands.
@@ -136,8 +136,8 @@ customer service ticket triage. Read `AGENTS.md` for the project constitution.
 
 Current state:
 - Phase 10 cleanly archived
-- Phase 11.2 code complete — active OpenSpec change: add-evidence-grounded-llm-draft
-- Current baseline: 807 unit, 119 integration, 0 skipped, 85.74% coverage
+- Phase 11.3 code complete — active OpenSpec change: add-evidence-grounded-llm-draft
+- Current baseline: 857 unit, 119 integration, 0 skipped, 86.04% coverage
 - Latest commit: pending
 - Metric granularity thesis confirmed: 78% of wrong cases reclassified as doc-ID found
 - Doc-ID Recall@10: 91.9% (+32.5% over doc-type 59.4%)

@@ -19,6 +19,27 @@
 
 ---
 
+## 2026-05-06 — Phase 11.3: Evidence-Grounded Prompt Builder
+
+### Added
+- `src/ticketpilot/drafting/prompt_builder.py` — Prompt builder module with `DraftPromptInput` schema, `build_prompt()`, evidence packing, safety instructions, and output format instructions
+- `tests/unit/test_prompt_builder.py` — 50 tests covering DraftPromptInput, evidence block formatting, safety instructions, output format, and full prompt building
+
+### Design
+- `DraftPromptInput` schema: `ticket_text`, `issue_type`, `risk_flags`, `severity`, `must_human_review`, `evidence_candidates`
+- `format_evidence_block()`: Sorts by rank ascending, formats each with chunk_id/doc_id/type/title/score, truncates content at 200 chars, skips empty content, configurable max count (default 5)
+- `build_safety_instructions()`: Draft-only language, evidence-grounded constraint, citation requirement, forbidden promise rules, risk-flag-aware review escalation, severity-aware notes
+- `build_output_format_instructions()`: Structured output spec for DraftReply fields (answer_text, cited_evidence_ids, unsupported_claims, safety_notes, must_human_review, escalation_reason, confidence)
+- `build_prompt()`: Assembles 4 sections (role, ticket context, evidence, safety + output format) into structured prompt
+
+### Validation
+- Quality gate: ✅ PASSED — 857 unit (+50 new), 119 integration, **0 skipped**, 86.04% coverage (≥70%)
+- Ruff: ✅ All checks passed
+- OpenSpec --all: ✅ 17/17 passed
+- Secret scan: ✅ Clean
+
+---
+
 ## 2026-05-06 — Phase 11.2: Draft Schema and Deterministic Provider
 
 ### Added

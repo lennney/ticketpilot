@@ -194,6 +194,45 @@
 
 ---
 
+## Completed Batch: Phase 11.3 — Evidence-Grounded Prompt Builder
+
+### What Was Done
+
+- Created `DraftPromptInput` schema with ticket context fields
+- Created `build_prompt()` function — assembles role, ticket context, evidence blocks, safety instructions, and output format instructions
+- Created `format_evidence_block()` — sorts by rank ascending, formats chunk_id/doc_id/type/title/score, truncates at 200 chars, skips empty content, configurable max count (default 5)
+- Created `build_safety_instructions()` — 8 safety rules: draft-only, evidence-grounded, citation requirement, forbidden promises, risk-flag escalation, severity awareness
+- Created `build_output_format_instructions()` — structured output spec aligned with DraftReply fields
+- 50 unit tests covering all prompt builder behaviors
+- No LLM API calls, no pipeline integration
+
+### Files Created
+
+- `src/ticketpilot/drafting/prompt_builder.py`
+- `tests/unit/test_prompt_builder.py`
+
+### Key Findings
+
+- Prompt builder is fully deterministic — same input always produces same output
+- Evidence packing preserves ranking order, skips empty content, truncates deterministically
+- Safety instructions adapt to risk flags, severity, and must_human_review state
+- Output format instructions align with existing DraftReply schema fields
+- Empty ticket_text raises ValueError (fail-fast on invalid input)
+
+### Validation
+
+- Quality gate: ✅ PASSED — 857 unit (+50), 119 integration, **0 skipped**, 86.04% coverage
+- Ruff: ✅ All checks passed
+- OpenSpec --all: ✅ 17/17 passed
+- Secret scan: ✅ Clean
+- Overclaim scan: ✅ Clean
+
+### Commit
+
+`pending`
+
+---
+
 ## Completed Batch: Phase 11.2 — Draft Schema and Deterministic Provider
 
 ### What Was Done
@@ -232,7 +271,7 @@
 
 ### Commit
 
-`pending`
+`b70128a` pushed to `origin/master`
 
 ---
 
@@ -268,19 +307,19 @@
 
 ---
 
-## Next Batch: Phase 11.3 — Evidence-Grounded Prompt Builder
+## Next Batch: Phase 11.4 — Citation Validator Extension
 
 ### Scope
 
-1. Implement prompt builder that converts evidence candidates + ticket context into structured LLM prompts
-2. Include system prompt, evidence formatting, citation instruction, and human-review escalation prompt
-3. Add unit tests for all prompt builder behaviors
+1. Extend existing CitationValidator to handle LLM-generated draft output
+2. Add stricter citation checking for chunk_id format validation
+3. Add unit tests for extended citation validation behaviors
 4. No real LLM API calls, no pipeline integration
 
 ### Allowed Files
 
-- `src/ticketpilot/drafting/prompt_builder.py` (new)
-- `tests/unit/test_prompt_builder.py` (new)
+- `src/ticketpilot/drafting/citation_validator.py` (extend)
+- `tests/unit/test_citation_validator.py` (extend)
 - `openspec/changes/add-evidence-grounded-llm-draft/` (update tasks.md)
 - `docs/changelog.md`
 - `docs/harness/`
@@ -294,7 +333,7 @@
 ### Validation Commands
 
 ```bash
-uv run pytest tests/unit/test_prompt_builder.py -v --tb=short
+uv run pytest tests/unit/test_citation_validator.py -v --tb=short
 openspec validate add-evidence-grounded-llm-draft --strict
 uv run ruff check .
 ```
