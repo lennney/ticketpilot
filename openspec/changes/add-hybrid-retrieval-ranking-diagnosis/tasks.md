@@ -98,7 +98,7 @@
 - [x] 7.3 Run full-dataset doc-level evaluation
 - [x] 7.4 Generate updated wrong-case reclassification
 - [x] 7.5 Validate: openspec --strict, ruff, 143 tests pass (0 skips)
-- [ ] 7.6 Run real pipeline export on 86 labeled cases for full-dataset doc_id metrics (optional, high value)
+- [x] 7.6 Run real pipeline export on 86 labeled cases for full-dataset doc_id metrics (optional, high value)
 
 ## Phase 10.8 — Portfolio Snapshot
 

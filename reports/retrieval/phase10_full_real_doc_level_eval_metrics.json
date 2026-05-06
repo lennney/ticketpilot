@@ -1,0 +1,1930 @@
+{
+  "config": {
+    "rows_path": "reports/retrieval/phase10_full_real_doc_level_rows.json",
+    "golden_path": "data/eval/golden_expectations.csv",
+    "mode": "full",
+    "total_cases": 101,
+    "labeled_cases": 86,
+    "unlabeled_cases": 15,
+    "ks": [
+      1,
+      3,
+      5,
+      10
+    ]
+  },
+  "provider": {
+    "embedding_provider": "openai_compatible",
+    "keyword_count": 0,
+    "vector_count": 20,
+    "fused_count": 10
+  },
+  "aggregate_doc_type_metrics": {
+    "hit_rate_at_k": {
+      "1": 0.44554455445544555,
+      "3": 0.5445544554455446,
+      "5": 0.5742574257425742,
+      "10": 0.594059405940594
+    },
+    "mrr": 0.49954424013829957,
+    "wrong_case_count": 41
+  },
+  "aggregate_doc_id_metrics": {
+    "hit_rate_doc_id": {
+      "1": 0.3023255813953488,
+      "3": 0.6162790697674418,
+      "5": 0.7906976744186046,
+      "10": 0.9186046511627907
+    },
+    "p0_added_record_hit_rate": {
+      "1": 0.3023255813953488,
+      "3": 0.6162790697674418,
+      "5": 0.7906976744186046,
+      "10": 0.9186046511627907
+    },
+    "mrr_doc_id": 0.48805832410483574
+  },
+  "doc_id_summary": {
+    "labeled_case_count": 86,
+    "unlabeled_case_count": 15,
+    "cases_doc_id_correct_at_10": 47,
+    "cases_partial_hit": 32,
+    "cases_still_wrong_at_doc_id_level": 39,
+    "doc_id_success_rate": 0.5465116279069767
+  },
+  "wrong_case_recheck": {
+    "total_wrong_cases_doc_type": 41,
+    "doc_id_found_in_top_10": 32,
+    "doc_id_not_found": 9,
+    "reclassified_cases": [
+      {
+        "case_id": "case_acco_003",
+        "original_failure_mode": "missing_doc_type",
+        "doc_id_found_rank": 2,
+        "reclassified": "doc_id_found_in_top_10"
+      },
+      {
+        "case_id": "case_acco_009",
+        "original_failure_mode": "missing_doc_type",
+        "doc_id_found_rank": 6,
+        "reclassified": "doc_id_found_in_top_10"
+      },
+      {
+        "case_id": "case_acco_012",
+        "original_failure_mode": "missing_doc_type",
+        "doc_id_found_rank": 4,
+        "reclassified": "doc_id_found_in_top_10"
+      },
+      {
+        "case_id": "case_acco_014",
+        "original_failure_mode": "missing_doc_type",
+        "doc_id_found_rank": 8,
+        "reclassified": "doc_id_found_in_top_10"
+      },
+      {
+        "case_id": "case_comp_003",
+        "original_failure_mode": "missing_doc_type",
+        "doc_id_found_rank": 2,
+        "reclassified": "doc_id_found_in_top_10"
+      },
+      {
+        "case_id": "case_comp_004",
+        "original_failure_mode": "missing_doc_type",
+        "doc_id_found_rank": 4,
+        "reclassified": "doc_id_found_in_top_10"
+      },
+      {
+        "case_id": "case_comp_005",
+        "original_failure_mode": "missing_doc_type",
+        "doc_id_found_rank": 1,
+        "reclassified": "doc_id_found_in_top_10"
+      },
+      {
+        "case_id": "case_comp_006",
+        "original_failure_mode": "missing_doc_type",
+        "doc_id_found_rank": 1,
+        "reclassified": "doc_id_found_in_top_10"
+      },
+      {
+        "case_id": "case_comp_007",
+        "original_failure_mode": "missing_doc_type",
+        "doc_id_found_rank": 6,
+        "reclassified": "doc_id_found_in_top_10"
+      },
+      {
+        "case_id": "case_comp_008",
+        "original_failure_mode": "missing_doc_type",
+        "doc_id_found_rank": 1,
+        "reclassified": "doc_id_found_in_top_10"
+      },
+      {
+        "case_id": "case_comp_009",
+        "original_failure_mode": "missing_doc_type",
+        "doc_id_found_rank": 5,
+        "reclassified": "doc_id_found_in_top_10"
+      },
+      {
+        "case_id": "case_comp_013",
+        "original_failure_mode": "missing_doc_type",
+        "doc_id_found_rank": 2,
+        "reclassified": "doc_id_found_in_top_10"
+      },
+      {
+        "case_id": "case_logi_005",
+        "original_failure_mode": "missing_doc_type",
+        "doc_id_found_rank": 5,
+        "reclassified": "doc_id_found_in_top_10"
+      },
+      {
+        "case_id": "case_logi_008",
+        "original_failure_mode": "missing_doc_type",
+        "doc_id_found_rank": 3,
+        "reclassified": "doc_id_found_in_top_10"
+      },
+      {
+        "case_id": "case_logi_011",
+        "original_failure_mode": "missing_doc_type",
+        "doc_id_found_rank": 4,
+        "reclassified": "doc_id_found_in_top_10"
+      },
+      {
+        "case_id": "case_othe_009",
+        "original_failure_mode": "missing_doc_type",
+        "doc_id_found_rank": 3,
+        "reclassified": "doc_id_found_in_top_10"
+      },
+      {
+        "case_id": "case_othe_011",
+        "original_failure_mode": "missing_doc_type",
+        "doc_id_found_rank": 3,
+        "reclassified": "doc_id_found_in_top_10"
+      },
+      {
+        "case_id": "case_othe_012",
+        "original_failure_mode": "missing_doc_type",
+        "doc_id_found_rank": 3,
+        "reclassified": "doc_id_found_in_top_10"
+      },
+      {
+        "case_id": "case_othe_013",
+        "original_failure_mode": "missing_doc_type",
+        "doc_id_found_rank": 1,
+        "reclassified": "doc_id_found_in_top_10"
+      },
+      {
+        "case_id": "case_refu_001",
+        "original_failure_mode": "missing_doc_type",
+        "doc_id_found_rank": 3,
+        "reclassified": "doc_id_found_in_top_10"
+      },
+      {
+        "case_id": "case_refu_003",
+        "original_failure_mode": "missing_doc_type",
+        "doc_id_found_rank": 1,
+        "reclassified": "doc_id_found_in_top_10"
+      },
+      {
+        "case_id": "case_refu_006",
+        "original_failure_mode": "missing_doc_type",
+        "doc_id_found_rank": 3,
+        "reclassified": "doc_id_found_in_top_10"
+      },
+      {
+        "case_id": "case_refu_008",
+        "original_failure_mode": "missing_doc_type",
+        "doc_id_found_rank": 3,
+        "reclassified": "doc_id_found_in_top_10"
+      },
+      {
+        "case_id": "case_refu_009",
+        "original_failure_mode": "missing_doc_type",
+        "doc_id_found_rank": 1,
+        "reclassified": "doc_id_found_in_top_10"
+      },
+      {
+        "case_id": "case_refu_013",
+        "original_failure_mode": "missing_doc_type",
+        "doc_id_found_rank": 2,
+        "reclassified": "doc_id_found_in_top_10"
+      },
+      {
+        "case_id": "case_refu_015",
+        "original_failure_mode": "missing_doc_type",
+        "doc_id_found_rank": 2,
+        "reclassified": "doc_id_found_in_top_10"
+      },
+      {
+        "case_id": "case_refu_016",
+        "original_failure_mode": "missing_doc_type",
+        "doc_id_found_rank": 2,
+        "reclassified": "doc_id_found_in_top_10"
+      },
+      {
+        "case_id": "case_retu_004",
+        "original_failure_mode": "missing_doc_type",
+        "doc_id_found_rank": 5,
+        "reclassified": "doc_id_found_in_top_10"
+      },
+      {
+        "case_id": "case_retu_006",
+        "original_failure_mode": "missing_doc_type",
+        "doc_id_found_rank": 1,
+        "reclassified": "doc_id_found_in_top_10"
+      },
+      {
+        "case_id": "case_retu_008",
+        "original_failure_mode": "missing_doc_type",
+        "doc_id_found_rank": 1,
+        "reclassified": "doc_id_found_in_top_10"
+      },
+      {
+        "case_id": "case_retu_010",
+        "original_failure_mode": "missing_doc_type",
+        "doc_id_found_rank": 5,
+        "reclassified": "doc_id_found_in_top_10"
+      },
+      {
+        "case_id": "case_retu_011",
+        "original_failure_mode": "missing_doc_type",
+        "doc_id_found_rank": 7,
+        "reclassified": "doc_id_found_in_top_10"
+      }
+    ],
+    "still_wrong_cases": [
+      {
+        "case_id": "case_acco_006",
+        "original_failure_mode": "missing_doc_type"
+      },
+      {
+        "case_id": "case_comp_001",
+        "original_failure_mode": "missing_doc_type"
+      },
+      {
+        "case_id": "case_comp_002",
+        "original_failure_mode": "missing_doc_type"
+      },
+      {
+        "case_id": "case_edge_001",
+        "original_failure_mode": "missing_doc_type"
+      },
+      {
+        "case_id": "case_edge_002",
+        "original_failure_mode": "missing_doc_type"
+      },
+      {
+        "case_id": "case_edge_003",
+        "original_failure_mode": "missing_doc_type"
+      },
+      {
+        "case_id": "case_edge_004",
+        "original_failure_mode": "missing_doc_type"
+      },
+      {
+        "case_id": "case_edge_005",
+        "original_failure_mode": "missing_doc_type"
+      },
+      {
+        "case_id": "case_logi_010",
+        "original_failure_mode": "missing_doc_type"
+      }
+    ]
+  },
+  "per_case_results": {
+    "case_acco_001": {
+      "expected_doc_ids": [
+        "44444444-4444-4444-4444-444444444444",
+        "a5555555-5555-5555-5555-555555555555",
+        "b4444444-4444-4444-4444-444444444444"
+      ],
+      "hit_doc_ids": [
+        "44444444-4444-4444-4444-444444444444",
+        "a5555555-5555-5555-5555-555555555555",
+        "b4444444-4444-4444-4444-444444444444"
+      ],
+      "missed_doc_ids": [],
+      "hit_ranks": {
+        "44444444-4444-4444-4444-444444444444": 2,
+        "a5555555-5555-5555-5555-555555555555": 3,
+        "b4444444-4444-4444-4444-444444444444": 8
+      },
+      "doc_id_correct_at_10": true,
+      "doc_type_hit_at_10": true,
+      "doc_id_hit_at_10": true
+    },
+    "case_acco_002": {
+      "expected_doc_ids": [
+        "55555555-5555-5555-5555-555555555555",
+        "a5555555-5555-5555-5555-555555555555",
+        "eeeeeeee-2222-2222-2222-222222222222"
+      ],
+      "hit_doc_ids": [
+        "55555555-5555-5555-5555-555555555555",
+        "a5555555-5555-5555-5555-555555555555",
+        "eeeeeeee-2222-2222-2222-222222222222"
+      ],
+      "missed_doc_ids": [],
+      "hit_ranks": {
+        "55555555-5555-5555-5555-555555555555": 5,
+        "a5555555-5555-5555-5555-555555555555": 7,
+        "eeeeeeee-2222-2222-2222-222222222222": 9
+      },
+      "doc_id_correct_at_10": true,
+      "doc_type_hit_at_10": true,
+      "doc_id_hit_at_10": true
+    },
+    "case_acco_003": {
+      "expected_doc_ids": [
+        "ae0e0e0e-bbbb-bbbb-bbbb-bbbbbbbbbbbb",
+        "ca0a0a0a-aaaa-aaaa-aaaa-aaaaaaaaaaaa"
+      ],
+      "hit_doc_ids": [
+        "ae0e0e0e-bbbb-bbbb-bbbb-bbbbbbbbbbbb",
+        "ca0a0a0a-aaaa-aaaa-aaaa-aaaaaaaaaaaa"
+      ],
+      "missed_doc_ids": [],
+      "hit_ranks": {
+        "ca0a0a0a-aaaa-aaaa-aaaa-aaaaaaaaaaaa": 2,
+        "ae0e0e0e-bbbb-bbbb-bbbb-bbbbbbbbbbbb": 5
+      },
+      "doc_id_correct_at_10": true,
+      "doc_type_hit_at_10": false,
+      "doc_id_hit_at_10": true
+    },
+    "case_acco_004": {
+      "expected_doc_ids": [
+        "44444444-4444-4444-4444-444444444444",
+        "a5555555-5555-5555-5555-555555555555",
+        "ad0d0d0d-7777-7777-7777-777777777777",
+        "c5555555-5555-5555-5555-555555555555"
+      ],
+      "hit_doc_ids": [
+        "c5555555-5555-5555-5555-555555555555"
+      ],
+      "missed_doc_ids": [
+        "44444444-4444-4444-4444-444444444444",
+        "a5555555-5555-5555-5555-555555555555",
+        "ad0d0d0d-7777-7777-7777-777777777777"
+      ],
+      "hit_ranks": {
+        "c5555555-5555-5555-5555-555555555555": 7
+      },
+      "doc_id_correct_at_10": false,
+      "doc_type_hit_at_10": true,
+      "doc_id_hit_at_10": true
+    },
+    "case_acco_005": {
+      "expected_doc_ids": [
+        "55555555-5555-5555-5555-555555555555",
+        "b5555555-5555-5555-5555-555555555555",
+        "eeeeeeee-2222-2222-2222-222222222222"
+      ],
+      "hit_doc_ids": [
+        "55555555-5555-5555-5555-555555555555",
+        "b5555555-5555-5555-5555-555555555555",
+        "eeeeeeee-2222-2222-2222-222222222222"
+      ],
+      "missed_doc_ids": [],
+      "hit_ranks": {
+        "55555555-5555-5555-5555-555555555555": 1,
+        "b5555555-5555-5555-5555-555555555555": 2,
+        "eeeeeeee-2222-2222-2222-222222222222": 6
+      },
+      "doc_id_correct_at_10": true,
+      "doc_type_hit_at_10": true,
+      "doc_id_hit_at_10": true
+    },
+    "case_acco_006": {
+      "expected_doc_ids": [
+        "ae0e0e0e-bbbb-bbbb-bbbb-bbbbbbbbbbbb"
+      ],
+      "hit_doc_ids": [],
+      "missed_doc_ids": [
+        "ae0e0e0e-bbbb-bbbb-bbbb-bbbbbbbbbbbb"
+      ],
+      "hit_ranks": {},
+      "doc_id_correct_at_10": false,
+      "doc_type_hit_at_10": false,
+      "doc_id_hit_at_10": false
+    },
+    "case_acco_007": {
+      "expected_doc_ids": [
+        "55555555-5555-5555-5555-555555555555",
+        "a5555555-5555-5555-5555-555555555555"
+      ],
+      "hit_doc_ids": [
+        "55555555-5555-5555-5555-555555555555",
+        "a5555555-5555-5555-5555-555555555555"
+      ],
+      "missed_doc_ids": [],
+      "hit_ranks": {
+        "55555555-5555-5555-5555-555555555555": 3,
+        "a5555555-5555-5555-5555-555555555555": 8
+      },
+      "doc_id_correct_at_10": true,
+      "doc_type_hit_at_10": true,
+      "doc_id_hit_at_10": true
+    },
+    "case_acco_008": {
+      "expected_doc_ids": [
+        "ad0d0d0d-7777-7777-7777-777777777777",
+        "c5555555-5555-5555-5555-555555555555",
+        "eeeeeeee-4444-4444-4444-444444444444"
+      ],
+      "hit_doc_ids": [
+        "ad0d0d0d-7777-7777-7777-777777777777",
+        "c5555555-5555-5555-5555-555555555555",
+        "eeeeeeee-4444-4444-4444-444444444444"
+      ],
+      "missed_doc_ids": [],
+      "hit_ranks": {
+        "c5555555-5555-5555-5555-555555555555": 1,
+        "eeeeeeee-4444-4444-4444-444444444444": 2,
+        "ad0d0d0d-7777-7777-7777-777777777777": 7
+      },
+      "doc_id_correct_at_10": true,
+      "doc_type_hit_at_10": true,
+      "doc_id_hit_at_10": true
+    },
+    "case_acco_009": {
+      "expected_doc_ids": [
+        "a6666666-6666-6666-6666-666666666666"
+      ],
+      "hit_doc_ids": [
+        "a6666666-6666-6666-6666-666666666666"
+      ],
+      "missed_doc_ids": [],
+      "hit_ranks": {
+        "a6666666-6666-6666-6666-666666666666": 6
+      },
+      "doc_id_correct_at_10": true,
+      "doc_type_hit_at_10": false,
+      "doc_id_hit_at_10": true
+    },
+    "case_acco_010": {
+      "expected_doc_ids": [
+        "ae0e0e0e-7777-7777-7777-777777777777",
+        "ffffffff-6666-6666-6666-666666666666"
+      ],
+      "hit_doc_ids": [
+        "ae0e0e0e-7777-7777-7777-777777777777",
+        "ffffffff-6666-6666-6666-666666666666"
+      ],
+      "missed_doc_ids": [],
+      "hit_ranks": {
+        "ffffffff-6666-6666-6666-666666666666": 1,
+        "ae0e0e0e-7777-7777-7777-777777777777": 9
+      },
+      "doc_id_correct_at_10": true,
+      "doc_type_hit_at_10": true,
+      "doc_id_hit_at_10": true
+    },
+    "case_acco_011": {
+      "expected_doc_ids": [
+        "a5555555-5555-5555-5555-555555555555",
+        "eeeeeeee-2222-2222-2222-222222222222"
+      ],
+      "hit_doc_ids": [
+        "a5555555-5555-5555-5555-555555555555",
+        "eeeeeeee-2222-2222-2222-222222222222"
+      ],
+      "missed_doc_ids": [],
+      "hit_ranks": {
+        "eeeeeeee-2222-2222-2222-222222222222": 1,
+        "a5555555-5555-5555-5555-555555555555": 10
+      },
+      "doc_id_correct_at_10": true,
+      "doc_type_hit_at_10": true,
+      "doc_id_hit_at_10": true
+    },
+    "case_acco_012": {
+      "expected_doc_ids": [
+        "ae0e0e0e-bbbb-bbbb-bbbb-bbbbbbbbbbbb"
+      ],
+      "hit_doc_ids": [
+        "ae0e0e0e-bbbb-bbbb-bbbb-bbbbbbbbbbbb"
+      ],
+      "missed_doc_ids": [],
+      "hit_ranks": {
+        "ae0e0e0e-bbbb-bbbb-bbbb-bbbbbbbbbbbb": 4
+      },
+      "doc_id_correct_at_10": true,
+      "doc_type_hit_at_10": false,
+      "doc_id_hit_at_10": true
+    },
+    "case_acco_013": {
+      "expected_doc_ids": [
+        "eeeeeeee-2222-2222-2222-222222222222",
+        "ffffffff-6666-6666-6666-666666666666"
+      ],
+      "hit_doc_ids": [
+        "eeeeeeee-2222-2222-2222-222222222222",
+        "ffffffff-6666-6666-6666-666666666666"
+      ],
+      "missed_doc_ids": [],
+      "hit_ranks": {
+        "ffffffff-6666-6666-6666-666666666666": 1,
+        "eeeeeeee-2222-2222-2222-222222222222": 4
+      },
+      "doc_id_correct_at_10": true,
+      "doc_type_hit_at_10": true,
+      "doc_id_hit_at_10": true
+    },
+    "case_acco_014": {
+      "expected_doc_ids": [
+        "ad0d0d0d-6666-6666-6666-666666666666",
+        "ae0e0e0e-bbbb-bbbb-bbbb-bbbbbbbbbbbb",
+        "ca0a0a0a-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
+        "eeeeeeee-3333-3333-3333-333333333333"
+      ],
+      "hit_doc_ids": [
+        "eeeeeeee-3333-3333-3333-333333333333"
+      ],
+      "missed_doc_ids": [
+        "ad0d0d0d-6666-6666-6666-666666666666",
+        "ae0e0e0e-bbbb-bbbb-bbbb-bbbbbbbbbbbb",
+        "ca0a0a0a-aaaa-aaaa-aaaa-aaaaaaaaaaaa"
+      ],
+      "hit_ranks": {
+        "eeeeeeee-3333-3333-3333-333333333333": 8
+      },
+      "doc_id_correct_at_10": false,
+      "doc_type_hit_at_10": false,
+      "doc_id_hit_at_10": true
+    },
+    "case_acco_015": {
+      "expected_doc_ids": [
+        "44444444-4444-4444-4444-444444444444",
+        "a5555555-5555-5555-5555-555555555555",
+        "ad0d0d0d-7777-7777-7777-777777777777"
+      ],
+      "hit_doc_ids": [],
+      "missed_doc_ids": [
+        "44444444-4444-4444-4444-444444444444",
+        "a5555555-5555-5555-5555-555555555555",
+        "ad0d0d0d-7777-7777-7777-777777777777"
+      ],
+      "hit_ranks": {},
+      "doc_id_correct_at_10": false,
+      "doc_type_hit_at_10": true,
+      "doc_id_hit_at_10": false
+    },
+    "case_comp_001": {
+      "expected_doc_ids": [
+        "ca0a0a0a-5555-5555-5555-555555555555"
+      ],
+      "hit_doc_ids": [],
+      "missed_doc_ids": [
+        "ca0a0a0a-5555-5555-5555-555555555555"
+      ],
+      "hit_ranks": {},
+      "doc_id_correct_at_10": false,
+      "doc_type_hit_at_10": false,
+      "doc_id_hit_at_10": false
+    },
+    "case_comp_002": {
+      "expected_doc_ids": [
+        "ca0a0a0a-6666-6666-6666-666666666666"
+      ],
+      "hit_doc_ids": [],
+      "missed_doc_ids": [
+        "ca0a0a0a-6666-6666-6666-666666666666"
+      ],
+      "hit_ranks": {},
+      "doc_id_correct_at_10": false,
+      "doc_type_hit_at_10": false,
+      "doc_id_hit_at_10": false
+    },
+    "case_comp_003": {
+      "expected_doc_ids": [
+        "ca0a0a0a-7777-7777-7777-777777777777"
+      ],
+      "hit_doc_ids": [
+        "ca0a0a0a-7777-7777-7777-777777777777"
+      ],
+      "missed_doc_ids": [],
+      "hit_ranks": {
+        "ca0a0a0a-7777-7777-7777-777777777777": 2
+      },
+      "doc_id_correct_at_10": true,
+      "doc_type_hit_at_10": false,
+      "doc_id_hit_at_10": true
+    },
+    "case_comp_004": {
+      "expected_doc_ids": [
+        "ca0a0a0a-9999-9999-9999-999999999999"
+      ],
+      "hit_doc_ids": [
+        "ca0a0a0a-9999-9999-9999-999999999999"
+      ],
+      "missed_doc_ids": [],
+      "hit_ranks": {
+        "ca0a0a0a-9999-9999-9999-999999999999": 4
+      },
+      "doc_id_correct_at_10": true,
+      "doc_type_hit_at_10": false,
+      "doc_id_hit_at_10": true
+    },
+    "case_comp_005": {
+      "expected_doc_ids": [
+        "ad0d0d0d-6666-6666-6666-666666666666",
+        "ae0e0e0e-bbbb-bbbb-bbbb-bbbbbbbbbbbb",
+        "c4444444-4444-4444-4444-444444444444",
+        "ca0a0a0a-aaaa-aaaa-aaaa-aaaaaaaaaaaa"
+      ],
+      "hit_doc_ids": [
+        "ad0d0d0d-6666-6666-6666-666666666666",
+        "ae0e0e0e-bbbb-bbbb-bbbb-bbbbbbbbbbbb",
+        "c4444444-4444-4444-4444-444444444444",
+        "ca0a0a0a-aaaa-aaaa-aaaa-aaaaaaaaaaaa"
+      ],
+      "missed_doc_ids": [],
+      "hit_ranks": {
+        "c4444444-4444-4444-4444-444444444444": 1,
+        "ad0d0d0d-6666-6666-6666-666666666666": 3,
+        "ca0a0a0a-aaaa-aaaa-aaaa-aaaaaaaaaaaa": 4,
+        "ae0e0e0e-bbbb-bbbb-bbbb-bbbbbbbbbbbb": 6
+      },
+      "doc_id_correct_at_10": true,
+      "doc_type_hit_at_10": false,
+      "doc_id_hit_at_10": true
+    },
+    "case_comp_006": {
+      "expected_doc_ids": [
+        "a9999999-9999-9999-9999-999999999999",
+        "ad0d0d0d-8888-8888-8888-888888888888",
+        "c3333333-3333-3333-3333-333333333333"
+      ],
+      "hit_doc_ids": [
+        "a9999999-9999-9999-9999-999999999999",
+        "ad0d0d0d-8888-8888-8888-888888888888",
+        "c3333333-3333-3333-3333-333333333333"
+      ],
+      "missed_doc_ids": [],
+      "hit_ranks": {
+        "c3333333-3333-3333-3333-333333333333": 1,
+        "ad0d0d0d-8888-8888-8888-888888888888": 5,
+        "a9999999-9999-9999-9999-999999999999": 6
+      },
+      "doc_id_correct_at_10": true,
+      "doc_type_hit_at_10": false,
+      "doc_id_hit_at_10": true
+    },
+    "case_comp_007": {
+      "expected_doc_ids": [
+        "a9999999-9999-9999-9999-999999999999",
+        "b1111111-1111-1111-1111-111111111111",
+        "eeeeeeee-9999-9999-9999-999999999999"
+      ],
+      "hit_doc_ids": [
+        "b1111111-1111-1111-1111-111111111111",
+        "eeeeeeee-9999-9999-9999-999999999999"
+      ],
+      "missed_doc_ids": [
+        "a9999999-9999-9999-9999-999999999999"
+      ],
+      "hit_ranks": {
+        "eeeeeeee-9999-9999-9999-999999999999": 6,
+        "b1111111-1111-1111-1111-111111111111": 8
+      },
+      "doc_id_correct_at_10": false,
+      "doc_type_hit_at_10": false,
+      "doc_id_hit_at_10": true
+    },
+    "case_comp_008": {
+      "expected_doc_ids": [
+        "ca0a0a0a-8888-8888-8888-888888888888"
+      ],
+      "hit_doc_ids": [
+        "ca0a0a0a-8888-8888-8888-888888888888"
+      ],
+      "missed_doc_ids": [],
+      "hit_ranks": {
+        "ca0a0a0a-8888-8888-8888-888888888888": 1
+      },
+      "doc_id_correct_at_10": true,
+      "doc_type_hit_at_10": false,
+      "doc_id_hit_at_10": true
+    },
+    "case_comp_009": {
+      "expected_doc_ids": [
+        "ca0a0a0a-9999-9999-9999-999999999999"
+      ],
+      "hit_doc_ids": [
+        "ca0a0a0a-9999-9999-9999-999999999999"
+      ],
+      "missed_doc_ids": [],
+      "hit_ranks": {
+        "ca0a0a0a-9999-9999-9999-999999999999": 5
+      },
+      "doc_id_correct_at_10": true,
+      "doc_type_hit_at_10": false,
+      "doc_id_hit_at_10": true
+    },
+    "case_comp_010": {
+      "expected_doc_ids": [
+        "a9999999-9999-9999-9999-999999999999",
+        "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"
+      ],
+      "hit_doc_ids": [
+        "a9999999-9999-9999-9999-999999999999"
+      ],
+      "missed_doc_ids": [
+        "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"
+      ],
+      "hit_ranks": {
+        "a9999999-9999-9999-9999-999999999999": 7
+      },
+      "doc_id_correct_at_10": false,
+      "doc_type_hit_at_10": true,
+      "doc_id_hit_at_10": true
+    },
+    "case_comp_011": {
+      "expected_doc_ids": [
+        "a9999999-9999-9999-9999-999999999999",
+        "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"
+      ],
+      "hit_doc_ids": [
+        "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"
+      ],
+      "missed_doc_ids": [
+        "a9999999-9999-9999-9999-999999999999"
+      ],
+      "hit_ranks": {
+        "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa": 5
+      },
+      "doc_id_correct_at_10": false,
+      "doc_type_hit_at_10": true,
+      "doc_id_hit_at_10": true
+    },
+    "case_comp_012": {
+      "expected_doc_ids": [
+        "a9999999-9999-9999-9999-999999999999",
+        "eeeeeeee-7777-7777-7777-777777777777"
+      ],
+      "hit_doc_ids": [
+        "a9999999-9999-9999-9999-999999999999"
+      ],
+      "missed_doc_ids": [
+        "eeeeeeee-7777-7777-7777-777777777777"
+      ],
+      "hit_ranks": {
+        "a9999999-9999-9999-9999-999999999999": 6
+      },
+      "doc_id_correct_at_10": false,
+      "doc_type_hit_at_10": true,
+      "doc_id_hit_at_10": true
+    },
+    "case_comp_013": {
+      "expected_doc_ids": [
+        "ad0d0d0d-6666-6666-6666-666666666666",
+        "ae0e0e0e-bbbb-bbbb-bbbb-bbbbbbbbbbbb",
+        "c4444444-4444-4444-4444-444444444444",
+        "ca0a0a0a-aaaa-aaaa-aaaa-aaaaaaaaaaaa"
+      ],
+      "hit_doc_ids": [
+        "ad0d0d0d-6666-6666-6666-666666666666",
+        "ae0e0e0e-bbbb-bbbb-bbbb-bbbbbbbbbbbb",
+        "c4444444-4444-4444-4444-444444444444",
+        "ca0a0a0a-aaaa-aaaa-aaaa-aaaaaaaaaaaa"
+      ],
+      "missed_doc_ids": [],
+      "hit_ranks": {
+        "c4444444-4444-4444-4444-444444444444": 2,
+        "ca0a0a0a-aaaa-aaaa-aaaa-aaaaaaaaaaaa": 3,
+        "ad0d0d0d-6666-6666-6666-666666666666": 4,
+        "ae0e0e0e-bbbb-bbbb-bbbb-bbbbbbbbbbbb": 7
+      },
+      "doc_id_correct_at_10": true,
+      "doc_type_hit_at_10": false,
+      "doc_id_hit_at_10": true
+    },
+    "case_logi_001": {
+      "expected_doc_ids": [
+        "a7777777-7777-7777-7777-777777777777",
+        "c8888888-8888-8888-8888-888888888888",
+        "dddddddd-5555-5555-5555-555555555555"
+      ],
+      "hit_doc_ids": [
+        "a7777777-7777-7777-7777-777777777777",
+        "c8888888-8888-8888-8888-888888888888",
+        "dddddddd-5555-5555-5555-555555555555"
+      ],
+      "missed_doc_ids": [],
+      "hit_ranks": {
+        "dddddddd-5555-5555-5555-555555555555": 2,
+        "c8888888-8888-8888-8888-888888888888": 4,
+        "a7777777-7777-7777-7777-777777777777": 7
+      },
+      "doc_id_correct_at_10": true,
+      "doc_type_hit_at_10": true,
+      "doc_id_hit_at_10": true
+    },
+    "case_logi_002": {
+      "expected_doc_ids": [
+        "99999999-9999-9999-9999-999999999999",
+        "a8888888-8888-8888-8888-888888888888",
+        "b2222222-2222-2222-2222-222222222222"
+      ],
+      "hit_doc_ids": [
+        "99999999-9999-9999-9999-999999999999",
+        "b2222222-2222-2222-2222-222222222222"
+      ],
+      "missed_doc_ids": [
+        "a8888888-8888-8888-8888-888888888888"
+      ],
+      "hit_ranks": {
+        "b2222222-2222-2222-2222-222222222222": 3,
+        "99999999-9999-9999-9999-999999999999": 4
+      },
+      "doc_id_correct_at_10": false,
+      "doc_type_hit_at_10": true,
+      "doc_id_hit_at_10": true
+    },
+    "case_logi_003": {
+      "expected_doc_ids": [
+        "88888888-8888-8888-8888-888888888888",
+        "a7777777-7777-7777-7777-777777777777"
+      ],
+      "hit_doc_ids": [
+        "88888888-8888-8888-8888-888888888888"
+      ],
+      "missed_doc_ids": [
+        "a7777777-7777-7777-7777-777777777777"
+      ],
+      "hit_ranks": {
+        "88888888-8888-8888-8888-888888888888": 3
+      },
+      "doc_id_correct_at_10": false,
+      "doc_type_hit_at_10": true,
+      "doc_id_hit_at_10": true
+    },
+    "case_logi_005": {
+      "expected_doc_ids": [
+        "99999999-9999-9999-9999-999999999999",
+        "a8888888-8888-8888-8888-888888888888",
+        "b8888888-8888-8888-8888-888888888888"
+      ],
+      "hit_doc_ids": [
+        "99999999-9999-9999-9999-999999999999",
+        "a8888888-8888-8888-8888-888888888888",
+        "b8888888-8888-8888-8888-888888888888"
+      ],
+      "missed_doc_ids": [],
+      "hit_ranks": {
+        "b8888888-8888-8888-8888-888888888888": 5,
+        "99999999-9999-9999-9999-999999999999": 8,
+        "a8888888-8888-8888-8888-888888888888": 9
+      },
+      "doc_id_correct_at_10": true,
+      "doc_type_hit_at_10": false,
+      "doc_id_hit_at_10": true
+    },
+    "case_logi_006": {
+      "expected_doc_ids": [
+        "a7777777-7777-7777-7777-777777777777",
+        "dddddddd-6666-6666-6666-666666666666"
+      ],
+      "hit_doc_ids": [
+        "a7777777-7777-7777-7777-777777777777",
+        "dddddddd-6666-6666-6666-666666666666"
+      ],
+      "missed_doc_ids": [],
+      "hit_ranks": {
+        "dddddddd-6666-6666-6666-666666666666": 1,
+        "a7777777-7777-7777-7777-777777777777": 7
+      },
+      "doc_id_correct_at_10": true,
+      "doc_type_hit_at_10": true,
+      "doc_id_hit_at_10": true
+    },
+    "case_logi_007": {
+      "expected_doc_ids": [
+        "a7777777-7777-7777-7777-777777777777",
+        "ffffffff-7777-7777-7777-777777777777"
+      ],
+      "hit_doc_ids": [
+        "a7777777-7777-7777-7777-777777777777",
+        "ffffffff-7777-7777-7777-777777777777"
+      ],
+      "missed_doc_ids": [],
+      "hit_ranks": {
+        "ffffffff-7777-7777-7777-777777777777": 1,
+        "a7777777-7777-7777-7777-777777777777": 2
+      },
+      "doc_id_correct_at_10": true,
+      "doc_type_hit_at_10": true,
+      "doc_id_hit_at_10": true
+    },
+    "case_logi_008": {
+      "expected_doc_ids": [
+        "ae0e0e0e-6666-6666-6666-666666666666",
+        "c8888888-8888-8888-8888-888888888888",
+        "dddddddd-5555-5555-5555-555555555555"
+      ],
+      "hit_doc_ids": [
+        "ae0e0e0e-6666-6666-6666-666666666666",
+        "c8888888-8888-8888-8888-888888888888",
+        "dddddddd-5555-5555-5555-555555555555"
+      ],
+      "missed_doc_ids": [],
+      "hit_ranks": {
+        "dddddddd-5555-5555-5555-555555555555": 3,
+        "ae0e0e0e-6666-6666-6666-666666666666": 6,
+        "c8888888-8888-8888-8888-888888888888": 7
+      },
+      "doc_id_correct_at_10": true,
+      "doc_type_hit_at_10": false,
+      "doc_id_hit_at_10": true
+    },
+    "case_logi_010": {
+      "expected_doc_ids": [
+        "99999999-9999-9999-9999-999999999999",
+        "a8888888-8888-8888-8888-888888888888",
+        "b9999999-9999-9999-9999-999999999999"
+      ],
+      "hit_doc_ids": [],
+      "missed_doc_ids": [
+        "99999999-9999-9999-9999-999999999999",
+        "a8888888-8888-8888-8888-888888888888",
+        "b9999999-9999-9999-9999-999999999999"
+      ],
+      "hit_ranks": {},
+      "doc_id_correct_at_10": false,
+      "doc_type_hit_at_10": false,
+      "doc_id_hit_at_10": false
+    },
+    "case_logi_011": {
+      "expected_doc_ids": [
+        "a8888888-8888-8888-8888-888888888888",
+        "ae0e0e0e-6666-6666-6666-666666666666",
+        "b8888888-8888-8888-8888-888888888888"
+      ],
+      "hit_doc_ids": [
+        "b8888888-8888-8888-8888-888888888888"
+      ],
+      "missed_doc_ids": [
+        "a8888888-8888-8888-8888-888888888888",
+        "ae0e0e0e-6666-6666-6666-666666666666"
+      ],
+      "hit_ranks": {
+        "b8888888-8888-8888-8888-888888888888": 4
+      },
+      "doc_id_correct_at_10": false,
+      "doc_type_hit_at_10": false,
+      "doc_id_hit_at_10": true
+    },
+    "case_othe_002": {
+      "expected_doc_ids": [
+        "ad0d0d0d-3333-3333-3333-333333333333",
+        "c7777777-7777-7777-7777-777777777777",
+        "dddddddd-7777-7777-7777-777777777777"
+      ],
+      "hit_doc_ids": [
+        "ad0d0d0d-3333-3333-3333-333333333333",
+        "c7777777-7777-7777-7777-777777777777",
+        "dddddddd-7777-7777-7777-777777777777"
+      ],
+      "missed_doc_ids": [],
+      "hit_ranks": {
+        "dddddddd-7777-7777-7777-777777777777": 3,
+        "ad0d0d0d-3333-3333-3333-333333333333": 4,
+        "c7777777-7777-7777-7777-777777777777": 5
+      },
+      "doc_id_correct_at_10": true,
+      "doc_type_hit_at_10": true,
+      "doc_id_hit_at_10": true
+    },
+    "case_othe_003": {
+      "expected_doc_ids": [
+        "ad0d0d0d-3333-3333-3333-333333333333",
+        "dddddddd-8888-8888-8888-888888888888"
+      ],
+      "hit_doc_ids": [
+        "ad0d0d0d-3333-3333-3333-333333333333",
+        "dddddddd-8888-8888-8888-888888888888"
+      ],
+      "missed_doc_ids": [],
+      "hit_ranks": {
+        "dddddddd-8888-8888-8888-888888888888": 3,
+        "ad0d0d0d-3333-3333-3333-333333333333": 4
+      },
+      "doc_id_correct_at_10": true,
+      "doc_type_hit_at_10": true,
+      "doc_id_hit_at_10": true
+    },
+    "case_othe_006": {
+      "expected_doc_ids": [
+        "ca0a0a0a-7777-7777-7777-777777777777",
+        "ffffffff-9999-9999-9999-999999999999"
+      ],
+      "hit_doc_ids": [
+        "ca0a0a0a-7777-7777-7777-777777777777",
+        "ffffffff-9999-9999-9999-999999999999"
+      ],
+      "missed_doc_ids": [],
+      "hit_ranks": {
+        "ffffffff-9999-9999-9999-999999999999": 3,
+        "ca0a0a0a-7777-7777-7777-777777777777": 4
+      },
+      "doc_id_correct_at_10": true,
+      "doc_type_hit_at_10": true,
+      "doc_id_hit_at_10": true
+    },
+    "case_othe_009": {
+      "expected_doc_ids": [
+        "ad0d0d0d-4444-4444-4444-444444444444",
+        "c6666666-6666-6666-6666-666666666666",
+        "dddddddd-9999-9999-9999-999999999999"
+      ],
+      "hit_doc_ids": [
+        "ad0d0d0d-4444-4444-4444-444444444444",
+        "c6666666-6666-6666-6666-666666666666",
+        "dddddddd-9999-9999-9999-999999999999"
+      ],
+      "missed_doc_ids": [],
+      "hit_ranks": {
+        "c6666666-6666-6666-6666-666666666666": 3,
+        "dddddddd-9999-9999-9999-999999999999": 4,
+        "ad0d0d0d-4444-4444-4444-444444444444": 6
+      },
+      "doc_id_correct_at_10": true,
+      "doc_type_hit_at_10": false,
+      "doc_id_hit_at_10": true
+    },
+    "case_othe_010": {
+      "expected_doc_ids": [
+        "ad0d0d0d-5555-5555-5555-555555555555",
+        "b7777777-7777-7777-7777-777777777777",
+        "eeeeeeee-1111-1111-1111-111111111111"
+      ],
+      "hit_doc_ids": [
+        "ad0d0d0d-5555-5555-5555-555555555555",
+        "b7777777-7777-7777-7777-777777777777",
+        "eeeeeeee-1111-1111-1111-111111111111"
+      ],
+      "missed_doc_ids": [],
+      "hit_ranks": {
+        "eeeeeeee-1111-1111-1111-111111111111": 1,
+        "b7777777-7777-7777-7777-777777777777": 3,
+        "ad0d0d0d-5555-5555-5555-555555555555": 7
+      },
+      "doc_id_correct_at_10": true,
+      "doc_type_hit_at_10": true,
+      "doc_id_hit_at_10": true
+    },
+    "case_othe_011": {
+      "expected_doc_ids": [
+        "ad0d0d0d-3333-3333-3333-333333333333",
+        "c7777777-7777-7777-7777-777777777777",
+        "dddddddd-7777-7777-7777-777777777777"
+      ],
+      "hit_doc_ids": [
+        "ad0d0d0d-3333-3333-3333-333333333333",
+        "c7777777-7777-7777-7777-777777777777",
+        "dddddddd-7777-7777-7777-777777777777"
+      ],
+      "missed_doc_ids": [],
+      "hit_ranks": {
+        "dddddddd-7777-7777-7777-777777777777": 3,
+        "ad0d0d0d-3333-3333-3333-333333333333": 4,
+        "c7777777-7777-7777-7777-777777777777": 6
+      },
+      "doc_id_correct_at_10": true,
+      "doc_type_hit_at_10": false,
+      "doc_id_hit_at_10": true
+    },
+    "case_othe_012": {
+      "expected_doc_ids": [
+        "ad0d0d0d-3333-3333-3333-333333333333",
+        "c7777777-7777-7777-7777-777777777777",
+        "dddddddd-8888-8888-8888-888888888888"
+      ],
+      "hit_doc_ids": [
+        "ad0d0d0d-3333-3333-3333-333333333333",
+        "c7777777-7777-7777-7777-777777777777",
+        "dddddddd-8888-8888-8888-888888888888"
+      ],
+      "missed_doc_ids": [],
+      "hit_ranks": {
+        "ad0d0d0d-3333-3333-3333-333333333333": 3,
+        "dddddddd-8888-8888-8888-888888888888": 4,
+        "c7777777-7777-7777-7777-777777777777": 5
+      },
+      "doc_id_correct_at_10": true,
+      "doc_type_hit_at_10": false,
+      "doc_id_hit_at_10": true
+    },
+    "case_othe_013": {
+      "expected_doc_ids": [
+        "ad0d0d0d-3333-3333-3333-333333333333",
+        "c7777777-7777-7777-7777-777777777777",
+        "dddddddd-7777-7777-7777-777777777777"
+      ],
+      "hit_doc_ids": [
+        "ad0d0d0d-3333-3333-3333-333333333333",
+        "c7777777-7777-7777-7777-777777777777",
+        "dddddddd-7777-7777-7777-777777777777"
+      ],
+      "missed_doc_ids": [],
+      "hit_ranks": {
+        "c7777777-7777-7777-7777-777777777777": 1,
+        "ad0d0d0d-3333-3333-3333-333333333333": 2,
+        "dddddddd-7777-7777-7777-777777777777": 3
+      },
+      "doc_id_correct_at_10": true,
+      "doc_type_hit_at_10": false,
+      "doc_id_hit_at_10": true
+    },
+    "case_prod_001": {
+      "expected_doc_ids": [
+        "abbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb",
+        "ffffffff-1111-1111-1111-111111111111"
+      ],
+      "hit_doc_ids": [
+        "ffffffff-1111-1111-1111-111111111111"
+      ],
+      "missed_doc_ids": [
+        "abbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb"
+      ],
+      "hit_ranks": {
+        "ffffffff-1111-1111-1111-111111111111": 1
+      },
+      "doc_id_correct_at_10": false,
+      "doc_type_hit_at_10": true,
+      "doc_id_hit_at_10": true
+    },
+    "case_prod_002": {
+      "expected_doc_ids": [
+        "ffffffff-1111-1111-1111-111111111111"
+      ],
+      "hit_doc_ids": [
+        "ffffffff-1111-1111-1111-111111111111"
+      ],
+      "missed_doc_ids": [],
+      "hit_ranks": {
+        "ffffffff-1111-1111-1111-111111111111": 1
+      },
+      "doc_id_correct_at_10": true,
+      "doc_type_hit_at_10": true,
+      "doc_id_hit_at_10": true
+    },
+    "case_prod_004": {
+      "expected_doc_ids": [
+        "abbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb",
+        "ffffffff-1111-1111-1111-111111111111"
+      ],
+      "hit_doc_ids": [
+        "ffffffff-1111-1111-1111-111111111111"
+      ],
+      "missed_doc_ids": [
+        "abbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb"
+      ],
+      "hit_ranks": {
+        "ffffffff-1111-1111-1111-111111111111": 2
+      },
+      "doc_id_correct_at_10": false,
+      "doc_type_hit_at_10": true,
+      "doc_id_hit_at_10": true
+    },
+    "case_prod_005": {
+      "expected_doc_ids": [
+        "ffffffff-1111-1111-1111-111111111111"
+      ],
+      "hit_doc_ids": [
+        "ffffffff-1111-1111-1111-111111111111"
+      ],
+      "missed_doc_ids": [],
+      "hit_ranks": {
+        "ffffffff-1111-1111-1111-111111111111": 1
+      },
+      "doc_id_correct_at_10": true,
+      "doc_type_hit_at_10": true,
+      "doc_id_hit_at_10": true
+    },
+    "case_prod_006": {
+      "expected_doc_ids": [
+        "abbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb",
+        "ffffffff-8888-8888-8888-888888888888"
+      ],
+      "hit_doc_ids": [
+        "abbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb",
+        "ffffffff-8888-8888-8888-888888888888"
+      ],
+      "missed_doc_ids": [],
+      "hit_ranks": {
+        "abbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb": 2,
+        "ffffffff-8888-8888-8888-888888888888": 3
+      },
+      "doc_id_correct_at_10": true,
+      "doc_type_hit_at_10": true,
+      "doc_id_hit_at_10": true
+    },
+    "case_prod_007": {
+      "expected_doc_ids": [
+        "ffffffff-1111-1111-1111-111111111111"
+      ],
+      "hit_doc_ids": [
+        "ffffffff-1111-1111-1111-111111111111"
+      ],
+      "missed_doc_ids": [],
+      "hit_ranks": {
+        "ffffffff-1111-1111-1111-111111111111": 1
+      },
+      "doc_id_correct_at_10": true,
+      "doc_type_hit_at_10": true,
+      "doc_id_hit_at_10": true
+    },
+    "case_prod_008": {
+      "expected_doc_ids": [
+        "abbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb",
+        "ffffffff-8888-8888-8888-888888888888"
+      ],
+      "hit_doc_ids": [
+        "abbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb"
+      ],
+      "missed_doc_ids": [
+        "ffffffff-8888-8888-8888-888888888888"
+      ],
+      "hit_ranks": {
+        "abbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb": 4
+      },
+      "doc_id_correct_at_10": false,
+      "doc_type_hit_at_10": true,
+      "doc_id_hit_at_10": true
+    },
+    "case_refu_001": {
+      "expected_doc_ids": [
+        "ae0e0e0e-aaaa-aaaa-aaaa-aaaaaaaaaaaa"
+      ],
+      "hit_doc_ids": [
+        "ae0e0e0e-aaaa-aaaa-aaaa-aaaaaaaaaaaa"
+      ],
+      "missed_doc_ids": [],
+      "hit_ranks": {
+        "ae0e0e0e-aaaa-aaaa-aaaa-aaaaaaaaaaaa": 3
+      },
+      "doc_id_correct_at_10": true,
+      "doc_type_hit_at_10": false,
+      "doc_id_hit_at_10": true
+    },
+    "case_refu_002": {
+      "expected_doc_ids": [
+        "11111111-1111-1111-1111-111111111111",
+        "22222222-2222-2222-2222-222222222222",
+        "a1111111-1111-1111-1111-111111111111",
+        "ad0d0d0d-2222-2222-2222-222222222222"
+      ],
+      "hit_doc_ids": [
+        "22222222-2222-2222-2222-222222222222",
+        "a1111111-1111-1111-1111-111111111111"
+      ],
+      "missed_doc_ids": [
+        "11111111-1111-1111-1111-111111111111",
+        "ad0d0d0d-2222-2222-2222-222222222222"
+      ],
+      "hit_ranks": {
+        "a1111111-1111-1111-1111-111111111111": 2,
+        "22222222-2222-2222-2222-222222222222": 5
+      },
+      "doc_id_correct_at_10": false,
+      "doc_type_hit_at_10": true,
+      "doc_id_hit_at_10": true
+    },
+    "case_refu_003": {
+      "expected_doc_ids": [
+        "a3333333-3333-3333-3333-333333333333",
+        "ae0e0e0e-2222-2222-2222-222222222222",
+        "dddddddd-2222-2222-2222-222222222222"
+      ],
+      "hit_doc_ids": [
+        "dddddddd-2222-2222-2222-222222222222"
+      ],
+      "missed_doc_ids": [
+        "a3333333-3333-3333-3333-333333333333",
+        "ae0e0e0e-2222-2222-2222-222222222222"
+      ],
+      "hit_ranks": {
+        "dddddddd-2222-2222-2222-222222222222": 1
+      },
+      "doc_id_correct_at_10": false,
+      "doc_type_hit_at_10": false,
+      "doc_id_hit_at_10": true
+    },
+    "case_refu_004": {
+      "expected_doc_ids": [
+        "11111111-1111-1111-1111-111111111111",
+        "a1111111-1111-1111-1111-111111111111",
+        "ffffffff-3333-3333-3333-333333333333"
+      ],
+      "hit_doc_ids": [
+        "11111111-1111-1111-1111-111111111111",
+        "ffffffff-3333-3333-3333-333333333333"
+      ],
+      "missed_doc_ids": [
+        "a1111111-1111-1111-1111-111111111111"
+      ],
+      "hit_ranks": {
+        "ffffffff-3333-3333-3333-333333333333": 5,
+        "11111111-1111-1111-1111-111111111111": 9
+      },
+      "doc_id_correct_at_10": false,
+      "doc_type_hit_at_10": true,
+      "doc_id_hit_at_10": true
+    },
+    "case_refu_005": {
+      "expected_doc_ids": [
+        "22222222-2222-2222-2222-222222222222",
+        "ad0d0d0d-2222-2222-2222-222222222222",
+        "ae0e0e0e-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
+        "dddddddd-1111-1111-1111-111111111111"
+      ],
+      "hit_doc_ids": [
+        "22222222-2222-2222-2222-222222222222",
+        "ad0d0d0d-2222-2222-2222-222222222222",
+        "ae0e0e0e-aaaa-aaaa-aaaa-aaaaaaaaaaaa"
+      ],
+      "missed_doc_ids": [
+        "dddddddd-1111-1111-1111-111111111111"
+      ],
+      "hit_ranks": {
+        "ad0d0d0d-2222-2222-2222-222222222222": 1,
+        "22222222-2222-2222-2222-222222222222": 4,
+        "ae0e0e0e-aaaa-aaaa-aaaa-aaaaaaaaaaaa": 5
+      },
+      "doc_id_correct_at_10": false,
+      "doc_type_hit_at_10": true,
+      "doc_id_hit_at_10": true
+    },
+    "case_refu_006": {
+      "expected_doc_ids": [
+        "ae0e0e0e-aaaa-aaaa-aaaa-aaaaaaaaaaaa"
+      ],
+      "hit_doc_ids": [
+        "ae0e0e0e-aaaa-aaaa-aaaa-aaaaaaaaaaaa"
+      ],
+      "missed_doc_ids": [],
+      "hit_ranks": {
+        "ae0e0e0e-aaaa-aaaa-aaaa-aaaaaaaaaaaa": 3
+      },
+      "doc_id_correct_at_10": true,
+      "doc_type_hit_at_10": false,
+      "doc_id_hit_at_10": true
+    },
+    "case_refu_007": {
+      "expected_doc_ids": [
+        "11111111-1111-1111-1111-111111111111",
+        "a1111111-1111-1111-1111-111111111111",
+        "ffffffff-2222-2222-2222-222222222222"
+      ],
+      "hit_doc_ids": [
+        "ffffffff-2222-2222-2222-222222222222"
+      ],
+      "missed_doc_ids": [
+        "11111111-1111-1111-1111-111111111111",
+        "a1111111-1111-1111-1111-111111111111"
+      ],
+      "hit_ranks": {
+        "ffffffff-2222-2222-2222-222222222222": 6
+      },
+      "doc_id_correct_at_10": false,
+      "doc_type_hit_at_10": true,
+      "doc_id_hit_at_10": true
+    },
+    "case_refu_008": {
+      "expected_doc_ids": [
+        "a3333333-3333-3333-3333-333333333333",
+        "ae0e0e0e-4444-4444-4444-444444444444",
+        "cccccccc-cccc-cccc-cccc-cccccccccccc"
+      ],
+      "hit_doc_ids": [
+        "ae0e0e0e-4444-4444-4444-444444444444"
+      ],
+      "missed_doc_ids": [
+        "a3333333-3333-3333-3333-333333333333",
+        "cccccccc-cccc-cccc-cccc-cccccccccccc"
+      ],
+      "hit_ranks": {
+        "ae0e0e0e-4444-4444-4444-444444444444": 3
+      },
+      "doc_id_correct_at_10": false,
+      "doc_type_hit_at_10": false,
+      "doc_id_hit_at_10": true
+    },
+    "case_refu_009": {
+      "expected_doc_ids": [
+        "ae0e0e0e-dddd-dddd-dddd-dddddddddddd"
+      ],
+      "hit_doc_ids": [
+        "ae0e0e0e-dddd-dddd-dddd-dddddddddddd"
+      ],
+      "missed_doc_ids": [],
+      "hit_ranks": {
+        "ae0e0e0e-dddd-dddd-dddd-dddddddddddd": 1
+      },
+      "doc_id_correct_at_10": true,
+      "doc_type_hit_at_10": false,
+      "doc_id_hit_at_10": true
+    },
+    "case_refu_010": {
+      "expected_doc_ids": [
+        "a3333333-3333-3333-3333-333333333333",
+        "ae0e0e0e-2222-2222-2222-222222222222",
+        "cccccccc-cccc-cccc-cccc-cccccccccccc"
+      ],
+      "hit_doc_ids": [
+        "a3333333-3333-3333-3333-333333333333",
+        "cccccccc-cccc-cccc-cccc-cccccccccccc"
+      ],
+      "missed_doc_ids": [
+        "ae0e0e0e-2222-2222-2222-222222222222"
+      ],
+      "hit_ranks": {
+        "cccccccc-cccc-cccc-cccc-cccccccccccc": 8,
+        "a3333333-3333-3333-3333-333333333333": 10
+      },
+      "doc_id_correct_at_10": false,
+      "doc_type_hit_at_10": true,
+      "doc_id_hit_at_10": true
+    },
+    "case_refu_011": {
+      "expected_doc_ids": [
+        "11111111-1111-1111-1111-111111111111",
+        "a1111111-1111-1111-1111-111111111111",
+        "accccccc-cccc-cccc-cccc-cccccccccccc"
+      ],
+      "hit_doc_ids": [
+        "a1111111-1111-1111-1111-111111111111"
+      ],
+      "missed_doc_ids": [
+        "11111111-1111-1111-1111-111111111111",
+        "accccccc-cccc-cccc-cccc-cccccccccccc"
+      ],
+      "hit_ranks": {
+        "a1111111-1111-1111-1111-111111111111": 2
+      },
+      "doc_id_correct_at_10": false,
+      "doc_type_hit_at_10": true,
+      "doc_id_hit_at_10": true
+    },
+    "case_refu_012": {
+      "expected_doc_ids": [
+        "a1111111-1111-1111-1111-111111111111",
+        "ae0e0e0e-3333-3333-3333-333333333333",
+        "ca0a0a0a-1111-1111-1111-111111111111",
+        "dddddddd-1111-1111-1111-111111111111",
+        "eeeeeeee-8888-8888-8888-888888888888"
+      ],
+      "hit_doc_ids": [],
+      "missed_doc_ids": [
+        "a1111111-1111-1111-1111-111111111111",
+        "ae0e0e0e-3333-3333-3333-333333333333",
+        "ca0a0a0a-1111-1111-1111-111111111111",
+        "dddddddd-1111-1111-1111-111111111111",
+        "eeeeeeee-8888-8888-8888-888888888888"
+      ],
+      "hit_ranks": {},
+      "doc_id_correct_at_10": false,
+      "doc_type_hit_at_10": true,
+      "doc_id_hit_at_10": false
+    },
+    "case_refu_013": {
+      "expected_doc_ids": [
+        "ae0e0e0e-cccc-cccc-cccc-cccccccccccc",
+        "ca0a0a0a-6666-6666-6666-666666666666"
+      ],
+      "hit_doc_ids": [
+        "ca0a0a0a-6666-6666-6666-666666666666"
+      ],
+      "missed_doc_ids": [
+        "ae0e0e0e-cccc-cccc-cccc-cccccccccccc"
+      ],
+      "hit_ranks": {
+        "ca0a0a0a-6666-6666-6666-666666666666": 2
+      },
+      "doc_id_correct_at_10": false,
+      "doc_type_hit_at_10": false,
+      "doc_id_hit_at_10": true
+    },
+    "case_refu_014": {
+      "expected_doc_ids": [
+        "a1111111-1111-1111-1111-111111111111",
+        "ffffffff-3333-3333-3333-333333333333"
+      ],
+      "hit_doc_ids": [
+        "ffffffff-3333-3333-3333-333333333333"
+      ],
+      "missed_doc_ids": [
+        "a1111111-1111-1111-1111-111111111111"
+      ],
+      "hit_ranks": {
+        "ffffffff-3333-3333-3333-333333333333": 1
+      },
+      "doc_id_correct_at_10": false,
+      "doc_type_hit_at_10": true,
+      "doc_id_hit_at_10": true
+    },
+    "case_refu_015": {
+      "expected_doc_ids": [
+        "22222222-2222-2222-2222-222222222222",
+        "ad0d0d0d-2222-2222-2222-222222222222",
+        "ae0e0e0e-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
+        "c3333333-3333-3333-3333-333333333333",
+        "dddddddd-1111-1111-1111-111111111111"
+      ],
+      "hit_doc_ids": [
+        "22222222-2222-2222-2222-222222222222",
+        "ad0d0d0d-2222-2222-2222-222222222222",
+        "ae0e0e0e-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
+        "c3333333-3333-3333-3333-333333333333"
+      ],
+      "missed_doc_ids": [
+        "dddddddd-1111-1111-1111-111111111111"
+      ],
+      "hit_ranks": {
+        "c3333333-3333-3333-3333-333333333333": 2,
+        "ae0e0e0e-aaaa-aaaa-aaaa-aaaaaaaaaaaa": 4,
+        "22222222-2222-2222-2222-222222222222": 7,
+        "ad0d0d0d-2222-2222-2222-222222222222": 8
+      },
+      "doc_id_correct_at_10": false,
+      "doc_type_hit_at_10": false,
+      "doc_id_hit_at_10": true
+    },
+    "case_refu_016": {
+      "expected_doc_ids": [
+        "ae0e0e0e-9999-9999-9999-999999999999",
+        "ca0a0a0a-2222-2222-2222-222222222222",
+        "ffffffff-9999-9999-9999-999999999999"
+      ],
+      "hit_doc_ids": [
+        "ae0e0e0e-9999-9999-9999-999999999999",
+        "ca0a0a0a-2222-2222-2222-222222222222"
+      ],
+      "missed_doc_ids": [
+        "ffffffff-9999-9999-9999-999999999999"
+      ],
+      "hit_ranks": {
+        "ca0a0a0a-2222-2222-2222-222222222222": 2,
+        "ae0e0e0e-9999-9999-9999-999999999999": 4
+      },
+      "doc_id_correct_at_10": false,
+      "doc_type_hit_at_10": false,
+      "doc_id_hit_at_10": true
+    },
+    "case_retu_001": {
+      "expected_doc_ids": [
+        "33333333-3333-3333-3333-333333333333",
+        "a4444444-4444-4444-4444-444444444444",
+        "dddddddd-4444-4444-4444-444444444444"
+      ],
+      "hit_doc_ids": [
+        "33333333-3333-3333-3333-333333333333",
+        "a4444444-4444-4444-4444-444444444444",
+        "dddddddd-4444-4444-4444-444444444444"
+      ],
+      "missed_doc_ids": [],
+      "hit_ranks": {
+        "33333333-3333-3333-3333-333333333333": 4,
+        "a4444444-4444-4444-4444-444444444444": 5,
+        "dddddddd-4444-4444-4444-444444444444": 7
+      },
+      "doc_id_correct_at_10": true,
+      "doc_type_hit_at_10": true,
+      "doc_id_hit_at_10": true
+    },
+    "case_retu_002": {
+      "expected_doc_ids": [
+        "33333333-3333-3333-3333-333333333333",
+        "a3333333-3333-3333-3333-333333333333",
+        "a4444444-4444-4444-4444-444444444444"
+      ],
+      "hit_doc_ids": [
+        "33333333-3333-3333-3333-333333333333",
+        "a4444444-4444-4444-4444-444444444444"
+      ],
+      "missed_doc_ids": [
+        "a3333333-3333-3333-3333-333333333333"
+      ],
+      "hit_ranks": {
+        "33333333-3333-3333-3333-333333333333": 4,
+        "a4444444-4444-4444-4444-444444444444": 10
+      },
+      "doc_id_correct_at_10": false,
+      "doc_type_hit_at_10": true,
+      "doc_id_hit_at_10": true
+    },
+    "case_retu_003": {
+      "expected_doc_ids": [
+        "a4444444-4444-4444-4444-444444444444",
+        "b3333333-3333-3333-3333-333333333333",
+        "dddddddd-4444-4444-4444-444444444444"
+      ],
+      "hit_doc_ids": [
+        "a4444444-4444-4444-4444-444444444444",
+        "b3333333-3333-3333-3333-333333333333",
+        "dddddddd-4444-4444-4444-444444444444"
+      ],
+      "missed_doc_ids": [],
+      "hit_ranks": {
+        "dddddddd-4444-4444-4444-444444444444": 5,
+        "b3333333-3333-3333-3333-333333333333": 6,
+        "a4444444-4444-4444-4444-444444444444": 8
+      },
+      "doc_id_correct_at_10": true,
+      "doc_type_hit_at_10": true,
+      "doc_id_hit_at_10": true
+    },
+    "case_retu_004": {
+      "expected_doc_ids": [
+        "f0f0f0f0-2222-2222-2222-222222222222"
+      ],
+      "hit_doc_ids": [
+        "f0f0f0f0-2222-2222-2222-222222222222"
+      ],
+      "missed_doc_ids": [],
+      "hit_ranks": {
+        "f0f0f0f0-2222-2222-2222-222222222222": 5
+      },
+      "doc_id_correct_at_10": true,
+      "doc_type_hit_at_10": false,
+      "doc_id_hit_at_10": true
+    },
+    "case_retu_005": {
+      "expected_doc_ids": [
+        "a3333333-3333-3333-3333-333333333333",
+        "bcccccc1-cccc-cccc-cccc-cccccccccccc",
+        "cccccccc-cccc-cccc-cccc-cccccccccccc"
+      ],
+      "hit_doc_ids": [
+        "a3333333-3333-3333-3333-333333333333"
+      ],
+      "missed_doc_ids": [
+        "bcccccc1-cccc-cccc-cccc-cccccccccccc",
+        "cccccccc-cccc-cccc-cccc-cccccccccccc"
+      ],
+      "hit_ranks": {
+        "a3333333-3333-3333-3333-333333333333": 9
+      },
+      "doc_id_correct_at_10": false,
+      "doc_type_hit_at_10": true,
+      "doc_id_hit_at_10": true
+    },
+    "case_retu_006": {
+      "expected_doc_ids": [
+        "a4444444-4444-4444-4444-444444444444",
+        "bcccccc1-cccc-cccc-cccc-cccccccccccc",
+        "ffffffff-5555-5555-5555-555555555555"
+      ],
+      "hit_doc_ids": [
+        "a4444444-4444-4444-4444-444444444444",
+        "ffffffff-5555-5555-5555-555555555555"
+      ],
+      "missed_doc_ids": [
+        "bcccccc1-cccc-cccc-cccc-cccccccccccc"
+      ],
+      "hit_ranks": {
+        "ffffffff-5555-5555-5555-555555555555": 1,
+        "a4444444-4444-4444-4444-444444444444": 4
+      },
+      "doc_id_correct_at_10": false,
+      "doc_type_hit_at_10": false,
+      "doc_id_hit_at_10": true
+    },
+    "case_retu_007": {
+      "expected_doc_ids": [
+        "33333333-3333-3333-3333-333333333333",
+        "a4444444-4444-4444-4444-444444444444"
+      ],
+      "hit_doc_ids": [],
+      "missed_doc_ids": [
+        "33333333-3333-3333-3333-333333333333",
+        "a4444444-4444-4444-4444-444444444444"
+      ],
+      "hit_ranks": {},
+      "doc_id_correct_at_10": false,
+      "doc_type_hit_at_10": true,
+      "doc_id_hit_at_10": false
+    },
+    "case_retu_008": {
+      "expected_doc_ids": [
+        "a4444444-4444-4444-4444-444444444444",
+        "ae0e0e0e-4444-4444-4444-444444444444",
+        "dddddddd-3333-3333-3333-333333333333"
+      ],
+      "hit_doc_ids": [
+        "a4444444-4444-4444-4444-444444444444",
+        "ae0e0e0e-4444-4444-4444-444444444444",
+        "dddddddd-3333-3333-3333-333333333333"
+      ],
+      "missed_doc_ids": [],
+      "hit_ranks": {
+        "dddddddd-3333-3333-3333-333333333333": 1,
+        "a4444444-4444-4444-4444-444444444444": 4,
+        "ae0e0e0e-4444-4444-4444-444444444444": 5
+      },
+      "doc_id_correct_at_10": true,
+      "doc_type_hit_at_10": false,
+      "doc_id_hit_at_10": true
+    },
+    "case_retu_009": {
+      "expected_doc_ids": [
+        "33333333-3333-3333-3333-333333333333",
+        "a4444444-4444-4444-4444-444444444444",
+        "ffffffff-3333-3333-3333-333333333333"
+      ],
+      "hit_doc_ids": [
+        "33333333-3333-3333-3333-333333333333",
+        "a4444444-4444-4444-4444-444444444444",
+        "ffffffff-3333-3333-3333-333333333333"
+      ],
+      "missed_doc_ids": [],
+      "hit_ranks": {
+        "a4444444-4444-4444-4444-444444444444": 4,
+        "33333333-3333-3333-3333-333333333333": 5,
+        "ffffffff-3333-3333-3333-333333333333": 6
+      },
+      "doc_id_correct_at_10": true,
+      "doc_type_hit_at_10": true,
+      "doc_id_hit_at_10": true
+    },
+    "case_retu_010": {
+      "expected_doc_ids": [
+        "a3333333-3333-3333-3333-333333333333",
+        "ad0d0d0d-1111-1111-1111-111111111111",
+        "cccccccc-cccc-cccc-cccc-cccccccccccc"
+      ],
+      "hit_doc_ids": [
+        "a3333333-3333-3333-3333-333333333333",
+        "cccccccc-cccc-cccc-cccc-cccccccccccc"
+      ],
+      "missed_doc_ids": [
+        "ad0d0d0d-1111-1111-1111-111111111111"
+      ],
+      "hit_ranks": {
+        "cccccccc-cccc-cccc-cccc-cccccccccccc": 5,
+        "a3333333-3333-3333-3333-333333333333": 8
+      },
+      "doc_id_correct_at_10": false,
+      "doc_type_hit_at_10": false,
+      "doc_id_hit_at_10": true
+    },
+    "case_retu_011": {
+      "expected_doc_ids": [
+        "a9999999-9999-9999-9999-999999999999",
+        "b3333333-3333-3333-3333-333333333333",
+        "eeeeeeee-6666-6666-6666-666666666666"
+      ],
+      "hit_doc_ids": [
+        "b3333333-3333-3333-3333-333333333333"
+      ],
+      "missed_doc_ids": [
+        "a9999999-9999-9999-9999-999999999999",
+        "eeeeeeee-6666-6666-6666-666666666666"
+      ],
+      "hit_ranks": {
+        "b3333333-3333-3333-3333-333333333333": 7
+      },
+      "doc_id_correct_at_10": false,
+      "doc_type_hit_at_10": false,
+      "doc_id_hit_at_10": true
+    },
+    "case_tech_001": {
+      "expected_doc_ids": [
+        "66666666-6666-6666-6666-666666666666",
+        "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
+        "b6666666-6666-6666-6666-666666666666"
+      ],
+      "hit_doc_ids": [
+        "66666666-6666-6666-6666-666666666666",
+        "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
+        "b6666666-6666-6666-6666-666666666666"
+      ],
+      "missed_doc_ids": [],
+      "hit_ranks": {
+        "66666666-6666-6666-6666-666666666666": 3,
+        "b6666666-6666-6666-6666-666666666666": 4,
+        "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa": 10
+      },
+      "doc_id_correct_at_10": true,
+      "doc_type_hit_at_10": true,
+      "doc_id_hit_at_10": true
+    },
+    "case_tech_002": {
+      "expected_doc_ids": [
+        "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
+        "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb"
+      ],
+      "hit_doc_ids": [
+        "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb"
+      ],
+      "missed_doc_ids": [
+        "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"
+      ],
+      "hit_ranks": {
+        "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb": 3
+      },
+      "doc_id_correct_at_10": false,
+      "doc_type_hit_at_10": true,
+      "doc_id_hit_at_10": true
+    },
+    "case_tech_003": {
+      "expected_doc_ids": [
+        "ad0d0d0d-4444-4444-4444-444444444444",
+        "ad0d0d0d-5555-5555-5555-555555555555",
+        "b7777777-7777-7777-7777-777777777777",
+        "eeeeeeee-1111-1111-1111-111111111111"
+      ],
+      "hit_doc_ids": [
+        "b7777777-7777-7777-7777-777777777777",
+        "eeeeeeee-1111-1111-1111-111111111111"
+      ],
+      "missed_doc_ids": [
+        "ad0d0d0d-4444-4444-4444-444444444444",
+        "ad0d0d0d-5555-5555-5555-555555555555"
+      ],
+      "hit_ranks": {
+        "eeeeeeee-1111-1111-1111-111111111111": 1,
+        "b7777777-7777-7777-7777-777777777777": 3
+      },
+      "doc_id_correct_at_10": false,
+      "doc_type_hit_at_10": true,
+      "doc_id_hit_at_10": true
+    },
+    "case_tech_004": {
+      "expected_doc_ids": [
+        "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
+        "f0f0f0f0-1111-1111-1111-111111111111"
+      ],
+      "hit_doc_ids": [
+        "f0f0f0f0-1111-1111-1111-111111111111"
+      ],
+      "missed_doc_ids": [
+        "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"
+      ],
+      "hit_ranks": {
+        "f0f0f0f0-1111-1111-1111-111111111111": 1
+      },
+      "doc_id_correct_at_10": false,
+      "doc_type_hit_at_10": true,
+      "doc_id_hit_at_10": true
+    },
+    "case_tech_007": {
+      "expected_doc_ids": [
+        "66666666-6666-6666-6666-666666666666",
+        "ca0a0a0a-3333-3333-3333-333333333333"
+      ],
+      "hit_doc_ids": [
+        "66666666-6666-6666-6666-666666666666",
+        "ca0a0a0a-3333-3333-3333-333333333333"
+      ],
+      "missed_doc_ids": [],
+      "hit_ranks": {
+        "ca0a0a0a-3333-3333-3333-333333333333": 1,
+        "66666666-6666-6666-6666-666666666666": 3
+      },
+      "doc_id_correct_at_10": true,
+      "doc_type_hit_at_10": true,
+      "doc_id_hit_at_10": true
+    },
+    "case_tech_008": {
+      "expected_doc_ids": [
+        "ad0d0d0d-5555-5555-5555-555555555555",
+        "b7777777-7777-7777-7777-777777777777",
+        "eeeeeeee-1111-1111-1111-111111111111"
+      ],
+      "hit_doc_ids": [
+        "ad0d0d0d-5555-5555-5555-555555555555",
+        "b7777777-7777-7777-7777-777777777777",
+        "eeeeeeee-1111-1111-1111-111111111111"
+      ],
+      "missed_doc_ids": [],
+      "hit_ranks": {
+        "eeeeeeee-1111-1111-1111-111111111111": 1,
+        "b7777777-7777-7777-7777-777777777777": 3,
+        "ad0d0d0d-5555-5555-5555-555555555555": 5
+      },
+      "doc_id_correct_at_10": true,
+      "doc_type_hit_at_10": true,
+      "doc_id_hit_at_10": true
+    },
+    "case_tech_009": {
+      "expected_doc_ids": [
+        "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
+        "dddddddd-7777-7777-7777-777777777777"
+      ],
+      "hit_doc_ids": [
+        "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
+        "dddddddd-7777-7777-7777-777777777777"
+      ],
+      "missed_doc_ids": [],
+      "hit_ranks": {
+        "dddddddd-7777-7777-7777-777777777777": 6,
+        "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa": 8
+      },
+      "doc_id_correct_at_10": true,
+      "doc_type_hit_at_10": true,
+      "doc_id_hit_at_10": true
+    }
+  },
+  "generated_at": "2026-05-06T04:19:06.042763+00:00"
+}

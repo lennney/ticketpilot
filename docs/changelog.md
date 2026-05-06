@@ -1724,3 +1724,24 @@ Prepare TicketPilot for public GitHub portfolio presentation with accurate, non-
 - Run real pipeline export on all 86 labeled cases (Phase 10.7.5) to get full-dataset doc_id metrics across all domains
 - Then archive Phase 10 (Phase 10.9)
 
+## 2026-05-06 — Phase 10.7.5: Full-Dataset Real Pipeline Doc-Level Evaluation
+
+### Added
+- `reports/retrieval/phase10_full_real_doc_level_rows.json` — real pipeline export (openai_compatible / text-embedding-v4 / 1024-d) on all 101 cases with 86 doc_ids embedded
+- `reports/retrieval/phase10_full_real_doc_level_eval_metrics.json` — full-dataset doc-level metrics
+- `reports/retrieval/phase10_full_real_doc_level_evaluation.md` — evaluation report with per-case detail
+- `reports/retrieval/phase10_full_real_doc_level_wrong_case_recheck.md` — wrong-case reclassification with doc-ID granularity
+- `reports/retrieval/phase10_full_real_doc_level_remaining_misses.md` — categorization of 39 remaining misses into query expansion gaps (7) and fusion ranking gaps (32)
+
+### Changed
+- `scripts/run_phase10_real_doc_level_eval.py` — added full-dataset mode (`full`) with 4-report output, per-case doc_id analysis, thesis confirmation logic, remaining misses report
+
+### Key Metrics
+- **Doc-ID Recall@10: 91.9%** (+32.5% over doc-type 59.4%)
+- **Doc-ID correct at Top-10: 47/86 (54.7%)**
+- **Wrong-case reclassification: 32/41 (78%)** — metric granularity thesis **confirmed** ✅
+- **7 zero-hit cases** — potential query expansion gaps
+- **32 partial-hit cases** — potential fusion ranking improvement
+- **9 genuine misses** (5 edge cases + 4 domain cases)
+- **143 tests pass, ruff clean, openspec --strict valid**
+
