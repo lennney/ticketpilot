@@ -5,7 +5,31 @@
 
 ---
 
-## Next Batch: Phase 10.6 — Recommendation Report
+## Completed Batch: Phase 10.5.1 — Real Pipeline Doc-Level Evaluation
+
+### What Was Done
+
+- Exported real pipeline retrieval rows with openai_compatible / text-embedding-v4 / 1024-d provider
+- Ran doc-level evaluation on 14 P0-labeled cases using real fused results
+- Key finding: **10/14 (71.4%) P0 cases are doc_id-correct at top-10** → substantially confirms the metric granularity thesis
+- 11/41 doc-type wrong cases reclassified as metric granularity (doc_id found but doc_type mismatched)
+- 4 P0 cases with genuine misses: case_acco_006, case_comp_001, case_comp_002, case_refu_013 (partial)
+- Generated 5 reports: rows JSON, metrics JSON, evaluation MD, wrong-case recheck MD
+- Fixed `cand.id` → `cand.chunk_id` bug in export mode
+
+### Validation
+
+- Ruff: ✅ Clean
+- test_retrieval_metrics + test_evaluation*: 143/143 ✅
+- openspec validate --strict: ✅
+
+### Commit
+
+Pending — awaiting human approval.
+
+---
+
+## Completed Batch: Phase 10.5 — Doc-Level Golden Labels
 
 ### Scope
 

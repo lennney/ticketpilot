@@ -260,7 +260,7 @@ def _run_pipeline_export(args: argparse.Namespace) -> None:
         docs = []
         for i, cand in enumerate(output.evidence_candidates, start=1):
             docs.append({
-                "chunk_id": str(cand.id),
+                "chunk_id": str(cand.chunk_id),
                 "doc_id": str(cand.doc_id),
                 "doc_type": cand.doc_type.value if hasattr(cand.doc_type, "value") else str(cand.doc_type),
                 "rank": i,

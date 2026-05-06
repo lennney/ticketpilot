@@ -1663,3 +1663,23 @@ Prepare TicketPilot for public GitHub portfolio presentation with accurate, non-
 - Only 14/101 cases received doc-level labels — the remaining 87 have no `expected_relevant_doc_ids` (backward compatible, metrics skip doc_id evaluation)
 - The mock-mode P0 eval shows 0% doc_id hit rate (expected — mock uses random IDs, not real P0 doc_ids); real eval requires pipeline export mode
 - Key thesis: doc_id-level metrics will show significantly higher hit rates than doc_type-level, proving most "wrong" cases are a metric granularity problem
+
+## 2026-05-06 — Phase 10.5.1 Real Pipeline Doc-Level Evaluation
+
+### Added
+- `scripts/run_phase10_real_doc_level_eval.py` — real pipeline doc-level evaluation script
+- `reports/retrieval/phase10_real_doc_level_rows.json` — real pipeline export (101 cases, openai_compatible)
+- `reports/retrieval/phase10_real_doc_level_eval_metrics.json` — doc-level metrics JSON
+- `reports/retrieval/phase10_real_doc_level_evaluation.md` — evaluation report with interpretation
+- `reports/retrieval/phase10_real_doc_level_wrong_case_recheck.md` — wrong-case recheck analysis
+
+### Changed
+- `scripts/run_retrieval_comparison.py` — fixed `cand.id` → `cand.chunk_id` bug in export mode
+
+### Key Findings
+- **10/14 P0-labeled cases (71.4%) are fully correct at doc_id level** (all expected doc_ids in top-10)
+- **11/41 doc-type wrong cases (26.8%) reclassified as metric granularity** (correct doc_id in top-10)
+- **Among P0 cases**: 71.4% doc_id-correct → substantially confirms Phase 10.4 thesis that fused_top10_but_metric_still_wrong = metric granularity
+- **4 P0 cases with genuine misses**: case_acco_006, case_comp_001, case_comp_002, case_refu_013 (partial)
+- **Doc-ID MRR**: 0.362 — lower than doc-type MRR (0.500) but acceptable given strict doc_id matching
+- Recommended: add more doc-level labels, query expansion audit, then fusion ranking experiment

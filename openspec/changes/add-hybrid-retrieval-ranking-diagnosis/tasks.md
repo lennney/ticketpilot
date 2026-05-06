@@ -65,13 +65,26 @@
 - [x] 5.6 Create P0 doc-level evaluation script `scripts/run_p0_doc_level_eval.py`
 - [x] 5.7 Run P0 doc-level evaluation → `reports/retrieval/phase10_p0_doc_level_eval.{json,md}`
 
+## Phase 10.5.1 — Real Pipeline Doc-Level Evaluation
+
+- [x] 5.1.1 Provider readiness check — openai_compatible / text-embedding-v4 / 1024-d / API key present
+- [x] 5.1.2 Export real pipeline rows → `reports/retrieval/phase10_real_doc_level_rows.json`
+- [x] 5.1.3 Run doc-level evaluation on real rows
+  - [x] 5.1.3a 10/14 P0 cases doc_id-correct at top-10 (71.4%)
+  - [x] 5.1.3b 11/41 doc-type wrong cases reclassified as metric granularity
+  - [x] 5.1.3c 4 P0 cases with genuine misses
+- [x] 5.1.4 Generate 3 reports: metrics JSON, evaluation MD, wrong-case recheck MD
+- [x] 5.1.5 Fix `cand.id` → `cand.chunk_id` bug in export mode
+- [x] 5.1.6 Run tests: 143 evaluation tests pass, ruff clean, openspec --strict valid
+- [x] 5.1.7 Update docs: changelog, tasks, controller context
+
 ## Phase 10.6 — Recommendation Report
 
-- [ ] 6.1 Aggregate bottleneck distribution: count per category across P0 cases
-- [ ] 6.2 Determine dominant bottleneck(s)
+- [ ] 6.1 Aggregate bottleneck distribution + doc-level label results into recommendation
+- [ ] 6.2 Determine dominant bottleneck(s) with doc-level data now available
 - [ ] 6.3 Produce recommendation: which next step(s) would have the highest impact
-  - Review doc-level golden label results
-  - Adjust query expansion
+  - Add more doc-level labels
+  - Query expansion audit
   - Tune RRF k or fusion approach
   - Add reranker
   - Accept remaining wrong cases as limitation
