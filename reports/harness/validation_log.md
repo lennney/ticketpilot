@@ -4,7 +4,20 @@
 
 ---
 
-## 2026-05-06 — Phase 11.2: Full Quality Gate
+## 2026-05-06 — Phase 11.8: Full Quality Gate
+
+| Check | Result |
+|---|---|
+| Ruff | All checks passed |
+| Unit tests | 1001 passed (32 new draft metrics tests) |
+| Integration tests | 126 passed (7 new draft eval runner tests), **0 skipped** |
+| OpenSpec --all | 17/17 passed |
+| Draft eval script | 10 cases completed, rows/summary/md generated |
+| Secret scan | Clean |
+
+**Status**: ✅ PASSED
+
+---
 
 | Check | Result |
 |---|---|

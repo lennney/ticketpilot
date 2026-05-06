@@ -283,3 +283,54 @@ class EvaluationSummary(BaseModel):
     aggregate_fallback_correctness: float = Field(default=0.0, ge=0.0, le=1.0)
     aggregate_no_auto_send_compliance: float = Field(default=0.0, ge=0.0, le=1.0)
     failed_cases: list[MismatchEntry] = Field(default_factory=list)
+
+
+# ---------------------------------------------------------------------------
+# Draft evaluation schemas (Phase 11.8)
+# ---------------------------------------------------------------------------
+
+
+class DraftEvaluationRow(BaseModel):
+    """Per-case draft evaluation row.
+
+    Captures the state of evidence-grounded draft generation for a single
+    evaluation case so metrics can be computed deterministically.
+
+    All count fields are non-negative integers.
+    Citation precision and evidence coverage are computed per-row from counts.
+    """
+
+    case_id: str = Field(..., min_length=1)
+    provider_name: str = ""
+    model_name: str = ""
+    cited_evidence_count: int = Field(default=0, ge=0)
+    available_evidence_count: int = Field(default=0, ge=0)
+    valid_citation_count: int = Field(default=0, ge=0)
+    invalid_citation_count: int = Field(default=0, ge=0)
+    unsupported_claim_count: int = Field(default=0, ge=0)
+    forbidden_promise_count: int = Field(default=0, ge=0)
+    guard_passed: bool = True
+    citation_validation_passed: bool = True
+    safe_fallback_used: bool = False
+    expected_human_review: bool = False
+    actual_human_review: bool = False
+    confidence: float | None = Field(default=None, ge=0.0, le=1.0)
+
+
+class DraftEvaluationSummary(BaseModel):
+    """Aggregate draft evaluation summary across all cases.
+
+    All rate fields are floats in [0.0, 1.0]. None values indicate
+    no data was available to compute the metric.
+    """
+
+    total_cases: int = Field(default=0, ge=0)
+    citation_precision_avg: float | None = Field(default=None, ge=0.0, le=1.0)
+    evidence_coverage_avg: float | None = Field(default=None, ge=0.0, le=1.0)
+    unsupported_claim_rate: float = Field(default=0.0, ge=0.0, le=1.0)
+    forbidden_promise_rate: float = Field(default=0.0, ge=0.0, le=1.0)
+    safe_fallback_rate: float = Field(default=0.0, ge=0.0, le=1.0)
+    human_review_trigger_accuracy: float | None = Field(default=None, ge=0.0, le=1.0)
+    citation_validation_pass_rate: float = Field(default=0.0, ge=0.0, le=1.0)
+    claim_guard_pass_rate: float = Field(default=0.0, ge=0.0, le=1.0)
+    average_confidence: float | None = Field(default=None, ge=0.0, le=1.0)

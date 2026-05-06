@@ -453,4 +453,45 @@
 
 ---
 
-## Next Batch: Phase 11.8 — Offline Draft Evaluation
+## Completed Batch: Phase 11.8 — Offline Draft Evaluation
+
+### What Was Done
+
+- Created `draft_metrics.py` with 4 pure metric functions + summary aggregation
+- Added `DraftEvaluationRow` and `DraftEvaluationSummary` to `evaluation/schemas.py`
+- Created CLI runner `scripts/run_draft_evaluation.py` using FakeLLMProvider (no network, no API keys)
+- Generated per-case rows JSON, summary JSON, and markdown report under `reports/eval/`
+- 32 unit tests + 7 integration tests, all pass
+- Markdown report includes scope boundaries, metric definitions, summary table, limitations, no-auto-send notice
+
+### Files Created
+
+- `src/ticketpilot/evaluation/draft_metrics.py`
+- `src/ticketpilot/evaluation/schemas.py` (extended)
+- `scripts/run_draft_evaluation.py`
+- `tests/unit/test_draft_metrics.py`
+- `tests/integration/test_draft_evaluation_runner.py`
+- `reports/eval/phase11_draft_evaluation_*.json`
+- `reports/eval/phase11_draft_evaluation_report.md`
+
+### Key Metrics Implemented
+
+- citation_precision_avg (None when no citations)
+- evidence_coverage_avg (None when no evidence)
+- unsupported_claim_rate, forbidden_promise_rate, safe_fallback_rate
+- human_review_trigger_accuracy, citation_validation_pass_rate, claim_guard_pass_rate
+- average_confidence
+
+### Validation
+
+- Unit tests: ✅ 32/32 passed
+- Integration tests: ✅ 7/7 passed
+- Ruff: ✅ Clean
+
+### Commit
+
+`pending`
+
+---
+
+## Next Batch: Phase 11.9 — Portfolio Snapshot

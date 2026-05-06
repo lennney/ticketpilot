@@ -32,7 +32,32 @@
 
 ---
 
-## 2026-05-06 — Phase 11.2: Draft Schema and Deterministic Provider
+## 2026-05-06 — Phase 11.8: Offline Draft Evaluation
+
+**Summary**: Implemented offline draft evaluation for evidence-grounded draft generation. Created draft_metrics.py with 4 pure metric functions (compute_citation_precision, compute_evidence_coverage, compute_human_review_trigger_correct, compute_draft_evaluation_summary), added DraftEvaluationRow and DraftEvaluationSummary Pydantic schemas, created CLI runner using FakeLLMProvider (no network, no API keys), and generated JSON/Markdown evaluation reports. 32 unit tests + 7 integration tests pass. Full quality gate passed.
+
+**Key Deliverables**:
+- `src/ticketpilot/evaluation/draft_metrics.py` — 4 pure metric functions + summary aggregation
+- `src/ticketpilot/evaluation/schemas.py` — DraftEvaluationRow + DraftEvaluationSummary schemas (+41 lines)
+- `src/ticketpilot/drafting/generator.py` — Added ticket_output field to DraftGenerationResult (+1 line)
+- `scripts/run_draft_evaluation.py` — Offline CLI runner with FakeLLMProvider, outputs rows/summary/markdown
+- `tests/unit/test_draft_metrics.py` — 32 unit tests
+- `tests/integration/test_draft_evaluation_runner.py` — 7 integration tests
+- `reports/eval/phase11_draft_evaluation_*.json` + `phase11_draft_evaluation_report.md`
+
+**Key Design Decisions**:
+- Citation precision and evidence coverage return None when no citations/evidence (excluded from average to avoid misleading values)
+- Human review trigger correctness: expected vs actual must_human_review, denominator = cases with trigger conditions
+- FakeLLMProvider only — tests workflow mechanics, not real LLM semantic quality
+- Deterministic: same input → same output; no network calls, no API keys
+
+**Validation**: 32 unit + 7 integration tests passed, ruff clean
+
+**Phase Status**: Phase 11.8 complete. Phase 11.9 pending (portfolio snapshot).
+
+**Next Batch**: Phase 11.9 — Portfolio Snapshot
+
+---
 
 **Summary**: Implemented the foundation for evidence-grounded LLM draft generation: LLMProvider abstract interface, FakeLLMProvider (deterministic, no network, no API keys), provider config/factory, and DraftReply schema extensions with cross-field validation. 27 new unit tests added. Full quality gate passed.
 

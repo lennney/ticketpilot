@@ -4,6 +4,35 @@
 
 ---
 
+## 2026-05-06 — Phase 11.8: Offline Draft Evaluation
+
+**Problem**: Need to quantify draft generation quality using deterministic local metrics — no real LLM API calls, no network access, no real customer data. The evaluation should measure citation quality, evidence coverage, guard effectiveness, and human review trigger correctness.
+
+**Approach**:
+- draft_metrics.py with 4 pure metric functions: compute_citation_precision (None if no citations), compute_evidence_coverage (None if no evidence), compute_human_review_trigger_correct (bool), compute_draft_evaluation_summary (aggregates all rows)
+- DraftEvaluationRow and DraftEvaluationSummary schemas in evaluation/schemas.py (+41 lines)
+- run_draft_evaluation.py CLI runner: load tickets → run_pipeline → build rows → compute summary → write JSON + Markdown
+- FakeLLMProvider only — deterministic, no API keys, no network calls
+
+**Key Engineering Decisions**:
+- Citation precision and evidence coverage return None when no citations/evidence (excluded from average to avoid misleading low values)
+- Human review trigger correctness: expected (pre-draft risk state) vs actual (final must_human_review), denominator = cases with trigger conditions
+- DraftGenerationResult got optional ticket_output field to support evaluation access without modifying pipeline behavior
+- Markdown report explicitly disclaims: local demo, synthetic data, offline evaluation only, no auto-send, FakeLLMProvider tests mechanics not quality
+- Safe fallback rate denominator = total cases (not just no-evidence cases), reflecting proportion of the full eval set
+
+**Files**:
+- `src/ticketpilot/evaluation/draft_metrics.py` (new, 150 lines)
+- `src/ticketpilot/evaluation/schemas.py` (+41 lines: DraftEvaluationRow + DraftEvaluationSummary)
+- `src/ticketpilot/drafting/generator.py` (+2 lines: ticket_output field)
+- `scripts/run_draft_evaluation.py` (new, 310 lines)
+- `tests/unit/test_draft_metrics.py` (new, 267 lines, 32 tests)
+- `tests/integration/test_draft_evaluation_runner.py` (new, 190 lines, 7 tests)
+
+**Validation**: 32 unit + 7 integration tests passed, ruff clean, quality gate pending.
+
+---
+
 ## 2026-05-06 — Phase 11.3: Evidence-Grounded Prompt Builder
 
 **Problem**: LLM provider interface (Phase 11.2) defines generate_draft() which takes ticket context + evidence, but doesn't specify how to structure the input prompt. Need a deterministic prompt builder that converts evidence candidates and ticket context into a structured prompt that constrains the LLM to evidence-grounded drafting.

@@ -1,5 +1,32 @@
 # TicketPilot Changelog
 
+## 2026-05-06 — Phase 11.8: Offline Draft Evaluation
+
+### Added
+- `src/ticketpilot/evaluation/draft_metrics.py` — Deterministic draft quality metrics: citation_precision, evidence_coverage, unsupported_claim_rate, forbidden_promise_rate, safe_fallback_rate, human_review_trigger_accuracy, citation_validation_pass_rate, claim_guard_pass_rate, average_confidence
+- `src/ticketpilot/evaluation/schemas.py` — DraftEvaluationRow + DraftEvaluationSummary Pydantic schemas
+- `scripts/run_draft_evaluation.py` — Offline CLI runner using FakeLLMProvider (no network, no API keys)
+- `reports/eval/phase11_draft_evaluation_rows.json` — Per-case draft evaluation rows
+- `reports/eval/phase11_draft_evaluation_summary.json` — Aggregate summary metrics
+- `reports/eval/phase11_draft_evaluation_report.md` — Markdown report with scope boundaries, metric definitions, summary table, limitations
+
+### Changed
+- `src/ticketpilot/drafting/generator.py` — Added optional `ticket_output` field to DraftGenerationResult for evaluation access
+
+### Design
+- All metrics deterministic: same input → same output; no network calls, no API keys
+- Citation precision and evidence coverage: None when no citations/evidence (excluded from average to avoid misleading 0)
+- Human review trigger correctness: compares expected (pre-draft risk state) vs actual (final must_human_review)
+- Markdown report explicitly disclaims: local demo, synthetic data, offline evaluation only, no auto-send
+- FakeLLMProvider only — tests workflow mechanics, not real LLM semantic quality
+
+### Validation
+- Unit tests: ✅ 32/32 passed
+- Integration tests: ✅ 7/7 passed
+- Ruff: ✅ All checks passed
+
+---
+
 ## 2026-05-06 — Phase 11.7: Human Review Console Update
 
 ### Changed

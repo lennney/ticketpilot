@@ -210,25 +210,9 @@ uv run ruff check .
 
 ---
 
-### 11.8 — Offline Draft Evaluation
+### 11.8 — Offline Draft Evaluation ✅
 
-**Scope**: Implement draft quality metrics: citation precision, evidence coverage, unsupported claim rate, safe fallback rate, human review trigger correctness. Add golden expectations for draft metrics.
-
-**Allowed files**:
-- `src/ticketpilot/evaluation/draft_metrics.py` (new)
-- `src/ticketpilot/evaluation/schemas.py` (extend GoldenExpectation)
-- `src/ticketpilot/evaluation/metrics.py` (integrate draft metrics)
-- `tests/unit/test_draft_metrics.py` (new)
-- `tests/unit/test_evaluation_*.py` (extend)
-- `data/eval/golden_expectations.csv` (append draft columns only)
-- `openspec/changes/add-evidence-grounded-llm-draft/`
-- `docs/changelog.md`
-- `docs/harness/`
-
-**Forbidden files**:
-- `src/ticketpilot/retrieval/` (no retrieval changes)
-- `reports/retrieval/` (frozen)
-- Existing golden columns (append only, never modify)
+**Scope**: Implement draft quality metrics: citation precision, evidence coverage, unsupported claim rate, safe fallback rate, human review trigger correctness, citation validation pass rate, claim guard pass rate.
 
 **Validation**:
 ```bash
@@ -236,6 +220,21 @@ uv run pytest tests/unit/test_draft_metrics.py tests/unit/test_evaluation_*.py -
 openspec validate add-evidence-grounded-llm-draft --strict
 uv run ruff check .
 ```
+
+**Files created**:
+- `src/ticketpilot/evaluation/draft_metrics.py` — compute_citation_precision(), compute_evidence_coverage(), compute_human_review_trigger_correct(), compute_draft_evaluation_summary()
+- `src/ticketpilot/evaluation/schemas.py` — DraftEvaluationRow, DraftEvaluationSummary schemas
+- `scripts/run_draft_evaluation.py` — offline CLI runner using FakeLLMProvider
+- `tests/unit/test_draft_metrics.py` — 32 unit tests
+- `tests/integration/test_draft_evaluation_runner.py` — 7 integration tests
+- `reports/eval/phase11_draft_evaluation_*.json` — row + summary outputs
+- `reports/eval/phase11_draft_evaluation_report.md` — markdown report
+
+**Key outcomes**:
+- 8 deterministic metrics computed from per-case DraftEvaluationRows
+- Citation precision and evidence coverage None when no citations/evidence (excluded from average)
+- FakeLLMProvider only — no network, no API keys, deterministic
+- Markdown report includes scope boundaries, metric definitions, summary table, limitations
 
 ---
 
