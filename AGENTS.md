@@ -166,3 +166,22 @@ explicit boundary statements:
 
 See `docs/technical/validation_policy.md` for the full validation level matrix.
 See `docs/technical/ai_development_harness.md` for the full harness design.
+
+## 12. Error Memory and Learning System
+
+Before each harness batch, read:
+- `docs/harness/preflight_checklist.md` — pre-batch verification steps
+- `docs/harness/agent_learning_rules.md` — stable cross-phase rules
+
+After any failed validation, run post-failure reflection:
+- `prompts/harness/post_failure_reflection.md` — structured failure analysis
+
+Error memory and repair resources:
+- `reports/harness/error_memory.jsonl` — structured error log (append-only)
+- `reports/harness/repair_playbook.md` — categorized repair procedures
+- `reports/harness/error_log.md` — narrative error history
+- `prompts/harness/memory_audit.md` — periodic audit template
+
+**Do not bloat AGENTS.md with raw logs.** Promote only stable, high-risk, cross-phase rules after confirmation.
+**Do not store full chat transcripts** in any harness documentation.
+**Do not store secrets, API keys, or Authorization headers** in error memory.

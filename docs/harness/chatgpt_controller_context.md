@@ -40,10 +40,11 @@
 | Phase 10 | **Archived** | Hybrid Retrieval Ranking Diagnosis — Doc-ID Recall@10 = 91.9%, 32/41 (78%) wrong cases reclassified as metric granularity. |
 | Phase 11 | **Archived** | Evidence-Grounded LLM Draft Generation — 8-layer safety architecture, LLMProvider + FakeLLMProvider, ClaimGuard, offline draft evaluation (8 deterministic metrics). |
 | Phase 12A | **Archived** | OpenAI-compatible LLM provider for offline comparison — OpenAICompatibleProvider, 25-case fixture set, comparison runner, mock tests, real provider pending local env configuration. |
+| Phase 12B | **Active** | Agent Error Memory and Repair Learning System — harness/process improvement only, no product runtime changes. |
 
 ## 4. Current Working Context
 
-**Phase 11 and Phase 12A complete and archived. Phase 12B is the next recommended phase.**
+**Phase 12A complete and archived. Phase 12B (Error Memory) is the current active batch. Phase 12C is the next recommended phase after archive.**
 
 ### Phase 11 Evidence Chain
 

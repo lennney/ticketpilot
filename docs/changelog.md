@@ -1,5 +1,70 @@
 # TicketPilot Changelog
 
+## 2026-05-07 -- Phase 12B: Agent Error Memory and Repair Learning System
+
+### Added
+-  -- OpenSpec change with error-memory spec
+-  -- Structured error log (4 entries from verified existing logs)
+-  -- Categorized repair procedures for common harness errors
+-  -- Pre-batch rules (no raw logs in AGENTS.md)
+-  -- Pre-batch verification steps
+-  -- Failure analysis template
+-  -- Periodic audit template
+
+### Changed
+-  -- Added Section 12: Error Memory and Learning System reference
+
+### Design
+- Harness/process improvement only -- no product runtime changes
+- No retrieval/RRF/embeddings/chunking/knowledge/golden label modifications
+- No archived report modifications
+- No secrets in error memory
+- No full chat transcript storage
+- Error memory backfilled from verified existing logs only
+
+### Validation
+- OpenSpec --strict (add-agent-error-memory-system): PASSED
+- OpenSpec --all: 21/21 passed
+- Ruff: All checks passed
+- Secret scan: Clean
+- Overclaim scan: Clean
+
+---
+
+
+
+
+## 2026-05-07 -- Phase 12B: Agent Error Memory and Repair Learning System
+
+### Added
+- openspec/changes/add-agent-error-memory-system/ -- OpenSpec change with error-memory spec
+- reports/harness/error_memory.jsonl -- Structured error log (4 entries from verified existing logs)
+- reports/harness/repair_playbook.md -- Categorized repair procedures
+- docs/harness/agent_learning_rules.md -- Pre-batch rules
+- docs/harness/preflight_checklist.md -- Pre-batch verification steps
+- prompts/harness/post_failure_reflection.md -- Failure analysis template
+- prompts/harness/memory_audit.md -- Periodic audit template
+
+### Changed
+- AGENTS.md -- Added Section 12: Error Memory and Learning System
+
+### Design
+- Harness/process improvement only -- no product runtime changes
+- No retrieval/RRF/embeddings/chunking/knowledge/golden label modifications
+- No archived report modifications
+- No secrets in error memory
+- No full chat transcript storage
+
+### Validation
+- OpenSpec --strict: PASSED
+- OpenSpec --all: 21/21 passed
+- Ruff: All checks passed
+- Secret scan: Clean
+- Overclaim scan: Clean
+
+---
+
+
 ## 2026-05-07 -- Phase 12A.1: Real LLM Provider Comparison Validation Closure
 
 ### Validation

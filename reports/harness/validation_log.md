@@ -4,6 +4,23 @@
 
 ---
 
+## 2026-05-07 -- Phase 12B: Agent Error Memory and Repair Learning System
+
+| Check | Result |
+|---|---|
+| OpenSpec --strict (add-agent-error-memory-system) | Valid |
+| OpenSpec --all | 21/21 passed |
+| Ruff | All checks passed |
+| Secret scan | Clean |
+| Overclaim scan | Clean |
+| Docs-only batch | No quality gate required |
+
+---
+
+, quality gate results, and test outcomes.*
+
+---
+
 ## 2026-05-07 — Phase 12A.1: Real LLM Provider Comparison Validation Closure
 
 | Check | Result |
