@@ -194,6 +194,47 @@
 
 ---
 
+## Completed Batch: Phase 11.4 — Draft Citation Validation
+
+### What Was Done
+
+- Created `DraftCitationValidationResult` schema with is_valid, valid/invalid/duplicate IDs, missing_citation_required, available_evidence_ids, errors, warnings, must_human_review
+- Created `validate_draft_citations()` function validating DraftReply.cited_evidence_ids against EvidenceCandidate list
+- Validation rules: evidence ID existence, duplicate detection, missing citation heuristic, unsupported_claims propagation, human review propagation
+- 21 unit tests covering all validation rules
+- No LLM API calls, no pipeline integration, no retrieval changes
+
+### Files Created
+
+- `src/ticketpilot/drafting/draft_citation_validator.py`
+- `tests/unit/test_draft_citation_validator.py`
+
+### Files Modified
+
+- `src/ticketpilot/drafting/__init__.py` (updated exports)
+
+### Key Findings
+
+- Evidence ID existence: chunk_id UUID matching against evidence candidates; invalid IDs make is_valid false and must_human_review true
+- Duplicates are warnings (non-fatal) — validator detects and reports but doesn't fail on repeated IDs
+- Missing citation heuristic: substantive text without citations flagged, but safe-fallback patterns ("无法确认具体政策条款", "建议转人工处理") and greetings exempted
+- Human review propagation: never downgrades DraftReply.must_human_review; validation failures and unsupported_claims force must_human_review
+- Fully deterministic — same input always produces same output
+
+### Validation
+
+- Quality gate: ✅ PASSED — 878 unit (+21), 119 integration, **0 skipped**, 86.35% coverage
+- Ruff: ✅ All checks passed
+- OpenSpec --all: ✅ 17/17 passed
+- Secret scan: ✅ Clean
+- Overclaim scan: ✅ Clean
+
+### Commit
+
+`pending`
+
+---
+
 ## Completed Batch: Phase 11.3 — Evidence-Grounded Prompt Builder
 
 ### What Was Done
@@ -229,7 +270,7 @@
 
 ### Commit
 
-`pending`
+`c7f940b` pushed to `origin/master`
 
 ---
 
@@ -307,19 +348,19 @@
 
 ---
 
-## Next Batch: Phase 11.4 — Citation Validator Extension
+## Next Batch: Phase 11.5 — Unsupported-Claim Guard
 
 ### Scope
 
-1. Extend existing CitationValidator to handle LLM-generated draft output
-2. Add stricter citation checking for chunk_id format validation
-3. Add unit tests for extended citation validation behaviors
+1. Implement ClaimGuard with citation coverage check, forbidden promise detection, risk-aware check
+2. Produce GuardResult with per-check pass/fail
+3. Add unit tests for all guard behaviors
 4. No real LLM API calls, no pipeline integration
 
 ### Allowed Files
 
-- `src/ticketpilot/drafting/citation_validator.py` (extend)
-- `tests/unit/test_citation_validator.py` (extend)
+- `src/ticketpilot/drafting/claim_guard.py` (new)
+- `tests/unit/test_claim_guard.py` (new)
 - `openspec/changes/add-evidence-grounded-llm-draft/` (update tasks.md)
 - `docs/changelog.md`
 - `docs/harness/`
@@ -333,7 +374,7 @@
 ### Validation Commands
 
 ```bash
-uv run pytest tests/unit/test_citation_validator.py -v --tb=short
+uv run pytest tests/unit/test_claim_guard.py -v --tb=short
 openspec validate add-evidence-grounded-llm-draft --strict
 uv run ruff check .
 ```

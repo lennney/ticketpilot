@@ -31,6 +31,32 @@
 
 ---
 
+## 2026-05-06 — Phase 11.4: Draft Citation Validation
+
+**Problem**: DraftReply objects carry cited_evidence_ids but no validator existed to check whether these IDs are structurally valid — do they exist in the provided evidence candidates? Are there duplicates? Is the draft making substantive claims without citations? Need a deterministic, local-only validator.
+
+**Approach**:
+- DraftCitationValidationResult schema: is_valid, valid_cited_evidence_ids, invalid_cited_evidence_ids, duplicate_cited_evidence_ids, missing_citation_required, available_evidence_ids, errors, warnings, must_human_review
+- validate_draft_citations(): 5 sequential checks — evidence ID existence, duplicate detection, empty-evidence handling, missing citation heuristic, unsupported claims propagation
+- Evidence ID matching: converts EvidenceCandidate.chunk_id (UUID) to string and matches against DraftReply.cited_evidence_ids (list[str])
+- Missing citation heuristic: checks if draft_text contains safe-fallback patterns; only flags substantive text without citations. Safe fallback patterns: "无法确认具体政策条款", "建议转人工处理", "转人工", "证据不足"
+- Human review propagation: must_human_review cascades from DraftReply → validation result; validation failure and unsupported_claims both force must_human_review; never downgrades
+
+**Key Engineering Decisions**:
+- Used SAFE_FALLBACK_TEXT from llm_provider.py for exact-match fallback detection, plus heuristic pattern matching for similar fallback messages
+- Duplicates are warnings not errors — the draft can still be valid even if IDs are repeated, but the reviewer should know
+- Output lists are sorted for deterministic results — same input always produces same output
+- Validator is purely structural (ID existence, format checks) — semantic claim detection is deferred to Phase 11.5 ClaimGuard
+
+**Files**:
+- `src/ticketpilot/drafting/draft_citation_validator.py` (new, 75 lines)
+- `tests/unit/test_draft_citation_validator.py` (new, 215 lines, 21 tests)
+- `src/ticketpilot/drafting/__init__.py` (modified, updated exports)
+
+**Validation**: Quality gate PASSED — 878 unit, 119 integration (0 skip), 86.35% coverage, ruff clean, OpenSpec 17/17, secret scan clean, overclaim scan clean.
+
+---
+
 ## 2026-05-06 — Phase 11.1: Evidence-Grounded LLM Draft Generation Planning
 
 **Problem**: Template-based drafts (FakeDraftProvider) demonstrate pipeline connectivity but not portfolio-grade draft quality. The product needs evidence-grounded generation with safety guardrails.

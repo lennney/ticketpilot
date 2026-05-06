@@ -100,9 +100,9 @@ uv run ruff check .
 
 ---
 
-### 11.4 — Citation Validator Extension
+### 11.4 — Citation Validator Extension ✅
 
-**Scope**: Extend existing CitationValidator to handle LLM-generated draft output (stricter citation checking, chunk_id format validation).
+**Scope**: Extend citation validation for LLM-generated DraftReply objects. Validate cited_evidence_ids against evidence candidates, detect missing citations, duplicates, and invalid IDs.
 
 **Allowed files**:
 - `src/ticketpilot/drafting/citation_validator.py` (extend)

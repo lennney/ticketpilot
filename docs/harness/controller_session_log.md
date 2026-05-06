@@ -59,6 +59,31 @@
 
 ---
 
+---
+
+## 2026-05-06 — Phase 11.4: Draft Citation Validation
+
+**Summary**: Extended citation validation for DraftReply objects. Created `DraftCitationValidationResult` schema and `validate_draft_citations()` function that validates cited_evidence_ids against evidence candidates. 21 unit tests added. Full quality gate passed.
+
+**Key Deliverables**:
+- `src/ticketpilot/drafting/draft_citation_validator.py` — DraftCitationValidationResult + validate_draft_citations()
+- `tests/unit/test_draft_citation_validator.py` — 21 tests covering evidence ID existence, duplicates, missing citation heuristic, human review propagation
+
+**Key Design Decisions**:
+- Evidence ID matching uses chunk_id UUIDs from EvidenceCandidate — consistent with existing Citation schema
+- Duplicates reported as warnings (non-fatal) to avoid over-penalizing drafts with repeated IDs
+- Missing citation heuristic exempts safe-fallback patterns and non-substantive greetings to avoid false positives on legitimate no-evidence responses
+- Human review propagation is one-way: never downgrades; validation failures and unsupported_claims both force must_human_review
+- Fully deterministic — sorted output lists ensure stable results
+
+**Validation**: Quality gate PASSED — 878 unit, 119 integration (0 skip), 86.35% coverage, ruff clean, OpenSpec 17/17, secret scan clean, overclaim scan clean
+
+**Phase Status**: Phase 11.4 complete. Phase 11.5 pending (unsupported-claim guard).
+
+**Next Batch**: Phase 11.5 — Unsupported-Claim Guard
+
+---
+
 ## 2026-05-06 — Phase 11.1: Evidence-Grounded LLM Draft Generation Planning
 
 **Summary**: Created the OpenSpec planning layer for Phase 11 — Evidence-Grounded LLM Draft Generation. This planning batch produced 7 files: proposal, design, tasks, and 4 spec files (draft-generation, claim-guard, human-review, draft-evaluation). No code changes were made.

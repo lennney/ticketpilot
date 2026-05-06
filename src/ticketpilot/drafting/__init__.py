@@ -1,6 +1,10 @@
 """Evidence-grounded draft reply generation module."""
 
 from ticketpilot.drafting.citation_validator import CitationValidator
+from ticketpilot.drafting.draft_citation_validator import (
+    DraftCitationValidationResult,
+    validate_draft_citations,
+)
 from ticketpilot.drafting.generate import generate_draft
 from ticketpilot.drafting.llm_provider import FakeLLMProvider, LLMProvider
 from ticketpilot.drafting.pipeline import run_pipeline_with_draft
@@ -28,6 +32,8 @@ __all__ = [
     "LLMProvider",
     "LLMProviderConfig",
     "CitationValidator",
+    "DraftCitationValidationResult",
+    "validate_draft_citations",
     "generate_draft",
     "run_pipeline_with_draft",
     "create_llm_provider",

@@ -19,6 +19,31 @@
 
 ---
 
+## 2026-05-06 — Phase 11.4: Draft Citation Validation
+
+### Added
+- `src/ticketpilot/drafting/draft_citation_validator.py` — DraftCitationValidationResult schema + `validate_draft_citations()` function for DraftReply-level citation validation
+- `tests/unit/test_draft_citation_validator.py` — 21 tests covering all validation rules
+
+### Changed
+- `src/ticketpilot/drafting/__init__.py` — Added exports for `DraftCitationValidationResult` and `validate_draft_citations`
+
+### Design
+- `DraftCitationValidationResult` with fields: is_valid, valid/invalid/duplicate IDs, missing_citation_required, available_evidence_ids, errors, warnings, must_human_review
+- Evidence ID existence: every cited ID must appear in evidence candidates (UUID matching)
+- Duplicate detection: repeated IDs reported as warnings (non-fatal)
+- Missing citation heuristic: substantive text without citations flagged but exempts safe-fallback patterns and greetings
+- Human review propagation: never downgrades DraftReply.must_human_review; validation failure and unsupported_claims force must_human_review
+- Fully deterministic: same input always produces same output
+
+### Validation
+- Quality gate: ✅ PASSED — 878 unit (+21 new), 119 integration, **0 skipped**, 86.35% coverage (≥70%)
+- Ruff: ✅ All checks passed
+- OpenSpec --all: ✅ 17/17 passed
+- Secret scan: ✅ Clean
+
+---
+
 ## 2026-05-06 — Phase 11.3: Evidence-Grounded Prompt Builder
 
 ### Added

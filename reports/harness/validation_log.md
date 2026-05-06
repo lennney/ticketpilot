@@ -35,6 +35,22 @@
 
 ---
 
+## 2026-05-06 — Phase 11.4: Full Quality Gate
+
+| Check | Result |
+|---|---|
+| Ruff | All checks passed |
+| Unit tests | 878 passed (21 new draft citation validator tests) |
+| Integration tests | 119 passed, **0 skipped** |
+| Coverage | 86.35% (≥70%) |
+| OpenSpec --all | 17/17 passed |
+| Secret scan | Clean |
+| Overclaim scan | Clean |
+
+**Status**: ✅ PASSED
+
+---
+
 ## 2026-05-06 — Phase 11.1: OpenSpec Planning Validation
 
 | Check | Result |

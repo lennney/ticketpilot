@@ -21,9 +21,9 @@
 
 | Check | Result |
 |---|---|
-| Unit tests | 857 passed |
+| Unit tests | 878 passed |
 | Integration tests | 119 passed, 0 skipped |
-| Coverage | 86.04% |
+| Coverage | 86.35% |
 | Ruff | All checks passed |
 | OpenSpec validate --all | 16/16 passed |
 | Secret scan | Clean |
@@ -41,7 +41,7 @@
 
 ## 4. Current Working Context
 
-**Phase 10 is complete and archived. Phase 11.3 code complete (evidence-grounded prompt builder).**
+**Phase 10 is complete and archived. Phase 11.4 code complete (draft citation validation).**
 
 ### Phase 10 Evidence Chain
 
@@ -79,12 +79,11 @@ The diagnosis followed 7 sub-phases in sequence:
 
 ## 5. Active OpenSpec Change
 
-**Phase 11.3 — Evidence-Grounded Prompt Builder** (active)
-- 2 new files: prompt_builder.py (65 lines), test_prompt_builder.py (50 tests)
-- DraftPromptInput schema, build_prompt() with evidence packing, safety instructions, output format
-- Prompt builder is fully deterministic — same input always produces same output
-- Evidence packing: rank-order, truncation at 200 chars, empty-content skip, configurable max count (default 5)
-- Quality gate: ✅ PASSED — 857 unit, 119 integration, 0 skipped, 86.04% coverage
+**Phase 11.4 — Draft Citation Validation** (active)
+- 2 new files: draft_citation_validator.py (75 lines), test_draft_citation_validator.py (21 tests)
+- DraftCitationValidationResult schema with valid/invalid/duplicate IDs, missing_citation_required, must_human_review
+- validate_draft_citations(): evidence ID existence, duplicate detection, missing citation heuristic, human review propagation
+- Quality gate: ✅ PASSED — 878 unit, 119 integration, 0 skipped, 86.35% coverage
 - OpenSpec --all: ✅ 17/17 passed
 
 ## 6. Current Decisions
@@ -106,7 +105,7 @@ See `docs/harness/controller_decision_log.md` for full log.
 
 | Priority | Action | Phase | Type | Status |
 |---|---|---|---|---|
-| 1 | Evidence-grounded LLM draft generation — Phase 11.4 citation validator extension | 11.4 | Code | Next |
+| 1 | Evidence-grounded LLM draft generation — Phase 11.5 unsupported-claim guard | 11.5 | Code | Next |
 | — | Query expansion audit (alternative if retrieval prioritized) | 11 | Analysis | Alternative |
 
 See `docs/harness/controller_next_actions.md` for full details with allowed/forbidden files and validation commands.
@@ -136,8 +135,8 @@ customer service ticket triage. Read `AGENTS.md` for the project constitution.
 
 Current state:
 - Phase 10 cleanly archived
-- Phase 11.3 code complete — active OpenSpec change: add-evidence-grounded-llm-draft
-- Current baseline: 857 unit, 119 integration, 0 skipped, 86.04% coverage
+- Phase 11.4 code complete — active OpenSpec change: add-evidence-grounded-llm-draft
+- Current baseline: 878 unit, 119 integration, 0 skipped, 86.35% coverage
 - Latest commit: pending
 - Metric granularity thesis confirmed: 78% of wrong cases reclassified as doc-ID found
 - Doc-ID Recall@10: 91.9% (+32.5% over doc-type 59.4%)
