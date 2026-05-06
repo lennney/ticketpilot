@@ -1,5 +1,24 @@
 # TicketPilot Changelog
 
+## 2026-05-06 — Phase 11.1: Evidence-Grounded LLM Draft Generation Planning
+
+### Added
+- `openspec/changes/add-evidence-grounded-llm-draft/` — OpenSpec change with 7 files:
+  - `proposal.md` — problem, scope, non-goals, success criteria
+  - `design.md` — LLM provider interface, prompt builder, claim guard architecture
+  - `tasks.md` — 10 sub-phases (11.1–11.10) with allowed/forbidden files
+  - `specs/draft-generation/spec.md` — 9 requirements with scenarios
+  - `specs/claim-guard/spec.md` — 10 requirements with scenarios
+  - `specs/human-review/spec.md` — 8 requirements with scenarios
+  - `specs/draft-evaluation/spec.md` — 12 requirements with scenarios
+
+### Validation
+- OpenSpec scoped: ✅ `add-evidence-grounded-llm-draft --strict` passed
+- OpenSpec --all: ✅ 17/17 passed
+- Ruff: ✅ All checks passed
+
+---
+
 ## 2026-05-06 — ChatGPT Controller Context Harness
 
 ### Added

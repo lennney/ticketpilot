@@ -41,7 +41,7 @@
 
 ## 4. Current Working Context
 
-**Phase 10 is complete and archived.** No active OpenSpec change.
+**Phase 10 is complete and archived. Phase 11 planning (11.1) is complete.**
 
 ### Phase 10 Evidence Chain
 
@@ -79,9 +79,12 @@ The diagnosis followed 7 sub-phases in sequence:
 
 ## 5. Active OpenSpec Change
 
-**None.** The last active change (`add-hybrid-retrieval-ranking-diagnosis`) was archived on 2026-05-06.
-
-Next Phase 11 will create a new OpenSpec change.
+**Phase 11.1 — Evidence-Grounded LLM Draft Generation Planning** (active)
+- 7 files created: proposal.md, design.md, tasks.md, 4 spec files
+- OpenSpec --strict: ✅, OpenSpec --all: ✅ 17/17 passed
+- Defines LLM provider interface, evidence-grounded prompt builder, claim guard, human review handoff, and draft evaluation
+- 10 sub-phases (11.2–11.10) for implementation
+- No code changes in this planning phase
 
 ## 6. Current Decisions
 
@@ -132,8 +135,8 @@ customer service ticket triage. Read `AGENTS.md` for the project constitution.
 
 Current state:
 - Phase 10 cleanly archived (778 unit, 119 integration, 0 skipped, 85.27% coverage)
-- No active OpenSpec change
-- Latest commit: 199fbf2
+- Phase 11.1 planning complete — active OpenSpec change: add-evidence-grounded-llm-draft
+- Latest commit: e0dc189
 - Metric granularity thesis confirmed: 78% of wrong cases reclassified as doc-ID found
 - Doc-ID Recall@10: 91.9% (+32.5% over doc-type 59.4%)
 

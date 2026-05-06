@@ -4,6 +4,18 @@
 
 ---
 
+## AD-2026-05-06: Phase 11 LLM Provider Follows Fake-As-Default Pattern
+
+**Decision**: The LLM provider abstraction uses the same fake-as-default, real-via-env pattern established by the embedding provider (Phase 9).
+
+**Context**: Phase 11 introduces LLM draft generation. The system must remain CI-safe without API keys. The embedding provider pattern (FakeEmbeddingProvider as default, OpenAICompatibleProvider via .env.local) has worked well and is the natural model.
+
+**Rationale**: Consistency across providers. No API key required for development/CI. Real provider opt-in for evaluation. Pattern is already documented and understood.
+
+**Alternatives**: Always require a real LLM (CI dependency), use a mock library (coupling), no abstraction (untestable).
+
+---
+
 ## AD-2026-05-06: Phase 10 Evidence Chain Complete — No Further Retrieval Tuning
 
 **Decision**: Phase 10 closes after confirming metric granularity thesis. All future retrieval work requires a new Phase and OpenSpec change.

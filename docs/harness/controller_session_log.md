@@ -5,6 +5,35 @@
 
 ---
 
+## 2026-05-06 — Phase 11.1: Evidence-Grounded LLM Draft Generation Planning
+
+**Summary**: Created the OpenSpec planning layer for Phase 11 — Evidence-Grounded LLM Draft Generation. This planning batch produced 7 files: proposal, design, tasks, and 4 spec files (draft-generation, claim-guard, human-review, draft-evaluation). No code changes were made.
+
+**Key Deliverables**:
+- `openspec/changes/add-evidence-grounded-llm-draft/proposal.md` — problem statement, scope, non-goals
+- `openspec/changes/add-evidence-grounded-llm-draft/design.md` — architecture: LLM provider interface, prompt builder, claim guard, pipeline integration, 8 safety layers
+- `openspec/changes/add-evidence-grounded-llm-draft/tasks.md` — 10 sub-phases (11.2–11.10) with allowed/forbidden files per phase
+- `openspec/changes/add-evidence-grounded-llm-draft/specs/draft-generation/spec.md` — 9 requirements
+- `openspec/changes/add-evidence-grounded-llm-draft/specs/claim-guard/spec.md` — 10 requirements
+- `openspec/changes/add-evidence-grounded-llm-draft/specs/human-review/spec.md` — 8 requirements
+- `openspec/changes/add-evidence-grounded-llm-draft/specs/draft-evaluation/spec.md` — 12 requirements
+
+**Key Design Decisions**:
+- LLM provider interface follows the same pattern as FakeEmbeddingProvider (fake default, real provider opt-in via .env.local)
+- Claim guard is deterministic (rule-based, no ML/NLP) — same pattern as existing CitationValidator
+- Evidence-grounded prompt builder constrains LLM to retrieved evidence only
+- 8-layer safety design from prompt constraint through human review
+
+**Validation**: OpenSpec --strict ✅, OpenSpec --all ✅ 17/17, Ruff ✅
+
+**Decisions Made**: See D9 in decision log
+
+**Phase Status**: Phase 11.1 complete (planning). Phase 11.2 pending (draft schema + deterministic provider).
+
+**Next Batch**: Phase 11.2 — Draft Schema and Deterministic Provider
+
+---
+
 ## 2026-05-06 — Phase 10.7.5/10.8/10.9: Full-Dataset Real Pipeline Eval + Portfolio + Archive
 
 **Summary**: Completed Phase 10 end-to-end: ran full-dataset real pipeline doc-level evaluation (101 cases, 86 labeled), confirmed metric granularity thesis (32/41 = 78% reclassified), created portfolio snapshot, ran final quality gate (778 unit / 119 int / 0 skip / 85.27% coverage / OpenSpec 16/16), and archived the `add-hybrid-retrieval-ranking-diagnosis` OpenSpec change.

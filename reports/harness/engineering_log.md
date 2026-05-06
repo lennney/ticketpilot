@@ -4,6 +4,26 @@
 
 ---
 
+## 2026-05-06 — Phase 11.1: Evidence-Grounded LLM Draft Generation Planning
+
+**Problem**: Template-based drafts (FakeDraftProvider) demonstrate pipeline connectivity but not portfolio-grade draft quality. The product needs evidence-grounded generation with safety guardrails.
+
+**Approach**: Designed a multi-layer architecture with 8 safety layers:
+1. Prompt constraint (LLM instructed to use evidence only)
+2. Citation validation (existing, extended)
+3. Claim guard (new: forbidden promise detection, evidence coverage)
+4. Risk-aware check (high-risk flags force escalation acknowledgment)
+5. Human review handoff (must_human_review architectural gate)
+6. No auto-send (architectural invariant)
+7. Fake provider default (no API key needed for CI)
+8. Provider identity in trace
+
+**Key Architectural Decision**: The LLM provider abstraction follows the exact pattern of the embedding provider — FakeLLMProvider for CI/development, real provider opt-in via environment variables. This ensures the pipeline runs without external dependencies by default.
+
+**Files**: `openspec/changes/add-evidence-grounded-llm-draft/` (7 files)
+
+---
+
 ## 2026-05-06 — Phase 10.7.5: Full-Dataset Real Pipeline Doc-Level Evaluation
 
 **Problem**: Doc-type metrics showed 59.4% Recall@10, but Phase 10.5.1 P0 analysis suggested most "wrong" cases were metric granularity, not retrieval failures. Needed full-dataset confirmation.

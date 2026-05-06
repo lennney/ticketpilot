@@ -194,46 +194,74 @@
 
 ---
 
-## Next Batch: Phase 11 — Evidence-Grounded LLM Draft Generation
+## Completed Batch: Phase 11.1 — Evidence-Grounded LLM Draft Generation Planning
+
+### What Was Done
+
+- Created OpenSpec change `add-evidence-grounded-llm-draft` with 7 files
+- Defined LLM provider abstraction, evidence-grounded prompt builder, claim guard architecture
+- Defined 4 spec files: draft-generation, claim-guard, human-review, draft-evaluation
+- Created 10 sub-phase task breakdown (11.2–11.10)
+- No code changes — planning/spec/design only
+
+### Files Created
+
+- `openspec/changes/add-evidence-grounded-llm-draft/proposal.md`
+- `openspec/changes/add-evidence-grounded-llm-draft/design.md`
+- `openspec/changes/add-evidence-grounded-llm-draft/tasks.md`
+- `openspec/changes/add-evidence-grounded-llm-draft/specs/draft-generation/spec.md`
+- `openspec/changes/add-evidence-grounded-llm-draft/specs/claim-guard/spec.md`
+- `openspec/changes/add-evidence-grounded-llm-draft/specs/human-review/spec.md`
+- `openspec/changes/add-evidence-grounded-llm-draft/specs/draft-evaluation/spec.md`
+
+### Validation
+
+- openspec validate --strict: ✅
+- openspec validate --all: ✅ 17/17 passed
+- ruff check: ✅ Clean
+
+### Commit
+
+`pending`
+
+---
+
+## Next Batch: Phase 11.2 — Draft Schema and Deterministic Provider
 
 ### Scope
 
-1. Design LLM provider integration (Claude API or OpenAI-compatible)
-2. Implement citation-enforced draft generation grounded in retrieved evidence
-3. Extend citation validator for LLM-generated content
-4. Add human review extensions for LLM-generated drafts
-5. Extend evaluation with draft quality metrics
-6. Validate: quality gate (0 skip integration tests), openspec --all, ruff, secret scan
-7. All Phase 10 portfolio, reports, and archive must remain frozen
+1. Implement LLM provider interface (abstract base class + FakeLLMProvider)
+2. Extend DraftReply schema with provider_id, guard_results, escalation_reason
+3. Add provider configuration module (env-based, same pattern as embedding provider)
+4. Add unit tests for provider interface and fake provider
+5. No real LLM API integration in this sub-phase
+6. All Phase 10 portfolio, reports, and archive must remain frozen
 
 ### Allowed Files
 
-- `openspec/changes/add-evidence-grounded-llm-draft/` (new change)
-- `src/ticketpilot/drafting/` (LLM provider, generator)
-- `src/ticketpilot/evaluation/` (draft quality metrics)
-- `tests/` (new tests for LLM draft generation)
+- `src/ticketpilot/drafting/llm_provider.py` (new)
+- `src/ticketpilot/drafting/provider_config.py` (new)
+- `src/ticketpilot/drafting/schemas.py` (extend DraftReply)
+- `tests/unit/test_llm_provider.py` (new)
+- `tests/unit/test_drafting_schemas.py` (extend)
+- `openspec/changes/add-evidence-grounded-llm-draft/` (update tasks.md)
 - `docs/changelog.md`
-- `docs/harness/controller_next_actions.md`
+- `docs/harness/`
 
 ### Forbidden Files
 
+- `src/ticketpilot/retrieval/` (no retrieval changes)
+- `data/` (no data changes)
 - `reports/retrieval/` (Phase 7/8/9/10 reports frozen)
 - `docs/portfolio/` (portfolio docs frozen)
-- `data/eval/` (eval dataset frozen)
-- `data/knowledge/` (knowledge base frozen)
 - `openspec/changes/archive/` (archived changes frozen)
 - `.env`, `.env.local`
-
-### Alternative Next Phase
-
-If retrieval optimization is prioritized over product features:
-- **Phase 11 — Query Expansion Audit**: Audit 7 zero-hit cases for query-knowledge term mismatch. Documentation-only, no code changes. See Phase 10.7.5 remaining misses report.
 
 ### Validation Commands
 
 ```bash
-# Full quality gate
-bash scripts/run_quality_gate.sh
+# Module tests
+uv run pytest tests/unit/test_llm_provider.py tests/unit/test_drafting_schemas.py -v --tb=short
 
 # OpenSpec validation
 openspec validate add-evidence-grounded-llm-draft --strict
@@ -241,16 +269,13 @@ openspec validate --all
 
 # Ruff
 uv run ruff check .
-
-# Secret scan
-grep -r "sk-" data/ --include="*.csv"
 ```
 
 ### Stop Conditions
 
-- Quality gate fails
-- Integration tests skipped when DB is available
+- Real LLM API called
+- Retrieval algorithm modified
+- Knowledge data or golden labels modified
 - Forbidden file modified
-- Secret scan fails
 - Phase 7/8/9/10/archive reports modified
 

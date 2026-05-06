@@ -42,6 +42,13 @@ Each decision entry records: date, decision, context, alternatives considered, a
 - **Alternatives**: Remove fake provider entirely (breaks CI without real API key), upgrade fake to have limited semantics (scope creep)
 - **Why this won**: Keeps CI dependency-free; explicit separation of concerns between mechanics and quality
 
+## D9 — 2026-05-06: LLM Provider Abstraction Follows Embedding Provider Pattern
+
+- **Decision**: LLM provider uses the same abstraction pattern as the embedding provider: abstract interface + FakeLLMProvider (default, deterministic, CI-safe) + optional real provider via .env.local
+- **Context**: Phase 9 established the pattern of fake-as-default, real-via-env for embeddings. Phase 11 brings LLM generation in with the same pattern: no API key required for development/CI, real provider opt-in for evaluation.
+- **Alternatives**: Always require a real LLM (blocks CI), use a mock library (coupling), no abstraction at all (untestable)
+- **Why this won**: Consistency with existing provider pattern; CI runs without API keys; evaluation can opt into real provider for draft quality assessment
+
 ## D8 — 2026-05-06: Default Next Phase Is Evidence-Grounded LLM Draft Generation
 
 - **Decision**: The default next phase (Phase 11) is evidence-grounded LLM draft generation, not continued retrieval tuning
