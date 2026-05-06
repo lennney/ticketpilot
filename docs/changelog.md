@@ -1,5 +1,26 @@
 # TicketPilot Changelog
 
+## 2026-05-06 — Phase 11.9: Portfolio Snapshot
+
+### Added
+- `docs/portfolio/phase11_evidence_draft_snapshot.md` — Phase 11 portfolio snapshot with diagnosis chain, architecture diagram, key decisions, product interpretation, engineering takeaways, boundaries, resume bullets, interview versions
+
+### Changed
+- `README.md` — Updated Phase 11 status from "进行中" to "已完成"; updated Phase 11 description with 8-layer safety architecture details
+- `README.en.md` — Updated Phase 11 status from "in progress" to "complete"; updated Phase 11 description with full component list
+- `docs/portfolio/product_portfolio_material_pack.md` — Updated iteration summary, added Phase 11 column to iteration history table
+- `docs/portfolio/ticketpilot_product_case_onepager.md` — Updated Phase 11 references
+- `docs/portfolio/interview_talking_points.md` — Updated 1-minute pitch to reflect Phase 11 completion
+- `docs/portfolio/project_case_study_cn.md` — Updated Phase 11 status and iteration summary
+- `docs/portfolio/project_case_study_en.md` — Updated Phase 11 status, description, and iteration summary
+
+### Validation
+- Ruff: ✅ Clean
+- OpenSpec --strict (add-evidence-grounded-llm-draft): ✅ Passed
+- OpenSpec --all: ✅ 17/17 passed
+
+---
+
 ## 2026-05-06 — Phase 11.8: Offline Draft Evaluation
 
 ### Added

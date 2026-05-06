@@ -49,12 +49,14 @@ class DraftGenerationResult:
         model_name: str,
         citation_validation: DraftCitationValidationResult,
         guard_result: GuardResult,
+        ticket_output: TicketOutput | None = None,
     ) -> None:
         self.draft = draft
         self.provider_name = provider_name
         self.model_name = model_name
         self.citation_validation = citation_validation
         self.guard_result = guard_result
+        self.ticket_output = ticket_output
         self.generation_trace: dict = {}
 
     def to_trace_dict(self) -> dict:
@@ -268,6 +270,7 @@ def generate_draft(
         model_name=model_name,
         citation_validation=struct_validation,
         guard_result=guard_result,
+        ticket_output=ticket_output,
     )
 
     return result

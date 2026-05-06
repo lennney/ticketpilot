@@ -2,116 +2,143 @@
 
 ## 30-Second Pitch
 
-"TicketPilot is a Chinese customer support ticket triage copilot that I built from scratch using spec-driven development. It takes unstructured Chinese support tickets, runs them through a four-stage pipeline -- intake normalization, intent classification, risk assessment, and hybrid knowledge retrieval -- then optionally generates evidence-grounded draft replies. A human review console provides approve/edit/escalate/reject controls with a full audit trail. The system is designed with safety constraints: no auto-send, fake embeddings for pipeline verification only, and no real LLM dependency. It is a functional MVP with clear documentation of what is and is not production-ready."
+"TicketPilot is a Chinese customer support ticket triage copilot that I built through 5 iterative phases using spec-driven development. It takes unstructured Chinese support tickets, runs them through a four-stage pipeline — intake normalization, intent classification, risk assessment, and hybrid knowledge retrieval — then optionally generates evidence-grounded draft replies with ClaimGuard validation. A human review console provides approve/edit/escalate/reject controls with a full audit trail. The system is designed with safety constraints: no auto-send, fake embeddings by default for pipeline verification, and no real LLM dependency by default. What distinguishes it is not feature count but the iteration story: each phase used evaluation to identify the next bottleneck, rather than blindly stacking capabilities."
 
 ## 1-Minute Pitch
 
-"TicketPilot addresses the problem of unstructured Chinese customer support tickets. Customer service teams receive thousands of free-text tickets daily -- refund requests, complaints, account issues -- and need to triage them quickly while assessing risk. I built a six-layer modular pipeline: Stage 1 normalizes text and extracts entities, Stage 2 classifies intent into 8 categories using rule-based keyword matching, Stage 3 assesses risk across 8 flags, Stage 4 performs hybrid retrieval using PostgreSQL full-text search and pgvector HNSW with RRF fusion, Stage 5 optionally generates evidence-grounded draft replies using a deterministic FakeDraftProvider, and Stage 6 provides a Streamlit human review console. Every decision is recorded in an append-only JSONL audit trail. The system never sends replies automatically -- that is an explicit architectural constraint."
+"TicketPilot addresses unstructured Chinese customer support ticket processing. Customer service teams receive thousands of free-text tickets daily and need to triage them while assessing risk. I built a six-layer modular pipeline: intake normalizes text and extracts entities, classification determines intent across 8 categories, risk assessment flags 8 risk types, hybrid retrieval uses FTS + HNSW + RRF fusion, draft generation produces evidence-grounded replies, and a Streamlit console handles human review. Every decision is recorded in an append-only JSONL audit trail.
+
+The project went through 5 distinct phases: data foundation (10→101 tickets), real embedding comparison (discovered bottleneck was knowledge coverage, not model quality), evaluation-driven knowledge optimization (discovered a config silent fallback bug and built Provider Identity Gate), granular evaluation (78% of 'errors' were actually measurement granularity issues, Doc-ID Recall@10=91.9%), and evidence-grounded LLM draft generation with 8-layer safety architecture (complete)."
 
 ## 3-Minute Technical Walkthrough
 
 ### Architecture
 
-"TicketPilot uses a stage-based pipeline architecture in Python. The core 4-stage pipeline is in src/ticketpilot/pipeline.py and consists of intake, classification, risk assessment, and retrieval. Each stage has try/except graceful degradation -- a failure in any stage produces fallback values and continues."
+"TicketPilot uses a stage-based pipeline architecture in Python. The core 4-stage pipeline consists of intake, classification, risk assessment, and retrieval. Each stage has try/except graceful degradation — a failure in any stage produces fallback values and continues."
 
 ### Intake (Stage 1)
 
-"The intake module normalizes Chinese text -- stripping whitespace, normalizing unicode -- and extracts entities using regex patterns for Chinese order numbers, product mentions, and monetary amounts."
+"Normalizes Chinese text — stripping whitespace, normalizing unicode — and extracts entities using regex patterns for Chinese order numbers, product mentions, and monetary amounts."
 
 ### Classification (Stage 2)
 
-"Classification uses deterministic keyword matching with Chinese synonyms and regex patterns. There are 8 intent classes: REFUND, RETURN_EXCHANGE, ACCOUNT_ISSUE, TECHNICAL_ISSUE, PRODUCT_CONSULTING, LOGISTICS, COMPLAINT, and OTHER."
+"Deterministic keyword matching with Chinese synonyms. 8 intent classes: REFUND, RETURN_EXCHANGE, ACCOUNT_ISSUE, TECHNICAL_ISSUE, PRODUCT_CONSULTING, LOGISTICS, COMPLAINT, and OTHER."
 
 ### Risk Assessment (Stage 3)
 
-"Risk assessment uses Chinese keyword patterns for 8 flags: 6 substantive (complaint, compensation, legal, privacy, account security, policy conflict) and 2 meta (low confidence, insufficient evidence). Severity is LOW for 0-1 flags, MEDIUM for 2, HIGH for 3+. LEGAL_RISK always produces HIGH severity."
+"Chinese keyword patterns for 8 flags: 6 substantive (complaint, compensation, legal, privacy, account security, policy conflict) and 2 meta (low confidence, insufficient evidence). Severity is LOW for 0-1 flags, MEDIUM for 2, HIGH for 3+. LEGAL_RISK always produces HIGH severity."
 
 ### Retrieval (Stage 4)
 
-"Retrieval uses a hybrid approach: PostgreSQL full-text search with a simple config and GIN index for keyword matching, plus pgvector HNSW (m=16, ef_construction=200) for vector similarity. Results are fused via RRF with k=60. The knowledge base has a two-layer architecture: three source tables with type-specific columns, plus a unified knowledge_chunks table for single-query retrieval. Parent-child chunking provides both precise passage matching and full context."
-
-"The FakeEmbeddingProvider generates deterministic 384-dim pseudo-random vectors from SHA-256 hashes. This proves pipeline mechanics but has no semantic meaning."
+"Hybrid approach: PostgreSQL full-text search with GIN index for keyword matching, plus pgvector HNSW (m=16, ef_construction=200) for vector similarity. Results fused via RRF with k=60. Dual provider architecture: FakeEmbeddingProvider (384-d deterministic hash, default) verifies pipeline mechanics; DashScope text-embedding-v4 (1024-d, opt-in) provides real Chinese semantic retrieval."
 
 ### Draft Generation (Stage 5, Optional)
 
-"Draft generation uses an AbstractDraftProvider interface with a single FakeDraftProvider implementation -- template-based, deterministic, no LLM calls. The CitationValidator performs regex-based unsupported claim detection. Safety paths: no-evidence produces a safe generic message, high-risk caps confidence at 0.5 and sets must_human_review."
+"Dual provider: FakeDraftProvider (template-based) and FakeLLMProvider (evidence-constrained, deterministic). Evidence-grounded PromptBuilder converts evidence + safety rules into structured prompts. CitationValidator + ClaimGuard for integrity checking."
 
 ### Human Review (Stage 6, Optional)
 
-"The Streamlit console provides four actions: APPROVE, EDIT, ESCALATE, REJECT. Each action records a ReviewDecision with a full audit snapshot. Persistence is append-only JSONL via ReviewStore."
+"Streamlit console with four actions: APPROVE, EDIT, ESCALATE, REJECT. Append-only JSONL via ReviewStore."
 
 ### Quality Gate
 
-"The project maintains a strict quality gate script with 5 stages: Ruff linting (0 errors), unit tests (325 pass, minimum 70% coverage), integration tests (74 pass, 0 skipped), OpenSpec validation, and secret scanning."
+"5-stage gate: Ruff (0 errors), unit tests (~856 pass, >70% coverage), integration tests (119 pass, 0 skipped), OpenSpec validation, and secret scanning."
+
+## The Iteration Story (Key Differentiator)
+
+### Phase 8 Lesson
+
+"The most valuable finding was NOT that Top-1 improved 10%. It was that fake and real embeddings had IDENTICAL 41 wrong cases — all missing_doc_type. This told us the bottleneck was knowledge coverage, not embedding quality. The product judgment: don't throw better models at a knowledge gap problem."
+
+### Phase 9 Lesson
+
+"We added 11 targeted knowledge records. Fake eval showed regression. After digging, found `load_dotenv()` was never called — all config silently fell back to fake. The fix flipped the results. This taught me: you can't trust metrics from an unknown source. Built Provider Identity Gate to verify runtime provider identity on every evaluation run."
+
+### Phase 10 Lesson
+
+"Doc-type level evaluation was too coarse. We built doc-ID level golden labels (14→86 cases). Doc-ID Recall@10=91.9%, 32.5pp above doc-type. 78% of 'wrong' cases were actually evaluation granularity issues — the system found the right document type but was penalized for not matching the specific doc ID in the golden label. This taught me: check your measurement before declaring the system broken."
 
 ## Product Manager Angle
 
-- Problem validation: Customer support ticket triage is a universal pain point for Chinese e-commerce platforms
-- Scope discipline: The project deliberately scoped to MVP -- fake embeddings, seed data, no real LLM
-- Iterative delivery: 6 OpenSpec changes delivered incrementally with quality gates
-- Risk-first design: Flags high-risk tickets for mandatory human review; no auto-send by design
-- Demonstrable progress: End-to-end pipeline works with Streamlit UI
+- Problem validation: Customer support ticket triage is a universal pain point for Chinese e-commerce
+- Scope discipline: Deliberately MVP-scoped — fake embeddings, synthetic data, no real LLM
+- Iterative delivery: 5 phases, each answering a specific product question through evaluation
+- Risk-first design: Flags high-risk tickets for mandatory human review; no auto-send
+- Evaluation-driven: Every phase used data to determine the next bottleneck, not hunches
 
 ## AI Application Engineering Angle
 
-- Spec-driven development: Every non-trivial change followed proposal -> design -> spec -> tasks -> quality gate -> archive
-- Provider pattern: AbstractDraftProvider and EmbeddingProvider interfaces allow easy swap of implementations
-- Graceful degradation: Pipeline stages never crash -- failures produce fallback values
-- Human-in-the-loop: Four action types, self-contained audit snapshots, append-only persistence
-- Immutable state: Risk flags are never mutated in place
+- Spec-driven development: proposal → design → spec → tasks → quality gate → archive
+- Provider pattern: AbstractDraftProvider, LLMProvider, EmbeddingProvider — all switchable
+- Graceful degradation: Pipeline stages never crash — failures produce fallback values
+- Provider Identity Gate: Runtime verification prevents silent provider fallback
+- Human-in-the-loop: Four action types, self-contained audit snapshots
 
 ## Risk/Control Angle
 
-- No auto-send: The system records decisions, never sends replies
+- No auto-send: Records decisions, never sends replies
 - Human review mandatory for all risk scenarios
 - Append-only audit trail for compliance
-- Graceful failure mode: retrieval failure produces INSUFFICIENT_EVIDENCE flag
-- Current limitations: no authentication, no multi-user workflow
+- ClaimGuard: Forbidden promise detection, statement validation
+- Graceful failure: retrieval failure produces INSUFFICIENT_EVIDENCE flag
 
 ## What I Personally Contributed
 
-- Designed and implemented the full 6-layer pipeline architecture
-- Built intake normalization with Chinese entity extraction
-- Implemented rule-based intent classification (8 classes) and risk assessment (8 flags)
-- Designed hybrid retrieval engine with keyword + vector search and RRF fusion
-- Implemented FakeEmbeddingProvider for pipeline verification
-- Designed optional draft generation workflow with provider pattern
-- Built Streamlit human review console with 4-action review model
-- Established OpenSpec spec-driven development workflow and quality gate
-- Wrote comprehensive development trace and technical documentation
-- Enforced documentation truthfulness standards (no exaggerated claims)
+- Full 6-layer pipeline architecture design and implementation
+- Intake normalization with Chinese entity extraction
+- Rule-based intent classification (8 classes) and risk assessment (8 flags)
+- Hybrid retrieval engine with keyword + vector search and RRF fusion
+- Dual embedding provider architecture (Fake 384-d / Real 1024-d) with comparison evaluation
+- Wrong-case taxonomy (8 failure categories) and evaluation-driven knowledge optimization
+- Provider Identity Gate — runtime provider verification
+- Doc-ID granular evaluation pipeline (Doc-ID Recall@10=91.9%)
+- Streamlit human review console with 4-action review model
+- OpenSpec spec-driven development workflow and quality gate
+- 5-phase iteration planning: each phase driven by evaluation findings
 
 ## What I Learned
 
-- Spec-driven development discipline: Writing specs before code catches design issues early
-- Pipeline architecture for AI systems: Every stage needs graceful degradation
-- Fake providers enable full end-to-end testing without external dependencies
-- Documentation truthfulness matters: Labeling limitations builds trust
-- Batch implementation pattern: Schema -> implementation -> tests -> docs -> quality gate
-- Chinese NLP challenges: PostgreSQL FTS with simple config does not tokenize Chinese
+- Evaluation-driven iteration: each phase answers a specific product question
+- Provider Identity Gate: don't trust metrics from an unknown source
+- Measurement granularity matters: doc-type evaluation was hiding 78% of real performance
+- Bottleneck identification: distinguishing between model quality, knowledge coverage, and measurement issues
+- Chinese NLP challenges: PostgreSQL FTS simple config does not tokenize Chinese
+- Spec-driven development discipline catches design issues early
 
 ## Likely Interviewer Questions and Answer Bullets
 
 ### Q: Why is this not just a normal RAG demo?
 
-"This is not just RAG because RAG is only one layer (Stage 4) of a six-layer system. What distinguishes TicketPilot: (1) the full pipeline including intake, classification, risk assessment, retrieval, optional drafting, and human review; (2) human-in-the-loop with four action types and append-only audit trail; (3) safety architecture -- no auto-send, mandatory review for risk, graceful degradation; (4) spec-driven development process with quality gates; (5) deliberately constrained scope with clear documentation of MVP gaps."
+"This is not just RAG because RAG is only one layer (Stage 4) of a six-layer system. What distinguishes TicketPilot: (1) full pipeline including intake, classification, risk assessment, retrieval, drafting, and human review; (2) human-in-the-loop with audit trail; (3) safety architecture — no auto-send, mandatory review for risk; (4) 5-phase iteration driven by evaluation findings; (5) Provider Identity Gate for metric integrity."
 
 ### Q: Why human-in-the-loop?
 
-"Three reasons: (1) Compliance -- automated reply sending has regulatory implications, especially for refunds, compensation, and legal matters. Human review is a safety gate. (2) Quality control -- even real LLMs can produce inappropriate replies. (3) Audit trail -- every decision is a self-contained snapshot for traceability. The decision-recording-only approach is deliberate."
+"Three reasons: (1) Compliance — automated reply sending has regulatory implications. Human review is a safety gate. (2) Quality control — even real LLMs can produce inappropriate replies. (3) Audit trail — every decision is a self-contained snapshot. The decision-recording-only approach is deliberate."
 
-### Q: Why fake embedding now?
+### Q: What did Phase 8 teach you?
 
-"Fake embeddings prove pipeline mechanics without external dependencies. They verify that embedding generation, HNSW indexing, cosine similarity scoring, and RRF fusion all work correctly. The provider is deterministic for reproducible tests. The tradeoff is explicit: no semantic meaning, so retrieval quality cannot be evaluated. This is acceptable because (1) the interface supports straightforward replacement, (2) real evaluation needs both a real provider and an evaluation pipeline, and (3) pipeline mechanics are identical regardless of provider."
+"That the bottleneck was knowledge coverage, not embedding quality. Fake and real embeddings had identical 41 wrong cases. Top-1 improved 10% but the fundamental limitation was the same. This taught me to always ask: is this a model problem or a data problem?"
 
-### Q: What is still missing for MVP?
+### Q: What is Provider Identity Gate?
 
-"The core workflow (ticket-to-draft-to-review) is complete. Gaps: realistic enterprise data pack (36 synthetic docs), real embedding provider (fake has no semantic meaning), real LLM provider (template replies only), evaluation pipeline (no golden-answer pairs or quality metrics), trace persistence (in-memory only), authentication and multi-user workflow (free-text label only)."
+"A runtime check that records which provider actually generated each evaluation result. I discovered in Phase 9 that `python-dotenv` was installed but never called — all `.env.local` config was silently ignored, and we'd been making iteration decisions based on fake provider metrics. The gate prevents this by logging the actual provider identity with every evaluation run."
+
+### Q: What was Phase 10's most important finding?
+
+"That doc-type level evaluation was hiding 78% of the system's real performance. Doc-ID Recall@10 jumped from 59.4% to 91.9% when we refined the measurement. The system wasn't failing — the measurement was too coarse. This taught me to validate measurement methodology before making system-level judgments."
 
 ### Q: How do you evaluate this system?
 
-"Current evaluation is process-oriented: 325 unit tests, 74 integration tests, 8 golden cases for smoke testing, automated quality gate. This verifies that each component works and the pipeline runs end-to-end. What is missing: retrieval precision/recall/mRR metrics, draft quality evaluation, hallucination rate, regression benchmarks. The evaluation pipeline is the single biggest gap."
+"Multiple layers: 7 pipeline metrics (intent accuracy, severity accuracy, risk flag F1, evidence recall, etc.), retrieval comparison mode (Fake vs Real embedding), and doc-ID granular evaluation (Recall@10=91.9%). CSV mode loads pre-computed predictions; Pipeline mode runs the full pipeline; comparison mode evaluates embedding quality. No-auto-send=100% is an architectural constraint."
 
 ### Q: What would you improve next?
 
-"Build the evaluation pipeline first -- it is the critical enabler. Without it, you cannot measure whether any change improves the system. Then: realistic data pack, real embedding provider, real LLM provider, trace persistence, LangGraph orchestration, authentication and multi-user review."
+"Phase 11 completion — real LLM provider integration and offline draft evaluation metrics. Then back to Phase 10's findings: 7 zero-hit cases for query expansion, 32 partial-hit cases for RRF tuning."
+
+### Q: What does this project say about your product sense?
+
+"It shows I design with iteration in mind. Each phase started with a clear question, used evaluation to get an answer, and used that answer to decide what to do next. Phase 8 answered 'is the bottleneck model quality or data coverage?' Phase 9 answered 'can we trust our metrics?' Phase 10 answered 'is our measurement correct?' These are product judgment questions, not just engineering tasks."
+
+### Q: How do you prevent the system from making things up?
+
+"Three layers: (1) Risk assessment gates — high-risk signals force human review. (2) ClaimGuard — detects uncited claims, forbidden promises (refund amounts, legal liability, account changes), and risk-aware escalation. (3) Architectural — the system never auto-sends anything. All outputs are draft suggestions requiring human approval."
