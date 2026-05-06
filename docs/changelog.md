@@ -1745,3 +1745,25 @@ Prepare TicketPilot for public GitHub portfolio presentation with accurate, non-
 - **9 genuine misses** (5 edge cases + 4 domain cases)
 - **143 tests pass, ruff clean, openspec --strict valid**
 
+## 2026-05-06 — Phase 10.8: Portfolio Snapshot
+
+### Added
+- `docs/portfolio/phase10_hybrid_ranking_diagnosis_snapshot.md` — comprehensive portfolio snapshot covering diagnosis methodology, full-dataset metrics, product and engineering interpretation, resume bullets, interview versions, boundary statements, and next phase options
+
+### Changed
+- `docs/portfolio/ticketpilot_product_case_onepager.md` — added Phase 10 summary section, updated project overview from "Phase 8 completed" to "Phases 8–10 completed"
+- `docs/portfolio/product_portfolio_material_pack.md` — updated next-steps section to include Phase 8–10 completion, updated boundary statements, updated interview Q&A
+- `README.md` — added Phase 10 real embedding reference in limitations, updated knowledge record count to 106, updated portfolio docs reference
+
+### Key Metrics Documented
+- Doc-ID Recall@10: 91.9% (+32.5% over doc-type 59.4%)
+- 32/41 (78%) wrong cases reclassified as doc-ID found — metric granularity thesis confirmed
+- 7 zero-hit cases (query expansion candidates)
+- 32 partial-hit cases (fusion ranking candidates)
+- 86/101 cases labeled with doc-level golden labels
+
+### Validation
+- ruff check: ✅ Clean
+- openspec validate --strict: ✅
+- openspec validate --all: ✅
+

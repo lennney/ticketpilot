@@ -51,36 +51,65 @@
 
 ---
 
-## Next Batch: Phase 10.8/10.9 — Portfolio Snapshot + Final Validation and Archive
+## Completed Batch: Phase 10.8 — Portfolio Snapshot
+
+### What Was Done
+
+- Created comprehensive portfolio snapshot: `docs/portfolio/phase10_hybrid_ranking_diagnosis_snapshot.md`
+- Updated `ticketpilot_product_case_onepager.md` with Phase 10 summary + overview updated to Phases 8–10
+- Updated `product_portfolio_material_pack.md` next-steps, boundary statements, interview Q&A
+- Updated README.md with Phase 10 references
+- Validation: ruff clean, openspec --strict and --all valid
+- docs/changelog.md, tasks.md, controller_next_actions.md updated
+
+### Key Metrics Documented
+
+- Doc-ID Recall@10: 91.9% (+32.5% over doc-type 59.4%)
+- 32/41 (78%) wrong cases reclassified as doc-ID found — metric granularity thesis confirmed
+- 7 zero-hit cases (query expansion candidates)
+- 32 partial-hit cases (fusion ranking candidates)
+- 86/101 cases labeled with doc-level golden labels
+
+### Validation
+
+- ruff check: ✅ Clean
+- openspec validate --strict: ✅
+- openspec validate --all: ✅
+
+### Commit
+
+`pending`
+
+---
+
+## Next Batch: Phase 10.9 — Final Validation and Archive
 
 ### Scope
 
-1. Create compact portfolio snapshot from delta report (Phase 10.8)
-2. Include: methodology, key metrics (Doc-ID Recall@10: 91.9%, thesis confirmed), roadmap
-3. Update portfolio product case onepager if needed
-4. Run full quality gate: unit tests + integration tests + coverage + ruff + secret scan
-5. Verify integration tests: 0 skipped
-6. Run `openspec validate add-hybrid-retrieval-ranking-diagnosis --strict`
-7. Run `openspec validate --all`
-8. Verify no Phase 7/8/9 baseline reports modified
-9. Archive change
-10. Commit and push
+1. Run full quality gate: unit tests + integration tests + coverage + ruff + secret scan
+2. Verify integration tests: 0 skipped
+3. Run `openspec validate add-hybrid-retrieval-ranking-diagnosis --strict`
+4. Run `openspec validate --all`
+5. Verify no Phase 7/8/9 baseline reports modified
+6. Verify no Phase 10.7/10.8 report modifications
+7. Archive change
+8. Commit and push
 
 ### Allowed Files
 
-- `reports/retrieval/phase10_portfolio_snapshot.md` (new)
+- `openspec/changes/add-hybrid-retrieval-ranking-diagnosis/archive.md` (new — archive declaration)
 - `docs/changelog.md`
-- `openspec/changes/add-hybrid-retrieval-ranking-diagnosis/tasks.md`
 - `docs/harness/controller_next_actions.md`
+- `docs/harness/chatgpt_controller_context.md` (if exists)
+- `docs/harness/controller_session_log.md` (if exists)
 
 ### Forbidden Files
 
 - `src/` (no code changes)
 - `data/`
-- `reports/retrieval/phase7_*`, `phase8_*`, `phase9_*` (baselines)
-- `reports/retrieval/phase10_p0_*` (P0 subset reports)
-- `reports/retrieval/phase10_full_doc_level_*`, `phase10_full_real_doc_level_*` (Phase 10.7 reports preserved)
-- `reports/eval/`
+- `tests/`
+- `reports/` (all reports frozen)
+- `docs/portfolio/` (portfolio docs frozen)
 - `.env`, `.env.local`
 
 ### Validation Commands
@@ -105,12 +134,12 @@ grep -r "sk-" data/ --include="*.csv"
 
 ### Stop Conditions
 
-- Integration tests fail (must be 0 skip if DB available)
+- Quality gate fails
+- Integration tests skipped when DB is available (must be 0)
 - Forbidden file modified
 - Secret scan fails
 - OpenSpec validation fails
-- Phase 7/8/9 baseline reports modified
-- Quality gate fails (if modifying code)
+- Phase 7/8/9/10 reports modified
 
 ---
 

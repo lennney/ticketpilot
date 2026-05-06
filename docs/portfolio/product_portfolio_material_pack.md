@@ -502,7 +502,13 @@ TicketPilot 的优势不是"更强的聊天能力"，而是：
 
 #### 11. 下一步计划
 
-> Phase 8：替换 fake embedding 为真实中文嵌入服务（text2vec/BGE），做检索质量对比评估。Phase 8 将以新的 OpenSpec change 启动，遵循同样的 spec → implementation → evaluation → archive 流程。
+> Phase 8（已完成）：替换 fake embedding 为 dashscope text-embedding-v4，完成 fake vs real retrieval comparison。
+>
+> Phase 9（已完成）：evaluation-driven knowledge optimization，增加 11 条 P0 知识记录，发现 provider identity 加载问题。
+>
+> Phase 10（已完成）：hybrid retrieval ranking diagnosis，建立 doc-ID 证据粒度评测，确认 metric granularity thesis（78% 的 wrong cases 实为评测粒度问题）。Doc-ID Recall@10 = 91.9%。
+>
+> 详见 [Phase 10 Snapshot](phase10_hybrid_ranking_diagnosis_snapshot.md)。
 
 ---
 
@@ -563,10 +569,10 @@ TicketPilot 的优势不是"更强的聊天能力"，而是：
 > "三层保护：第一，风险识别门控——有风险信号就强制人审；第二，unsupported claim guard——草稿中引用每个声明都必须在检索结果中有依据；第三，架构层——系统不连接任何发送通道。"
 
 **当前效果有什么限制？**
-> "主要限制是 fake embedding 不能做语义匹配，所以 intent/severity/risk flag 指标受限于关键词规则的覆盖。另外 101 条工单规模还不够做统计分析。草稿是模板生成的，不是生产级回复质量。这些都是已知限制，在文档里都写清楚了。"
+> "主要限制是 fake embedding 不能做语义匹配，所以 intent/severity/risk flag 指标受限于关键词规则的覆盖。另外 101 条工单规模还不够做统计分析。草稿是模板生成的，不是生产级回复质量。这些都是已知限制，在文档里都写清楚了。Phase 10 的 doc-ID 评测已部分缓解了检索评估的语义需求，但 eval 数据的合成性和规模限制仍然存在。"
 
 **下一步怎么优化？**
-> "Phase 8 的核心是替换 fake embedding 为真实中文嵌入服务，做检索质量对比评估。这步之后才能客观评估检索召回率和精度。更远的规划还包括真实 LLM 草稿生成（可选开关）、扩展数据集、在线评测。"
+> "Phase 8–10 已完成。接下来可以做 query expansion audit（7 个 zero-hit 案例），或 fusion ranking 实验（32 个 partial-hit 案例），或接入 LLM 做证据化草稿生成。"
 
 **这个项目体现了你的产品能力在哪里？**
 > "第一，产品定位——我没有做一个全自动客服或聊天机器人，而是做了一个有边界控制的 AI 辅助决策系统。第二，需求拆解——把'客服 AI'拆成了分类、风险、检索、草稿、人审、评测六个独立可迭代的模块。第三，数据策略——设计了四级数据构造流程，确保合规性和可追溯性。第四，评测体系——7 维指标 + 双模式评测，不是暗箱操作。第五，场景包装——3 个跨风险类型的 demo 场景，每个都有明确的展示目标和边界说明。"
@@ -598,7 +604,7 @@ TicketPilot 的优势不是"更强的聊天能力"，而是：
 | "这是一个生产级客服系统" | 它是本地 Demo / 作品集，未经生产验证 |
 | "已通过真实企业验证" | 所有数据是合成的，无真实企业数据 |
 | "使用真实客户数据" | 使用的是合成数据，无真实 PII |
-| "真实语义检索效果已验证" | 当前使用 fake embedding，Phase 8 才做真实评估 |
+| "真实语义检索效果已验证" | 当前使用 fake embedding，Phase 8 才做真实评估；Phase 10 已用 dashscope text-embedding-v4 完成真实检索评估，Doc-ID Recall@10 = 91.9% |
 | "系统自动发送客服回复" | 不连接任何发送通道，no-auto-send 是架构约束 |
 | "可以替代人工客服" | 系统是辅助决策，不能替代人的判断 |
 | "已通过线上 A/B 测试验证效果" | 评测是离线确定性的，非在线验证 |
@@ -614,8 +620,7 @@ TicketPilot 的优势不是"更强的聊天能力"，而是：
 | "草稿仅用于人工审核参考，不自动发送" | 说明 no-auto-send 是架构约束 |
 | "AI 辅助客服决策，不替代人工" | 说明人机协作定位 |
 | "离线评测验证产品流程正确性，非线上效果" | 说明评测定位 |
-| "当前指标受限于 fake embedding，不代表真实检索性能" | 诚实说明限制 |
-| "Phase 8 将替换为真实 embedding 并评估检索质量" | 说明下一步计划 |
+| "当前指标受限于 fake embedding，不代表真实检索性能" | 诚实说明限制；Phase 10 已用真实 embedding 完成 doc-ID 检索评估 |
 
 ---
 

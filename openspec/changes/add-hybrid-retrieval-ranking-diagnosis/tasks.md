@@ -104,10 +104,10 @@
 
 ## Phase 10.8 — Portfolio Snapshot
 
-- [ ] 8.1 Create compact portfolio snapshot from delta report
-- [ ] 8.2 Include: methodology, key metrics, metric granularity thesis, roadmap
-- [ ] 8.3 Update portfolio product case onepager if needed (Phase 10 status)
-- [ ] 8.4 No changes to Phase 7/8/9 portfolio docs
+- [x] 8.1 Create compact portfolio snapshot from delta report
+- [x] 8.2 Include: methodology, key metrics, metric granularity thesis, roadmap
+- [x] 8.3 Update portfolio product case onepager if needed (Phase 10 status)
+- [x] 8.4 No changes to Phase 7/8/9 portfolio docs
 
 ## Phase 10.9 — Final Validation and Archive
 

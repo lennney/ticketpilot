@@ -31,8 +31,8 @@ TicketPilot 不是聊天机器人，也不是简单的文档 QA。它与常见 R
 | 评估 | 主观判断 | 确定性离线评估流水线 |
 
 **关键限制：**
-- 使用 **fake embeddings**（384 维确定性的哈希向量）— 余弦相似度无语义含义，仅验证管道连通性
-- 评估基于 **101 条合成工单**和 **95 条知识记录**，不反映真实世界性能
+- 默认使用 **fake embeddings**（384 维确定性的哈希向量）— 余弦相似度无语义含义，仅验证管道连通性。Phase 10 已用 dashscope text-embedding-v4 完成真实检索评估，通过 opt-in 环境变量切换
+- 评估基于 **101 条合成工单**和 **106 条知识记录**，不反映真实世界性能
 - 系统是 **本地演示 / 作品集级别**，不适用于生产
 - 当前 intent accuracy (~53%) 和 severity accuracy (~54%) 反映 fake embedding 和规则组件的确定性行为，不是生产级效果指标
 
@@ -236,7 +236,7 @@ print(f'严重程度: {output.risk_assessment.severity.value}')
 | `docs/limitations.md` | 当前版本已知限制（数据、嵌入、评估、UI 等） |
 | `docs/github_release_checklist.md` | GitHub 发布前检查清单 |
 | `docs/development_trace/` | 各阶段开发过程记录和项目复盘 |
-| `docs/portfolio/` | 作品集材料：项目案例（中/英）、演示脚本、面试要点、限制与路线图 |
+| `docs/portfolio/` | 作品集材料：项目案例（中/英）、演示脚本、面试要点、限制与路线图、Phase 8–10 阶段快照 |
 | `docs/skills/` | Claude Code 技能文档：批量实施、质量门禁验收、检索评估、安全开发等 |
 | `docs/prompts/` | 可复用的提示词模板 |
 | `docs/audits/` | 项目审计报告 |
