@@ -5,6 +5,108 @@
 
 ---
 
+## Next Batch: Phase 10.7 — Expand Doc-Level Golden Labels
+
+### Scope
+
+1. Label remaining 87 cases with `expected_relevant_doc_ids`
+2. Verify CSV validity and backward compatibility
+3. Run full-dataset doc-level evaluation
+4. Generate updated wrong-case reclassification
+5. Validate: openspec --strict, ruff, integration tests (0 skip required)
+
+### Allowed Files
+
+- `docs/harness/chatgpt_controller_context.md`
+- `docs/harness/controller_decision_log.md`
+- `docs/harness/controller_session_log.md`
+- `docs/harness/controller_next_actions.md`
+- `data/eval/golden_expectations.csv` (add doc-level labels only)
+- `docs/changelog.md`
+- `openspec/changes/add-hybrid-retrieval-ranking-diagnosis/tasks.md`
+
+### Forbidden Files
+
+- `src/`
+- `tests/`
+- `data/knowledge/`
+- `data/eval/tickets_eval.csv`
+- `data/eval/sample_predictions.csv`
+- `reports/retrieval/phase7_*`, `phase8_*`, `phase9_*` (baselines)
+- `reports/eval/`
+- `pyproject.toml`
+- `uv.lock`
+- `.env`
+- `.env.local`
+
+### Validation Commands
+
+```bash
+# Golden CSV validity
+uv run python -c "import csv; csv.DictReader(open('data/eval/golden_expectations.csv', encoding='utf-8'))"
+
+# Full evaluation suite
+uv run pytest tests/unit/test_retrieval_metrics.py tests/unit/test_evaluation*.py -v --tb=short
+
+# OpenSpec scoped validation
+openspec validate add-hybrid-retrieval-ranking-diagnosis --strict
+
+# Ruff
+uv run ruff check .
+
+# Secret scan
+grep -r "sk-" data/ --include="*.csv"
+
+# Full quality gate (required for data changes affecting evaluation path)
+bash scripts/run_quality_gate.sh
+```
+
+### Commit Rules
+
+- Commit message must specify case count of newly labeled docs
+- Only commit and push on human approval
+
+### Stop Conditions
+
+- Integration tests skipped (must be 0 for data changes)
+- Golden expectations CSV becomes invalid
+- Doc-level labels reference non-existent records
+- Real customer data or API keys in data files
+- Forbidden file modified
+- Secret scan fails
+- OpenSpec validation fails
+
+---
+
+## Completed Batch: Phase 10.6 — Recommendation Report + Portfolio Delta
+
+### What Was Done
+
+- Aggregated Phase 10.2–10.5.1 evidence chain into recommendation report
+- Created portfolio delta with before/after capability comparison
+- Priority-ranked recommendations:
+  - P0: Expand doc-level golden labels to all 101 cases
+  - P1: Query expansion audit for 4 true misses
+  - P2: Fusion ranking experiment (conditional on P1 results)
+  - P3: Reranker proposal (future work, not now)
+- Explicitly addressed why not to tune RRF now (cannot measure impact without labels)
+
+### Files Created
+
+- `reports/retrieval/phase10_recommendation_report.md`
+- `reports/retrieval/phase10_portfolio_delta.md`
+
+### Validation
+
+- openspec validate --strict: ✅
+- ruff check: ✅ Clean
+
+### Commit
+
+`aeb4ff5` pushed to `origin/master`
+
+---
+
 ## Completed Batch: Phase 10.5.1 — Real Pipeline Doc-Level Evaluation
 
 ### What Was Done
@@ -25,62 +127,7 @@
 
 ### Commit
 
-Pending — awaiting human approval.
-
----
-
-## Completed Batch: Phase 10.5 — Doc-Level Golden Labels
-
-### Scope
-
-1. Aggregate Phase 10.4 bottleneck distribution + Phase 10.5 doc-level label results
-2. Produce recommendation report with actionable next steps
-3. Update portfolio delta if appropriate
-
-### Allowed Files
-
-- `docs/harness/chatgpt_controller_context.md`
-- `docs/harness/controller_decision_log.md`
-- `docs/harness/controller_session_log.md`
-- `docs/harness/controller_next_actions.md`
-- `reports/retrieval/phase10_recommendation.md` (new)
-- `docs/changelog.md`
-- `openspec/changes/add-hybrid-retrieval-ranking-diagnosis/tasks.md`
-
-### Forbidden Files
-
-- `src/`
-- `tests/`
-- `data/`
-- `reports/retrieval/phase7_*`, `phase8_*`, `phase9_*` (baselines)
-- `reports/eval/`
-- `pyproject.toml`
-- `uv.lock`
-- `.env`
-- `.env.local`
-
-### Validation Commands
-
-```bash
-# OpenSpec scoped validation
-openspec validate add-hybrid-retrieval-ranking-diagnosis --strict
-
-# Ruff
-uv run ruff check .
-
-# Verify no forbidden files
-git diff --stat
-```
-
-### Commit Rules
-
-- Only commit and push on human approval
-- No runtime changes
-
-### Stop Conditions
-
-- Forbidden file modified
-- OpenSpec validation fails
+`aeb4ff5` pushed to `origin/master`
 
 ---
 

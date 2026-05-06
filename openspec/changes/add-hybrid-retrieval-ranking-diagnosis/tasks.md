@@ -78,22 +78,31 @@
 - [x] 5.1.6 Run tests: 143 evaluation tests pass, ruff clean, openspec --strict valid
 - [x] 5.1.7 Update docs: changelog, tasks, controller context
 
-## Phase 10.6 — Recommendation Report
+## Phase 10.6 — Recommendation Report + Portfolio Delta
 
-- [ ] 6.1 Aggregate bottleneck distribution + doc-level label results into recommendation
-- [ ] 6.2 Determine dominant bottleneck(s) with doc-level data now available
-- [ ] 6.3 Produce recommendation: which next step(s) would have the highest impact
-  - Add more doc-level labels
-  - Query expansion audit
-  - Tune RRF k or fusion approach
-  - Add reranker
-  - Accept remaining wrong cases as limitation
-- [ ] 6.4 Output to `reports/retrieval/phase10_recommendation.md`
+- [x] 6.1 Aggregate bottleneck distribution + doc-level label results into recommendation
+- [x] 6.2 Determine dominant bottleneck(s) with doc-level data now available
+- [x] 6.3 Produce recommendation: which next step(s) would have the highest impact
+  - P0: Expand doc-level golden labels
+  - P1: Query expansion audit for 4 true misses
+  - P2: Fusion ranking experiment (conditional on P1)
+  - P3: Reranker (future work, not now)
+- [x] 6.4 Output to `reports/retrieval/phase10_recommendation_report.md`
+- [x] 6.5 Create portfolio delta at `reports/retrieval/phase10_portfolio_delta.md`
+- [x] 6.6 Update tasks, changelog, controller context
 
-## Phase 10.8 — Portfolio Delta
+## Phase 10.7 — Expand Doc-Level Golden Labels (Recommended Next)
 
-- [ ] 8.1 Create compact portfolio snapshot summarizing Phase 10 findings
-- [ ] 8.2 Include: bottleneck distribution, P0 rank tracking summary, recommendation, doc-level label results
+- [ ] 7.1 Label remaining 87 cases with `expected_relevant_doc_ids`
+- [ ] 7.2 Verify CSV validity and backward compatibility
+- [ ] 7.3 Run full-dataset doc-level evaluation
+- [ ] 7.4 Generate updated wrong-case reclassification
+- [ ] 7.5 Validate: openspec --strict, ruff, 0 integration skips
+
+## Phase 10.8 — Portfolio Snapshot
+
+- [ ] 8.1 Create compact portfolio snapshot from delta report
+- [ ] 8.2 Include: methodology, key metrics, metric granularity thesis, roadmap
 - [ ] 8.3 Update portfolio product case onepager if needed (Phase 10 status)
 - [ ] 8.4 No changes to Phase 7/8/9 portfolio docs
 

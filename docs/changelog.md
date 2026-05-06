@@ -1683,3 +1683,16 @@ Prepare TicketPilot for public GitHub portfolio presentation with accurate, non-
 - **4 P0 cases with genuine misses**: case_acco_006, case_comp_001, case_comp_002, case_refu_013 (partial)
 - **Doc-ID MRR**: 0.362 — lower than doc-type MRR (0.500) but acceptable given strict doc_id matching
 - Recommended: add more doc-level labels, query expansion audit, then fusion ranking experiment
+
+## 2026-05-06 — Phase 10.6 Recommendation Report + Portfolio Delta
+
+### Added
+- `reports/retrieval/phase10_recommendation_report.md` — full evidence chain from Phase 10.2–10.5.1, priority-ranked recommendations (P0: expand labels, P1: query audit, P2: fusion experiment, P3: reranker)
+- `reports/retrieval/phase10_portfolio_delta.md` — before/after capability comparison, key metrics, resume bullets in Chinese, 1-min and 3-min interview versions, limitations
+
+### Key Findings
+- **Main thesis confirmed**: 71.4% of P0 "wrong" cases are actually correct at doc_id level — metric granularity is the dominant bottleneck
+- **4 genuine misses identified** with clear root causes: 2x recalled_but_fused_low (RRF dual-source bias), 1x vector edge, 1x complete miss
+- **Why not tune RRF now**: cannot measure impact without full doc-level labels; 3 affected records is too small a sample; need query audit first
+- **Why not add more knowledge**: remaining issues are about ranking and measurement, not coverage
+- **Next recommended phase**: Phase 10.7 — expand doc-level golden labels to all 101 cases
