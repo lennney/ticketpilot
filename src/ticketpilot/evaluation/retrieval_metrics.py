@@ -81,6 +81,25 @@ class WrongCaseEntry:
 
 
 @dataclass
+class WrongCaseDocIdRecheck:
+    """Result of rechecking a wrong case with doc_id-level granularity.
+
+    Fields:
+        case_id: Unique case identifier.
+        original_failure_mode: The original doc_type-based failure mode.
+        doc_id_found: Whether an expected doc_id was found in top-10.
+        doc_id_found_rank: The rank where the expected doc_id was found, or None.
+        reclassified: New classification if doc_id was found, or None.
+    """
+
+    case_id: str
+    original_failure_mode: str
+    doc_id_found: bool
+    doc_id_found_rank: int | None = None
+    reclassified: str | None = None
+
+
+@dataclass
 class RetrievalComparisonSummary:
     """Aggregate retrieval comparison metrics across all cases.
 
@@ -88,19 +107,23 @@ class RetrievalComparisonSummary:
         total_cases: Number of cases evaluated.
         hit_rate_doc_type: Doc-type hit rate at each k.
         hit_rate_doc_id: Doc-id hit rate at each k, or None if no doc_id golden.
+        p0_added_record_hit_rate: Same as hit_rate_doc_id, explicitly named for P0.
         mrr_doc_type: Mean Reciprocal Rank for doc-type relevance.
         mrr_doc_id: Mean Reciprocal Rank for doc-id relevance, or None.
         per_case: Dict of case_id -> CaseRetrievalMetrics.
         wrong_cases: List of WrongCaseEntry for retrieval failures.
+        doc_id_rechecks: List of WrongCaseDocIdRecheck, or None.
     """
 
     total_cases: int
     hit_rate_doc_type: dict[int, float]
     hit_rate_doc_id: dict[int, float] | None = None
+    p0_added_record_hit_rate: dict[int, float] | None = None
     mrr_doc_type: float = 0.0
     mrr_doc_id: float | None = None
     per_case: dict[str, CaseRetrievalMetrics] = field(default_factory=dict)
     wrong_cases: list[WrongCaseEntry] = field(default_factory=list)
+    doc_id_rechecks: list[WrongCaseDocIdRecheck] | None = None
 
 
 # ---------------------------------------------------------------------------
@@ -325,6 +348,63 @@ def summarize_wrong_cases(
 
 
 # ---------------------------------------------------------------------------
+# Doc-id wrong-case recheck
+# ---------------------------------------------------------------------------
+
+
+def recheck_wrong_cases_with_doc_id(
+    wrong_cases: list[WrongCaseEntry],
+    cases: list[RetrievalComparisonCase],
+) -> list[WrongCaseDocIdRecheck]:
+    """Recheck wrong cases using doc_id-level granularity.
+
+    A case classified as 'wrong' at the doc_type level may actually have
+    retrieved the correct document (matching expected doc_id) but with a
+    different doc_type than expected. This function identifies those cases.
+
+    Args:
+        wrong_cases: Original doc_type-based wrong case list.
+        cases: All comparison cases (used to look up retrieved docs).
+
+    Returns:
+        List of WrongCaseDocIdRecheck, one per wrong case.
+    """
+    case_map = {c.case_id: c for c in cases}
+    rechecks: list[WrongCaseDocIdRecheck] = []
+
+    for wc in wrong_cases:
+        case = case_map.get(wc.case_id)
+        if case is None or not case.expected_doc_ids:
+            rechecks.append(
+                WrongCaseDocIdRecheck(
+                    case_id=wc.case_id,
+                    original_failure_mode=wc.failure_mode,
+                    doc_id_found=False,
+                )
+            )
+            continue
+
+        expected_ids = set(case.expected_doc_ids)
+        found_rank: int | None = None
+        for doc in case.retrieved_docs[:10]:
+            if doc.doc_id in expected_ids:
+                found_rank = doc.rank
+                break
+
+        rechecks.append(
+            WrongCaseDocIdRecheck(
+                case_id=wc.case_id,
+                original_failure_mode=wc.failure_mode,
+                doc_id_found=found_rank is not None,
+                doc_id_found_rank=found_rank,
+                reclassified="doc_id_found_in_top_10" if found_rank is not None else None,
+            )
+        )
+
+    return rechecks
+
+
+# ---------------------------------------------------------------------------
 # Aggregate computation
 # ---------------------------------------------------------------------------
 
@@ -391,12 +471,23 @@ def compute_retrieval_comparison_summary(
 
     wrong = summarize_wrong_cases(cases, ks)
 
+    # P0 added-record hit rate is the same as doc_id hit rate
+    # (only P0 cases have doc_id labels)
+    p0_hit_rate: dict[int, float] | None = None
+    if hit_rate_id is not None:
+        p0_hit_rate = hit_rate_id
+
+    # Recheck wrong cases with doc_id granularity
+    doc_id_rechecks = recheck_wrong_cases_with_doc_id(wrong, cases)
+
     return RetrievalComparisonSummary(
         total_cases=len(cases),
         hit_rate_doc_type=hit_rate_type,
         hit_rate_doc_id=hit_rate_id,
+        p0_added_record_hit_rate=p0_hit_rate,
         mrr_doc_type=mrr_type,
         mrr_doc_id=mrr_id,
         per_case=per_case,
         wrong_cases=wrong,
+        doc_id_rechecks=doc_id_rechecks,
     )

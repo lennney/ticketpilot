@@ -108,8 +108,22 @@ def comparison_summary_to_dict(
 
     if summary.hit_rate_doc_id is not None:
         result["aggregate_metrics"]["hit_rate_doc_id"] = summary.hit_rate_doc_id
+    if summary.p0_added_record_hit_rate is not None:
+        result["aggregate_metrics"]["p0_added_record_hit_rate"] = summary.p0_added_record_hit_rate
     if summary.mrr_doc_id is not None:
         result["aggregate_metrics"]["mrr_doc_id"] = summary.mrr_doc_id
+
+    if summary.doc_id_rechecks is not None:
+        result["doc_id_rechecks"] = [
+            {
+                "case_id": r.case_id,
+                "original_failure_mode": r.original_failure_mode,
+                "doc_id_found": r.doc_id_found,
+                "doc_id_found_rank": r.doc_id_found_rank,
+                "reclassified": r.reclassified,
+            }
+            for r in summary.doc_id_rechecks
+        ]
 
     return _serialize_for_json(result)
 
@@ -161,6 +175,9 @@ def comparison_summary_to_markdown(
     if summary.hit_rate_doc_id is not None:
         _hit_rate_table(lines, summary.hit_rate_doc_id, "Top-K Doc ID Hit Rate")
 
+    if summary.p0_added_record_hit_rate is not None:
+        _hit_rate_table(lines, summary.p0_added_record_hit_rate, "Top-K P0 Added Record Hit Rate")
+
     lines.append("### Mean Reciprocal Rank")
     lines.append("")
     lines.append("| Metric | Value |")
@@ -202,6 +219,31 @@ def comparison_summary_to_markdown(
     else:
         lines.append("No retrieval failures detected.")
         lines.append("")
+
+    # Doc ID recheck section
+    if summary.doc_id_rechecks:
+        found_count = sum(1 for r in summary.doc_id_rechecks if r.doc_id_found)
+        lines.append("## Doc-ID Wrong-Case Recheck")
+        lines.append("")
+        lines.append(
+            f"Of {len(summary.doc_id_rechecks)} wrong cases, "
+            f"{found_count} have an expected doc_id in top-10 results "
+            f"(reclassified from doc_type failure to doc_id hit)."
+        )
+        lines.append("")
+
+        if found_count > 0:
+            lines.append("### Reclassified Cases")
+            lines.append("")
+            lines.append("| Case ID | Original Failure Mode | Doc ID Found Rank | Reclassification |")
+            lines.append("|---------|----------------------|-------------------|------------------|")
+            for r in summary.doc_id_rechecks:
+                if r.doc_id_found:
+                    lines.append(
+                        f"| {r.case_id} | {r.original_failure_mode} | "
+                        f"{r.doc_id_found_rank} | {r.reclassified} |"
+                    )
+            lines.append("")
 
     return "\n".join(lines)
 

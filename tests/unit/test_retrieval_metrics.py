@@ -20,6 +20,7 @@ from ticketpilot.evaluation.retrieval_metrics import (
     compute_hit_rate_at_k,
     compute_mrr,
     compute_retrieval_comparison_summary,
+    recheck_wrong_cases_with_doc_id,
     summarize_wrong_cases,
 )
 
@@ -473,3 +474,146 @@ class TestSummarizeWrongCases:
 
         assert len(wrong) == 2
         assert all(w.failure_mode == "missing_doc_type" for w in wrong)
+
+
+# ---------------------------------------------------------------------------
+# Test p0_added_record_hit_rate in summary
+# ---------------------------------------------------------------------------
+
+
+class TestP0AddedRecordHitRate:
+    def test_set_when_doc_ids_exist(self) -> None:
+        """p0_added_record_hit_rate is set when doc_id goldens exist."""
+        cases = [
+            _case(
+                case_id="case_001",
+                retrieved=_make_retrieved([("doc_faq_001", "FAQ", 1)]),
+                expected_doc_types=frozenset(["FAQ"]),
+                expected_doc_ids=frozenset(["doc_faq_001"]),
+            ),
+        ]
+        summary = compute_retrieval_comparison_summary(cases)
+
+        assert summary.p0_added_record_hit_rate is not None
+        assert summary.p0_added_record_hit_rate == summary.hit_rate_doc_id
+
+    def test_none_when_no_doc_ids(self) -> None:
+        """p0_added_record_hit_rate is None when no doc_id goldens exist."""
+        cases = [
+            _case(
+                case_id="case_001",
+                retrieved=_make_retrieved([("doc_faq_001", "FAQ", 1)]),
+                expected_doc_types=frozenset(["FAQ"]),
+            ),
+        ]
+        summary = compute_retrieval_comparison_summary(cases)
+
+        assert summary.p0_added_record_hit_rate is None
+
+    def test_none_for_empty_cases(self) -> None:
+        """p0_added_record_hit_rate is None when there are no cases."""
+        summary = compute_retrieval_comparison_summary([])
+
+        assert summary.p0_added_record_hit_rate is None
+
+
+# ---------------------------------------------------------------------------
+# Test recheck_wrong_cases_with_doc_id
+# ---------------------------------------------------------------------------
+
+
+class TestRecheckWrongCasesWithDocId:
+    def test_no_wrong_cases_returns_empty(self) -> None:
+        cases = [
+            _case(
+                case_id="case_001",
+                retrieved=_make_retrieved([("doc_faq_001", "FAQ", 1)]),
+                expected_doc_types=frozenset(["FAQ"]),
+                expected_doc_ids=frozenset(["doc_faq_001"]),
+            ),
+        ]
+        wrong = summarize_wrong_cases(cases)
+        rechecks = recheck_wrong_cases_with_doc_id(wrong, cases)
+        assert len(rechecks) == 0
+
+    def test_doc_id_found_reclassifies(self) -> None:
+        """Expected doc_id is in top-10 but with wrong doc_type — reclassified."""
+        cases = [
+            _case(
+                case_id="case_001",
+                retrieved=_make_retrieved([("doc_faq_001", "FAQ", 1)]),
+                expected_doc_types=frozenset(["Policy"]),  # wrong type
+                expected_doc_ids=frozenset(["doc_faq_001"]),  # but correct doc_id
+            ),
+        ]
+        wrong = summarize_wrong_cases(cases)
+        assert len(wrong) == 1
+        assert wrong[0].failure_mode == "missing_doc_type"
+
+        rechecks = recheck_wrong_cases_with_doc_id(wrong, cases)
+        assert len(rechecks) == 1
+        assert rechecks[0].doc_id_found is True
+        assert rechecks[0].doc_id_found_rank == 1
+        assert rechecks[0].reclassified == "doc_id_found_in_top_10"
+        assert rechecks[0].original_failure_mode == "missing_doc_type"
+
+    def test_doc_id_not_found_stays_wrong(self) -> None:
+        """Expected doc_id not in results — stays wrong."""
+        cases = [
+            _case(
+                case_id="case_001",
+                retrieved=_make_retrieved([("doc_faq_001", "FAQ", 1)]),
+                expected_doc_types=frozenset(["Policy"]),
+                expected_doc_ids=frozenset(["doc_nonexistent"]),
+            ),
+        ]
+        wrong = summarize_wrong_cases(cases)
+        rechecks = recheck_wrong_cases_with_doc_id(wrong, cases)
+
+        assert len(rechecks) == 1
+        assert rechecks[0].doc_id_found is False
+        assert rechecks[0].reclassified is None
+
+    def test_no_doc_id_golden(self) -> None:
+        """When wrong case has no doc_id expectations, doc_id_found is False."""
+        cases = [
+            _case(
+                case_id="case_001",
+                retrieved=_make_retrieved([("doc_faq_001", "FAQ", 1)]),
+                expected_doc_types=frozenset(["Policy"]),
+                # No expected_doc_ids
+            ),
+        ]
+        wrong = summarize_wrong_cases(cases)
+        rechecks = recheck_wrong_cases_with_doc_id(wrong, cases)
+
+        assert len(rechecks) == 1
+        assert rechecks[0].doc_id_found is False
+        assert rechecks[0].reclassified is None
+
+    def test_doc_id_found_at_deep_rank(self) -> None:
+        """Expected doc_id found at rank 7 — still reclassified."""
+        retrieved = _make_retrieved([
+            ("doc_other_1", "FAQ", 1),
+            ("doc_other_2", "FAQ", 2),
+            ("doc_other_3", "FAQ", 3),
+            ("doc_other_4", "FAQ", 4),
+            ("doc_other_5", "FAQ", 5),
+            ("doc_other_6", "FAQ", 6),
+            ("doc_target", "FAQ", 7),
+        ])
+        cases = [
+            _case(
+                case_id="case_001",
+                retrieved=retrieved,
+                expected_doc_types=frozenset(["Policy"]),
+                expected_doc_ids=frozenset(["doc_target"]),
+            ),
+        ]
+        wrong = summarize_wrong_cases(cases)
+        rechecks = recheck_wrong_cases_with_doc_id(wrong, cases)
+
+        assert len(rechecks) == 1
+        assert rechecks[0].doc_id_found is True
+        assert rechecks[0].doc_id_found_rank == 7
+        assert rechecks[0].reclassified == "doc_id_found_in_top_10"

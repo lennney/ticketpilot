@@ -45,31 +45,51 @@
 - [x] 4.3 Include recommendation for each case: doc_level_label / query_expansion / rrf_tuning / reranker / limitation
 - [x] 4.4 No changes to golden labels, retrieval code, or knowledge base
 
-## Phase 10.5 — Recommendation Report
+## Phase 10.5 — Doc-Level Golden Labels
 
-- [ ] 5.1 Aggregate bottleneck distribution: count per category across P0 cases
-- [ ] 5.2 Determine dominant bottleneck(s)
-- [ ] 5.3 Produce recommendation: which next step(s) would have the highest impact
-  - Add doc-level golden labels
+- [x] 5.1 Audit golden schema: confirm `expected_relevant_doc_ids` column exists in schema, loader, and metric code
+- [x] 5.2 Create label plan at `reports/retrieval/phase10_doc_level_golden_label_plan.md`
+  - [x] 5.2a Identify 14 P0 cases (16 record-case pairs) with reliable doc_ids
+  - [x] 5.2b Verify all doc_ids from Phase 9.4.1 seed data
+  - [x] 5.2c Document backward compatibility — empty doc_id column is handled gracefully
+- [x] 5.3 Add doc-level labels to `data/eval/golden_expectations.csv`
+  - [x] 5.3a Add `expected_relevant_doc_ids` column header
+  - [x] 5.3b Populate for 14 P0 cases with semicolon-separated UUIDs
+  - [x] 5.3c Leave non-P0 cases empty (backward compatible)
+- [x] 5.4 Extend metric code with `p0_added_record_hit_rate`
+  - [x] 5.4a Add `p0_added_record_hit_rate` to `RetrievalComparisonSummary`
+  - [x] 5.4b Add `WrongCaseDocIdRecheck` dataclass
+  - [x] 5.4c Add `recheck_wrong_cases_with_doc_id()` function
+  - [x] 5.4d Update JSON/Markdown report builders to include new fields
+- [x] 5.5 Add/update tests for doc_id metrics (8 new tests, 40 total passing)
+- [x] 5.6 Create P0 doc-level evaluation script `scripts/run_p0_doc_level_eval.py`
+- [x] 5.7 Run P0 doc-level evaluation → `reports/retrieval/phase10_p0_doc_level_eval.{json,md}`
+
+## Phase 10.6 — Recommendation Report
+
+- [ ] 6.1 Aggregate bottleneck distribution: count per category across P0 cases
+- [ ] 6.2 Determine dominant bottleneck(s)
+- [ ] 6.3 Produce recommendation: which next step(s) would have the highest impact
+  - Review doc-level golden label results
   - Adjust query expansion
   - Tune RRF k or fusion approach
   - Add reranker
   - Accept remaining wrong cases as limitation
-- [ ] 5.4 Output to `reports/retrieval/phase10_recommendation.md` (or integrated into diagnosis report)
+- [ ] 6.4 Output to `reports/retrieval/phase10_recommendation.md`
 
-## Phase 10.6 — Portfolio Delta
+## Phase 10.8 — Portfolio Delta
 
-- [ ] 6.1 Create compact portfolio snapshot summarizing Phase 10 findings
-- [ ] 6.2 Include: bottleneck distribution, P0 rank tracking summary, recommendation
-- [ ] 6.3 Update portfolio product case onepager if needed (Phase 10 status)
-- [ ] 6.4 No changes to Phase 7/8/9 portfolio docs
+- [ ] 8.1 Create compact portfolio snapshot summarizing Phase 10 findings
+- [ ] 8.2 Include: bottleneck distribution, P0 rank tracking summary, recommendation, doc-level label results
+- [ ] 8.3 Update portfolio product case onepager if needed (Phase 10 status)
+- [ ] 8.4 No changes to Phase 7/8/9 portfolio docs
 
-## Phase 10.7 — Final Validation and Archive
+## Phase 10.9 — Final Validation and Archive
 
-- [ ] 7.1 Run full quality gate: unit tests + integration tests + coverage + ruff + secret scan
-- [ ] 7.2 Verify integration tests: 0 skipped
-- [ ] 7.3 Run `openspec validate add-hybrid-retrieval-ranking-diagnosis --strict`
-- [ ] 7.4 Run `openspec validate --all`
-- [ ] 7.5 Verify no Phase 7/8/9 baseline reports modified
-- [ ] 7.6 Archive change
-- [ ] 7.7 Commit and push
+- [ ] 9.1 Run full quality gate: unit tests + integration tests + coverage + ruff + secret scan
+- [ ] 9.2 Verify integration tests: 0 skipped
+- [ ] 9.3 Run `openspec validate add-hybrid-retrieval-ranking-diagnosis --strict`
+- [ ] 9.4 Run `openspec validate --all`
+- [ ] 9.5 Verify no Phase 7/8/9 baseline reports modified
+- [ ] 9.6 Archive change
+- [ ] 9.7 Commit and push

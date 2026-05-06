@@ -1643,3 +1643,23 @@ Prepare TicketPilot for public GitHub portfolio presentation with accurate, non-
 - No existing pipeline behavior changed
 - No LLM, embedding, network, or auto-send introduced
 - No existing src/ or tests/ files modified outside new test file
+
+## 2026-05-06 — Phase 10.5 Doc-Level Golden Labels
+
+### Added
+- `reports/retrieval/phase10_doc_level_golden_label_plan.md` — golden schema audit confirming no schema change needed, 14 P0 cases to label
+- `p0_added_record_hit_rate` metric to `RetrievalComparisonSummary` — explicit doc_id hit rate for P0-added knowledge records
+- `WrongCaseDocIdRecheck` dataclass + `recheck_wrong_cases_with_doc_id()` — reclassify wrong cases when doc_id found in top-10 but doc_type mismatched
+- `scripts/run_p0_doc_level_eval.py` — P0 doc-level evaluation script with mock mode
+- `reports/retrieval/phase10_p0_doc_level_eval.json` + `.md` — P0 doc-level evaluation reports
+
+### Changed
+- `data/eval/golden_expectations.csv` — added `expected_relevant_doc_ids` column, populated for 14 P0 cases with 16 record-case pairs
+- `src/ticketpilot/evaluation/retrieval_metrics.py` — added `p0_added_record_hit_rate`, `WrongCaseDocIdRecheck`, `recheck_wrong_cases_with_doc_id()`
+- `src/ticketpilot/evaluation/retrieval_comparison.py` — report builders output `p0_added_record_hit_rate` and doc_id recheck sections
+- `tests/unit/test_retrieval_metrics.py` — 8 new tests for `p0_added_record_hit_rate` and doc_id recheck (40 total, all passing)
+
+### Design Notes
+- Only 14/101 cases received doc-level labels — the remaining 87 have no `expected_relevant_doc_ids` (backward compatible, metrics skip doc_id evaluation)
+- The mock-mode P0 eval shows 0% doc_id hit rate (expected — mock uses random IDs, not real P0 doc_ids); real eval requires pipeline export mode
+- Key thesis: doc_id-level metrics will show significantly higher hit rates than doc_type-level, proving most "wrong" cases are a metric granularity problem

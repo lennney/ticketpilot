@@ -1,23 +1,23 @@
-case_id,expected_issue_type,expected_risk_flags,expected_severity,expected_must_human_review,expected_evidence_doc_types,expected_fallback_required,expected_no_auto_send,notes
-case_refu_001,refund,complaint_risk;low_confidence,MEDIUM,true,Policy;Case,false,true,Migrated from cand_001. Customer complains refund not received and threatens to comp
+case_id,expected_issue_type,expected_risk_flags,expected_severity,expected_must_human_review,expected_evidence_doc_types,expected_fallback_required,expected_no_auto_send,notes,expected_relevant_doc_ids
+case_refu_001,refund,complaint_risk;low_confidence,MEDIUM,true,Policy;Case,false,true,Migrated from cand_001. Customer complains refund not received and threatens to comp,ae0e0e0e-aaaa-aaaa-aaaa-aaaaaaaaaaaa
 case_refu_002,refund,,LOW,false,FAQ;Policy,false,true,Migrated from cand_002. Customer received damaged phone and wants a refund.
 case_refu_003,refund,policy_conflict;complaint_risk,MEDIUM,true,Policy;Case,false,true,Migrated from cand_003. Customer demands refund past the 7-day return window and dis
 case_refu_004,refund,,LOW,false,FAQ;Policy,false,true,"Migrated from cand_004. Customer bought three clothes items, wants to return two and"
 case_refu_005,refund,complaint_risk,LOW,true,FAQ;Policy,false,true,Migrated from cand_005. Customer hasn't received refund for a week and accuses the p
-case_refu_006,refund,complaint_risk;compensation_risk,MEDIUM,true,Policy;Case,false,true,Migrated from cand_006. Customer threatens 12315 complaint after 10-day refund delay
+case_refu_006,refund,complaint_risk;compensation_risk,MEDIUM,true,Policy;Case,false,true,Migrated from cand_006. Customer threatens 12315 complaint after 10-day refund delay,ae0e0e0e-aaaa-aaaa-aaaa-aaaaaaaaaaaa
 case_refu_007,refund,,LOW,false,FAQ,false,true,Migrated from cand_007. Customer wants to cancel and refund an unshipped order.
 case_refu_008,refund,compensation_risk,LOW,true,Policy;Case,false,true,Migrated from cand_008. Customer received wrong color and demands refund with free r
-case_refu_009,refund,legal_risk;complaint_risk,HIGH,true,Policy;Case,false,true,Migrated from cand_009. Customer threatens legal action if refund is not processed.
+case_refu_009,refund,legal_risk;complaint_risk,HIGH,true,Policy;Case,false,true,Migrated from cand_009. Customer threatens legal action if refund is not processed.,ae0e0e0e-dddd-dddd-dddd-dddddddddddd
 case_refu_010,refund,,LOW,false,FAQ;Policy;Case,false,true,"Migrated from cand_010. Customer's appliance broke after 3 days, demands refund not "
 case_refu_011,refund,,LOW,false,FAQ;Policy,false,true,"Migrated from cand_011. Customer's child accidentally purchased a game console, want"
 case_refu_012,refund,complaint_risk;insufficient_evidence,MEDIUM,true,FAQ;Policy;Case,true,true,Migrated from cand_012. Customer can't get refund for unshipped order from Nov 11 sa
-case_refu_013,refund,compensation_risk;policy_conflict,HIGH,true,Policy;Case,false,true,Migrated from cand_013. Customer suspects counterfeit bag and demands refund plus co
+case_refu_013,refund,compensation_risk;policy_conflict,HIGH,true,Policy;Case,false,true,Migrated from cand_013. Customer suspects counterfeit bag and demands refund plus co,ae0e0e0e-cccc-cccc-cccc-cccccccccccc;ca0a0a0a-6666-6666-6666-666666666666
 case_refu_014,refund,,LOW,false,FAQ;Policy,false,true,Migrated from cand_014. Customer wants to return only 2 of 5 items in one order.
 case_refu_015,refund,complaint_risk;compensation_risk;legal_risk,HIGH,true,Policy;Case,false,true,Migrated from cand_015. Customer hasn't received refund for over a month and客服 is un
 case_retu_001,return_exchange,,LOW,false,FAQ;Policy,false,true,Migrated from cand_016. Customer ordered wrong size shoes and wants to exchange.
 case_retu_002,return_exchange,,LOW,false,FAQ;Policy,false,true,Migrated from cand_017. Customer received stained clothing and wants a replacement.
 case_retu_003,return_exchange,complaint_risk,LOW,true,FAQ;Policy;Case,false,true,Migrated from cand_018. Customer's exchange request has been ignored for a week.
-case_retu_004,return_exchange,compensation_risk;policy_conflict,MEDIUM,true,Policy;Case,false,true,Migrated from cand_019. Customer wants refund and coupon when exchange is out of sto
+case_retu_004,return_exchange,compensation_risk;policy_conflict,MEDIUM,true,Policy;Case,false,true,Migrated from cand_019. Customer wants refund and coupon when exchange is out of sto,f0f0f0f0-2222-2222-2222-222222222222
 case_retu_005,return_exchange,,LOW,false,FAQ;Policy;Case,false,true,"Migrated from cand_020. Customer's rice cooker broke after one use, wants exchange."
 case_retu_006,return_exchange,complaint_risk;compensation_risk,MEDIUM,true,Policy;Case,false,true,Migrated from cand_021. Customer received a replacement that is also defective.
 case_retu_007,return_exchange,,LOW,false,FAQ;Policy,false,true,Migrated from cand_022. Customer wants to change color after order shipped.
@@ -27,16 +27,16 @@ case_retu_010,return_exchange,complaint_risk;policy_conflict,MEDIUM,true,Policy;
 case_retu_011,return_exchange,complaint_risk,MEDIUM,true,Case,false,true,Migrated from cand_026. Customer's exchange request has been 'in processing' for hal
 case_acco_001,account_issue,account_security_risk,HIGH,true,FAQ;Policy;Case,false,true,Migrated from cand_027. Customer's account was stolen and used to place orders.
 case_acco_002,account_issue,account_security_risk,MEDIUM,true,FAQ;Policy,false,true,Migrated from cand_028. Customer can't log in because SMS verification codes are not
-case_acco_003,account_issue,privacy_risk;complaint_risk,HIGH,true,Policy;Case,false,true,Migrated from cand_029. Customer's phone number was leaked and they blame the platfo
+case_acco_003,account_issue,privacy_risk;complaint_risk,HIGH,true,Policy;Case,false,true,Migrated from cand_029. Customer's phone number was leaked and they blame the platfo,ae0e0e0e-bbbb-bbbb-bbbb-bbbbbbbbbbbb;ca0a0a0a-aaaa-aaaa-aaaa-aaaaaaaaaaaa
 case_acco_004,account_issue,account_security_risk;privacy_risk,HIGH,true,FAQ;Policy;Case,false,true,Migrated from cand_030. Customer found their shipping address changed without author
 case_acco_005,account_issue,insufficient_evidence,MEDIUM,true,FAQ;Policy,true,true,Migrated from cand_031. Customer forgot password and no longer has access to绑定 phone
-case_acco_006,account_issue,privacy_risk;account_security_risk,HIGH,true,Policy;Case,false,true,Migrated from cand_032. Customer's real-name verification was used by someone else w
+case_acco_006,account_issue,privacy_risk;account_security_risk,HIGH,true,Policy;Case,false,true,Migrated from cand_032. Customer's real-name verification was used by someone else w,ae0e0e0e-bbbb-bbbb-bbbb-bbbbbbbbbbbb
 case_acco_007,account_issue,,MEDIUM,true,FAQ;Policy,false,true,Migrated from cand_033. Customer can't log in due to password error and can't access
 case_acco_008,account_issue,account_security_risk,HIGH,true,FAQ;Policy;Case,false,true,Migrated from cand_034. Customer's account was logged into from another province.
 case_acco_009,account_issue,complaint_risk;insufficient_evidence,MEDIUM,true,Policy;Case,true,true,Migrated from cand_035. Customer's account was permanently banned and appeals were r
 case_acco_010,account_issue,,LOW,false,FAQ;Policy,false,true,Migrated from cand_036. Customer wants to delete their account but can't find the op
 case_acco_011,account_issue,,LOW,false,FAQ;Policy,false,true,Migrated from cand_037. Customer changed their phone number and can't receive verifi
-case_acco_012,account_issue,privacy_risk;legal_risk,HIGH,true,Policy;Case,false,true,Migrated from cand_038. Customer's ID info was used by another account and suspects 
+case_acco_012,account_issue,privacy_risk;legal_risk,HIGH,true,Policy;Case,false,true,Migrated from cand_038. Customer's ID info was used by another account and suspects ,ae0e0e0e-bbbb-bbbb-bbbb-bbbbbbbbbbbb
 case_tech_001,technical_issue,,LOW,false,FAQ,false,true,Migrated from cand_039. Customer's app keeps crashing even after reinstallation.
 case_tech_002,technical_issue,,LOW,false,FAQ,false,true,Migrated from cand_040. Customer can't complete payment due to loading issue.
 case_tech_003,technical_issue,policy_conflict;insufficient_evidence,MEDIUM,true,FAQ;Policy;Case,true,true,Migrated from cand_041. Customer was charged but no order was created due to system 
@@ -64,15 +64,15 @@ case_logi_008,logistics,complaint_risk,MEDIUM,true,Case,false,true,Migrated from
 case_logi_009,logistics,policy_conflict,LOW,true,FAQ;Policy,false,true,Migrated from cand_063. Customer asks who pays customs duties for international ship
 case_logi_010,logistics,complaint_risk;compensation_risk,MEDIUM,true,Policy;Case,false,true,Migrated from cand_064. Customer's package was delivered to a different address.
 case_logi_011,logistics,compensation_risk;complaint_risk,MEDIUM,true,Policy;Case,false,true,Migrated from cand_065. Customer demands shipping fee compensation for failed next-d
-case_comp_001,complaint,complaint_risk,MEDIUM,true,Case,false,true,Migrated from cand_066. Customer complains about客服 attitude and threatens to expose 
-case_comp_002,complaint,complaint_risk;legal_risk,HIGH,true,Policy;Case,false,true,Migrated from cand_067. Customer accuses platform of selling counterfeits and threat
-case_comp_003,complaint,complaint_risk;compensation_risk,MEDIUM,true,Policy;Case,false,true,Migrated from cand_068. Customer complains that promotion discount was not honored.
-case_comp_004,complaint,complaint_risk;compensation_risk;legal_risk,HIGH,true,Policy;Case,false,true,Migrated from cand_069. Customer demands written apology and compensation or will su
+case_comp_001,complaint,complaint_risk,MEDIUM,true,Case,false,true,Migrated from cand_066. Customer complains about客服 attitude and threatens to expose ,ca0a0a0a-5555-5555-5555-555555555555
+case_comp_002,complaint,complaint_risk;legal_risk,HIGH,true,Policy;Case,false,true,Migrated from cand_067. Customer accuses platform of selling counterfeits and threat,ca0a0a0a-6666-6666-6666-666666666666
+case_comp_003,complaint,complaint_risk;compensation_risk,MEDIUM,true,Policy;Case,false,true,Migrated from cand_068. Customer complains that promotion discount was not honored.,ca0a0a0a-7777-7777-7777-777777777777
+case_comp_004,complaint,complaint_risk;compensation_risk;legal_risk,HIGH,true,Policy;Case,false,true,Migrated from cand_069. Customer demands written apology and compensation or will su,ca0a0a0a-9999-9999-9999-999999999999
 case_comp_005,complaint,privacy_risk;complaint_risk;legal_risk,HIGH,true,Policy;Case,false,true,Migrated from cand_070. Customer's personal data was leaked causing massive spam cal
 case_comp_006,complaint,complaint_risk,MEDIUM,true,Case,false,true,Migrated from cand_071. Customer threatens to complain to consumer association about
 case_comp_007,complaint,complaint_risk;compensation_risk,MEDIUM,true,Policy;Case,false,true,Migrated from cand_072. Customer claims product doesn't match description and demand
-case_comp_008,complaint,complaint_risk,MEDIUM,true,Case,false,true,Migrated from cand_073. Customer complains that after-sales phone and chat are both 
-case_comp_009,complaint,complaint_risk;compensation_risk;policy_conflict,HIGH,true,Policy;Case,false,true,Migrated from cand_074. Customer demands platform take responsibility after seller c
+case_comp_008,complaint,complaint_risk,MEDIUM,true,Case,false,true,Migrated from cand_073. Customer complains that after-sales phone and chat are both ,ca0a0a0a-8888-8888-8888-888888888888
+case_comp_009,complaint,complaint_risk;compensation_risk;policy_conflict,HIGH,true,Policy;Case,false,true,Migrated from cand_074. Customer demands platform take responsibility after seller c,ca0a0a0a-9999-9999-9999-999999999999
 case_othe_001,other,,LOW,false,FAQ,false,true,Migrated from cand_075. Customer asks about part-time客服 job openings.
 case_comp_010,complaint,complaint_risk,LOW,true,FAQ,false,true,Migrated from cand_076. Customer wants to submit a complaint but can't find the入口.
 case_othe_002,other,policy_conflict,LOW,true,FAQ;Policy,false,true,Migrated from cand_077. Customer needs an invoice for company expense reimbursement.
