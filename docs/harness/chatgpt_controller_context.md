@@ -21,11 +21,11 @@
 
 | Check | Result |
 |---|---|
-| Unit tests | 969 passed (33 new generator tests) |
-| Integration tests | 133 passed (14 new integration tests), 0 skipped |
+| Unit tests | 1001 passed |
+| Integration tests | 140 passed, 0 skipped |
 | Coverage | ≥70% |
 | Ruff | All checks passed |
-| OpenSpec validate --all | 17/17 passed |
+| OpenSpec validate --all | 19/19 passed (post-Phase-11 archive) |
 | Secret scan | Clean |
 | Overclaim scan | Clean |
 
@@ -36,14 +36,17 @@
 | Phase 1–6 | Archived | Foundation, pipeline, specs, schema, retrieval baseline |
 | Phase 7 | Archived | Evaluation pipeline (offline eval, metrics, CLI) |
 | Phase 8 | Archived | Real retrieval upgrade (comparison, fake-vs-real analysis) |
-| Phase 9 | Archived | Evaluation-driven knowledge coverage optimization. 11 P0 records added, 770 unit/119 integration tests, 85.29% coverage, quality gate PASSED. Post-archive validation repair completed (54 skipped integrations fixed, 8 dimension-mismatch tests fixed). |
-| Phase 10 | **Archived** | Hybrid Retrieval Ranking Diagnosis — trace-first diagnosis of keyword/vector/RRF ranking pipeline. No tuning, no algorithm changes. **Key outcome**: Doc-ID Recall@10 = 91.9%, 32/41 (78%) wrong cases reclassified as metric granularity. |
+| Phase 9 | Archived | Evaluation-driven knowledge coverage optimization. 11 P0 records added, Provider Identity Gate established. |
+| Phase 10 | **Archived** | Hybrid Retrieval Ranking Diagnosis — Doc-ID Recall@10 = 91.9%, 32/41 (78%) wrong cases reclassified as metric granularity. |
+| Phase 11 | **Archived** | Evidence-Grounded LLM Draft Generation — 8-layer safety architecture, LLMProvider + FakeLLMProvider, ClaimGuard, offline draft evaluation (8 deterministic metrics). |
 
 ## 4. Current Working Context
 
-**Phase 10 is complete and archived. Phase 11 complete (all sub-phases 11.1-11.9 done, 11.10 pending archive).**
+**Phase 11 complete and archived. Phase 12 is the next recommended phase.**
 
-### Phase 10 Evidence Chain
+### Phase 11 Evidence Chain
+
+Phase 11 (Evidence-Grounded LLM Draft Generation) completed all 10 sub-phases:
 
 The diagnosis followed 7 sub-phases in sequence:
 
@@ -98,6 +101,8 @@ The diagnosis followed 7 sub-phases in sequence:
 | D6 | Add doc-level golden labels as next priority | Primary bottleneck was metric granularity, not retrieval quality | 2026-05-06 |
 | D7 | Phase 10 is closed; do not continue retrieval tuning inside Phase 10 | Thesis confirmed, evaluation infrastructure built, archive complete | 2026-05-06 |
 | D8 | Default next phase is Evidence-Grounded LLM Draft Generation | Product frontier moves from evidence retrieval to evidence-grounded generation; continued retrieval tuning has diminishing portfolio value | 2026-05-06 |
+| D9 | Phase 11 complete — 8-layer safety architecture validated | Safety architecture is foundational for AI-assisted workflows; demonstrating safety-first design has portfolio value | 2026-05-06 |
+| D10 | Phase 11 archived; next phase is Demo Readiness | Phase 11 archived, Phase 12 (Demo Readiness and Portfolio Delivery) is recommended next | 2026-05-06 |
 
 See `docs/harness/controller_decision_log.md` for full log.
 
@@ -105,8 +110,9 @@ See `docs/harness/controller_decision_log.md` for full log.
 
 | Priority | Action | Phase | Type | Status |
 |---|---|---|---|---|
-| 1 | Evidence-grounded LLM draft generation — Phase 11.10 final validation and archive | 11.10 | Validation | Next |
-| — | Query expansion audit (alternative if retrieval prioritized) | 11 | Analysis | Alternative |
+| 1 | Demo Readiness and Portfolio Delivery — Phase 12 | 12 | Docs | Next |
+| — | Real Provider Optional Experiment (only if explicitly prioritized) | 12 | Analysis | Alternative |
+| — | Query expansion audit (from Phase 10 findings) | — | Analysis | Future |
 
 See `docs/harness/controller_next_actions.md` for full details with allowed/forbidden files and validation commands.
 

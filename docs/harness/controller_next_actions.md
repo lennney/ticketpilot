@@ -531,4 +531,46 @@
 
 ---
 
-## Next Batch: Phase 11.10 — Final Validation and Archive
+## Completed Batch: Phase 11.10 — Final Validation and Archive
+
+### What Was Done
+
+- Ran full quality gate: ✅ 1001 unit + 140 integration (0 skipped) + coverage ≥70%
+- Ran OpenSpec validation: ✅ --strict valid, --all 19/19 passed
+- Ran secret scan: ✅ Clean
+- Ran overclaim scan: ✅ Clean
+- Archived OpenSpec change: ✅ `add-evidence-grounded-llm-draft` → `archive/2026-05-06-add-evidence-grounded-llm-draft/`
+- Specs updated: claim-guard (+9), draft-generation (+10), draft-evaluation (+13), human-review (+8)
+- Updated all harness docs: validation_log, engineering_log, controller_session_log, controller_next_actions, chatgpt_controller_context
+- Updated changelog with Phase 11.10 entry
+
+### Validation
+
+- Unit tests: ✅ 1001 passed
+- Integration tests: ✅ 140 passed, **0 skipped**
+- Coverage: ✅ ≥70% threshold passed
+- Ruff: ✅ Clean
+- OpenSpec --strict: ✅ Valid
+- OpenSpec --all: ✅ 19/19 passed
+- Secret scan: ✅ Clean
+- Overclaim scan: ✅ Clean
+- Archive: ✅ Successful
+
+### Commit
+
+`pending`
+
+---
+
+## Next Batch: Phase 12 — Demo Readiness and Portfolio Delivery
+
+Recommended scope:
+- local runbook
+- demo script
+- screenshot/video checklist
+- interview narrative
+- reviewer workflow walkthrough
+- no major new functionality unless explicitly planned by a new OpenSpec change
+
+Alternative:
+- Phase 12 — Real Provider Optional Experiment (only if explicitly prioritized later)

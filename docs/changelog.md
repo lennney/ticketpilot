@@ -1,5 +1,37 @@
 # TicketPilot Changelog
 
+## 2026-05-06 — Phase 11.10: Final Validation and Archive
+
+### Validation
+- Unit tests: ✅ 1001 passed
+- Integration tests: ✅ 140 passed, **0 skipped**
+- Coverage: ✅ ≥70% threshold passed
+- Ruff: ✅ All checks passed
+- OpenSpec --strict (add-evidence-grounded-llm-draft): ✅ Valid
+- OpenSpec --all: ✅ 19/19 passed (specs promoted: claim-guard, draft-generation, draft-evaluation, human-review updated)
+- Secret scan: ✅ Clean (no sk- patterns in data/)
+- Overclaim scan: ✅ Clean
+
+### Archive
+- OpenSpec change `add-evidence-grounded-llm-draft` archived to `openspec/changes/archive/2026-05-06-add-evidence-grounded-llm-draft/`
+- Specs updated: claim-guard (+9), draft-generation (+10), draft-evaluation (+13), human-review (+8)
+- Post-archive OpenSpec --all: ✅ 19/19 passed
+
+### Phase 11 Complete
+All Phase 11 sub-phases complete (11.1-11.10):
+- 11.1: OpenSpec planning layer
+- 11.2: Draft schema + deterministic provider
+- 11.3: Evidence-grounded prompt builder
+- 11.4: Citation validator extension
+- 11.5: Unsupported-claim guard
+- 11.6: Pipeline integration
+- 11.7: Human review console update
+- 11.8: Offline draft evaluation
+- 11.9: Portfolio snapshot
+- 11.10: Final validation and archive
+
+---
+
 ## 2026-05-06 — Phase 11.9: Portfolio Snapshot
 
 ### Added

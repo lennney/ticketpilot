@@ -4,19 +4,25 @@
 
 ---
 
-## 2026-05-06 — Phase 11.9: Portfolio Snapshot
+## 2026-05-06 — Phase 11.10: Final Validation and Archive
 
 | Check | Result |
 |---|---|
 | Ruff | All checks passed |
+| Unit tests | 1001 passed |
+| Integration tests | 140 passed, **0 skipped** |
+| Coverage | ≥70% threshold passed |
 | OpenSpec --strict (add-evidence-grounded-llm-draft) | Valid |
-| OpenSpec --all | 17/17 passed |
+| OpenSpec --all | 19/19 passed (post-archive) |
+| Secret scan | Clean |
+| Overclaim scan | Clean |
+| OpenSpec archive | ✅ `add-evidence-grounded-llm-draft` → `archive/2026-05-06-*` |
 
 **Status**: ✅ PASSED
 
 ---
 
-## 2026-05-06 — Phase 11.8: Full Quality Gate
+## 2026-05-06 — Phase 11.9: Portfolio Snapshot
 
 | Check | Result |
 |---|---|

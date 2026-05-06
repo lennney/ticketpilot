@@ -4,6 +4,38 @@
 
 ---
 
+## 2026-05-06 — Phase 11.10: Final Validation and Archive
+
+**Problem**: Phase 11 (Evidence-Grounded LLM Draft Generation) is complete across all 10 sub-phases (11.1-11.9). Needed full quality gate validation, archive OpenSpec change, and update all harness docs.
+
+**Validation Results**:
+- Unit tests: 1001 passed
+- Integration tests: 140 passed, 0 skipped
+- Coverage: ≥70% threshold passed
+- Ruff: All checks passed
+- OpenSpec --strict: Valid
+- OpenSpec --all: 19/19 passed (post-archive, specs promoted)
+- Secret scan: Clean
+- Overclaim scan: Clean
+
+**Archive Results**:
+- OpenSpec change `add-evidence-grounded-llm-draft` archived to `openspec/changes/archive/2026-05-06-add-evidence-grounded-llm-draft/`
+- Specs updated: claim-guard (+9 lines), draft-generation (+10 lines), draft-evaluation (+13 lines), human-review (+8 lines)
+- Post-archive OpenSpec --all: 19/19 passed
+
+**Phase 11 Complete Summary**:
+- 8-layer safety architecture: prompt constraint → citation validation → ClaimGuard → risk-aware → human review propagation → no-auto-send → fake default → provider identity
+- LLMProvider ABC + FakeLLMProvider (deterministic, no API dependency)
+- Evidence-grounded prompt builder with evidence constraints + safety rules
+- DraftCitationValidationResult for structural evidence ID validation
+- ClaimGuard with 5 checks: citation coverage, uncited claims, forbidden promises, evidence sufficiency, risk-aware
+- DraftGenerationResult wrapper + generate_draft() pipeline
+- Human review console update with 15 audit fields + guard display
+- Offline draft evaluation metrics (8 deterministic metrics, citation precision=100%)
+- Portfolio snapshot with 10-section comprehensive documentation
+
+---
+
 ## 2026-05-06 — Phase 11.9: Portfolio Snapshot
 
 **Problem**: Phase 11 code complete, needed portable documentation for portfolio/snapshot use, separate from raw reports. Phase 11 changed from "进行中/in progress" to "已完成/complete" across all portfolio docs.

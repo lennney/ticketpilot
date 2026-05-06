@@ -83,6 +83,38 @@
 
 ---
 
+## 2026-05-06 — Phase 11.10: Final Validation and Archive
+
+**Summary**: Ran full quality gate on Phase 11 (all 10 sub-phases complete), archived OpenSpec change `add-evidence-grounded-llm-draft`, and updated all harness docs. Phase 11 is now complete and archived.
+
+**Validation Results**:
+- Unit tests: ✅ 1001 passed
+- Integration tests: ✅ 140 passed, **0 skipped**
+- Coverage: ✅ ≥70% threshold passed
+- Ruff: ✅ All checks passed
+- OpenSpec --strict: ✅ Valid
+- OpenSpec --all: ✅ 19/19 passed (post-archive, specs promoted)
+- Secret scan: ✅ Clean
+- Overclaim scan: ✅ Clean
+
+**Archive Results**:
+- OpenSpec change `add-evidence-grounded-llm-draft` archived to `openspec/changes/archive/2026-05-06-add-evidence-grounded-llm-draft/`
+- Specs updated: claim-guard (+9), draft-generation (+10), draft-evaluation (+13), human-review (+8)
+- Post-archive OpenSpec --all: 19/19 passed
+
+**Harness Docs Updated**:
+- validation_log.md — Phase 11.10 entry with full validation results
+- engineering_log.md — Phase 11.10 entry with complete summary
+- controller_session_log.md — Phase 11.10 handoff summary (this entry)
+- controller_next_actions.md — Phase 11.10 marked complete, next action updated
+- chatgpt_controller_context.md — Phase 11 status updated to Archived
+
+**Phase Status**: Phase 11 (all sub-phases 11.1-11.10) complete and archived.
+
+**Next Batch**: Phase 12 — Demo Readiness and Portfolio Delivery (recommended) or Phase 12 — Real Provider Optional Experiment (alternative)
+
+---
+
 **Summary**: Implemented the foundation for evidence-grounded LLM draft generation: LLMProvider abstract interface, FakeLLMProvider (deterministic, no network, no API keys), provider config/factory, and DraftReply schema extensions with cross-field validation. 27 new unit tests added. Full quality gate passed.
 
 **Key Deliverables**:

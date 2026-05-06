@@ -7,6 +7,15 @@ Each decision entry records: date, decision, context, alternatives considered, a
 
 ---
 
+## D10 — 2026-05-06: Phase 11 Archived — OpenSpec Change Closed
+
+- **Decision**: Phase 11 (Evidence-Grounded LLM Draft Generation) is complete and archived. OpenSpec change `add-evidence-grounded-llm-draft` archived to `openspec/changes/archive/2026-05-06-add-evidence-grounded-llm-draft/`. Specs promoted: claim-guard, draft-generation, draft-evaluation, human-review.
+- **Context**: All 10 sub-phases (11.1-11.10) completed. Full quality gate passed: 1001 unit + 140 integration tests (0 skipped), coverage ≥70%, OpenSpec --all 19/19, secret scan clean, overclaim scan clean.
+- **Alternatives**: Keep OpenSpec change active (blocks new changes), archive without full quality gate (risky), defer archive to later batch (accumulates debt)
+- **Why this won**: Phase 11 is complete and stable; archive cleans up active change list and promotes spec deltas
+
+---
+
 ## D9 — 2026-05-06: Phase 11 Complete — Safety Architecture Validated
 
 - **Decision**: Phase 11 evidence-grounded LLM draft generation is complete (all sub-phases 11.1-11.9 done). The 8-layer safety architecture (prompt constraint → citation validation → ClaimGuard → risk-aware → human review propagation → no-auto-send → fake default → provider identity) is the correct design for AI-assisted draft generation.
