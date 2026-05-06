@@ -150,7 +150,7 @@ uv run ruff check .
 
 ---
 
-### 11.6 — Pipeline Integration
+### 11.6 — Pipeline Integration ✅
 
 **Scope**: Wire LLM provider, prompt builder, and claim guard into `generate_draft()`. Update `generate.py` and `schemas.py`. Ensure end-to-end flow works with FakeLLMProvider.
 

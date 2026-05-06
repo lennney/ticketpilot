@@ -1,6 +1,29 @@
 # TicketPilot Changelog
 
-## 2026-05-06 — Phase 11.1: Evidence-Grounded LLM Draft Generation Planning
+## 2026-05-06 — Phase 11.6: Pipeline Integration
+
+### Added
+- `src/ticketpilot/drafting/generator.py` — DraftGenerationResult wrapper + `generate_draft()` wiring prompt builder → LLM provider → citation validator → claim guard → human review propagation
+- `tests/unit/test_draft_generator.py` — 33 tests covering all generator behaviors
+- `tests/integration/test_draft_generation_integration.py` — 14 integration tests for end-to-end workflow
+
+### Changed
+- `src/ticketpilot/drafting/__init__.py` — Added DraftGenerationResult, GuardResult, check_claim_guard, generate_draft_v2 exports; removed duplicate import
+
+### Design
+- DraftGenerationResult wraps DraftReply with provider_name, model_name, citation_validation, guard_result, and to_trace_dict() for compact audit metadata
+- generate_draft() pipeline: (1) build prompt input, (2) call LLM provider (default: FakeLLMProvider), (3) CitationValidator (content-level [N] checks), (4) draft_citation_validator (structural ID checks), (5) claim_guard (content-level checks), (6) human review propagation — never downgrades
+- Provider injection via optional `provider` argument — enables test mocking
+- Deterministic: same input → same output; no network calls, no API keys required
+- No auto-send: all outputs are drafts only
+
+### Validation
+- Unit tests: ✅ 33/33 passed
+- Integration tests: ✅ 14/14 passed
+- Ruff: ✅ All checks passed
+- OpenSpec --all: ✅ 17/17 passed
+
+---
 
 ### Added
 - `openspec/changes/add-evidence-grounded-llm-draft/` — OpenSpec change with 7 files:

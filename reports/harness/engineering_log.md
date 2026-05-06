@@ -81,6 +81,34 @@
 **Validation**: Unit tests 58/58 passed, ruff clean, OpenSpec 17/17 —all, --strict.
 
 ---
+
+## 2026-05-06 — Phase 11.6: Pipeline Integration
+
+**Problem**: Phase 11.2–11.5 produced isolated components (LLM provider, prompt builder, citation validator, claim guard) but no single entrypoint that wires them together into a deterministic generation workflow. Need a compose function that runs all components in sequence and exposes trace metadata.
+
+**Approach**:
+- DraftGenerationResult wrapper: holds draft + provider_name + model_name + citation_validation + guard_result + to_trace_dict()
+- generate_draft() pipeline: (1) build prompt input from TicketOutput, (2) call LLM provider (default: FakeLLMProvider via provider_config), (3) CitationValidator (content-level [N] checks), (4) draft_citation_validator (structural ID checks), (5) claim_guard (content-level checks), (6) human review propagation — never downgrades, (7) escalation_reason on guard failure
+- Optional `provider` argument enables test injection of mock providers
+- Optional `inject_prompt` argument for deterministic prompt testing scenarios
+
+**Key Engineering Decisions**:
+- Used Option B wrapper (DraftGenerationResult) rather than extending DraftReply — preserves backward compatibility with all 194 existing DraftReply tests
+- Provider injection via constructor argument rather than global state — enables clean testing without monkeypatching
+- CitationValidator and draft_citation_validator both run in sequence: the former checks content-level [N] markers, the latter checks structural cited_evidence_ids — these are complementary checks from different layers
+- Human review propagation: first respects DraftReply.must_human_review (already set by LLM provider), then upgrades if structural validation or guard fails — never downgrades
+- to_trace_dict() excludes draft text and prompts — compact for audit, no sensitive data leakage
+- guard_result attached to DraftGenerationResult (not DraftReply) — keeps DraftReply schema stable; Phase 11.7 (Human Review Console) will integrate guard results into the display layer
+
+**Files**:
+- `src/ticketpilot/drafting/generator.py` (new, ~245 lines)
+- `tests/unit/test_draft_generator.py` (new, 33 tests)
+- `tests/integration/test_draft_generation_integration.py` (new, 14 tests)
+- `src/ticketpilot/drafting/__init__.py` (modified, +5 exports)
+
+**Validation**: Unit tests 33/33 passed, integration 14/14 passed, ruff clean, OpenSpec 17/17.
+
+---
 ## 2026-05-06 — Phase 11.1: Evidence-Grounded LLM Draft Generation Planning
 
 **Problem**: Template-based drafts (FakeDraftProvider) demonstrate pipeline connectivity but not portfolio-grade draft quality. The product needs evidence-grounded generation with safety guardrails.

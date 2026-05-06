@@ -108,6 +108,31 @@
 
 ---
 
+## 2026-05-06 — Phase 11.6: Pipeline Integration
+
+**Summary**: Integrated all Phase 11 components into a unified draft generation workflow. Created DraftGenerationResult wrapper + generate_draft() function that wires prompt builder → LLM provider → CitationValidator → draft_citation_validator → claim_guard → human review propagation in sequence. 33 unit + 14 integration tests. Full quality gate passed.
+
+**Key Deliverables**:
+- `src/ticketpilot/drafting/generator.py` — DraftGenerationResult wrapper with provider_name, model_name, citation_validation, guard_result, to_trace_dict() + generate_draft() function
+- `tests/unit/test_draft_generator.py` — 33 tests covering all generator behaviors
+- `tests/integration/test_draft_generation_integration.py` — 14 integration tests for end-to-end workflow
+
+**Key Design Decisions**:
+- Option B wrapper preserves DraftReply backward compatibility (no schema changes to DraftReply)
+- Provider injection via `provider` argument enables clean mocking without monkeypatching
+- CitationValidator (content-level [N] checks) + draft_citation_validator (structural ID checks) run in parallel — complementary layers
+- Human review propagation is one-way: never downgrades; guard failure and validation failure both force must_human_review
+- guard_result lives on DraftGenerationResult (not DraftReply) — Phase 11.7 will integrate into display
+- to_trace_dict() excludes draft text and prompts — compact for audit, no sensitive data
+
+**Validation**: 33 unit + 14 integration tests passed, ruff clean, OpenSpec 17/17
+
+**Phase Status**: Phase 11.6 complete. Phase 11.7 pending (human review console update).
+
+**Next Batch**: Phase 11.7 — Human Review Console Update
+
+---
+
 ## 2026-05-06 — Phase 11.1: Evidence-Grounded LLM Draft Generation Planning
 
 **Summary**: Created the OpenSpec planning layer for Phase 11 — Evidence-Grounded LLM Draft Generation. This planning batch produced 7 files: proposal, design, tasks, and 4 spec files (draft-generation, claim-guard, human-review, draft-evaluation). No code changes were made.

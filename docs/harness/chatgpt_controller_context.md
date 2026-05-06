@@ -21,8 +21,8 @@
 
 | Check | Result |
 |---|---|
-| Unit tests | 936 passed (58 new claim guard tests) |
-| Integration tests | 119 passed, 0 skipped |
+| Unit tests | 969 passed (33 new generator tests) |
+| Integration tests | 133 passed (14 new integration tests), 0 skipped |
 | Coverage | ≥70% |
 | Ruff | All checks passed |
 | OpenSpec validate --all | 17/17 passed |
@@ -41,7 +41,7 @@
 
 ## 4. Current Working Context
 
-**Phase 10 is complete and archived. Phase 11.5 code complete (unsupported-claim guard).**
+**Phase 10 is complete and archived. Phase 11.6 code complete (pipeline integration).**
 
 ### Phase 10 Evidence Chain
 
@@ -79,12 +79,12 @@ The diagnosis followed 7 sub-phases in sequence:
 
 ## 5. Active OpenSpec Change
 
-**Phase 11.5 — Unsupported-Claim Guard** (active)
-- 2 new files: claim_guard.py (~195 lines), test_claim_guard.py (58 tests)
-- GuardResult with 7 fields (citation_coverage, has_uncited_claims, has_forbidden_promise, forbidden_promise_details, evidence_sufficiency, risk_flags_respected, guard_passed)
-- check_claim_guard(): citation coverage, uncited claim detection, forbidden promises (9 regex), evidence sufficiency, risk-aware check
-- Deterministic — no network, no LLM API, no semantic analysis
-- Validation: ✅ 58/58 unit, ruff clean, OpenSpec 17/17
+**Phase 11.6 — Pipeline Integration** (active)
+- 3 new files: generator.py (~245 lines), test_draft_generator.py (33 tests), test_draft_generation_integration.py (14 tests)
+- DraftGenerationResult wrapper with provider_name, model_name, citation_validation, guard_result, to_trace_dict()
+- generate_draft() pipeline: prompt builder → LLM provider → CitationValidator → draft_citation_validator → claim_guard → human review propagation
+- Provider injection via optional argument — enables clean testing
+- Quality gate: ✅ 33 unit + 14 integration tests passed, ruff clean, OpenSpec 17/17
 
 ## 6. Current Decisions
 
@@ -105,7 +105,7 @@ See `docs/harness/controller_decision_log.md` for full log.
 
 | Priority | Action | Phase | Type | Status |
 |---|---|---|---|---|
-| 1 | Evidence-grounded LLM draft generation — Phase 11.6 pipeline integration | 11.6 | Code | Next |
+| 1 | Evidence-grounded LLM draft generation — Phase 11.7 human review console update | 11.7 | Code | Next |
 | — | Query expansion audit (alternative if retrieval prioritized) | 11 | Analysis | Alternative |
 
 See `docs/harness/controller_next_actions.md` for full details with allowed/forbidden files and validation commands.

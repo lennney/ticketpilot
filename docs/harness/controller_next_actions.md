@@ -383,26 +383,61 @@
 
 ---
 
-## Next Batch: Phase 11.6 — Pipeline Integration
+## Completed Batch: Phase 11.6 — Pipeline Integration
+
+### What Was Done
+
+- Created `DraftGenerationResult` wrapper with draft, provider_name, model_name, citation_validation, guard_result, to_trace_dict()
+- Created `generate_draft()` function wiring all Phase 11 components in sequence: (1) build prompt input, (2) call LLM provider (FakeLLMProvider by default), (3) CitationValidator (content-level [N] checks), (4) draft_citation_validator (structural ID checks), (5) claim_guard (content-level checks), (6) human review propagation (never downgrades), (7) escalation_reason on guard failure
+- Added optional `provider` argument for test injection
+- 33 unit tests + 14 integration tests
+- No DraftReply schema changes — backward compatible
+
+### Files Created
+
+- `src/ticketpilot/drafting/generator.py`
+- `tests/unit/test_draft_generator.py`
+- `tests/integration/test_draft_generation_integration.py`
+
+### Files Modified
+
+- `src/ticketpilot/drafting/__init__.py` (added exports)
+
+### Key Findings
+
+- Option B wrapper preserves DraftReply backward compatibility
+- Provider injection via constructor argument enables clean testing
+- CitationValidator + draft_citation_validator run in parallel (complementary layers)
+- to_trace_dict() excludes draft text and prompts — compact for audit
+
+### Validation
+
+- Unit tests: ✅ 33/33 passed
+- Integration tests: ✅ 14/14 passed
+- Ruff: ✅ Clean
+- OpenSpec --all: ✅ 17/17 passed
+- OpenSpec --strict: ✅ Passed
+
+### Commit
+
+`pending`
+
+---
+
+## Next Batch: Phase 11.7 — Human Review Console Update
 
 ### Scope
 
-1. Wire LLM provider, prompt builder, and claim guard into `generate_draft()`
-2. Extend `schemas.py` to add `GuardResult` to `DraftReply`
-3. Update `generate.py` to run prompt builder → LLM provider → claim guard in sequence
-4. Add `DraftReply.guard_results` field
-5. Update `__init__.py` exports
-6. Write integration test for end-to-end draft generation with FakeLLMProvider
+1. Extend ReviewDecision schema with guard_results, provider_id, escalation_reason
+2. Update Streamlit console to display guard results, provider_id, escalation_reason
+3. Ensure existing approve/edit/escalate/reject actions are unchanged
+4. Run review-related unit tests
 
 ### Allowed Files
 
-- `src/ticketpilot/drafting/generate.py` (modify)
-- `src/ticketpilot/drafting/schemas.py` (extend if needed)
-- `src/ticketpilot/drafting/__init__.py` (update exports)
-- `src/ticketpilot/pipeline.py` (minimal changes if needed)
-- `tests/unit/test_drafting_generate.py` (extend)
-- `tests/unit/test_pipeline.py` (extend)
-- `tests/integration/test_draft_generation.py` (new)
+- `src/ticketpilot/review/schemas.py` (extend ReviewDecision)
+- `src/ticketpilot/review/console.py` (extend display)
+- `tests/unit/test_review_*.py` (extend)
 - `openspec/changes/add-evidence-grounded-llm-draft/`
 - `docs/changelog.md`
 - `docs/harness/`
@@ -416,14 +451,19 @@
 ### Validation Commands
 
 ```bash
-uv run pytest tests/unit/test_drafting_generate.py tests/unit/test_pipeline.py -v --tb=short
-uv run pytest tests/integration/test_draft_generation.py -v --tb=short
+uv run pytest tests/unit/test_review_*.py -v --tb=short
 openspec validate add-evidence-grounded-llm-draft --strict
 uv run ruff check .
 ```
 
 ### Stop Conditions
 
-- Integration tests fail or skip > 0 with DB
-- Pipeline behavior changes for non-draft stages
+- Review console behavior changes for non-draft stages
+- Retrieval algorithm modified
+
+### Forbidden Files
+
+- `src/ticketpilot/retrieval/` (no retrieval changes)
+- `data/` (no data changes)
+- `reports/retrieval/` (frozen)
 

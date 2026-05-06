@@ -64,6 +64,20 @@
 
 ---
 
+## 2026-05-06 — Phase 11.6: Pipeline Integration
+
+| Check | Result |
+|---|---|
+| Unit tests (test_draft_generator.py) | 33/33 passed |
+| Integration tests (test_draft_generation_integration.py) | 14/14 passed |
+| Ruff | ✅ Clean |
+| OpenSpec --strict (add-evidence-grounded-llm-draft) | ✅ Passed |
+| OpenSpec --all | ✅ 17/17 passed |
+
+**Status**: ✅ PASSED
+
+---
+
 ## 2026-05-06 — Phase 11.1: OpenSpec Planning Validation
 
 | Check | Result |
