@@ -39,7 +39,7 @@ uv run ruff check .
 
 ---
 
-### 11.2 — Draft Schema and Deterministic Provider
+### 11.2 — Draft Schema and Deterministic Provider ✅
 
 **Scope**: Implement LLM provider interface, FakeLLMProvider, and extend DraftReply schema.
 

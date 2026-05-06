@@ -19,6 +19,26 @@
 
 ---
 
+## 2026-05-06 — Phase 11.2: Draft Schema and Deterministic Provider
+
+### Added
+- `src/ticketpilot/drafting/llm_provider.py` — LLMProvider abstract interface with `provider_name`, `model_name`, `generate_draft()`
+- `src/ticketpilot/drafting/provider_config.py` — LLMProviderConfig + factory (`load_llm_provider_config`, `create_llm_provider`)
+- `tests/unit/test_llm_provider.py` — 17 tests for FakeLLMProvider (evidence handling, fallback, risk flags, deterministic output)
+- `tests/unit/test_llm_config.py` — 10 tests for config/factory (default, env var, unknown provider)
+
+### Changed
+- `src/ticketpilot/drafting/schemas.py` — Extended DraftReply with 4 fields: `provider_id`, `escalation_reason`, `safety_notes`, `cited_evidence_ids`. Added `draft_text` min_length=1, cross-field validation (unsupported_claims/escalation_reason auto-sets must_human_review, rejects empty cited_evidence_ids).
+- `src/ticketpilot/drafting/__init__.py` — Updated exports for new types and functions.
+
+### Validation
+- Quality gate: ✅ PASSED — 807 unit, 119 integration, **0 skipped**, 85.74% coverage (≥70%)
+- Ruff: ✅ All checks passed
+- OpenSpec --all: ✅ 17/17 passed
+- Secret scan: ✅ Clean
+
+---
+
 ## 2026-05-06 — ChatGPT Controller Context Harness
 
 ### Added

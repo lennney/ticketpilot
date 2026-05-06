@@ -5,6 +5,35 @@
 
 ---
 
+---
+
+## 2026-05-06 — Phase 11.2: Draft Schema and Deterministic Provider
+
+**Summary**: Implemented the foundation for evidence-grounded LLM draft generation: LLMProvider abstract interface, FakeLLMProvider (deterministic, no network, no API keys), provider config/factory, and DraftReply schema extensions with cross-field validation. 27 new unit tests added. Full quality gate passed.
+
+**Key Deliverables**:
+- `src/ticketpilot/drafting/llm_provider.py` — LLMProvider ABC with `generate_draft()`, FakeLLMProvider with safe fallback
+- `src/ticketpilot/drafting/provider_config.py` — config + factory (`TICKETPILOT_LLM_PROVIDER` env var, default "fake")
+- `src/ticketpilot/drafting/schemas.py` — extended DraftReply with 4 fields + cross-field validation
+- `tests/unit/test_llm_provider.py` — 17 tests covering all FakeLLMProvider behaviors
+- `tests/unit/test_llm_config.py` — 10 tests for config/factory and DraftReply validation
+
+**Key Design Decisions**:
+- LLM provider follows same pattern as embedding provider (fake default, real via env)
+- FakeLLMProvider has 4 safety mechanisms: no-evidence fallback → must_human_review, risk_flags → escalation_reason + safety_notes, cited_evidence_ids tracking, confidence from evidence scores
+- No fake policy promises: tested against forbidden patterns
+- Schema backward compatible — all 59 existing tests pass unchanged
+
+**Validation**: Quality gate PASSED — 807 unit, 119 integration (0 skip), 85.74% coverage, ruff clean, OpenSpec 17/17, secret scan clean
+
+**Decisions Made**: See D9 in decision log (applies to both 11.1 planning and 11.2 implementation)
+
+**Phase Status**: Phase 11.2 complete. Phase 11.3 pending (prompt builder).
+
+**Next Batch**: Phase 11.3 — Evidence-Grounded Prompt Builder
+
+---
+
 ## 2026-05-06 — Phase 11.1: Evidence-Grounded LLM Draft Generation Planning
 
 **Summary**: Created the OpenSpec planning layer for Phase 11 — Evidence-Grounded LLM Draft Generation. This planning batch produced 7 files: proposal, design, tasks, and 4 spec files (draft-generation, claim-guard, human-review, draft-evaluation). No code changes were made.

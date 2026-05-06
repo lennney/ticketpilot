@@ -194,6 +194,48 @@
 
 ---
 
+## Completed Batch: Phase 11.2 — Draft Schema and Deterministic Provider
+
+### What Was Done
+
+- Created `LLMProvider` abstract interface (`llm_provider.py`) with `provider_name`, `model_name`, `generate_draft()`
+- Created `FakeLLMProvider` — deterministic, no network, no API keys, safe fallback when evidence missing
+- Created provider config + factory (`provider_config.py`) — reads `TICKETPILOT_LLM_PROVIDER` env var, defaults to `"fake"`, raises ValueError for unknown types
+- Extended `DraftReply` schema with 4 new fields + cross-field validation (unsupported_claims/escalation_reason auto-sets must_human_review, rejects empty cited_evidence_ids)
+- 27 new unit tests (17 for provider, 10 for config/schema)
+
+### Files Created
+
+- `src/ticketpilot/drafting/llm_provider.py`
+- `src/ticketpilot/drafting/provider_config.py`
+- `tests/unit/test_llm_provider.py`
+- `tests/unit/test_llm_config.py`
+
+### Files Modified
+
+- `src/ticketpilot/drafting/schemas.py` (extended DraftReply)
+- `src/ticketpilot/drafting/__init__.py` (updated exports)
+
+### Key Findings
+
+- FakeLLMProvider follows same pattern as FakeEmbeddingProvider: fake default, real provider opt-in via env
+- Schema backward compatible — all existing tests pass unchanged
+- 4 safety mechanisms in FakeLLMProvider: no-evidence fallback → must_human_review, risk_flags → escalation_reason + safety_notes, cited_evidence_ids tracking, confidence from evidence scores
+- No fake policy promises: tested against forbidden patterns ("一定退款", "保证赔偿", "已为您处理账号")
+
+### Validation
+
+- Quality gate: ✅ PASSED — 807 unit, 119 integration, **0 skipped**, 85.74% coverage
+- Ruff: ✅ All checks passed
+- OpenSpec --all: ✅ 17/17 passed
+- Secret scan: ✅ Clean
+
+### Commit
+
+`pending`
+
+---
+
 ## Completed Batch: Phase 11.1 — Evidence-Grounded LLM Draft Generation Planning
 
 ### What Was Done
@@ -226,24 +268,19 @@
 
 ---
 
-## Next Batch: Phase 11.2 — Draft Schema and Deterministic Provider
+## Next Batch: Phase 11.3 — Evidence-Grounded Prompt Builder
 
 ### Scope
 
-1. Implement LLM provider interface (abstract base class + FakeLLMProvider)
-2. Extend DraftReply schema with provider_id, guard_results, escalation_reason
-3. Add provider configuration module (env-based, same pattern as embedding provider)
-4. Add unit tests for provider interface and fake provider
-5. No real LLM API integration in this sub-phase
-6. All Phase 10 portfolio, reports, and archive must remain frozen
+1. Implement prompt builder that converts evidence candidates + ticket context into structured LLM prompts
+2. Include system prompt, evidence formatting, citation instruction, and human-review escalation prompt
+3. Add unit tests for all prompt builder behaviors
+4. No real LLM API calls, no pipeline integration
 
 ### Allowed Files
 
-- `src/ticketpilot/drafting/llm_provider.py` (new)
-- `src/ticketpilot/drafting/provider_config.py` (new)
-- `src/ticketpilot/drafting/schemas.py` (extend DraftReply)
-- `tests/unit/test_llm_provider.py` (new)
-- `tests/unit/test_drafting_schemas.py` (extend)
+- `src/ticketpilot/drafting/prompt_builder.py` (new)
+- `tests/unit/test_prompt_builder.py` (new)
 - `openspec/changes/add-evidence-grounded-llm-draft/` (update tasks.md)
 - `docs/changelog.md`
 - `docs/harness/`
@@ -252,22 +289,13 @@
 
 - `src/ticketpilot/retrieval/` (no retrieval changes)
 - `data/` (no data changes)
-- `reports/retrieval/` (Phase 7/8/9/10 reports frozen)
-- `docs/portfolio/` (portfolio docs frozen)
-- `openspec/changes/archive/` (archived changes frozen)
-- `.env`, `.env.local`
+- `reports/retrieval/` (frozen)
 
 ### Validation Commands
 
 ```bash
-# Module tests
-uv run pytest tests/unit/test_llm_provider.py tests/unit/test_drafting_schemas.py -v --tb=short
-
-# OpenSpec validation
+uv run pytest tests/unit/test_prompt_builder.py -v --tb=short
 openspec validate add-evidence-grounded-llm-draft --strict
-openspec validate --all
-
-# Ruff
 uv run ruff check .
 ```
 
