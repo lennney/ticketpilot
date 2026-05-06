@@ -1,5 +1,29 @@
 # TicketPilot Changelog
 
+## 2026-05-07 -- Phase 12A.1: Real LLM Provider Comparison Validation Closure
+
+### Validation
+- Unit tests: 20 passed (test_openai_compatible_llm_provider.py)
+- Integration tests: 6 passed (test_phase12_llm_provider_comparison.py)
+- Full quality gate: 1069 unit + 146 integration, 0 skipped, 86.71% coverage
+- Ruff: All checks passed
+- OpenSpec --all: 20/20 passed
+- Secret scan: Clean
+- Overclaim scan: Clean
+
+### Provider Comparison
+- Real provider configured: NO (TICKETPILOT_LLM_PROVIDER not set)
+- Fake baseline: 5/5 cases successful, avg confidence 0.85, 0 human review triggers
+### OpenSpec Archive Status
+- OpenSpec change archived to openspec/changes/archive/2026-05-06-add-real-llm-provider-comparison/
+- Spec promoted: openspec/specs/provider-comparison/spec.md
+
+### Generated Reports
+- reports/eval/phase12_llm_provider_comparison_*.json -- JSON results
+- reports/eval/phase12_llm_provider_comparison_report_*.md -- Markdown report
+
+---
+
 ## 2026-05-06 — Phase 11.10: Final Validation and Archive
 
 ### Validation

@@ -21,11 +21,11 @@
 
 | Check | Result |
 |---|---|
-| Unit tests | 1001 passed |
-| Integration tests | 140 passed, 0 skipped |
-| Coverage | ≥70% |
+| Unit tests | 1069 passed |
+| Integration tests | 146 passed, 0 skipped |
+| Coverage | ≥70% (86.71%) |
 | Ruff | All checks passed |
-| OpenSpec validate --all | 19/19 passed (post-Phase-11 archive) |
+| OpenSpec validate --all | 20/20 passed (post-Phase-12A archive) |
 | Secret scan | Clean |
 | Overclaim scan | Clean |
 
@@ -39,10 +39,11 @@
 | Phase 9 | Archived | Evaluation-driven knowledge coverage optimization. 11 P0 records added, Provider Identity Gate established. |
 | Phase 10 | **Archived** | Hybrid Retrieval Ranking Diagnosis — Doc-ID Recall@10 = 91.9%, 32/41 (78%) wrong cases reclassified as metric granularity. |
 | Phase 11 | **Archived** | Evidence-Grounded LLM Draft Generation — 8-layer safety architecture, LLMProvider + FakeLLMProvider, ClaimGuard, offline draft evaluation (8 deterministic metrics). |
+| Phase 12A | **Archived** | OpenAI-compatible LLM provider for offline comparison — OpenAICompatibleProvider, 25-case fixture set, comparison runner, mock tests, real provider pending local env configuration. |
 
 ## 4. Current Working Context
 
-**Phase 11 complete and archived. Phase 12 is the next recommended phase.**
+**Phase 11 and Phase 12A complete and archived. Phase 12B is the next recommended phase.**
 
 ### Phase 11 Evidence Chain
 

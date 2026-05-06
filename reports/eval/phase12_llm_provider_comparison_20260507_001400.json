@@ -1,0 +1,72 @@
+{
+  "fake_results": {
+    "provider": "fake",
+    "total_cases": 5,
+    "successful": 5,
+    "results": [
+      {
+        "case_id": "p12_001",
+        "scenario": "ordinary_product_consulting",
+        "provider": "fake",
+        "draft_text_length": 136,
+        "confidence": 0.85,
+        "must_human_review": false,
+        "fallback_reason": null,
+        "escalation_reason": null,
+        "has_citations": true,
+        "safety_notes_count": 0
+      },
+      {
+        "case_id": "p12_002",
+        "scenario": "ordinary_product_consulting",
+        "provider": "fake",
+        "draft_text_length": 136,
+        "confidence": 0.85,
+        "must_human_review": false,
+        "fallback_reason": null,
+        "escalation_reason": null,
+        "has_citations": true,
+        "safety_notes_count": 0
+      },
+      {
+        "case_id": "p12_003",
+        "scenario": "refund",
+        "provider": "fake",
+        "draft_text_length": 132,
+        "confidence": 0.85,
+        "must_human_review": false,
+        "fallback_reason": null,
+        "escalation_reason": null,
+        "has_citations": true,
+        "safety_notes_count": 0
+      },
+      {
+        "case_id": "p12_004",
+        "scenario": "refund",
+        "provider": "fake",
+        "draft_text_length": 132,
+        "confidence": 0.85,
+        "must_human_review": false,
+        "fallback_reason": null,
+        "escalation_reason": null,
+        "has_citations": true,
+        "safety_notes_count": 0
+      },
+      {
+        "case_id": "p12_005",
+        "scenario": "return_exchange",
+        "provider": "fake",
+        "draft_text_length": 133,
+        "confidence": 0.85,
+        "must_human_review": false,
+        "fallback_reason": null,
+        "escalation_reason": null,
+        "has_citations": true,
+        "safety_notes_count": 0
+      }
+    ]
+  },
+  "real_results": null,
+  "timestamp": "20260507_001400",
+  "limit": 5
+}
