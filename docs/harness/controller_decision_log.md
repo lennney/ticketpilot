@@ -42,6 +42,20 @@ Each decision entry records: date, decision, context, alternatives considered, a
 - **Alternatives**: Remove fake provider entirely (breaks CI without real API key), upgrade fake to have limited semantics (scope creep)
 - **Why this won**: Keeps CI dependency-free; explicit separation of concerns between mechanics and quality
 
+## D8 — 2026-05-06: Default Next Phase Is Evidence-Grounded LLM Draft Generation
+
+- **Decision**: The default next phase (Phase 11) is evidence-grounded LLM draft generation, not continued retrieval tuning
+- **Context**: Phase 10 confirmed 91.9% Doc-ID Recall@10 with 78% of wrong cases reclassified as metric granularity. The retrieval evidence chain is complete; the product frontier moves from evidence retrieval to evidence-grounded generation. Continued retrieval optimization (query expansion, fusion ranking, reranker) has diminishing portfolio value.
+- **Alternatives**: Phase 11 Query Expansion Audit (documentation-only, addresses 7 zero-hit cases), Phase 11 Fusion Ranking Experiment (code change for 32 partial-hit cases), Phase 11 Reranker Proposal (future work)
+- **Why this won**: Product portfolio value of LLM draft generation exceeds marginal retrieval gains. If retrieval is prioritized later, the alternative Phase 11 path can be chosen.
+
+## D7 — 2026-05-06: Phase 10 Is Closed; Do Not Continue Retrieval Tuning Inside Phase 10
+
+- **Decision**: Phase 10 evidence chain is complete and archived. All future retrieval work creates a new Phase (e.g., query expansion, fusion ranking, reranker) with a new OpenSpec change.
+- **Context**: Phase 10 delivered: trace audit → P0 export → bottleneck classification → doc-level labels → real pipeline eval → metric granularity thesis confirmed → portfolio snapshot. Archive is complete.
+- **Alternatives**: Keep Phase 10 open for follow-up experiments (scope creep), start Phase 11 as continued retrieval work (contradicts thesis findings)
+- **Why this won**: Phase 10 achieved its goal; continuing would blur scope. Clean archive enables clear phase boundaries for future work.
+
 ## D1 — 2026-05-06: Phase 10 Is Trace-First Diagnosis, Not Tuning
 
 - **Decision**: No retrieval algorithm parameters (RRF k, keyword weight, vector weight, HNSW ef_search) may be changed in Phase 10

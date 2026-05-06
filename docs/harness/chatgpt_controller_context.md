@@ -21,12 +21,13 @@
 
 | Check | Result |
 |---|---|
-| Unit tests | 770 passed |
+| Unit tests | 778 passed |
 | Integration tests | 119 passed, 0 skipped |
-| Coverage | 85.29% |
+| Coverage | 85.27% |
 | Ruff | All checks passed |
 | OpenSpec validate --all | 16/16 passed |
 | Secret scan | Clean |
+| Overclaim scan | Clean |
 
 ## 3. Completed Phases
 
@@ -35,52 +36,52 @@
 | Phase 1–6 | Archived | Foundation, pipeline, specs, schema, retrieval baseline |
 | Phase 7 | Archived | Evaluation pipeline (offline eval, metrics, CLI) |
 | Phase 8 | Archived | Real retrieval upgrade (comparison, fake-vs-real analysis) |
-| Phase 9 | **Archived** | Evaluation-driven knowledge coverage optimization. 11 P0 records added, 770 unit/119 integration tests, 85.29% coverage, quality gate PASSED. Post-archive validation repair completed (54 skipped integrations fixed, 8 dimension-mismatch tests fixed). |
-| Phase 10 | **Active** | Hybrid Retrieval Ranking Diagnosis — trace-first diagnosis of keyword/vector/RRF ranking pipeline. No tuning, no algorithm changes. |
+| Phase 9 | Archived | Evaluation-driven knowledge coverage optimization. 11 P0 records added, 770 unit/119 integration tests, 85.29% coverage, quality gate PASSED. Post-archive validation repair completed (54 skipped integrations fixed, 8 dimension-mismatch tests fixed). |
+| Phase 10 | **Archived** | Hybrid Retrieval Ranking Diagnosis — trace-first diagnosis of keyword/vector/RRF ranking pipeline. No tuning, no algorithm changes. **Key outcome**: Doc-ID Recall@10 = 91.9%, 32/41 (78%) wrong cases reclassified as metric granularity. |
 
 ## 4. Current Working Context
 
-**Phase 10 — Hybrid Retrieval Ranking Diagnosis**
+**Phase 10 is complete and archived.** No active OpenSpec change.
 
-- **Change ID**: `add-hybrid-retrieval-ranking-diagnosis`
-- **Current principle**: Trace-first, not tuning-first
-- **Provider identity gate**: Every trace report MUST declare embedding provider. Fake provider = pipeline mechanics only (no semantic conclusions). Real provider = required for semantic ranking diagnosis.
-- **Immutable baselines**: Phase 7/8/9 reports are read-only. Phase 10 outputs to `reports/retrieval/phase10_*` namespaced paths.
+### Phase 10 Evidence Chain
 
-### Completed Sub-Phases
+The diagnosis followed 7 sub-phases in sequence:
 
-| Sub-Phase | Status | Key Deliverable |
-|---|---|---|
-| 10.1 Planning | ✅ Done | proposal.md, design.md, tasks.md, 2 spec files |
-| 10.2 Trace Audit | ✅ Done | `reports/retrieval/phase10_trace_data_audit.md` — confirmed trace has all runtime data, only export gap |
-| 10.3 P0 Trace Export | ✅ Done | `reports/retrieval/phase10_p0_layered_trace_export.md` + layered traces JSON. Vector recall 93.8%, keyword 31.2%, fused top-10 75.0%. |
-| 10.4 Bottleneck Classification | ✅ Done | `reports/retrieval/phase10_p0_bottleneck_classification.md` — 75% fused_top10_but_metric_still_wrong, 18.8% recalled_but_fused_low, 6.2% vector_not_recalled |
-| 10.5 Recommendation | **Pending** | |
-| 10.6 Portfolio Delta | **Pending** | |
-| 10.7 Archive | **Pending** | |
+| Sub-Phase | Key Deliverable |
+|---|---|
+| 10.2 Trace Audit | Confirmed trace has all runtime data, only export gap |
+| 10.3 P0 Trace Export | Vector recall 93.8%, keyword 31.2%, fused top-10 75.0% |
+| 10.4 Bottleneck Classification | 75% = metric granularity, 18.8% = RRF fusion, 6.2% = vector miss |
+| 10.5 Doc-Level Labels (P0) | `expected_relevant_doc_ids` populated for 14 cases |
+| 10.5.1 P0 Real Pipeline Eval | 10/14 P0 cases doc-ID correct at top-10 (71.4%) |
+| 10.7 Full Label Expansion | 86/101 cases labeled |
+| 10.7.5 Full Dataset Real Eval | **Thesis confirmed**: 32/41 (78%) reclassified. Doc-ID Recall@10 = 91.9% |
+| 10.8 Portfolio Snapshot | Created `phase10_hybrid_ranking_diagnosis_snapshot.md` |
+| 10.9 Final Validation + Archive | Quality gate: 778 unit, 119 integration, 0 skipped, 85.27%, OpenSpec 16/16 |
 
-### Key Findings So Far
+### Key Findings (Archived)
 
 - Vector recall with real provider: **93.8%** — P0 records ARE being retrieved
 - Keyword recall: **31.2%** — most P0 records are vector-only → vulnerable to RRF dual-source bias
-- Fused top-10 loss: **75.0%** reach final evidence
-- **75% of "wrong" cases are a metric granularity problem** (doc_type-level metric, not doc_id-level)
-- Primary recommendation: add doc-level golden labels
+- Doc-ID Recall@10: **91.9%** (+32.5% over doc-type 59.4%)
+- **32/41 (78%) wrong cases reclassified as doc-ID found** — metric granularity thesis confirmed
+- **7 zero-hit cases**: query expansion candidates
+- **32 partial-hit cases**: fusion ranking candidates
+- **9 genuine misses**: 5 edge cases + 4 domain cases
+
+### Immutable Baselines
+
+- Phase 7/8/9 reports are read-only
+- Phase 10 reports under `reports/retrieval/phase10_*` are read-only
+- Archived OpenSpec change is at `openspec/changes/archive/2026-05-06-add-hybrid-retrieval-ranking-diagnosis/`
+- Specs promoted: `openspec/specs/retrieval-evaluation/`, `openspec/specs/retrieval-trace/`
+- Portfolio snapshots (Phase 8/9/10) are read-only
 
 ## 5. Active OpenSpec Change
 
-```
-openspec/changes/add-hybrid-retrieval-ranking-diagnosis/
-├── proposal.md
-├── design.md
-├── tasks.md
-├── specs/
-│   ├── retrieval-evaluation/spec.md
-│   └── retrieval-trace/spec.md
-```
+**None.** The last active change (`add-hybrid-retrieval-ranking-diagnosis`) was archived on 2026-05-06.
 
-To validate: `openspec validate add-hybrid-retrieval-ranking-diagnosis --strict`  
-Full: `openspec validate --all`
+Next Phase 11 will create a new OpenSpec change.
 
 ## 6. Current Decisions
 
@@ -91,7 +92,9 @@ Full: `openspec validate --all`
 | D3 | Real provider (OpenAICompatible) required for semantic conclusions | Real embeddings produce meaningful vector recall | 2026-05-06 |
 | D4 | GitHub docs/harness is source of truth for ChatGPT context | Notion is human-facing dashboard, not AI handoff | 2026-05-06 |
 | D5 | Internal iteration preferred over micro-confirmations | User requested harness-mode operation, stop only on explicit conditions | 2026-05-06 |
-| D6 | Next concrete step: add doc-level golden labels | Primary bottleneck is metric granularity, not retrieval quality | 2026-05-06 |
+| D6 | Add doc-level golden labels as next priority | Primary bottleneck was metric granularity, not retrieval quality | 2026-05-06 |
+| D7 | Phase 10 is closed; do not continue retrieval tuning inside Phase 10 | Thesis confirmed, evaluation infrastructure built, archive complete | 2026-05-06 |
+| D8 | Default next phase is Evidence-Grounded LLM Draft Generation | Product frontier moves from evidence retrieval to evidence-grounded generation; continued retrieval tuning has diminishing portfolio value | 2026-05-06 |
 
 See `docs/harness/controller_decision_log.md` for full log.
 
@@ -99,11 +102,8 @@ See `docs/harness/controller_decision_log.md` for full log.
 
 | Priority | Action | Phase | Type | Status |
 |---|---|---|---|---|
-| 1 | Add doc-level golden labels (`expected_relevant_doc_ids`) for P0-related cases | 10.5 | Data | Pending |
-| 2 | Fusion ranking experiment (lower RRF k or score-based fusion) | 10.5 | Code | Pending |
-| 3 | Query expansion audit for case_refu_013 counterfeit policy | 10.5 | Analysis | Pending |
-| 4 | Create portfolio delta snapshot | 10.6 | Docs | Pending |
-| 5 | Final validation and archive | 10.7 | Validation | Pending |
+| 1 | Evidence-grounded LLM draft generation (default) | 11 | Code + Spec | Pending |
+| — | Query expansion audit (alternative if retrieval prioritized) | 11 | Analysis | Alternative |
 
 See `docs/harness/controller_next_actions.md` for full details with allowed/forbidden files and validation commands.
 
@@ -112,16 +112,15 @@ See `docs/harness/controller_next_actions.md` for full details with allowed/forb
 If any of the following trigger, stop and report:
 
 1. Unknown large-scale src/tests/data modifications with no explanation
-2. Trace schema found insufficient, requiring core retrieval algorithm changes
-3. Need to modify retrieval algorithm, RRF logic, embedding provider, or chunking architecture
-4. Need to add or modify knowledge seed data (for Phase 10 diagnosis)
-5. Need to modify golden expectations (for Phase 10 diagnosis)
-6. Real API key required but unavailable locally — record as skipped, do not ask for key
-7. Full quality gate or necessary tests fail after 2 consecutive repair attempts
-8. Integration tests skipped count > 0
-9. .env / .env.local / API key / token / Authorization header may enter git
-10. Risk of overwriting Phase 7/8/9 baseline reports
-11. Forbidden claims in reports: production-ready, real enterprise validated, real customer data, real-world benchmark, auto-send, replace human agent, 线上效果, 行业 benchmark
+2. Need to modify retrieval algorithm, RRF logic, embedding provider, or chunking architecture
+3. Need to add or modify knowledge seed data
+4. Need to modify golden expectations
+5. Real API key required but unavailable locally — record as skipped, do not ask for key
+6. Full quality gate or necessary tests fail after 2 consecutive repair attempts
+7. Integration tests skipped count > 0 (for archive/push)
+8. .env / .env.local / API key / token / Authorization header may enter git
+9. Risk of overwriting Phase 7/8/9/10 baseline reports or portfolio docs
+10. Forbidden claims in reports: production-ready, real enterprise validated, real customer data, real-world benchmark, auto-send, replace human agent, 线上效果, 行业 benchmark
 
 ## 9. New ChatGPT Window Boot Prompt
 
@@ -132,16 +131,18 @@ You are working on TicketPilot, a local deterministic human review workflow for
 customer service ticket triage. Read `AGENTS.md` for the project constitution.
 
 Current state:
-- Phase 9 cleanly archived (770 unit, 119 integration, 0 skipped, 85.29% coverage)
-- Phase 10 active: add-hybrid-retrieval-ranking-diagnosis
-- Phase 10.2–10.4 completed: trace audit → P0 export → bottleneck classification
-- Phase 10.5–10.7 pending: recommendation, portfolio delta, archive
+- Phase 10 cleanly archived (778 unit, 119 integration, 0 skipped, 85.27% coverage)
+- No active OpenSpec change
+- Latest commit: 199fbf2
+- Metric granularity thesis confirmed: 78% of wrong cases reclassified as doc-ID found
+- Doc-ID Recall@10: 91.9% (+32.5% over doc-type 59.4%)
 
-Key findings so far:
-- Vector recall with real provider: 93.8%
-- Keyword recall: 31.2%
-- 75% of wrong cases = metric granularity problem (doc_type-level vs doc_id-level)
-- Primary recommendation: add doc-level golden labels
+Key boundaries:
+- Local demo / portfolio prototype — not production
+- All data is synthetic — no real customer data
+- No auto-send — architectural invariant
+- Human-in-the-loop for high-risk outputs
+- Offline evaluation only — not a production benchmark
 
 Read `docs/harness/chatgpt_controller_context.md` for full context.
 Read `docs/harness/controller_decision_log.md` for decision history.
@@ -149,7 +150,6 @@ Read `docs/harness/controller_next_actions.md` for next batch details.
 Read `docs/harness/controller_session_log.md` for recent handoff summaries.
 
 Validate status: git status --short
-Active change: openspec validate add-hybrid-retrieval-ranking-diagnosis --strict
 Full validation: openspec validate --all
 ```
 

@@ -5,6 +5,35 @@
 
 ---
 
+## 2026-05-06 — Phase 10.7.5/10.8/10.9: Full-Dataset Real Pipeline Eval + Portfolio + Archive
+
+**Summary**: Completed Phase 10 end-to-end: ran full-dataset real pipeline doc-level evaluation (101 cases, 86 labeled), confirmed metric granularity thesis (32/41 = 78% reclassified), created portfolio snapshot, ran final quality gate (778 unit / 119 int / 0 skip / 85.27% coverage / OpenSpec 16/16), and archived the `add-hybrid-retrieval-ranking-diagnosis` OpenSpec change.
+
+**Key Deliverables**:
+- `reports/retrieval/phase10_full_real_doc_level_eval_metrics.json` — Doc-ID Recall@10: 91.9%
+- `reports/retrieval/phase10_full_real_doc_level_evaluation.md`
+- `reports/retrieval/phase10_full_real_doc_level_wrong_case_recheck.md` — Thesis confirmed: 32/41 (78%)
+- `reports/retrieval/phase10_full_real_doc_level_remaining_misses.md` — 7 zero-hit, 32 partial-hit
+- `docs/portfolio/phase10_hybrid_ranking_diagnosis_snapshot.md` — portfolio snapshot
+- `openspec/changes/archive/2026-05-06-add-hybrid-retrieval-ranking-diagnosis/` — archived change
+- `openspec/specs/retrieval-evaluation/spec.md` — delta applied (+6 lines)
+- `openspec/specs/retrieval-trace/spec.md` — new spec created (+5 lines)
+
+**Key Findings**:
+- Doc-ID Recall@10: **91.9%** (+32.5% over doc-type 59.4%)
+- 32/41 (78%) wrong cases reclassified as doc-ID found — **thesis confirmed** ✅
+- 7 zero-hit cases (query expansion candidates), 32 partial-hit (fusion ranking candidates)
+
+**Validation**: Quality gate PASSED — 778 unit, 119 integration (0 skip), 85.27% coverage, ruff clean, OpenSpec 16/16, secret scan clean, overclaim scan clean
+
+**Decisions Made**: See D7, D8 in decision log
+
+**Phase Status**: Phase 10 complete and archived
+
+**Next Phase**: Phase 11 — Evidence-Grounded LLM Draft Generation (or alternative: Query Expansion Audit)
+
+---
+
 ## 2026-05-06 — Phase 10.3/10.4: P0 Trace Export + Bottleneck Classification
 
 **Summary**: Ran P0 layered trace export with real provider (OpenAICompatible, 1024-d) for 14 P0-related cases (16 record-case pairs). Classified each case using 8-category bottleneck taxonomy.
