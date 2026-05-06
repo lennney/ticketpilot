@@ -26,6 +26,7 @@ Implement a specific batch from the tasks.md, with:
 - `scripts/` (if the task specifies CLI changes)
 - `docs/changelog.md`
 - `openspec/changes/<change-id>/tasks.md`
+- `docs/harness/` (controller context — update if status changed)
 
 ## Forbidden Files
 
@@ -90,6 +91,7 @@ Return:
 4. Coverage result
 5. Ruff result
 6. OpenSpec validation result
-7. `git status --short`
-8. Whether any stop conditions were triggered
-9. Whether any forbidden files were modified
+7. Whether controller context was updated
+8. `git status --short`
+9. Whether any stop conditions were triggered
+10. Whether any forbidden files were modified

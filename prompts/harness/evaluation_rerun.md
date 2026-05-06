@@ -24,6 +24,7 @@ Run evaluation and produce:
 - `reports/eval/` (new reports)
 - `docs/changelog.md`
 - `openspec/changes/<change-id>/tasks.md`
+- `docs/harness/` (controller context — update if status changed)
 
 ## Forbidden Files
 
@@ -94,5 +95,6 @@ Return:
 2. Key metrics summary (hit rates, MRR, wrong-case count)
 3. Any warnings or anomalies
 4. Whether baseline reports remain unmodified
-5. `git status --short`
-6. Whether any forbidden files were modified
+5. Whether controller context was updated
+6. `git status --short`
+7. Whether any forbidden files were modified

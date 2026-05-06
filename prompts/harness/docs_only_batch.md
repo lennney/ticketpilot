@@ -25,6 +25,7 @@ conventions and phase naming.
 - `reports/eval/`
 - `docs/changelog.md`
 - `.claude/CLAUDE.md` (minor updates)
+- `docs/harness/` (controller context — update if status changed)
 
 ## Forbidden Files
 
@@ -75,5 +76,6 @@ Return:
 2. Key findings or content summary (2-3 sentences)
 3. Whether boundary wording was verified
 4. Validation results
-5. `git status --short`
-6. Whether any forbidden files were modified
+5. Whether controller context was updated
+6. `git status --short`
+7. Whether any forbidden files were modified

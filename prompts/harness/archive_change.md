@@ -27,6 +27,7 @@ Archive the OpenSpec change and verify post-archive state:
 - `docs/changelog.md`
 - `openspec/changes/<change-id>/tasks.md`
 - `docs/phase_status.md` (if updated)
+- `docs/harness/` (controller context — update if status changed)
 
 ## Forbidden Files
 
@@ -87,6 +88,7 @@ Return:
 1. Pre-archive quality gate result
 2. Post-archive OpenSpec validation result
 3. Active changes count after archive (should be 0 or only other active changes)
-4. `git status --short`
-5. Whether any forbidden files were modified
-6. Whether any stop conditions were triggered
+4. Whether controller context was updated
+5. `git status --short`
+6. Whether any forbidden files were modified
+7. Whether any stop conditions were triggered

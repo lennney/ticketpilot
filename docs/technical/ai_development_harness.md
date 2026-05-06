@@ -174,6 +174,27 @@ Rules:
 - All portfolio docs carry explicit boundary wording (see AGENTS.md §10)
 - No production-ready claims, no deployment claims, no real-data claims
 
+### 7. Controller Context Harness
+
+**Files**: `docs/harness/*.md` (4 files)
+
+Provides session-persistent handoff context for ChatGPT and other AI agents.
+When a new AI session starts, it reads these files to restore project state:
+
+| File | Purpose |
+|---|---|
+| `chatgpt_controller_context.md` | Full project snapshot: phases, context, decisions, next actions, boot prompt, update rules |
+| `controller_decision_log.md` | Permanent log of key architectural and process decisions with rationale |
+| `controller_session_log.md` | Structured handoff summaries — one entry per completed batch |
+| `controller_next_actions.md` | Next batch details: scope, allowed/forbidden files, validation commands, stop conditions |
+
+**Rules**:
+- Every harness batch must update controller context before final commit if status changed
+- Controller context is NOT a chat transcript — no full conversation logs, secrets, API keys, or raw private communication
+- Store only structured handoff summaries
+- Notion is a human-facing dashboard only — `docs/harness/` is the canonical ChatGPT source of truth
+- Return at end of every batch whether controller context was updated
+
 ## How to Use with Claude Code
 
 1. **Session start**: Claude reads `AGENTS.md` as project constitution

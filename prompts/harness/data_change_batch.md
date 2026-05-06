@@ -27,6 +27,7 @@ Add or modify data records following:
 - `docs/changelog.md`
 - `openspec/changes/<change-id>/tasks.md`
 - `reports/retrieval/` (phase-namespaced summaries only)
+- `docs/harness/` (controller context — update if status changed)
 
 ## Forbidden Files
 
@@ -86,5 +87,6 @@ Return:
 3. Schema validation results
 4. Secret scan result
 5. OpenSpec validation result
-6. `git status --short`
-7. Whether any forbidden files were modified
+6. Whether controller context was updated
+7. `git status --short`
+8. Whether any forbidden files were modified

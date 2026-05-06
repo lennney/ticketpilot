@@ -26,6 +26,7 @@ Create a complete OpenSpec change directory with:
 - `openspec/changes/<change-id>/`
 - `docs/changelog.md`
 - `.claude/CLAUDE.md` (minor updates only)
+- `docs/harness/` (controller context — update if status changed)
 
 ## Forbidden Files
 
@@ -74,5 +75,6 @@ Return:
 3. Design summary (architecture constraints, data flow)
 4. Task summary (how many phases, what each covers)
 5. OpenSpec validation result
-6. `git status --short`
-7. Whether any forbidden files were modified
+6. Whether controller context was updated
+7. `git status --short`
+8. Whether any forbidden files were modified

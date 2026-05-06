@@ -135,6 +135,18 @@ If any check fails, the gate exits non-zero. No `|| true` bypass.
 | Portfolio docs | `docs/portfolio/` | Phase 8/9/10 snapshot docs |
 | Development trace | `docs/development_trace/` | Stage-by-stage narrative |
 | Prompt templates | `prompts/harness/` | Reusable batch prompts |
+| ChatGPT controller context | `docs/harness/` | Session handoff, decisions, next actions |
+
+## 11. Controller Context Rules
+
+Every harness batch must follow these rules:
+
+1. **Update `docs/harness/chatgpt_controller_context.md`** before final commit if project status, phase, or next actions changed.
+2. **Update `docs/harness/controller_session_log.md`** with a structured handoff summary at the end of every batch.
+3. **Controller context is NOT a chat transcript** — never store full conversation logs, API keys, secrets, or raw private communication.
+4. **Store only structured handoff summaries**: phase changes, key decisions, validation results, next actions.
+5. **Notion is human-facing dashboard only** — the canonical source of truth for ChatGPT handoff is `docs/harness/`.
+6. **Return at end of every batch** whether controller context was updated.
 
 - Phase 7/8/9 baseline reports are immutable
 - New phases write to namespaced paths (`phase10_*`, `phase11_*`, etc.)

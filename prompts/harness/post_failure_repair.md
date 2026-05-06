@@ -19,6 +19,7 @@ Identify the root cause, not just the symptom.
 
 ## Allowed Files
 
+- `docs/harness/` (controller context — update if status changed)
 - Whatever is needed to fix the specific failure, but:
   - Minimal changes only
   - No feature additions
@@ -77,6 +78,7 @@ Return:
 2. Fix applied (files changed and what changed)
 3. Verification that the failing check now passes
 4. Quality gate result (if applicable)
-5. `git status --short`
-6. Whether any forbidden files were modified
-7. Whether any stop conditions were triggered
+5. Whether controller context was updated
+6. `git status --short`
+7. Whether any forbidden files were modified
+8. Whether any stop conditions were triggered

@@ -1,5 +1,23 @@
 # TicketPilot Changelog
 
+## 2026-05-06 — ChatGPT Controller Context Harness
+
+### Added
+- `docs/harness/chatgpt_controller_context.md` — full project snapshot with 10 sections: project identity, baseline, phases, working context, active change, decisions, next actions, stop conditions, boot prompt, update rules
+- `docs/harness/controller_decision_log.md` — permanent log of 6 key architectural decisions with rationale
+- `docs/harness/controller_session_log.md` — structured handoff summaries for last 4 completed batches
+- `docs/harness/controller_next_actions.md` — next batch scope with allowed/forbidden files, validation, stop conditions
+
+### Changed
+- `AGENTS.md` — added §11 Controller Context Rules (6 rules for every harness batch)
+- `docs/technical/ai_development_harness.md` — added §7 Controller Context Harness layer
+- `prompts/harness/*.md` (7 files) — each now includes `docs/harness/` in Allowed Files and "Whether controller context was updated" in Final Return Format
+
+### Design Notes
+- GitHub `docs/harness/` is the canonical ChatGPT source of truth — Notion is human-facing dashboard only
+- Controller context is NOT a chat transcript — no full conversation logs, secrets, API keys, or raw private communication
+- Every batch must update controller context before final commit if status changed
+
 ## 2026-05-06 — Phase 10.3/10.4: P0 Layered Trace Export + Bottleneck Classification
 
 ### Added
