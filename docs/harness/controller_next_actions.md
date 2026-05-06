@@ -235,6 +235,41 @@
 
 ---
 
+## Completed Batch: Phase 11.5 — Unsupported-Claim Guard
+
+### What Was Done
+
+- Created `GuardResult` schema with 7 fields: citation_coverage, has_uncited_claims, has_forbidden_promise, forbidden_promise_details, evidence_sufficiency, risk_flags_respected, guard_passed
+- Created `check_claim_guard()` with 5 deterministic checks: citation coverage (parse [chunk_id] from text), uncited claim detection (substantive content without citations), forbidden promise detection (9 regex patterns), evidence sufficiency, risk-aware check (high-risk flag acknowledgment)
+- 58 unit tests covering all guard behaviors
+- No LLM API calls, no schemas.py changes, no pipeline integration
+
+### Files Created
+
+- `src/ticketpilot/drafting/claim_guard.py`
+- `tests/unit/test_claim_guard.py`
+
+### Key Findings
+
+- GuardResult is self-contained in claim_guard.py — pipeline integration (Phase 11.6) will add GuardResult to DraftReply
+- Citation coverage is distinct from draft_citation_validator: operates on raw draft_text [UUID] patterns (content-level) vs cited_evidence_ids (structural-level)
+- Forbidden promise patterns are fully deterministic regex — testable and predictable
+- Safe-fallback and greeting-only messages exempt from uncited-claim flagging to avoid false positives
+- Evidence sufficiency is deliberately simple: evidence exists → "sufficient"
+
+### Validation
+
+- Unit tests: ✅ 58/58 passed
+- Ruff: ✅ Clean
+- OpenSpec --all: ✅ 17/17 passed
+- OpenSpec --strict: ✅ Passed
+
+### Commit
+
+`pending`
+
+---
+
 ## Completed Batch: Phase 11.3 — Evidence-Grounded Prompt Builder
 
 ### What Was Done
@@ -348,20 +383,27 @@
 
 ---
 
-## Next Batch: Phase 11.5 — Unsupported-Claim Guard
+## Next Batch: Phase 11.6 — Pipeline Integration
 
 ### Scope
 
-1. Implement ClaimGuard with citation coverage check, forbidden promise detection, risk-aware check
-2. Produce GuardResult with per-check pass/fail
-3. Add unit tests for all guard behaviors
-4. No real LLM API calls, no pipeline integration
+1. Wire LLM provider, prompt builder, and claim guard into `generate_draft()`
+2. Extend `schemas.py` to add `GuardResult` to `DraftReply`
+3. Update `generate.py` to run prompt builder → LLM provider → claim guard in sequence
+4. Add `DraftReply.guard_results` field
+5. Update `__init__.py` exports
+6. Write integration test for end-to-end draft generation with FakeLLMProvider
 
 ### Allowed Files
 
-- `src/ticketpilot/drafting/claim_guard.py` (new)
-- `tests/unit/test_claim_guard.py` (new)
-- `openspec/changes/add-evidence-grounded-llm-draft/` (update tasks.md)
+- `src/ticketpilot/drafting/generate.py` (modify)
+- `src/ticketpilot/drafting/schemas.py` (extend if needed)
+- `src/ticketpilot/drafting/__init__.py` (update exports)
+- `src/ticketpilot/pipeline.py` (minimal changes if needed)
+- `tests/unit/test_drafting_generate.py` (extend)
+- `tests/unit/test_pipeline.py` (extend)
+- `tests/integration/test_draft_generation.py` (new)
+- `openspec/changes/add-evidence-grounded-llm-draft/`
 - `docs/changelog.md`
 - `docs/harness/`
 
@@ -374,16 +416,14 @@
 ### Validation Commands
 
 ```bash
-uv run pytest tests/unit/test_claim_guard.py -v --tb=short
+uv run pytest tests/unit/test_drafting_generate.py tests/unit/test_pipeline.py -v --tb=short
+uv run pytest tests/integration/test_draft_generation.py -v --tb=short
 openspec validate add-evidence-grounded-llm-draft --strict
 uv run ruff check .
 ```
 
 ### Stop Conditions
 
-- Real LLM API called
-- Retrieval algorithm modified
-- Knowledge data or golden labels modified
-- Forbidden file modified
-- Phase 7/8/9/10/archive reports modified
+- Integration tests fail or skip > 0 with DB
+- Pipeline behavior changes for non-draft stages
 

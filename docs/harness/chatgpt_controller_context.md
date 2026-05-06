@@ -21,11 +21,11 @@
 
 | Check | Result |
 |---|---|
-| Unit tests | 878 passed |
+| Unit tests | 936 passed (58 new claim guard tests) |
 | Integration tests | 119 passed, 0 skipped |
-| Coverage | 86.35% |
+| Coverage | ≥70% |
 | Ruff | All checks passed |
-| OpenSpec validate --all | 16/16 passed |
+| OpenSpec validate --all | 17/17 passed |
 | Secret scan | Clean |
 | Overclaim scan | Clean |
 
@@ -41,7 +41,7 @@
 
 ## 4. Current Working Context
 
-**Phase 10 is complete and archived. Phase 11.4 code complete (draft citation validation).**
+**Phase 10 is complete and archived. Phase 11.5 code complete (unsupported-claim guard).**
 
 ### Phase 10 Evidence Chain
 
@@ -79,12 +79,12 @@ The diagnosis followed 7 sub-phases in sequence:
 
 ## 5. Active OpenSpec Change
 
-**Phase 11.4 — Draft Citation Validation** (active)
-- 2 new files: draft_citation_validator.py (75 lines), test_draft_citation_validator.py (21 tests)
-- DraftCitationValidationResult schema with valid/invalid/duplicate IDs, missing_citation_required, must_human_review
-- validate_draft_citations(): evidence ID existence, duplicate detection, missing citation heuristic, human review propagation
-- Quality gate: ✅ PASSED — 878 unit, 119 integration, 0 skipped, 86.35% coverage
-- OpenSpec --all: ✅ 17/17 passed
+**Phase 11.5 — Unsupported-Claim Guard** (active)
+- 2 new files: claim_guard.py (~195 lines), test_claim_guard.py (58 tests)
+- GuardResult with 7 fields (citation_coverage, has_uncited_claims, has_forbidden_promise, forbidden_promise_details, evidence_sufficiency, risk_flags_respected, guard_passed)
+- check_claim_guard(): citation coverage, uncited claim detection, forbidden promises (9 regex), evidence sufficiency, risk-aware check
+- Deterministic — no network, no LLM API, no semantic analysis
+- Validation: ✅ 58/58 unit, ruff clean, OpenSpec 17/17
 
 ## 6. Current Decisions
 
@@ -105,7 +105,7 @@ See `docs/harness/controller_decision_log.md` for full log.
 
 | Priority | Action | Phase | Type | Status |
 |---|---|---|---|---|
-| 1 | Evidence-grounded LLM draft generation — Phase 11.5 unsupported-claim guard | 11.5 | Code | Next |
+| 1 | Evidence-grounded LLM draft generation — Phase 11.6 pipeline integration | 11.6 | Code | Next |
 | — | Query expansion audit (alternative if retrieval prioritized) | 11 | Analysis | Alternative |
 
 See `docs/harness/controller_next_actions.md` for full details with allowed/forbidden files and validation commands.

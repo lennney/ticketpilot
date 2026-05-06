@@ -51,6 +51,19 @@
 
 ---
 
+## 2026-05-06 — Phase 11.5: Module Tests
+
+| Check | Result |
+|---|---|
+| Unit tests (test_claim_guard.py) | 58/58 passed |
+| Ruff | ✅ Clean |
+| OpenSpec --strict (add-evidence-grounded-llm-draft) | ✅ Passed |
+| OpenSpec --all | ✅ 17/17 passed |
+
+**Status**: ✅ PASSED
+
+---
+
 ## 2026-05-06 — Phase 11.1: OpenSpec Planning Validation
 
 | Check | Result |

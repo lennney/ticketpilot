@@ -19,6 +19,28 @@
 
 ---
 
+## 2026-05-06 — Phase 11.5: Unsupported-Claim Guard
+
+### Added
+- `src/ticketpilot/drafting/claim_guard.py` — GuardResult schema + `check_claim_guard()` function with 5 deterministic checks
+- `tests/unit/test_claim_guard.py` — 58 tests covering all guard behaviors
+
+### Design
+- `GuardResult` schema with 7 fields: citation_coverage, has_uncited_claims, has_forbidden_promise, forbidden_promise_details, evidence_sufficiency, risk_flags_respected, guard_passed
+- Citation coverage: extracts `[chunk_id]` references from draft_text and validates against EvidenceCandidate UUIDs
+- Forbidden promise detection: 9 regex patterns covering refund, compensation, legal action, account changes, resolution timelines, liability admission
+- Uncited claim detection: flags substantive Chinese text without `[chunk_id]` citations; safe-fallback and greeting-only messages exempted
+- Evidence sufficiency: deterministic rule — evidence exists → "sufficient", no evidence → "insufficient"
+- Risk-aware check: verifies high-risk flags (LEGAL_RISK, COMPENSATION_RISK, PRIVACY_RISK, ACCOUNT_SECURITY_RISK) are acknowledged with escalation language in draft
+- Deterministic: same input always produces same GuardResult; no network calls, no LLM API, no semantic analysis
+
+### Validation
+- Unit tests: ✅ 58/58 passed
+- Ruff: ✅ All checks passed
+- OpenSpec --all: ✅ 17/17 passed
+
+---
+
 ## 2026-05-06 — Phase 11.4: Draft Citation Validation
 
 ### Added

@@ -125,7 +125,7 @@ uv run ruff check .
 
 ---
 
-### 11.5 — Unsupported-Claim Guard
+### 11.5 — Unsupported-Claim Guard ✅
 
 **Scope**: Implement ClaimGuard with citation coverage check, forbidden promise detection, risk-aware check.
 

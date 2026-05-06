@@ -57,6 +57,30 @@
 
 ---
 
+## 2026-05-06 — Phase 11.5: Unsupported-Claim Guard
+
+**Problem**: DraftReply objects carry draft_text with potential uncited claims, forbidden promises, and unacknowledged risk flags. Need a deterministic claim guard that runs post-generation to catch these issues before human review. Existing draft_citation_validator validates cited_evidence_ids structurally but doesn't inspect draft content.
+
+**Approach**:
+- GuardResult schema: 7 fields — citation_coverage, has_uncited_claims, has_forbidden_promise, forbidden_promise_details, evidence_sufficiency, risk_flags_respected, guard_passed
+- check_claim_guard(): 5 deterministic checks — citation coverage (parse [chunk_id] from text), uncited claim detection (substantive text without citations), forbidden promise detection (9 regex patterns), evidence sufficiency (available evidence), risk-aware check (high-risk flag acknowledgment)
+- Guard is purely local: no network calls, no LLM API, no semantic analysis — same pattern as draft_citation_validator
+
+**Key Engineering Decisions**:
+- GuardResult is defined in claim_guard.py (not schemas.py) to keep the module self-contained; pipeline integration (Phase 11.6) will add GuardResult to DraftReply
+- Citation coverage extracts [UUID] references from raw draft_text rather than using the cited_evidence_ids field — this is a content-level check vs the structural check in draft_citation_validator
+- Forbidden promise patterns use regex for amounts (退款\d+元) and literal matching for legal/account/liability phrases — deterministic and testable
+- Safe-fallback text ("建议转人工处理") and greeting-only messages are exempt from uncited-claim detection to avoid false positives on legitimate no-evidence responses
+- Risk-aware check uses 5 escalation patterns (转人工, 人工处理, 升级处理, human review, escalated) — matching any is sufficient to pass
+- Evidence sufficiency is deliberately simple (evidence exists → "sufficient") — a more nuanced assessment would require semantic analysis outside Phase 11.5 scope
+
+**Files**:
+- `src/ticketpilot/drafting/claim_guard.py` (new, ~195 lines)
+- `tests/unit/test_claim_guard.py` (new, 58 tests)
+
+**Validation**: Unit tests 58/58 passed, ruff clean, OpenSpec 17/17 —all, --strict.
+
+---
 ## 2026-05-06 — Phase 11.1: Evidence-Grounded LLM Draft Generation Planning
 
 **Problem**: Template-based drafts (FakeDraftProvider) demonstrate pipeline connectivity but not portfolio-grade draft quality. The product needs evidence-grounded generation with safety guardrails.

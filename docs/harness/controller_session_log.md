@@ -84,6 +84,30 @@
 
 ---
 
+## 2026-05-06 — Phase 11.5: Unsupported-Claim Guard
+
+**Summary**: Implemented deterministic claim guard for evidence-grounded draft replies. GuardResult schema with 7 fields, check_claim_guard() with 5 checks: citation coverage (parsing [chunk_id] from draft_text), uncited claim detection, forbidden promise detection (9 regex patterns), evidence sufficiency, and risk-aware escalation acknowledgment. 58 unit tests. All deterministic — no network, no LLM API, no semantic analysis.
+
+**Key Deliverables**:
+- `src/ticketpilot/drafting/claim_guard.py` — GuardResult schema + check_claim_guard() with 5 checks
+- `tests/unit/test_claim_guard.py` — 58 tests across 8 test classes
+
+**Key Design Decisions**:
+- GuardResult defined in claim_guard.py (self-contained module; schemas.py integration in Phase 11.6)
+- Citation coverage operates on raw draft_text [UUID] patterns (content-level), distinct from draft_citation_validator's cited_evidence_ids (structural-level)
+- Forbidden promises: 9 regex patterns for refund/compensation/legal/account/timeline/liability
+- Safe-fallback and greeting-only messages exempt from uncited-claim flagging
+- Risk-aware: 5 escalation patterns; any match passes for high-risk flags
+- Evidence sufficiency is deliberately simple (evidence exists → "sufficient")
+
+**Validation**: 58/58 unit tests passed, ruff clean, OpenSpec 17/17
+
+**Phase Status**: Phase 11.5 complete. Phase 11.6 pending (pipeline integration).
+
+**Next Batch**: Phase 11.6 — Pipeline Integration
+
+---
+
 ## 2026-05-06 — Phase 11.1: Evidence-Grounded LLM Draft Generation Planning
 
 **Summary**: Created the OpenSpec planning layer for Phase 11 — Evidence-Grounded LLM Draft Generation. This planning batch produced 7 files: proposal, design, tasks, and 4 spec files (draft-generation, claim-guard, human-review, draft-evaluation). No code changes were made.
