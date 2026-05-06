@@ -185,22 +185,9 @@ uv run ruff check .
 
 ---
 
-### 11.7 — Human Review Console Update
+### 11.7 — Human Review Console Update ✅
 
 **Scope**: Update Streamlit console to display guard results, provider_id, escalation_reason. Extend ReviewDecision schema.
-
-**Allowed files**:
-- `src/ticketpilot/review/schemas.py` (extend ReviewDecision)
-- `src/ticketpilot/review/console.py` (extend display)
-- `tests/unit/test_review_*.py` (extend)
-- `openspec/changes/add-evidence-grounded-llm-draft/`
-- `docs/changelog.md`
-- `docs/harness/`
-
-**Forbidden files**:
-- `src/ticketpilot/retrieval/` (no retrieval changes)
-- `data/` (no data changes)
-- `reports/retrieval/` (frozen)
 
 **Validation**:
 ```bash
@@ -208,6 +195,18 @@ uv run pytest tests/unit/test_review_*.py -v --tb=short
 openspec validate add-evidence-grounded-llm-draft --strict
 uv run ruff check .
 ```
+
+**Files modified**:
+- `src/ticketpilot/review/schemas.py` — +15 optional audit fields (backward compatible)
+- `src/ticketpilot/review/console.py` — draft_gen_to_audit_fields() + guard display section
+- `tests/unit/test_review_schemas.py` — +14 TestReviewDecisionAuditFields tests
+- `tests/unit/test_review_console_helpers.py` — +33 new tests (TestDraftGenToAuditFields + TestBuildReviewDecisionWithGenResult)
+
+**Key outcomes**:
+- ReviewDecision backward compatible: all audit fields default to None/[]
+- draft_gen_to_audit_fields() pure converter excludes prompts and draft text
+- Console guard display section shows provider, citation validation, guard status, forbidden promises, human review reasons
+- 107 review tests pass
 
 ---
 

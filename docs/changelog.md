@@ -1,5 +1,31 @@
 # TicketPilot Changelog
 
+## 2026-05-06 — Phase 11.7: Human Review Console Update
+
+### Changed
+- `src/ticketpilot/review/schemas.py` — Extended ReviewDecision with 15 optional audit fields (backward compatible):
+  - `provider_name`, `model_name` — LLM provider identity
+  - `citation_validation_valid`, `valid_cited_evidence_ids`, `invalid_cited_evidence_ids`, `missing_citation_required` — citation validation results
+  - `guard_passed`, `guard_uncited_claims`, `guard_forbidden_promise`, `guard_forbidden_details`, `guard_risk_not_acknowledged` — claim guard results
+  - `human_review_forced`, `human_review_reasons`, `escalation_reason` — human review propagation
+- `src/ticketpilot/review/console.py` — Added `draft_gen_to_audit_fields()` converter, extended `build_review_decision()` with `gen_result` parameter, added guard/citation/provider display section in Streamlit console
+
+### Added
+- `tests/unit/test_review_schemas.py` — +14 TestReviewDecisionAuditFields tests
+- `tests/unit/test_review_console_helpers.py` — +33 new tests (TestDraftGenToAuditFields + TestBuildReviewDecisionWithGenResult)
+
+### Design
+- All audit fields default to None/[] — old JSONL records deserialize without error
+- draft_gen_to_audit_fields() is a pure function: no side effects, no API calls, excludes prompts and draft text
+- Streamlit console guard section shows provider, citation validation (green/red), guard status (green/red), forbidden promise errors, uncited claim warnings, human review reasons, escalation reason, confidence, no-auto-send notice
+- Reviewer remains final decision-maker: no auto-send, all actions (approve/edit/escalate/reject) unchanged
+
+### Validation
+- Review tests: ✅ 107/107 passed (existing + new tests)
+- Ruff: ✅ All checks passed
+
+---
+
 ## 2026-05-06 — Phase 11.6: Pipeline Integration
 
 ### Added

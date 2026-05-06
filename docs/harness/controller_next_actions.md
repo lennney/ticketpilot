@@ -424,46 +424,33 @@
 
 ---
 
-## Next Batch: Phase 11.7 — Human Review Console Update
+## Completed Batch: Phase 11.7 — Human Review Console Update
 
-### Scope
+### What Was Done
 
-1. Extend ReviewDecision schema with guard_results, provider_id, escalation_reason
-2. Update Streamlit console to display guard results, provider_id, escalation_reason
-3. Ensure existing approve/edit/escalate/reject actions are unchanged
-4. Run review-related unit tests
+- Extended ReviewDecision schema with 15 optional audit fields (provider_name, model_name, citation_validation_valid, valid/invalid_cited_evidence_ids, missing_citation_required, guard_passed, guard_uncited_claims, guard_forbidden_promise, guard_forbidden_details, guard_risk_not_acknowledged, human_review_forced, human_review_reasons, escalation_reason)
+- Added draft_gen_to_audit_fields() converter function in console.py — pure function, no API calls, excludes prompts/draft text
+- Extended build_review_decision() with optional gen_result parameter — old callers work unchanged
+- Added guard status display section in Streamlit console — shows provider, citation validation (green/red), guard status (green/red), forbidden promise errors, uncited claim warnings, human review reasons, escalation reason, confidence, no-auto-send notice
+- 107 review tests pass (existing + new)
 
-### Allowed Files
+### Files Modified
 
-- `src/ticketpilot/review/schemas.py` (extend ReviewDecision)
-- `src/ticketpilot/review/console.py` (extend display)
-- `tests/unit/test_review_*.py` (extend)
-- `openspec/changes/add-evidence-grounded-llm-draft/`
-- `docs/changelog.md`
-- `docs/harness/`
+- `src/ticketpilot/review/schemas.py` — +15 optional audit fields
+- `src/ticketpilot/review/console.py` — draft_gen_to_audit_fields() + guard display
+- `tests/unit/test_review_schemas.py` — +14 TestReviewDecisionAuditFields tests
+- `tests/unit/test_review_console_helpers.py` — +33 new tests
+- `openspec/changes/add-evidence-grounded-llm-draft/tasks.md` — Phase 11.7 marked done
 
-### Forbidden Files
+### Validation
 
-- `src/ticketpilot/retrieval/` (no retrieval changes)
-- `data/` (no data changes)
-- `reports/retrieval/` (frozen)
+- Review tests: ✅ 107/107 passed
+- Ruff: ✅ Clean
 
-### Validation Commands
+### Commit
 
-```bash
-uv run pytest tests/unit/test_review_*.py -v --tb=short
-openspec validate add-evidence-grounded-llm-draft --strict
-uv run ruff check .
-```
+`pending`
 
-### Stop Conditions
+---
 
-- Review console behavior changes for non-draft stages
-- Retrieval algorithm modified
-
-### Forbidden Files
-
-- `src/ticketpilot/retrieval/` (no retrieval changes)
-- `data/` (no data changes)
-- `reports/retrieval/` (frozen)
-
+## Next Batch: Phase 11.8 — Offline Draft Evaluation

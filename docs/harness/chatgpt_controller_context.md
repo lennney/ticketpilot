@@ -41,7 +41,7 @@
 
 ## 4. Current Working Context
 
-**Phase 10 is complete and archived. Phase 11.6 code complete (pipeline integration).**
+**Phase 10 is complete and archived. Phase 11.7 code complete (human review console update).**
 
 ### Phase 10 Evidence Chain
 
@@ -79,12 +79,12 @@ The diagnosis followed 7 sub-phases in sequence:
 
 ## 5. Active OpenSpec Change
 
-**Phase 11.6 — Pipeline Integration** (active)
-- 3 new files: generator.py (~245 lines), test_draft_generator.py (33 tests), test_draft_generation_integration.py (14 tests)
-- DraftGenerationResult wrapper with provider_name, model_name, citation_validation, guard_result, to_trace_dict()
-- generate_draft() pipeline: prompt builder → LLM provider → CitationValidator → draft_citation_validator → claim_guard → human review propagation
-- Provider injection via optional argument — enables clean testing
-- Quality gate: ✅ 33 unit + 14 integration tests passed, ruff clean, OpenSpec 17/17
+**Phase 11.7 — Human Review Console Update** (active)
+- Extended ReviewDecision schema with 15 optional audit fields (provider_name, model_name, citation_validation_valid, etc.)
+- Added draft_gen_to_audit_fields() pure converter in console.py
+- Extended build_review_decision() with optional gen_result parameter
+- Added guard status display section in Streamlit console
+- 107 review tests pass (existing + new)
 
 ## 6. Current Decisions
 
@@ -105,7 +105,7 @@ See `docs/harness/controller_decision_log.md` for full log.
 
 | Priority | Action | Phase | Type | Status |
 |---|---|---|---|---|
-| 1 | Evidence-grounded LLM draft generation — Phase 11.7 human review console update | 11.7 | Code | Next |
+| 1 | Evidence-grounded LLM draft generation — Phase 11.8 offline draft evaluation | 11.8 | Code | Next |
 | — | Query expansion audit (alternative if retrieval prioritized) | 11 | Analysis | Alternative |
 
 See `docs/harness/controller_next_actions.md` for full details with allowed/forbidden files and validation commands.

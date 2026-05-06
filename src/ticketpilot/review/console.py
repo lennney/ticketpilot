@@ -8,6 +8,7 @@ import json
 
 import streamlit as st
 
+from ticketpilot.drafting.generator import DraftGenerationResult
 from ticketpilot.drafting.pipeline import run_pipeline_with_draft
 from ticketpilot.drafting.schemas import DraftedTicketResult
 from ticketpilot.review.schemas import ReviewAction, ReviewDecision
@@ -25,6 +26,84 @@ DEMO_TICKET_JSON = json.dumps(
 )
 
 DEFAULT_STORE_PATH = "reviews.jsonl"
+
+
+# ---------------------------------------------------------------------------
+# DraftGenerationResult → ReviewDecision audit field converter
+# ---------------------------------------------------------------------------
+
+
+def draft_gen_to_audit_fields(
+    gen_result: DraftGenerationResult | None,
+) -> dict:
+    """Convert DraftGenerationResult to compact audit field dict.
+
+    Extracts fields suitable for ReviewDecision.draft_audit without
+    including full prompts, API keys, or draft text.
+
+    Args:
+        gen_result: DraftGenerationResult from Phase 11.6 generator.
+            May be None for older pipelines.
+
+    Returns:
+        Dict with audit fields. All values are serializable.
+        Returns empty dict if gen_result is None.
+    """
+    if gen_result is None:
+        return {}
+
+    draft = gen_result.draft
+    cv = gen_result.citation_validation
+    gr = gen_result.guard_result
+
+    # Build human_review_reasons from trace
+    reasons: list[str] = []
+    if draft.fallback_reason:
+        reasons.append(f"fallback:{draft.fallback_reason}")
+    if draft.escalation_reason:
+        reasons.append(f"escalation:{draft.escalation_reason}")
+    if draft.unsupported_claims:
+        reasons.append("unsupported_claims")
+    if cv and not cv.is_valid:
+        reasons.append("citation_validation_failed")
+    if cv and cv.must_human_review:
+        reasons.append("citation_validation_human_review")
+    if gr and not gr.guard_passed:
+        reasons.append("guard_failed")
+        if gr.has_uncited_claims:
+            reasons.append("uncited_claims")
+        if gr.has_forbidden_promise:
+            reasons.append("forbidden_promise")
+        if not gr.risk_flags_respected:
+            reasons.append("risk_not_acknowledged")
+
+    return {
+        "provider_name": gen_result.provider_name,
+        "model_name": gen_result.model_name,
+        "citation_validation_valid": cv.is_valid if cv else None,
+        "valid_cited_evidence_ids": (
+            cv.valid_cited_evidence_ids if cv else []
+        ),
+        "invalid_cited_evidence_ids": (
+            cv.invalid_cited_evidence_ids if cv else []
+        ),
+        "missing_citation_required": cv.missing_citation_required if cv else None,
+        "guard_passed": gr.guard_passed if gr else None,
+        "guard_uncited_claims": gr.has_uncited_claims if gr else None,
+        "guard_forbidden_promise": gr.has_forbidden_promise if gr else None,
+        "guard_forbidden_details": gr.forbidden_promise_details if gr else [],
+        "guard_risk_not_acknowledged": (
+            not gr.risk_flags_respected if gr else None
+        ),
+        "human_review_forced": draft.must_human_review,
+        "human_review_reasons": sorted(set(reasons)),
+        "escalation_reason": draft.escalation_reason,
+    }
+
+
+# ---------------------------------------------------------------------------
+# Trigger reason detection
+# ---------------------------------------------------------------------------
 
 
 def determine_trigger_reasons(result: DraftedTicketResult) -> list[str]:
@@ -65,6 +144,7 @@ def build_review_decision(
     action: ReviewAction,
     edited_text: str | None = None,
     decision_reason: str = "",
+    gen_result: DraftGenerationResult | None = None,
 ) -> ReviewDecision:
     """Build a ReviewDecision from a DraftedTicketResult and review action.
 
@@ -73,6 +153,9 @@ def build_review_decision(
         action: The action the reviewer took.
         edited_text: Edited draft text (required for EDIT action).
         decision_reason: Reason for escalation or rejection.
+        gen_result: Optional DraftGenerationResult from Phase 11.6 generator.
+            When provided, audit fields are populated from the generation result.
+            When None (older pipelines), audit fields remain unset (None/[]).
 
     Returns:
         A fully populated ReviewDecision ready to be persisted.
@@ -85,6 +168,9 @@ def build_review_decision(
         {"chunk_id": str(c.chunk_id), "doc_type": c.doc_type.value}
         for c in draft.citations
     ]
+
+    # Extract audit fields from DraftGenerationResult if available
+    audit = draft_gen_to_audit_fields(gen_result)
 
     return ReviewDecision(
         ticket_id=ticket_output.ticket_id,
@@ -104,6 +190,21 @@ def build_review_decision(
         evidence_used_count=len(draft.evidence_used),
         review_trigger_reasons=determine_trigger_reasons(result),
         reviewer_label="",
+        # Audit fields from DraftGenerationResult
+        provider_name=audit.get("provider_name"),
+        model_name=audit.get("model_name"),
+        citation_validation_valid=audit.get("citation_validation_valid"),
+        valid_cited_evidence_ids=audit.get("valid_cited_evidence_ids", []),
+        invalid_cited_evidence_ids=audit.get("invalid_cited_evidence_ids", []),
+        missing_citation_required=audit.get("missing_citation_required"),
+        guard_passed=audit.get("guard_passed"),
+        guard_uncited_claims=audit.get("guard_uncited_claims"),
+        guard_forbidden_promise=audit.get("guard_forbidden_promise"),
+        guard_forbidden_details=audit.get("guard_forbidden_details", []),
+        guard_risk_not_acknowledged=audit.get("guard_risk_not_acknowledged"),
+        human_review_forced=audit.get("human_review_forced"),
+        human_review_reasons=audit.get("human_review_reasons", []),
+        escalation_reason=audit.get("escalation_reason"),
     )
 
 
@@ -208,6 +309,60 @@ def _render_draft_and_actions(result: DraftedTicketResult) -> None:
             st.write(f"{i + 1}. chunk_id: `{c.chunk_id}`, 类型: {c.doc_type.value}")
     else:
         st.write("无引用")
+
+    # --- Guard status display (Phase 11) ---
+    # Display guard/citation info when DraftGenerationResult is available
+    # via session state (set by pipeline integration in Phase 11.6+)
+    gen_result: DraftGenerationResult | None = getattr(
+        st.session_state, "gen_result", None
+    )
+    if gen_result is not None:
+        st.subheader("生成状态")
+        cv = gen_result.citation_validation
+        gr = gen_result.guard_result
+        col_p, col_g = st.columns(2)
+        with col_p:
+            st.write(f"**提供商:** {gen_result.provider_name}")
+            if cv:
+                valid_color = "green" if cv.is_valid else "red"
+                st.markdown(
+                    f"**引用验证:** <span style='color:{valid_color}'>"
+                    f"{'通过' if cv.is_valid else '失败'}</span>",
+                    unsafe_allow_html=True,
+                )
+                if cv.invalid_cited_evidence_ids:
+                    st.write(f"无效引用: {', '.join(cv.invalid_cited_evidence_ids)}")
+                if cv.missing_citation_required:
+                    st.warning("存在可能无引用的声明")
+        with col_g:
+            if gr:
+                guard_color = "green" if gr.guard_passed else "red"
+                st.markdown(
+                    f"**护卫检查:** <span style='color:{guard_color}'>"
+                    f"{'通过' if gr.guard_passed else '失败'}</span>",
+                    unsafe_allow_html=True,
+                )
+                if gr.has_forbidden_promise:
+                    st.error(f"禁止承诺: {', '.join(gr.forbidden_promise_details)}")
+                if gr.has_uncited_claims:
+                    st.warning("存在无引用的声明")
+                if not gr.risk_flags_respected:
+                    st.warning("高风险标记未在草稿中确认")
+
+        # Human review reasons
+        reasons = draft_gen_to_audit_fields(gen_result).get("human_review_reasons", [])
+        if reasons:
+            st.write(f"**人工审核原因:** {', '.join(reasons)}")
+
+        # Escalation reason
+        if draft.escalation_reason:
+            st.write(f"**升级原因:** {draft.escalation_reason}")
+
+        # Confidence
+        st.write(f"**置信度:** {draft.confidence:.2f}")
+
+        # No auto-send notice
+        st.info("此为草稿回复，不会自动发送")
 
     st.subheader("审核操作")
 

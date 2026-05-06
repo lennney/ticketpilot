@@ -549,3 +549,484 @@ class TestReviewTriggerReasonsScenarios:
         assert len(triggers) == 3
         assert decision.was_high_risk is True
         assert decision.had_unsupported_claims is True
+
+
+class TestDraftGenToAuditFields:
+    """Tests for draft_gen_to_audit_fields() converter."""
+
+    def _make_gen_result(
+        self,
+        provider_name: str = "fake",
+        model_name: str = "draft-v1",
+        fallback_reason: str | None = None,
+        escalation_reason: str | None = None,
+        unsupported_claims: list[str] | None = None,
+        must_human_review: bool = False,
+        citation_valid: bool = True,
+        citation_missing: bool = False,
+        guard_passed: bool = True,
+        guard_uncited: bool = False,
+        guard_forbidden: bool = False,
+        guard_forbidden_details: list[str] | None = None,
+        guard_risk_respected: bool = True,
+        draft_confidence: float = 0.8,
+        draft_text: str = "您好，关于退款问题...",
+    ):
+        """Build a DraftGenerationResult with controllable flags for testing."""
+        from ticketpilot.drafting.claim_guard import GuardResult
+        from ticketpilot.drafting.draft_citation_validator import (
+            DraftCitationValidationResult,
+        )
+        from ticketpilot.drafting.generator import DraftGenerationResult
+        from ticketpilot.drafting.schemas import DraftReply
+
+        cv = DraftCitationValidationResult(
+            is_valid=citation_valid,
+            valid_cited_evidence_ids=["id1"],
+            invalid_cited_evidence_ids=[] if citation_valid else ["id2"],
+            missing_citation_required=citation_missing,
+            available_evidence_ids=["id1", "id2"],
+        )
+        gr = GuardResult(
+            citation_coverage=1.0,
+            has_uncited_claims=guard_uncited,
+            has_forbidden_promise=guard_forbidden,
+            forbidden_promise_details=guard_forbidden_details or [],
+            evidence_sufficiency="sufficient",
+            risk_flags_respected=guard_risk_respected,
+            guard_passed=guard_passed,
+        )
+        draft = DraftReply(
+            ticket_id="ticket-001",
+            draft_text=draft_text,
+            confidence=draft_confidence,
+            must_human_review=must_human_review,
+            fallback_reason=fallback_reason,
+            unsupported_claims=unsupported_claims or [],
+            escalation_reason=escalation_reason,
+            citations=[],
+        )
+        return DraftGenerationResult(
+            draft=draft,
+            provider_name=provider_name,
+            model_name=model_name,
+            citation_validation=cv,
+            guard_result=gr,
+        )
+
+    def test_returns_empty_dict_for_none(self):
+        """None input should return empty dict."""
+        from ticketpilot.review.console import draft_gen_to_audit_fields
+
+        result = draft_gen_to_audit_fields(None)
+        assert result == {}
+
+    def test_extracts_provider_info(self):
+        from ticketpilot.review.console import draft_gen_to_audit_fields
+
+        gen_result = self._make_gen_result(provider_name="openai", model_name="gpt-4o")
+        result = draft_gen_to_audit_fields(gen_result)
+        assert result["provider_name"] == "openai"
+        assert result["model_name"] == "gpt-4o"
+
+    def test_extracts_citation_validation_valid(self):
+        from ticketpilot.review.console import draft_gen_to_audit_fields
+
+        gen_result = self._make_gen_result(citation_valid=True)
+        result = draft_gen_to_audit_fields(gen_result)
+        assert result["citation_validation_valid"] is True
+
+        gen_result_invalid = self._make_gen_result(citation_valid=False)
+        result_invalid = draft_gen_to_audit_fields(gen_result_invalid)
+        assert result_invalid["citation_validation_valid"] is False
+
+    def test_extracts_guard_passed(self):
+        from ticketpilot.review.console import draft_gen_to_audit_fields
+
+        gen_result_pass = self._make_gen_result(guard_passed=True)
+        assert draft_gen_to_audit_fields(gen_result_pass)["guard_passed"] is True
+
+        gen_result_fail = self._make_gen_result(guard_passed=False)
+        assert draft_gen_to_audit_fields(gen_result_fail)["guard_passed"] is False
+
+    def test_extracts_guard_uncited_claims(self):
+        from ticketpilot.review.console import draft_gen_to_audit_fields
+
+        gen_result = self._make_gen_result(guard_uncited=True)
+        assert draft_gen_to_audit_fields(gen_result)["guard_uncited_claims"] is True
+
+    def test_extracts_guard_forbidden_promise(self):
+        from ticketpilot.review.console import draft_gen_to_audit_fields
+
+        gen_result = self._make_gen_result(
+            guard_forbidden=True,
+            guard_forbidden_details=["refund_amount"],
+        )
+        result = draft_gen_to_audit_fields(gen_result)
+        assert result["guard_forbidden_promise"] is True
+        assert result["guard_forbidden_details"] == ["refund_amount"]
+
+    def test_extracts_guard_risk_not_acknowledged(self):
+        from ticketpilot.review.console import draft_gen_to_audit_fields
+
+        gen_result = self._make_gen_result(guard_risk_respected=False)
+        result = draft_gen_to_audit_fields(gen_result)
+        assert result["guard_risk_not_acknowledged"] is True
+
+    def test_human_review_forced_from_draft(self):
+        from ticketpilot.review.console import draft_gen_to_audit_fields
+
+        gen_result = self._make_gen_result(must_human_review=True)
+        result = draft_gen_to_audit_fields(gen_result)
+        assert result["human_review_forced"] is True
+
+    def test_human_review_reasons_empty_when_all_pass(self):
+        from ticketpilot.review.console import draft_gen_to_audit_fields
+
+        gen_result = self._make_gen_result()
+        result = draft_gen_to_audit_fields(gen_result)
+        assert result["human_review_reasons"] == []
+
+    def test_human_review_reasons_fallback_no_evidence(self):
+        from ticketpilot.review.console import draft_gen_to_audit_fields
+
+        gen_result = self._make_gen_result(fallback_reason="no_evidence")
+        result = draft_gen_to_audit_fields(gen_result)
+        assert "fallback:no_evidence" in result["human_review_reasons"]
+
+    def test_human_review_reasons_fallback_generation_error(self):
+        from ticketpilot.review.console import draft_gen_to_audit_fields
+
+        gen_result = self._make_gen_result(fallback_reason="generation_error")
+        result = draft_gen_to_audit_fields(gen_result)
+        assert "fallback:generation_error" in result["human_review_reasons"]
+
+    def test_human_review_reasons_unsupported_claims(self):
+        from ticketpilot.review.console import draft_gen_to_audit_fields
+
+        gen_result = self._make_gen_result(unsupported_claims=["未验证的声明"])
+        result = draft_gen_to_audit_fields(gen_result)
+        assert "unsupported_claims" in result["human_review_reasons"]
+
+    def test_human_review_reasons_citation_validation_failed(self):
+        from ticketpilot.review.console import draft_gen_to_audit_fields
+
+        gen_result = self._make_gen_result(citation_valid=False)
+        result = draft_gen_to_audit_fields(gen_result)
+        assert "citation_validation_failed" in result["human_review_reasons"]
+
+    def test_human_review_reasons_citation_validation_human_review(self):
+        from ticketpilot.review.console import draft_gen_to_audit_fields
+
+        from ticketpilot.drafting.draft_citation_validator import (
+            DraftCitationValidationResult,
+        )
+        from ticketpilot.drafting.generator import DraftGenerationResult
+
+        cv = DraftCitationValidationResult(
+            is_valid=True,
+            valid_cited_evidence_ids=["id1"],
+            missing_citation_required=True,
+            available_evidence_ids=["id1"],
+            must_human_review=True,
+        )
+        from ticketpilot.drafting.claim_guard import GuardResult
+
+        gr = GuardResult()
+        from ticketpilot.drafting.schemas import DraftReply
+
+        draft = DraftReply(
+            ticket_id="ticket-001",
+            draft_text="测试",
+        )
+        gen_result = DraftGenerationResult(
+            draft=draft,
+            provider_name="fake",
+            model_name="v1",
+            citation_validation=cv,
+            guard_result=gr,
+        )
+        result = draft_gen_to_audit_fields(gen_result)
+        assert "citation_validation_human_review" in result["human_review_reasons"]
+
+    def test_human_review_reasons_guard_failed(self):
+        from ticketpilot.review.console import draft_gen_to_audit_fields
+
+        gen_result = self._make_gen_result(guard_passed=False)
+        result = draft_gen_to_audit_fields(gen_result)
+        assert "guard_failed" in result["human_review_reasons"]
+
+    def test_human_review_reasons_guard_uncited_claims(self):
+        from ticketpilot.review.console import draft_gen_to_audit_fields
+
+        gen_result = self._make_gen_result(guard_uncited=True, guard_passed=False)
+        result = draft_gen_to_audit_fields(gen_result)
+        assert "uncited_claims" in result["human_review_reasons"]
+
+    def test_human_review_reasons_guard_forbidden_promise(self):
+        from ticketpilot.review.console import draft_gen_to_audit_fields
+
+        gen_result = self._make_gen_result(
+            guard_forbidden=True, guard_passed=False,
+            guard_forbidden_details=["refund_amount"],
+        )
+        result = draft_gen_to_audit_fields(gen_result)
+        assert "forbidden_promise" in result["human_review_reasons"]
+
+    def test_human_review_reasons_guard_risk_not_acknowledged(self):
+        from ticketpilot.review.console import draft_gen_to_audit_fields
+
+        gen_result = self._make_gen_result(
+            guard_risk_respected=False, guard_passed=False,
+        )
+        result = draft_gen_to_audit_fields(gen_result)
+        assert "risk_not_acknowledged" in result["human_review_reasons"]
+
+    def test_human_review_reasons_sorted_and_deduplicated(self):
+        from ticketpilot.review.console import draft_gen_to_audit_fields
+
+        gen_result = self._make_gen_result(
+            fallback_reason="no_evidence",
+            unsupported_claims=["声明1"],
+            citation_valid=False,
+            guard_passed=False,
+            guard_uncited=True,
+            guard_forbidden=True,
+            guard_forbidden_details=["refund_amount"],
+            guard_risk_respected=False,
+            must_human_review=True,
+        )
+        result = draft_gen_to_audit_fields(gen_result)
+        reasons = result["human_review_reasons"]
+        assert reasons == sorted(reasons)
+        assert len(reasons) == len(set(reasons))
+
+    def test_escalation_reason_from_draft(self):
+        from ticketpilot.review.console import draft_gen_to_audit_fields
+
+        gen_result = self._make_gen_result(
+            escalation_reason="guard: forbidden_promise",
+        )
+        result = draft_gen_to_audit_fields(gen_result)
+        assert result["escalation_reason"] == "guard: forbidden_promise"
+
+    def test_valid_and_invalid_cited_evidence_ids(self):
+        from ticketpilot.review.console import draft_gen_to_audit_fields
+
+        from ticketpilot.drafting.draft_citation_validator import (
+            DraftCitationValidationResult,
+        )
+        from ticketpilot.drafting.generator import DraftGenerationResult
+
+        cv = DraftCitationValidationResult(
+            is_valid=False,
+            valid_cited_evidence_ids=["id1", "id2"],
+            invalid_cited_evidence_ids=["id3", "id4"],
+            missing_citation_required=False,
+            available_evidence_ids=["id1", "id2", "id3", "id4"],
+        )
+        from ticketpilot.drafting.claim_guard import GuardResult
+
+        gr = GuardResult()
+        from ticketpilot.drafting.schemas import DraftReply
+
+        draft = DraftReply(
+            ticket_id="ticket-001",
+            draft_text="测试",
+        )
+        gen_result = DraftGenerationResult(
+            draft=draft,
+            provider_name="fake",
+            model_name="v1",
+            citation_validation=cv,
+            guard_result=gr,
+        )
+        result = draft_gen_to_audit_fields(gen_result)
+        assert result["valid_cited_evidence_ids"] == ["id1", "id2"]
+        assert result["invalid_cited_evidence_ids"] == ["id3", "id4"]
+
+
+class TestBuildReviewDecisionWithGenResult:
+    """Tests for build_review_decision() with DraftGenerationResult."""
+
+    def _make_gen_result(
+        self,
+        provider_name: str = "fake",
+        model_name: str = "draft-v1",
+        citation_valid: bool = True,
+        guard_passed: bool = True,
+        guard_uncited: bool = False,
+        guard_forbidden: bool = False,
+        guard_forbidden_details: list[str] | None = None,
+        guard_risk_respected: bool = True,
+        must_human_review: bool = False,
+        fallback_reason: str | None = None,
+        escalation_reason: str | None = None,
+        unsupported_claims: list[str] | None = None,
+        confidence: float = 0.8,
+        draft_text: str = "您好，关于退款问题...",
+    ):
+        from ticketpilot.drafting.claim_guard import GuardResult
+        from ticketpilot.drafting.draft_citation_validator import (
+            DraftCitationValidationResult,
+        )
+        from ticketpilot.drafting.generator import DraftGenerationResult
+        from ticketpilot.drafting.schemas import DraftReply
+
+        cv = DraftCitationValidationResult(
+            is_valid=citation_valid,
+            valid_cited_evidence_ids=["id1"],
+            invalid_cited_evidence_ids=[],
+            missing_citation_required=False,
+            available_evidence_ids=["id1"],
+        )
+        gr = GuardResult(
+            citation_coverage=1.0,
+            has_uncited_claims=guard_uncited,
+            has_forbidden_promise=guard_forbidden,
+            forbidden_promise_details=guard_forbidden_details or [],
+            evidence_sufficiency="sufficient",
+            risk_flags_respected=guard_risk_respected,
+            guard_passed=guard_passed,
+        )
+        draft = DraftReply(
+            ticket_id="ticket-001",
+            draft_text=draft_text,
+            confidence=confidence,
+            must_human_review=must_human_review,
+            fallback_reason=fallback_reason,
+            unsupported_claims=unsupported_claims or [],
+            escalation_reason=escalation_reason,
+            citations=[],
+        )
+        return DraftGenerationResult(
+            draft=draft,
+            provider_name=provider_name,
+            model_name=model_name,
+            citation_validation=cv,
+            guard_result=gr,
+        )
+
+    def test_without_gen_result_all_audit_fields_none(self):
+        """build_review_decision without gen_result leaves all audit fields None."""
+        result = _make_result()
+        decision = build_review_decision(result, ReviewAction.APPROVE)
+        assert decision.provider_name is None
+        assert decision.model_name is None
+        assert decision.citation_validation_valid is None
+        assert decision.guard_passed is None
+        assert decision.human_review_reasons == []
+
+    def test_with_gen_result_populates_provider_info(self):
+        from ticketpilot.review.console import build_review_decision
+
+        result = _make_result()
+        gen_result = self._make_gen_result(provider_name="openai", model_name="gpt-4o")
+        decision = build_review_decision(result, ReviewAction.APPROVE, gen_result=gen_result)
+        assert decision.provider_name == "openai"
+        assert decision.model_name == "gpt-4o"
+
+    def test_with_gen_result_populates_citation_validation(self):
+        from ticketpilot.review.console import build_review_decision
+
+        result = _make_result()
+        gen_result = self._make_gen_result(citation_valid=True)
+        decision = build_review_decision(result, ReviewAction.APPROVE, gen_result=gen_result)
+        assert decision.citation_validation_valid is True
+        assert decision.valid_cited_evidence_ids == ["id1"]
+        assert decision.invalid_cited_evidence_ids == []
+
+    def test_with_gen_result_populates_guard_passed(self):
+        from ticketpilot.review.console import build_review_decision
+
+        result = _make_result()
+        gen_result = self._make_gen_result(guard_passed=False)
+        decision = build_review_decision(result, ReviewAction.APPROVE, gen_result=gen_result)
+        assert decision.guard_passed is False
+        assert decision.guard_uncited_claims is False
+
+    def test_with_gen_result_populates_guard_uncited_claims(self):
+        from ticketpilot.review.console import build_review_decision
+
+        result = _make_result()
+        gen_result = self._make_gen_result(guard_uncited=True, guard_passed=False)
+        decision = build_review_decision(result, ReviewAction.APPROVE, gen_result=gen_result)
+        assert decision.guard_uncited_claims is True
+
+    def test_with_gen_result_populates_guard_forbidden_promise(self):
+        from ticketpilot.review.console import build_review_decision
+
+        result = _make_result()
+        gen_result = self._make_gen_result(
+            guard_forbidden=True,
+            guard_forbidden_details=["refund_amount"],
+            guard_passed=False,
+        )
+        decision = build_review_decision(result, ReviewAction.APPROVE, gen_result=gen_result)
+        assert decision.guard_forbidden_promise is True
+        assert decision.guard_forbidden_details == ["refund_amount"]
+
+    def test_with_gen_result_populates_guard_risk_not_acknowledged(self):
+        from ticketpilot.review.console import build_review_decision
+
+        result = _make_result()
+        gen_result = self._make_gen_result(guard_risk_respected=False, guard_passed=False)
+        decision = build_review_decision(result, ReviewAction.APPROVE, gen_result=gen_result)
+        assert decision.guard_risk_not_acknowledged is True
+
+    def test_with_gen_result_populates_human_review_forced(self):
+        from ticketpilot.review.console import build_review_decision
+
+        result = _make_result()
+        gen_result = self._make_gen_result(must_human_review=True)
+        decision = build_review_decision(result, ReviewAction.APPROVE, gen_result=gen_result)
+        assert decision.human_review_forced is True
+
+    def test_with_gen_result_populates_human_review_reasons(self):
+        from ticketpilot.review.console import build_review_decision
+
+        result = _make_result()
+        gen_result = self._make_gen_result(
+            fallback_reason="no_evidence",
+            citation_valid=False,
+            guard_passed=False,
+        )
+        decision = build_review_decision(result, ReviewAction.APPROVE, gen_result=gen_result)
+        assert len(decision.human_review_reasons) == 3
+
+    def test_with_gen_result_populates_escalation_reason(self):
+        from ticketpilot.review.console import build_review_decision
+
+        result = _make_result()
+        gen_result = self._make_gen_result(
+            escalation_reason="guard: forbidden_promise",
+        )
+        decision = build_review_decision(result, ReviewAction.APPROVE, gen_result=gen_result)
+        assert decision.escalation_reason == "guard: forbidden_promise"
+
+    def test_roundtrip_via_review_store(self):
+        """Decision with audit fields survives ReviewStore save/load."""
+        from ticketpilot.review.console import build_review_decision
+
+        result = _make_result()
+        gen_result = self._make_gen_result(
+            provider_name="openai",
+            model_name="gpt-4o-mini",
+            citation_valid=True,
+            guard_passed=True,
+            must_human_review=False,
+        )
+        decision = build_review_decision(
+            result, ReviewAction.APPROVE, gen_result=gen_result,
+        )
+        with tempfile.TemporaryDirectory() as tmpdir:
+            path = os.path.join(tmpdir, "reviews.jsonl")
+            store = ReviewStore(path)
+            store.save(decision)
+            loaded = store.load_all()
+            assert len(loaded) == 1
+            restored = loaded[0]
+            assert restored.provider_name == "openai"
+            assert restored.model_name == "gpt-4o-mini"
+            assert restored.citation_validation_valid is True
+            assert restored.guard_passed is True
