@@ -20,19 +20,16 @@ uv run ruff check src tests || {
     FAILED=1
 }
 
-# 2. Unit tests + coverage (single run)
-#    - Ignore tests that require DB connection (psycopg import error in WSL)
-#    - Coverage from same run, no duplicate test execution
+# 2. Unit tests
 echo ""
-echo "== Unit Tests + Coverage =="
+echo "== Unit Tests =="
+# Remove stale coverage data from previous runs (WSL cross-filesystem SQLite corruption)
 rm -f /tmp/.coverage* .coverage* 2>/dev/null || true
+# Resolve coverage directory to Windows-absolute path when Python runs on Windows
 COVERAGE_DIR="$(uv run python -c "import tempfile; print(tempfile.gettempdir())" 2>/dev/null || echo "/tmp")"
 export COVERAGE_FILE="${COVERAGE_FILE:-${COVERAGE_DIR}/.coverage_ticketpilot_gate}"
-uv run pytest tests/unit/ \
-    --ignore=tests/unit/test_embedding_metadata.py \
-    --ignore=tests/unit/test_rebuild_embeddings.py \
-    -v --strict-markers --cov=src/ticketpilot --cov-report=term-missing --cov-fail-under=70 || {
-    echo -e "${RED}FAIL: Unit tests or coverage check failed${NC}"
+uv run python -m pytest tests/unit/ -v --strict-markers --cov=src/ticketpilot --cov-fail-under=70 || {
+    echo -e "${RED}FAIL: Unit tests failed${NC}"
     FAILED=1
 }
 
@@ -40,20 +37,20 @@ uv run pytest tests/unit/ \
 echo ""
 echo "== Integration Tests =="
 set +e
-INTEGRATION_OUTPUT=$(uv run pytest tests/integration/ -v --strict-markers --tb=short 2>&1)
+INTEGRATION_OUTPUT=$(uv run python -m pytest tests/integration/ -v --strict-markers 2>&1)
 INTEGRATION_EXIT=$?
 set -e
 
 SKIPPED_COUNT=$(echo "$INTEGRATION_OUTPUT" | grep -o '[0-9]* skipped' | grep -o '[0-9]*' || echo "0")
 SKIPPED_COUNT=${SKIPPED_COUNT:-0}
-echo "$INTEGRATION_OUTPUT" | tail -15
+echo "$INTEGRATION_OUTPUT" | tail -25
 
 if [ "${TICKETPILOT_SKIP_DB_TESTS:-0}" = "1" ]; then
     echo -e "${YELLOW}INFO: TICKETPILOT_SKIP_DB_TESTS=1, allowing ${SKIPPED_COUNT} skipped tests${NC}"
 elif [ "$SKIPPED_COUNT" -gt 0 ]; then
-    echo -e "${YELLOW}WARN: ${SKIPPED_COUNT} integration tests skipped (DB unavailable)${NC}"
-    echo -e "${YELLOW}      Set TICKETPILOT_SKIP_DB_TESTS=1 to suppress this warning${NC}"
-    # Not failing the gate for skipped DB tests - this is expected in offline/dev environments
+    echo -e "${RED}FAIL: ${SKIPPED_COUNT} integration tests skipped (DB unavailable).${NC}"
+    echo -e "${RED}      Set TICKETPILOT_SKIP_DB_TESTS=1 to temporarily allow.${NC}"
+    FAILED=1
 elif [ "$INTEGRATION_EXIT" -ne 0 ]; then
     echo -e "${RED}FAIL: Integration tests failed${NC}"
     FAILED=1

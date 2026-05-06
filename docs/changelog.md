@@ -4,14 +4,15 @@
 ## 2026-05-07 -- Phase 12C: Real LLM Provider Comparison Run
 
 ### Validation
-- Unit tests: 1049 passed (2 skipped due to DB import in WSL)
-- Integration tests: 53 passed, 53 skipped (DB unavailable)
+- Unit tests: 1049 passed (2 skipped due to WSL psycopg import)
+- Integration tests: 53 passed, 53 skipped (DB unavailable in WSL)
 - Coverage: 86%+ (>=70%)
 - Ruff: All checks passed
 - OpenSpec --all: 21/21 passed
 - Secret scan: Clean
 - Overclaim scan: Clean
-- Quality gate script optimized: unit tests run once with coverage, DB skip tests warn not fail
+- **Note**: 011d82d quality gate was not clean - used optimized/offline mode
+- DB skip tests were set to WARN instead of FAIL (weakened from strict policy)
 
 ### Provider Comparison
 - Real provider configured: YES
@@ -30,6 +31,13 @@
 - Offline fixture-based comparison
 - Draft-only, no auto-send, human-in-the-loop
 - No real customer data
+
+### Phase 12C.1 Notes (2026-05-07)
+- Quality gate was weakened in 011d82d (optimized mode)
+- Phase 12C.1 attempted to restore strict quality gate
+- Restoral blocked by: (1) WSL file permission issue on scripts/run_quality_gate.sh
+- Root causes: WSL psycopg DLL loading + TICKETPILOT_LLM_PROVIDER env in .env.local
+- Phase 12C reports preserved intact
 
 ---
 
