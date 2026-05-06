@@ -7,6 +7,15 @@ Each decision entry records: date, decision, context, alternatives considered, a
 
 ---
 
+## D9 — 2026-05-06: Phase 11 Complete — Safety Architecture Validated
+
+- **Decision**: Phase 11 evidence-grounded LLM draft generation is complete (all sub-phases 11.1-11.9 done). The 8-layer safety architecture (prompt constraint → citation validation → ClaimGuard → risk-aware → human review propagation → no-auto-send → fake default → provider identity) is the correct design for AI-assisted draft generation.
+- **Context**: Phase 10 confirmed retrieval quality is sufficient (Doc-ID Recall@10=91.9%). Phase 11 built the safety infrastructure for LLM-assisted draft generation. All components are deterministic, testable, and work without real LLM API calls.
+- **Alternatives**: Continue tuning retrieval (low ROI after Phase 10), add real LLM provider (out of scope for portfolio), skip safety layers (too risky for production-readiness)
+- **Why this won**: Safety architecture is foundational for AI-assisted workflows; demonstrating safety-first design has portfolio value
+
+---
+
 ## D6 — 2026-05-06: Add Doc-Level Golden Labels Is Next Priority
 
 - **Decision**: Next concrete action is adding `expected_relevant_doc_ids` to `golden_expectations.csv`

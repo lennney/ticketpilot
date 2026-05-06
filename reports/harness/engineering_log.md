@@ -4,6 +4,28 @@
 
 ---
 
+## 2026-05-06 — Phase 11.9: Portfolio Snapshot
+
+**Problem**: Phase 11 code complete, needed portable documentation for portfolio/snapshot use, separate from raw reports. Phase 11 changed from "进行中/in progress" to "已完成/complete" across all portfolio docs.
+
+**Approach**: Created comprehensive Phase 11 portfolio snapshot with 10 sections: one-sentence summary, diagnosis chain, key architecture decisions, key metrics, component map, product interpretation, engineering interpretation, boundaries, resume bullets, interview versions.
+
+**Key Deliverables**:
+- `docs/portfolio/phase11_evidence_draft_snapshot.md` — complete Phase 11 snapshot
+- Updated README.md + README.en.md: Phase 11 status + 8-layer safety architecture
+- Updated product_portfolio_material_pack.md: iteration history table with Phase 11 column
+- Updated project_case_study_cn/en.md: Phase 11 complete status + detailed description
+- Updated interview_talking_points.md: 1-minute pitch reflects completion
+
+**Key Updates Across Portfolio Docs**:
+- Phase 11 status: "进行中/in progress" → "已完成/complete"
+- Added Phase 11 column to iteration history table
+- 8-layer safety architecture: prompt constraint → citation validation → ClaimGuard → risk-aware → human review propagation → no-auto-send → fake default → provider identity
+
+**Validation**: ruff clean, OpenSpec --strict valid, OpenSpec --all 17/17
+
+---
+
 ## 2026-05-06 — Phase 11.8: Offline Draft Evaluation
 
 **Problem**: Need to quantify draft generation quality using deterministic local metrics — no real LLM API calls, no network access, no real customer data. The evaluation should measure citation quality, evidence coverage, guard effectiveness, and human review trigger correctness.

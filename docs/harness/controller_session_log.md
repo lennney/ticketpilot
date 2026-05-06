@@ -53,9 +53,33 @@
 
 **Validation**: 32 unit + 7 integration tests passed, ruff clean
 
-**Phase Status**: Phase 11.8 complete. Phase 11.9 pending (portfolio snapshot).
+**Phase Status**: Phase 11.8 complete. Phase 11.9 complete.
 
-**Next Batch**: Phase 11.9 — Portfolio Snapshot
+**Next Batch**: Phase 11.10 — Final Validation and Archive
+
+---
+
+## 2026-05-06 — Phase 11.9: Portfolio Snapshot
+
+**Summary**: Created comprehensive Phase 11 portfolio snapshot and updated all portfolio docs to reflect Phase 11 completion. Phase 11 status changed from "进行中/in progress" to "已完成/complete" across README, portfolio docs, and changelog.
+
+**Key Deliverables**:
+- `docs/portfolio/phase11_evidence_draft_snapshot.md` — 10-section comprehensive Phase 11 snapshot with diagnosis chain, component map, key decisions, product/engineering interpretation, boundaries, resume bullets, interview versions
+- Updated README.md/en.md with Phase 11 complete status and 8-layer safety architecture details
+- Updated product_portfolio_material_pack.md with Phase 11 column in iteration history table
+- Updated project_case_study_cn/en.md with Phase 11 complete status and detailed description
+- Updated interview_talking_points.md with 1-minute pitch reflecting completion
+
+**Key Design Decisions**:
+- 8-layer safety architecture: prompt constraint → citation validation → ClaimGuard → risk-aware → human review propagation → no-auto-send → fake default → provider identity
+- Phase 11 column added to iteration history table for consistency with Phase 7-10
+- All Phase 11 references updated from "进行中/in progress" to "已完成/complete"
+
+**Validation**: ruff clean, OpenSpec --strict valid, OpenSpec --all 17/17
+
+**Phase Status**: Phase 11.9 complete. Phase 11.10 pending (final validation and archive).
+
+**Next Batch**: Phase 11.10 — Final Validation and Archive
 
 ---
 

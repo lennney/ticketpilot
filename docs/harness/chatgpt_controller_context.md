@@ -41,7 +41,7 @@
 
 ## 4. Current Working Context
 
-**Phase 10 is complete and archived. Phase 11.8 code complete (offline draft evaluation).**
+**Phase 10 is complete and archived. Phase 11 complete (all sub-phases 11.1-11.9 done, 11.10 pending archive).**
 
 ### Phase 10 Evidence Chain
 
@@ -105,7 +105,7 @@ See `docs/harness/controller_decision_log.md` for full log.
 
 | Priority | Action | Phase | Type | Status |
 |---|---|---|---|---|
-| 1 | Evidence-grounded LLM draft generation — Phase 11.9 portfolio snapshot | 11.9 | Docs | Next |
+| 1 | Evidence-grounded LLM draft generation — Phase 11.10 final validation and archive | 11.10 | Validation | Next |
 | — | Query expansion audit (alternative if retrieval prioritized) | 11 | Analysis | Alternative |
 
 See `docs/harness/controller_next_actions.md` for full details with allowed/forbidden files and validation commands.

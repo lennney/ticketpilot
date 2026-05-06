@@ -490,8 +490,45 @@
 
 ### Commit
 
-`pending`
+`7230ebe` pushed to `origin/master`
 
 ---
 
-## Next Batch: Phase 11.9 — Portfolio Snapshot
+## Completed Batch: Phase 11.9 — Portfolio Snapshot
+
+### What Was Done
+
+- Created comprehensive Phase 11 portfolio snapshot: `docs/portfolio/phase11_evidence_draft_snapshot.md`
+- Updated all portfolio docs to reflect Phase 11 completion (status from "进行中/in progress" to "已完成/complete")
+- Added Phase 11 column to iteration history table in product_portfolio_material_pack.md
+- Updated README.md/en.md with 8-layer safety architecture details
+- Updated changelog with Phase 11.9 entry
+
+### Files Created
+
+- `docs/portfolio/phase11_evidence_draft_snapshot.md` — 10-section comprehensive Phase 11 snapshot
+
+### Files Modified
+
+- `README.md` — Phase 11 status + 8-layer safety architecture details
+- `README.en.md` — Phase 11 status + 8-layer safety architecture details
+- `docs/portfolio/product_portfolio_material_pack.md` — Iteration summary, Phase 11 column
+- `docs/portfolio/project_case_study_cn.md` — Phase 11 complete status
+- `docs/portfolio/project_case_study_en.md` — Phase 11 complete status
+- `docs/portfolio/interview_talking_points.md` — 1-minute pitch updated
+- `docs/changelog.md` — Phase 11.9 entry added
+- `openspec/changes/add-evidence-grounded-llm-draft/tasks.md` — Phase 11.9 marked complete
+
+### Validation
+
+- Ruff: ✅ Clean
+- OpenSpec --strict: ✅ Valid
+- OpenSpec --all: ✅ 17/17 passed
+
+### Commit
+
+`a6d38dd` pushed to `origin/master`
+
+---
+
+## Next Batch: Phase 11.10 — Final Validation and Archive
