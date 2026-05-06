@@ -1767,3 +1767,38 @@ Prepare TicketPilot for public GitHub portfolio presentation with accurate, non-
 - openspec validate --strict: ✅
 - openspec validate --all: ✅
 
+## 2026-05-06 — Phase 10.9: Final Validation and Archive
+
+### Changed
+- `openspec/changes/add-hybrid-retrieval-ranking-diagnosis` — archived as `openspec/changes/archive/2026-05-06-add-hybrid-retrieval-ranking-diagnosis/`
+- `openspec/specs/retrieval-evaluation/spec.md` — archive delta applied
+- `openspec/specs/retrieval-trace/spec.md` — new spec created from archive delta
+- `docs/harness/controller_next_actions.md` — Phase 10.9 marked complete
+
+### Quality Gate Result
+- **Ruff**: All checks passed
+- **Unit tests**: 778 passed
+- **Integration tests**: 119 passed, **0 skipped**
+- **Coverage**: 85.27% (≥70%)
+- **OpenSpec**: 16/16 passed (before and after archive)
+- **Secret scan**: Clean
+- **Overclaim scan**: Clean — all production/enterprise/benchmark claims are in negative or boundary context
+
+### Phase 10 Archive Summary
+- **Start**: 2026-05-06 (Phase 10.1 Planning)
+- **End**: 2026-05-06 (Phase 10.9 Archive)
+- **Duration**: 1 day, 12 sub-phases
+- **Key outcome**: Metric granularity thesis confirmed — 78% of wrong cases reclassified as doc-ID found. Doc-ID Recall@10 = 91.9%.
+- **Architecture changes**: None. Diagnosis-only, evaluation-only, documentation-only.
+- **Archive status**: ✅ Cleanly archived
+
+### Next Recommended Phase
+**Phase 11 — Evidence-Grounded LLM Draft Generation**
+With doc-ID evaluation in place and retrieval quality confirmed (91.9% recall), the next product frontier is generating draft replies grounded in retrieved evidence using an LLM provider. This would require:
+- LLM provider integration (Claude API or OpenAI-compatible)
+- Citation-enforced generation with evidence grounding
+- Citation validation against retrieved chunks
+- Human review extension for LLM-generated drafts
+- Evaluation expansion for draft quality metrics
+
+Alternatively: Phase 11 — Query Expansion Audit (targeted, 7 zero-hit cases)

@@ -82,64 +82,46 @@
 
 ---
 
-## Next Batch: Phase 10.9 — Final Validation and Archive
+## Completed Batch: Phase 10.9 — Final Validation and Archive
 
-### Scope
+### What Was Done
 
-1. Run full quality gate: unit tests + integration tests + coverage + ruff + secret scan
-2. Verify integration tests: 0 skipped
-3. Run `openspec validate add-hybrid-retrieval-ranking-diagnosis --strict`
-4. Run `openspec validate --all`
-5. Verify no Phase 7/8/9 baseline reports modified
-6. Verify no Phase 10.7/10.8 report modifications
-7. Archive change
-8. Commit and push
+- Ran full quality gate: ✅ Passed
+  - Ruff: All checks passed
+  - Unit tests: 778 passed
+  - Integration tests: 119 passed, **0 skipped**
+  - Coverage: 85.27% (≥70%)
+  - OpenSpec: 16/16 passed
+  - Secret scan: Clean
+- Overclaim scan: Clean — all claims in negative/boundary context
+- OpenSpec archive: `add-hybrid-retrieval-ranking-diagnosis` → `archive/2026-05-06-*`
+- Post-archive `openspec validate --all`: 16/16 passed (retrieval-trace now included)
+- Specs updated: retrieval-evaluation (delta applied), retrieval-trace (created)
 
-### Allowed Files
+### Key Deliverables
 
-- `openspec/changes/add-hybrid-retrieval-ranking-diagnosis/archive.md` (new — archive declaration)
-- `docs/changelog.md`
-- `docs/harness/controller_next_actions.md`
-- `docs/harness/chatgpt_controller_context.md` (if exists)
-- `docs/harness/controller_session_log.md` (if exists)
+- Phase 10 evidence chain complete: audit → export → classify → label → evaluate → confirm → snapshot → archive
+- Metric granularity thesis confirmed: 78% of wrong cases reclassified
+- Doc-ID evaluation infrastructure built and populated (86/101 cases)
+- All portfolio docs updated with Phase 10 status
 
-### Forbidden Files
+### Validation
 
-- `src/` (no code changes)
-- `data/`
-- `tests/`
-- `reports/` (all reports frozen)
-- `docs/portfolio/` (portfolio docs frozen)
-- `.env`, `.env.local`
+- Unit tests: 778/778 ✅
+- Integration tests: 119/119 ✅ (0 skipped)
+- Coverage: 85.27% ✅
+- ruff check: ✅ Clean
+- openspec validate --all: ✅ 16/16 passed
+- Secret scan: ✅ Clean
+- Overclaim scan: ✅ Clean
 
-### Validation Commands
+### Commit
 
-```bash
-# Full quality gate
-bash scripts/run_quality_gate.sh
+`pending`
 
-# With integration tests skipped (no DB)
-TICKETPILOT_SKIP_DB_TESTS=1 bash scripts/run_quality_gate.sh
+---
 
-# OpenSpec validation
-openspec validate add-hybrid-retrieval-ranking-diagnosis --strict
-openspec validate --all
-
-# Ruff
-uv run ruff check .
-
-# Secret scan
-grep -r "sk-" data/ --include="*.csv"
-```
-
-### Stop Conditions
-
-- Quality gate fails
-- Integration tests skipped when DB is available (must be 0)
-- Forbidden file modified
-- Secret scan fails
-- OpenSpec validation fails
-- Phase 7/8/9/10 reports modified
+## Completed Batch: Phase 10.8 — Portfolio Snapshot
 
 ---
 
@@ -213,3 +195,66 @@ grep -r "sk-" data/ --include="*.csv"
 ### Commit
 
 `aeb4ff5` pushed to `origin/master`
+
+---
+
+## Next Batch: Phase 11 — Evidence-Grounded LLM Draft Generation
+
+### Scope
+
+1. Design LLM provider integration (Claude API or OpenAI-compatible)
+2. Implement citation-enforced draft generation grounded in retrieved evidence
+3. Extend citation validator for LLM-generated content
+4. Add human review extensions for LLM-generated drafts
+5. Extend evaluation with draft quality metrics
+6. Validate: quality gate (0 skip integration tests), openspec --all, ruff, secret scan
+7. All Phase 10 portfolio, reports, and archive must remain frozen
+
+### Allowed Files
+
+- `openspec/changes/add-evidence-grounded-llm-draft/` (new change)
+- `src/ticketpilot/drafting/` (LLM provider, generator)
+- `src/ticketpilot/evaluation/` (draft quality metrics)
+- `tests/` (new tests for LLM draft generation)
+- `docs/changelog.md`
+- `docs/harness/controller_next_actions.md`
+
+### Forbidden Files
+
+- `reports/retrieval/` (Phase 7/8/9/10 reports frozen)
+- `docs/portfolio/` (portfolio docs frozen)
+- `data/eval/` (eval dataset frozen)
+- `data/knowledge/` (knowledge base frozen)
+- `openspec/changes/archive/` (archived changes frozen)
+- `.env`, `.env.local`
+
+### Alternative Next Phase
+
+If retrieval optimization is prioritized over product features:
+- **Phase 11 — Query Expansion Audit**: Audit 7 zero-hit cases for query-knowledge term mismatch. Documentation-only, no code changes. See Phase 10.7.5 remaining misses report.
+
+### Validation Commands
+
+```bash
+# Full quality gate
+bash scripts/run_quality_gate.sh
+
+# OpenSpec validation
+openspec validate add-evidence-grounded-llm-draft --strict
+openspec validate --all
+
+# Ruff
+uv run ruff check .
+
+# Secret scan
+grep -r "sk-" data/ --include="*.csv"
+```
+
+### Stop Conditions
+
+- Quality gate fails
+- Integration tests skipped when DB is available
+- Forbidden file modified
+- Secret scan fails
+- Phase 7/8/9/10/archive reports modified
+

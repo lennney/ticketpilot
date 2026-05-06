@@ -7,9 +7,9 @@
 - [x] 1.3 Create `tasks.md` — this file
 - [x] 1.4 Create `specs/retrieval-evaluation/spec.md` — bottleneck taxonomy spec delta, layered trace export, recommendation report requirements
 - [x] 1.5 Create `specs/retrieval-trace/spec.md` — trace field gap analysis, provider-aware export, disclaimer requirements
-- [ ] 1.6 Run `openspec validate add-hybrid-retrieval-ranking-diagnosis --strict`
-- [ ] 1.7 Update `docs/changelog.md` with Phase 10 planning entry
-- [ ] 1.8 No runtime/data changes; no forbidden file modifications
+- [x] 1.6 Run `openspec validate add-hybrid-retrieval-ranking-diagnosis --strict`
+- [x] 1.7 Update `docs/changelog.md` with Phase 10 planning entry
+- [x] 1.8 No runtime/data changes; no forbidden file modifications
 
 ## Phase 10.2 — Trace Data Audit
 
@@ -111,10 +111,10 @@
 
 ## Phase 10.9 — Final Validation and Archive
 
-- [ ] 9.1 Run full quality gate: unit tests + integration tests + coverage + ruff + secret scan
-- [ ] 9.2 Verify integration tests: 0 skipped
-- [ ] 9.3 Run `openspec validate add-hybrid-retrieval-ranking-diagnosis --strict`
-- [ ] 9.4 Run `openspec validate --all`
-- [ ] 9.5 Verify no Phase 7/8/9 baseline reports modified
+- [x] 9.1 Run full quality gate: unit tests + integration tests + coverage + ruff + secret scan
+- [x] 9.2 Verify integration tests: 0 skipped
+- [x] 9.3 Run `openspec validate add-hybrid-retrieval-ranking-diagnosis --strict`
+- [x] 9.4 Run `openspec validate --all`
+- [x] 9.5 Verify no Phase 7/8/9 baseline reports modified
 - [ ] 9.6 Archive change
-- [ ] 9.7 Commit and push
+- [x] 9.7 Commit and push
