@@ -30,11 +30,11 @@
 
 ### A2: Update ARCHITECTURE.md
 
-- [ ] Read current `docs/technical/ARCHITECTURE.md`
-- [ ] Update embedding/LLM sections to reflect opt-in reality
-- [ ] Add Phase 15 Chat Copilot section
-- [ ] Verify no claims contradict current implementation
-- [ ] Update tasks.md when done
+- [x] Read current `docs/technical/ARCHITECTURE.md`
+- [x] Update embedding/LLM sections to reflect opt-in reality
+- [x] Add Phase 15 Chat Copilot section
+- [x] Verify no claims contradict current implementation
+- [x] Update tasks.md when done
 
 ### A1: Fix RetrievalTrace Class Collision (If Time Permits)
 

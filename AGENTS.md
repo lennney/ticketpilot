@@ -137,22 +137,78 @@ If any check fails, the gate exits non-zero. No `|| true` bypass.
 | Prompt templates | `prompts/harness/` | Reusable batch prompts |
 | ChatGPT controller context | `docs/harness/` | Session handoff, decisions, next actions |
 
-## 11. Controller Context Rules
+## 11. Controller Autonomy Rules
+
+### Default: Act First, Ask Only When Blocked
+
+As Controller, default to **acting autonomously**. Only interrupt the human when:
+- You are genuinely blocked (cannot determine next step)
+- A non-negotiable rule is at risk of violation
+- The human explicitly requests a confirmation
+
+### Decisions I Can Make Without Asking
+
+| Category | What I Can Do | Constraints |
+|----------|--------------|-------------|
+| **Task execution** | Execute tasks from tasks.md | Use subagent, verify tests pass |
+| **Code changes** | Implement B/C-class tech debt fixes | Tests pass, ruff clean, no breaking changes |
+| **Documentation** | Update docs to reflect code changes | No overclaiming, accurate claims only |
+| **Error handling** | Apply fixes from repair_playbook.md | Follow documented procedures |
+| **OpenSpec updates** | Update tasks.md status, commit | Follow commit message conventions |
+| **Subagent dispatch** | Any task that can be delegated | Set clear scope and acceptance criteria |
+
+### Decisions That Require Human Confirmation
+
+| Category | Why | When to Ask |
+|----------|-----|-------------|
+| **A-class changes** | Architecture-level, irreversible | Before starting |
+| **Breaking changes** | May affect tests or API | Before committing |
+| **New OpenSpec creation** | Changes project scope | Before creating |
+| **Deletion of files** | Data loss risk | Before committing |
+| **Safety constraint overrides** | No-auto-send, no-LLM invariants | Never override |
+
+### Escalation Triggers (Ask Immediately)
+
+```
+1. Quality gate fails after 2 retries
+2. Test coverage drops below 70%
+3. OpenSpec validation fails repeatedly
+4. Unexpected breaking changes discovered
+5. Security issue detected (secrets, keys)
+6. You are blocked for > 10 minutes trying to resolve an issue
+```
+
+### How to Escalate
+
+When escalating, provide:
+1. **What I tried** — what approach was taken
+2. **What happened** — the specific failure or block
+3. **What I need** — specific decision or action from human
+4. **Options considered** — alternatives already ruled out
+
+### Subagent Principle
+
+Always use subagent for code implementation:
+- **backend-engineer** for feature/bug implementation
+- **code-reviewer** for architecture/security review
+- **Explore** for investigation before planning
+
+I do not implement code directly. I delegate and verify.
+
+---
+
+## 12. Controller Context Rules
 
 Every harness batch must follow these rules:
 
-1. **Update `docs/harness/chatgpt_controller_context.md`** before final commit if project status, phase, or next actions changed.
-2. **Update `docs/harness/controller_session_log.md`** with a structured handoff summary at the end of every batch.
+1. **Update `docs/harness/PROJECT_CONTEXT.md`** — update current phase and tasks when they change.
+2. **Commit after each completed task** — atomic commits, clear messages.
 3. **Controller context is NOT a chat transcript** — never store full conversation logs, API keys, secrets, or raw private communication.
 4. **Store only structured handoff summaries**: phase changes, key decisions, validation results, next actions.
-5. **Notion is human-facing dashboard only** — the canonical source of truth for ChatGPT handoff is `docs/harness/`.
-6. **Return at end of every batch** whether controller context was updated.
+5. **Subagent results** go to `subagent_results/` — I read these, not the human.
+6. **Error memory** is written to `reports/harness/error_memory.jsonl` — I maintain this.
 
-- Phase 7/8/9 baseline reports are immutable
-- New phases write to namespaced paths (`phase10_*`, `phase11_*`, etc.)
-- Portfolio docs are summary-facing — never overwrite prior phase portfolios
-
-## 10. Portfolio Boundary Wording
+## 13. Portfolio Boundary Wording
 
 All portfolio-facing documents, demo scripts, and README files must include
 explicit boundary statements:
@@ -164,24 +220,40 @@ explicit boundary statements:
 - **Evaluation**: "Offline evaluation on 101 synthetic tickets — not a production benchmark"
 - **Phase findings**: "Diagnosis-oriented, not production-optimized"
 
-See `docs/technical/validation_policy.md` for the full validation level matrix.
-See `docs/technical/ai_development_harness.md` for the full harness design.
+## 14. Error Memory and Learning System
 
-## 12. Error Memory and Learning System
+After any failed validation:
+- Write to `reports/harness/error_memory.jsonl` — structured error log
+- Apply fix from `reports/harness/repair_playbook.md` if available
+- Update `repair_playbook.md` if a new pattern is found
 
-Before each harness batch, read:
-- `docs/harness/preflight_checklist.md` — pre-batch verification steps
-- `docs/harness/agent_learning_rules.md` — stable cross-phase rules
-
-After any failed validation, run post-failure reflection:
-- `prompts/harness/post_failure_reflection.md` — structured failure analysis
-
-Error memory and repair resources:
-- `reports/harness/error_memory.jsonl` — structured error log (append-only)
-- `reports/harness/repair_playbook.md` — categorized repair procedures
-- `reports/harness/error_log.md` — narrative error history
-- `prompts/harness/memory_audit.md` — periodic audit template
+Error memory entries record:
+- What failed (symptom, error type)
+- Root cause (if identified)
+- How it was fixed
+- Prevention rule
 
 **Do not bloat AGENTS.md with raw logs.** Promote only stable, high-risk, cross-phase rules after confirmation.
 **Do not store full chat transcripts** in any harness documentation.
 **Do not store secrets, API keys, or Authorization headers** in error memory.
+
+## 15. Context Compression Handoff Rules
+
+Context compression is automatic (system-triggered at ~80% context limit). When triggered:
+
+1. **Write structured handoff** to `reports/harness/compression_handoff_<timestamp>.md`
+   - Trigger reason: "context compression, system automatic"
+   - Current state: phase, active tasks, completion status
+   - Next actions
+   - Key files
+
+2. **Update PROJECT_CONTEXT.md** — sync current state before compression
+
+3. **NO automatic commit** — commit only when work is complete (atomic per task)
+
+4. **On resume from compression**:
+   - Read the latest `compression_handoff_*.md` in `reports/harness/`
+   - Read `PROJECT_CONTEXT.md` for full state
+   - Resume from where handoff says "待做" (todo)
+
+**Anti-pattern to avoid**: Treating compression as a handoff point. Compression is for state recovery only. Real handoffs happen at task boundaries with commits.

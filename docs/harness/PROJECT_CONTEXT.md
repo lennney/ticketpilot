@@ -29,13 +29,13 @@ Phase 15.4（Chat UI 集成）+ 技术债整理
 - pytest + ruff
 
 ## 下一步任务
-Phase 15.4: Streamlit 聊天界面集成（查看 align-chat-support-product-experience/tasks.md）
-技术债整理：按 tasks.md 顺序修复（先 B2 → B3 → B1 → A2 → A1）
+A1: RetrievalTrace class collision fix（traces.py vs schema/retrieval.py）
+然后 commit 并 push
 
 ## 技术债优先级
-P1: A1（RetrievalTrace冲突）、A2（ARCHITECTURE.md不同步）、B1（claim_guard映射错误）
-P2: B2（_build_prompt_input丢弃）、B3（safe-fallback重复）
-P3: C1（METRICS过时）、C2（ARCHITECTURE.md缺Phase15）
+P1: A1（RetrievalTrace冲突）
+P2: A2 ✅（ARCHITECTURE.md同步：更新opt-in LLM/embedding描述、添加Phase15 Chat模块）、B1 ✅（claim_guard映射错误）、B2 ✅（_build_prompt_input丢弃）、B3 ✅（safe-fallback重复）
+P3: C1（METRICS过时）
 
 ## 当前技术债 OpenSpec
 `address-technical-debt` — 查看 tasks.md 获取详细任务列表

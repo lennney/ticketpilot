@@ -18,8 +18,10 @@ TicketPilot is a **Chinese customer support ticket triage and evidence-grounded 
 ### What TicketPilot Does NOT Do
 
 - Does not auto-send replies (human review required by design)
-- Does not connect to real LLM providers (FakeDraftProvider only)
-- Does not use real embedding providers (FakeEmbeddingProvider only — pipeline verification)
+- Does not connect to real LLM providers by default (FakeLLMProvider only — pipeline verification)
+  - Real LLM providers are opt-in via `TICKETPILOT_LLM_PROVIDER=openai_compatible` + `.env.local` API keys
+- Does not use real embedding providers by default (FakeEmbeddingProvider only — pipeline verification)
+  - Real embedding providers are opt-in via `.env.local` configuration
 - Does not have authentication or multi-user support
 - Does not have a production web server or deployment
 - Does not have a production evaluation pipeline or golden-answer test sets
@@ -170,8 +172,9 @@ Actions: APPROVE / EDIT / ESCALATE / REJECT. Each action appends `ReviewDecision
 
 ### Drafting Components
 
-- **generate_draft(ticket_output)**: Standalone composition function that wires FakeDraftProvider + CitationValidator
-- **FakeDraftProvider**: Deterministic template-based Chinese reply generator; no LLM, no network, no API keys
+- **generate_draft(ticket_output)**: Standalone composition function that wires LLM provider + CitationValidator
+- **FakeLLMProvider**: Deterministic template-based Chinese reply generator; no LLM, no network, no API keys
+- **OpenAICompatibleProvider**: Real LLM provider via OpenAI-compatible API endpoint; opt-in via `TICKETPILOT_LLM_PROVIDER=openai_compatible` + `.env.local` API keys; human review always required
 - **CitationValidator**: Regex-based guardrail checking citation existence and claim-coverage
 - **run_pipeline_with_draft()**: Optional entrypoint combining 4-stage pipeline with draft generation
 
@@ -182,6 +185,16 @@ Actions: APPROVE / EDIT / ESCALATE / REJECT. Each action appends `ReviewDecision
 - **ReviewStore**: Append-only JSONL persistence (save, load_all, count)
 - **determine_trigger_reasons()**: Pure function that inspects risk flags, fallback reason, and unsupported claims
 - **build_review_decision()**: Pure data-transformation function converting DraftedTicketResult + action into ReviewDecision
+
+### Chat Components (Phase 15+)
+
+- **Chat module** (`src/ticketpilot/chat/`): Streamlit-based multi-turn chat interface for ticket triage sessions
+- **ChatDisplay** schema: Maps `TicketOutput` to chat UI display with risk badge, evidence panel, and AI draft
+- **ticket_output_to_chat_display()**: Adapter function wiring pipeline output to `ChatDisplay`
+- **ChatSession** / **ChatState**: Multi-turn session management with conversation history
+- **EvidenceDisplayItem**: Structured evidence display with chunk_id, content snippet, source type, and relevance score
+- Risk decision matrix: severity × evidence × guard → `human_review_required` in chat context
+- Phase 15.4+ connects risk escalation display, evidence/draft panels, and human review queue
 
 ---
 
@@ -199,8 +212,6 @@ Actions: APPROVE / EDIT / ESCALATE / REJECT. Each action appends `ReviewDecision
 
 The following are explicitly deferred from MVP scope:
 
-- Real embedding provider (small 384-d and quality 768-d tiers planned but not implemented)
-- Real LLM provider (OpenAI, Claude, etc.) — AbstractDraftProvider interface ready but no implementation
 - Evaluation pipeline with golden-answer test sets and automated metrics
 - Realistic enterprise data pack (current seed data is synthetic)
 - Trace persistence (RetrievalTrace and DraftGenerationTrace are in-memory only)
@@ -209,4 +220,4 @@ The following are explicitly deferred from MVP scope:
 - Authentication / multi-user review workflow
 - Auto-send / reply dispatch integration
 - Database-backed ReviewStore (replacing JSONL)
-- Trace dashboard and observability (Langfuse, Ragas)
+- Chat module trace dashboard and observability (Langfuse, Ragas)
