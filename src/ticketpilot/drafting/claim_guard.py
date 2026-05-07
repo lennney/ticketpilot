@@ -13,7 +13,7 @@ from enum import Enum
 
 from pydantic import BaseModel, Field
 
-from ticketpilot.drafting.llm_provider import SAFE_FALLBACK_TEXT
+from ticketpilot.drafting._safe_fallback import is_safe_fallback
 from ticketpilot.drafting.schemas import DraftReply
 from ticketpilot.schema.evidence import EvidenceCandidate
 from ticketpilot.schema.ticket import RiskAssessment, RiskFlag
@@ -125,23 +125,6 @@ def _extract_chunk_ids(text: str) -> list[str]:
     return [uid.lower() for uid in re.findall(pattern, text)]
 
 
-def _is_safe_fallback(draft_text: str) -> bool:
-    """Check if draft is a safe-fallback message with no substantive claims."""
-    if not draft_text:
-        return True
-    text_lower = draft_text.lower()
-    safe_patterns: list[str] = [
-        "无法确认具体政策条款",
-        "建议转人工处理",
-        "转人工",
-        "证据不足",
-    ]
-    for pattern in safe_patterns:
-        if pattern in text_lower:
-            return True
-    return draft_text == SAFE_FALLBACK_TEXT
-
-
 def _has_substantive_content(text: str) -> bool:
     """Check if text contains substantive content beyond greetings.
 
@@ -158,6 +141,10 @@ def _has_substantive_content(text: str) -> bool:
         return False
     # Use code-point range for CJK Unified Ideographs (U+4E00..U+9FFF)
     return any(c >= "一" and c <= "鿿" for c in cleaned)
+
+
+# Backward-compatibility alias so existing imports (e.g., tests) continue to work.
+_is_safe_fallback = is_safe_fallback
 
 
 def _check_forbidden_promises(draft_text: str) -> tuple[bool, list[str]]:
@@ -241,7 +228,7 @@ def check_claim_guard(
 
     # 2. Uncited claim detection
     has_uncited = False
-    if not _is_safe_fallback(draft_text):
+    if not is_safe_fallback(draft_text):
         if not chunk_ids and _has_substantive_content(draft_text):
             has_uncited = True
 
@@ -268,9 +255,9 @@ def check_claim_guard(
     failure_reasons: list[GuardFailureType] = []
     if not guard_passed:
         if citation_coverage < 1.0:
-            failure_reasons.append(GuardFailureType.UNCITED_SUBSTANTIVE_CLAIM)
-        if has_uncited:
             failure_reasons.append(GuardFailureType.UNSUPPORTED_POLICY_CLAIM)
+        if has_uncited:
+            failure_reasons.append(GuardFailureType.UNCITED_SUBSTANTIVE_CLAIM)
         if has_promise:
             failure_reasons.append(GuardFailureType.FORBIDDEN_PROMISE)
         if not risk_respected:

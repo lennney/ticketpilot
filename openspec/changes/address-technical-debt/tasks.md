@@ -4,29 +4,29 @@
 
 ### B2: Fix _build_prompt_input Discarded (Simplest)
 
-- [ ] Read `src/ticketpilot/drafting/generator.py` lines 180-220
-- [ ] Identify what `_build_prompt_input` returns
-- [ ] Either use the return value OR remove the call
-- [ ] Run unit tests to verify no regression
-- [ ] Update tasks.md when done
+- [x] Read `src/ticketpilot/drafting/generator.py` lines 180-220
+- [x] Identify what `_build_prompt_input` returns
+- [x] Either use the return value OR remove the call
+- [x] Run unit tests to verify no regression
+- [x] Update tasks.md when done
 
 ### B3: Extract safe-fallback Utility
 
-- [ ] Identify common patterns between `claim_guard.py:_is_safe_fallback` and `draft_citation_validator.py:_is_safe_fallback`
-- [ ] Create `src/ticketpilot/drafting/_safe_fallback.py` with shared function
-- [ ] Update `claim_guard.py` to import from shared module
-- [ ] Update `draft_citation_validator.py` to import from shared module
-- [ ] Run unit tests to verify no regression
-- [ ] Update tasks.md when done
+- [x] Identify common patterns between claim_guard.py and draft_citation_validator.py
+- [x] Create `src/ticketpilot/drafting/_safe_fallback.py` with shared function
+- [x] Update `claim_guard.py` to import from shared module
+- [x] Update `draft_citation_validator.py` to import from shared module
+- [x] Run unit tests to verify no regression
+- [x] Update tasks.md when done
 
 ### B1: Fix claim_guard Mapping Error
 
-- [ ] Read `src/ticketpilot/drafting/claim_guard.py` lines 265-275
-- [ ] Understand `citation_coverage` vs `has_uncited_claims` semantics
-- [ ] Fix mapping: `citation_coverage < 1.0` should NOT add `UNCITED_SUBSTANTIVE_CLAIM`
-- [ ] Update related tests if needed
-- [ ] Run unit tests to verify no regression
-- [ ] Update tasks.md when done
+- [x] Read `src/ticketpilot/drafting/claim_guard.py` lines 265-275
+- [x] Understand `citation_coverage` vs `has_uncited_claims` semantics
+- [x] Fix mapping: `citation_coverage < 1.0` should NOT add `UNCITED_SUBSTANTIVE_CLAIM`
+- [x] Update related tests if needed
+- [x] Run unit tests to verify no regression
+- [x] Update tasks.md when done
 
 ### A2: Update ARCHITECTURE.md
 

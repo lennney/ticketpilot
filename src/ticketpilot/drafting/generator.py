@@ -182,34 +182,27 @@ def generate_draft(
 
     # 2. Build prompt input (or use injected prompt)
     if inject_prompt is not None:
-        pass  # Skip prompt building — use injected prompt directly (testing only)
+        # Skip prompt building — use injected prompt directly (testing only)
+        # Risk flags are not available when injecting a prompt, so pass empty list
+        prompt_input = DraftPromptInput(
+            ticket_text=ticket_output.normalized_ticket.text,
+            issue_type=ticket_output.classification.intent.value,
+            risk_flags=[],
+            severity="low",
+            must_human_review=False,
+            evidence_candidates=ticket_output.evidence_candidates,
+        )
     else:
-        _build_prompt_input(ticket_output)  # Validate input; result used by LLM provider
+        prompt_input = _build_prompt_input(ticket_output)
 
     # 3. Call LLM provider to generate draft
-    risk_strs: list[str] = []
-    if ticket_output.risk_assessment and ticket_output.risk_assessment.flags:
-        risk_strs = [f.value for f in ticket_output.risk_assessment.flags]
-
-    severity = (
-        ticket_output.risk_assessment.severity.value
-        if ticket_output.risk_assessment
-        else "low"
-    )
-
-    must_review = (
-        ticket_output.risk_assessment.must_human_review
-        if ticket_output.risk_assessment
-        else False
-    )
-
     draft = llm.generate_draft(
-        normalized_text=ticket_output.normalized_ticket.text,
-        issue_type=ticket_output.classification.intent.value,
-        risk_flags=risk_strs,
-        severity=severity,
-        must_human_review=must_review,
-        evidence_candidates=ticket_output.evidence_candidates,
+        normalized_text=prompt_input.ticket_text,
+        issue_type=prompt_input.issue_type,
+        risk_flags=prompt_input.risk_flags,
+        severity=prompt_input.severity,
+        must_human_review=prompt_input.must_human_review,
+        evidence_candidates=prompt_input.evidence_candidates,
     )
 
     # Set ticket_id

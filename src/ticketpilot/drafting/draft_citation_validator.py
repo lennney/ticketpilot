@@ -10,18 +10,15 @@ from __future__ import annotations
 
 from pydantic import BaseModel, Field
 
-from ticketpilot.drafting.llm_provider import SAFE_FALLBACK_TEXT
+from ticketpilot.drafting._safe_fallback import (
+    SAFE_FALLBACK_PATTERNS,
+    is_safe_fallback,
+)
 from ticketpilot.drafting.schemas import DraftReply
 from ticketpilot.schema.evidence import EvidenceCandidate
 
-# Chinese strings that indicate a substantive customer-service answer
-# (as opposed to a safe-fallback "needs human review" message).
-_SAFE_FALLBACK_PATTERNS: list[str] = [
-    "无法确认具体政策条款",
-    "建议转人工处理",
-    "转人工",
-    "证据不足",
-]
+# Backward compatibility: re-export SAFE_FALLBACK_PATTERNS under the old name.
+_SAFE_FALLBACK_PATTERNS: list[str] = SAFE_FALLBACK_PATTERNS
 
 
 class DraftCitationValidationResult(BaseModel):
@@ -136,7 +133,7 @@ def validate_draft_citations(
         # Duplicates are warnings, not errors — don't set is_valid=False
 
     # --- Check 3: Missing citation heuristic ---
-    is_fallback = _is_safe_fallback(draft.draft_text)
+    is_fallback = is_safe_fallback(draft.draft_text)
     has_citations = bool(cited) or bool(draft.citations)
 
     if not is_fallback and not has_citations:
@@ -164,24 +161,3 @@ def validate_draft_citations(
         result.must_human_review = True
 
     return result
-
-
-def _is_safe_fallback(draft_text: str) -> bool:
-    """Heuristic: check if draft text is a safe-fallback message.
-
-    A safe fallback acknowledges insufficient evidence and recommends
-    human review, without making substantive customer-service claims.
-
-    Args:
-        draft_text: The draft reply text to check.
-
-    Returns:
-        True if the text matches safe-fallback patterns.
-    """
-    if not draft_text:
-        return True
-    text_lower = draft_text.lower()
-    for pattern in _SAFE_FALLBACK_PATTERNS:
-        if pattern in text_lower:
-            return True
-    return draft_text == SAFE_FALLBACK_TEXT
