@@ -16,7 +16,9 @@ TicketPilot is a local portfolio/demo project for Chinese customer-service ticke
 - Deterministic: seed data and template-based generation, no real LLM or embedding service required by default (real embedding provider opt-in via environment variable)
 - Safety constraint: no auto-send is an architectural invariant
 
-**Project phases:** Phase 7 (MVP Data & Evaluation) → Phase 8 (Hybrid Retrieval Upgrade) → Phase 9 (Evaluation-Driven Knowledge Optimization) → Phase 10 (Ranking Diagnosis & Granular Evaluation) → Phase 11 (Evidence-Grounded LLM Draft, complete)
+**Project phases:** Phase 7 (MVP Data & Evaluation) → Phase 8 (Hybrid Retrieval Upgrade) → Phase 9 (Evaluation-Driven Knowledge Optimization) → Phase 10 (Ranking Diagnosis & Granular Evaluation) → Phase 11 (Evidence-Grounded LLM Draft, complete) → Phase 12 (Provider Comparison & Portfolio Docs, complete)
+
+**Key metrics:** Doc-ID Recall@10 = 91.9% (Phase 10 granular diagnosis) | Provider comparison: Fake/Real both 25/25 success (Phase 12) | Quality gate: 1069 unit + 146 integration tests, 87% coverage
 
 ## 2. Why it is not a normal RAG demo
 

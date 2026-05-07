@@ -4,7 +4,19 @@
 
 ---
 
-## 2026-05-07 -- Phase 12C: Optional Real Provider Run
+## 2026-05-07 -- Phase 12D: Metrics Dashboard and Portfolio Evidence Pack
+
+| Check | Result |
+|---|---|
+| Ruff | All checks passed |
+| OpenSpec --all | 22/22 passed |
+| Docs-only batch | Full quality gate not required |
+
+**Status**: PASSED — Docs/portfolio-only batch, no runtime changes
+
+---
+
+## 2026-05-07 -- Phase 12C.2: Strict Quality Gate Restoration
 
 | Check | Result |
 |---|---|

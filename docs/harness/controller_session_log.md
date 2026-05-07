@@ -5,6 +5,20 @@
 
 ---
 
+## 2026-05-07 — Phase 12D: Metrics Dashboard and Portfolio Evidence Pack
+
+**Summary**: Created 8 portfolio docs covering metrics dashboard, provider comparison analysis, case studies, error analysis, visual explanation pack, reviewer-ready metric proposal, risk distribution, and interview data story. Updated README.md/en.md and changelog. No runtime code changes.
+
+**Files Created**: ticketpilot_metrics_dashboard.md, phase12_provider_comparison_analysis.md, phase12_case_studies.md, phase12_error_analysis.md, phase12_visual_explanation_pack.md, phase12_reviewer_ready_metric.md, phase12_risk_distribution.md, phase12_data_story_for_interviews.md.
+
+**Validation**: ruff clean, openspec --all 22/22 passed. Full quality gate skipped (docs-only per AGENTS.md).
+
+**Key Metrics Documented**: Doc-ID Recall@10 = 91.9%, FakeLLMProvider 25/25, RealProvider 25/25, 1069 unit + 146 integration tests, 87% coverage.
+
+**Phase Status**: Phase 12 (Demo Readiness) complete.
+
+---
+
 ## 2026-05-07 — Phase 12C: Optional Real Provider Run
 
 **Summary**: Checked real provider env (all unset), ran fake baseline comparison with FakeLLMProvider (25/25 cases, avg confidence 0.85, 8 human review triggers), generated canonical reports (summary JSON, rows JSON, markdown report), and passed full quality gate (1069 unit + 146 integration, 0 skipped, 86.71% coverage). Real provider run pending local env configuration.

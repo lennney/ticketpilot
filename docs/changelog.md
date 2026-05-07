@@ -1,6 +1,51 @@
 # TicketPilot Changelog
 # TicketPilot Changelog
 
+## 2026-05-07 -- Phase 12D: Metrics Dashboard and Portfolio Evidence Pack
+
+### Docs/Portfolio Only
+- No runtime code changes
+- No LLM API calls
+- No retrieval/embeddings/knowledge modifications
+
+### Created Files
+- docs/portfolio/ticketpilot_metrics_dashboard.md — One-page metrics summary with 7 sections
+- docs/portfolio/phase12_provider_comparison_analysis.md — Fake vs real provider deep analysis
+- docs/portfolio/phase12_case_studies.md — 5 representative cases from Phase 12 fixture
+- docs/portfolio/phase12_error_analysis.md — Retrieval, draft, and engineering error analysis
+- docs/portfolio/phase12_visual_explanation_pack.md — Mermaid diagrams + shot lists
+- docs/portfolio/phase12_reviewer_ready_metric.md — Reviewer-ready rate definition and proposal
+- docs/portfolio/phase12_risk_distribution.md — Risk flag and human review trigger distribution
+- docs/portfolio/phase12_data_story_for_interviews.md — 30s/1m/3m stories + PM/AI/RAG/QA versions
+
+### Updated Files
+- README.md — Added Phase 12 completion + key metrics summary
+- README.en.md — Same
+
+### Validation
+- ruff check: Clean (docs-only batch)
+- openspec validate --all: 22/22 passed
+- Full quality gate not run (docs-only batch, per AGENTS.md validation policy)
+
+### Boundary
+- Local demo / portfolio prototype
+- All metrics from offline evaluation
+- Provider comparison: offline fixture-based, not a benchmark
+
+---
+
+## 2026-05-07 -- Phase 12C.2: Strict Quality Gate Restoration
+
+### Fixed
+- scripts/run_quality_gate.sh: Added TICKETPILOT_LLM_PROVIDER=fake before unit/integration test runs
+- Isolates tests from .env.local real provider configuration
+- .env.local preserved intact
+
+### Validation
+- Quality gate: PASSED — 1069 unit + 146 integration, 0 skipped, 87% coverage, 22/22 OpenSpec, secret scan clean
+
+---
+
 ## 2026-05-07 -- Phase 12C: Real LLM Provider Comparison Run
 
 ### Validation

@@ -5,6 +5,44 @@
 
 ---
 
+## Completed Batch: Phase 12D — Metrics Dashboard and Portfolio Evidence Pack
+
+### What Was Done
+
+- Created 8 portfolio docs: metrics dashboard, provider comparison analysis, case studies, error analysis, visual explanation pack, reviewer-ready metric, risk distribution, interview data story
+- Updated README.md/en.md with Phase 12 completion and key metrics
+- Updated changelog with Phase 12D entry
+- No runtime code changes, no LLM API calls, no retrieval/embeddings modifications
+
+### Files Created
+
+- `docs/portfolio/ticketpilot_metrics_dashboard.md`
+- `docs/portfolio/phase12_provider_comparison_analysis.md`
+- `docs/portfolio/phase12_case_studies.md`
+- `docs/portfolio/phase12_error_analysis.md`
+- `docs/portfolio/phase12_visual_explanation_pack.md`
+- `docs/portfolio/phase12_reviewer_ready_metric.md`
+- `docs/portfolio/phase12_risk_distribution.md`
+- `docs/portfolio/phase12_data_story_for_interviews.md`
+
+### Files Modified
+
+- `README.md`
+- `README.en.md`
+- `docs/changelog.md`
+
+### Validation
+
+- ruff check: Clean
+- openspec validate --all: 22/22 passed
+- Full quality gate not run (docs-only batch per AGENTS.md)
+
+### Commit
+
+`pending`
+
+---
+
 ## Completed Batch: Phase 12C — Optional Real Provider Run
 
 ### What Was Done

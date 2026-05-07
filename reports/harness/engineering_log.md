@@ -4,6 +4,23 @@
 
 ---
 
+## 2026-05-07 — Phase 12D: Metrics Dashboard and Portfolio Evidence Pack
+
+**Problem**: Phase 12C completed the provider comparison run. Phase 12D needed to create portfolio-facing documentation: metrics dashboard, provider analysis, case studies, error analysis, visual explanations, interview data story, and reviewer-ready metric proposal.
+
+**Approach**: Docs/portfolio-only batch. No runtime code changes, no LLM API calls, no retrieval/embeddings modifications. All metrics traced to existing repo files. Explicit boundary wording on all claims.
+
+**Key Decisions**:
+- D11: Phase 12D is the final documentation phase for the Phase 12 demo readiness sprint. No further runtime changes unless explicitly planned in a new OpenSpec change.
+- D12: Metrics dashboard is the canonical single-page metrics reference — other portfolio docs link to it rather than duplicating numbers.
+- D13: "Reviewer-ready rate" is proposed as a better safety metric than confidence alone.
+
+**Files Created**: 8 new portfolio docs under `docs/portfolio/`.
+
+**Validation**: ruff clean, openspec --all 22/22 passed. Full quality gate skipped (docs-only batch per AGENTS.md).
+
+---
+
 ## 2026-05-07 — Phase 12C: Optional Real Provider Run
 
 **Problem**: Phase 12A established OpenAICompatibleProvider for offline comparison. Phase 12C attempts real provider run if env is configured, otherwise validates fake baseline and records pending status.

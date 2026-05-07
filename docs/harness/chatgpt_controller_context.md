@@ -41,7 +41,8 @@
 | Phase 11 | **Archived** | Evidence-Grounded LLM Draft Generation — 8-layer safety architecture, LLMProvider + FakeLLMProvider, ClaimGuard, offline draft evaluation (8 deterministic metrics). |
 | Phase 12A | **Archived** | OpenAI-compatible LLM provider for offline comparison — OpenAICompatibleProvider, 25-case fixture set, comparison runner, mock tests, real provider pending local env configuration. |
 | Phase 12B | **Archived** | Agent Error Memory and Repair Learning System — harness/process improvement only, no product runtime changes. |
-| Phase 12C | **Active** | Optional Real Provider Run — fake baseline validated, real provider pending local env configuration. |
+| Phase 12C | **Archived** | Optional Real Provider Run — fake baseline validated, real provider (deepseek-v4-pro) run completed 2026-05-07. |
+| Phase 12D | **Completed** | Metrics Dashboard and Portfolio Evidence Pack — 8 portfolio docs created/updated, no runtime changes. |
 
 ## 4. Current Working Context
 
