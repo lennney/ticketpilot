@@ -2,7 +2,7 @@
 
 **Scope**: Local demo / portfolio prototype
 **Generated**: 2026-05-07
-**Status**: Proposal — not yet implemented in evaluation runner
+**Status**: Implemented in Phase 13 — extended comparison runner produces reviewer-ready data
 
 ---
 
@@ -35,17 +35,19 @@ A draft with `confidence = 0.5` could still be:
 
 ---
 
-## Current Data Gap
+## Current Data Gap (Phase 12 run)
 
 Phase 12 provider comparison rows (`phase12_llm_provider_comparison_rows.json`) contain:
 - `fake_has_citations` / `real_has_citations` (boolean)
 - `fake_human_review` / `real_human_review` (boolean)
 - `fake_confidence` / `real_confidence` (float)
 
-Phase 12 does **not** currently contain:
+Phase 12 does **not** contain:
 - Citation validation result (valid/invalid IDs, duplicates, missing citations)
 - Claim guard result (guard_passed, has_forbidden_promise, has_uncited_claims)
 - Unsupported claims count
+
+**Resolution in Phase 13**: Extended runner now produces all above fields via `DraftEvaluationRow` serialization.
 
 ---
 
@@ -97,13 +99,34 @@ reviewer_ready_rate = (
 
 ---
 
-## Next Steps to Implement
+## Phase 13 Implementation Results
 
-1. **Extend Phase 12 comparison runner** to output per-case citation validation and claim guard results alongside existing fields
-2. **Re-run comparison** with the extended output schema
-3. **Compute reviewer-ready rate** from the new rows
-4. **Compare between providers**: if fake and real have different reviewer-ready rates, investigate the cause
-5. **Set a minimum threshold**: define what reviewer-ready rate is acceptable for the system to proceed
+The Phase 13 extended runner produced `DraftEvaluationRow` objects for all 25 FakeLLMProvider cases.
+From the extended output (`phase12_llm_provider_comparison_summary.json`):
+
+| Metric | Value |
+|--------|-------|
+| Citation validation pass rate | 100% (25/25) |
+| Claim guard pass rate | 0% (0/25) |
+| Unsupported claim rate | 0% (0/25) |
+| Reviewer-ready rate (FakeLLMProvider) | 0% — guard fails on all 25 cases |
+
+The 0% reviewer-ready rate for FakeLLMProvider reflects the template-based provider's output:
+drafts contain uncited claims in the text, causing the claim guard's `has_uncited_claims` check to fail.
+This is an expected characteristic of template-based generation — real LLM providers would
+likely produce different reviewer-ready rates.
+
+**Next step**: Run extended runner with real provider (`.env.local` configured) to get per-provider reviewer-ready rates.
+
+---
+
+## Next Steps (Post-Phase 13)
+
+1. ~~**Extend Phase 12 comparison runner**~~ (DONE in Phase 13) Extended output now includes citation validation and claim guard results
+2. ~~**Re-run comparison**~~ (DONE in Phase 13) Extended rows generated with `DraftEvaluationRow` schema
+3. ~~**Compute reviewer-ready rate**~~ (DONE in Phase 13) Available from extended summary output
+4. **Compare between providers**: Run extended runner with real provider to get per-provider reviewer-ready rates
+5. **Set a minimum threshold**: Define acceptable reviewer-ready rate for system to proceed
 
 ---
 

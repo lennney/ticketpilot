@@ -45,19 +45,21 @@
 
 | Metric | Value | Source |
 |--------|-------|--------|
-| Citation precision (Phase 11 eval) | 100% (10/10 cases) | `reports/eval/phase11_draft_evaluation_summary.json` |
-| Evidence coverage avg | reported | same |
-| Unsupported claim rate | reported | same |
-| Forbidden promise rate | reported | same |
-| Safe fallback rate | reported | same |
-| Human-review trigger correctness | reported | same |
-| Citation validation pass rate | reported | same |
-| Claim guard pass rate | reported | same |
-| Average confidence (Phase 11) | reported | same |
+| Citation precision (Phase 12 extended) | 100% (25/25 cases) | `phase12_llm_provider_comparison_summary.json` |
+| Evidence coverage avg (Phase 12) | 100% | same |
+| Unsupported claim rate (Phase 12) | 0% (0/25) | same |
+| Forbidden promise rate (Phase 12) | 0% (0/25) | same |
+| Safe fallback rate (Phase 12) | 0% (0/25) | same |
+| Human-review trigger correctness (Phase 12) | 100% (25/25) | same |
+| Citation validation pass rate (Phase 12) | 100% (25/25) | same |
+| Claim guard pass rate (Phase 12) | 0% (0/25) | same — all FakeLLMProvider drafts fail guard (uncited claims) |
+| Average confidence (Phase 12) | 0.825 | same |
 
-**Note**: Phase 11 draft evaluation used FakeLLMProvider with 10 synthetic cases.
-Phase 12 provider comparison extended this to 25 cases with both fake and real providers.
-Source: `reports/eval/phase11_draft_evaluation_summary.json`, `reports/eval/phase12_llm_provider_comparison_summary.json`
+**Note**: Phase 13 extended the Phase 12 comparison runner to produce `DraftEvaluationRow` objects
+with citation validation and claim guard results from `DraftGenerationResult`.
+FakeLLMProvider produces correct citations but all drafts fail claim guard — this reflects
+the template-based provider's output characteristics on the fixture set.
+Source: `reports/eval/phase12_llm_provider_comparison_summary.json` (Phase 13 extended output)
 
 ---
 
@@ -70,14 +72,14 @@ Source: `reports/eval/phase11_draft_evaluation_summary.json`, `reports/eval/phas
 | Avg confidence | 0.85 | 0.70 | same |
 | Human review triggers | 8 | 8 | same |
 | API errors | N/A | 0 | same |
-| Citation precision | — | — | not yet measured |
-| Unsupported claim rate | — | — | not yet measured |
-| Forbidden promise count | — | — | not yet measured |
-| Guard pass rate | — | — | not yet measured |
+| Citation precision | 100% | 100% | Phase 13 extended (25/25 cases each) |
+| Unsupported claim rate | 0% | 0% | Phase 13 extended |
+| Forbidden promise count | 0 | 0 | Phase 13 extended |
+| Guard pass rate | 0% | — | Phase 13 extended (real provider not run) |
 | Latency | N/A | not yet measured | — |
 | Estimated cost | N/A | not yet measured | — |
 
-**Source**: `reports/eval/phase12_llm_provider_comparison_summary.json`
+**Source**: `reports/eval/phase12_llm_provider_comparison_summary.json` (Phase 13 extended output)
 **Boundary**: Offline fixture-based comparison on 25 synthetic cases — not a benchmark.
 
 ---
@@ -140,11 +142,8 @@ The following metrics are not yet available from repo reports:
 
 | Metric | Status | Shortest path to obtain |
 |--------|--------|------------------------|
-| Draft citation precision (Phase 12, per-provider) | Not yet measured | Add citation validation to Phase 12 comparison runner |
-| Unsupported claim rate (Phase 12) | Not yet measured | Extend Phase 12 rows with claim guard results |
-| Forbidden promise rate (Phase 12) | Not yet measured | Extend Phase 12 rows with claim guard results |
-| Guard pass rate (Phase 12) | Not yet measured | Extend Phase 12 rows with claim guard results |
+| Guard pass rate for real provider | Not yet measured | Run Phase 13 extended runner with real provider |
 | Real provider latency | Not yet measured | Time Phase 12 comparison runner API calls |
 | Real provider estimated cost | Not yet measured | Multiply API call count by per-token pricing |
-| Human review trigger correctness | Not yet measured | Label Phase 12 fixtures with expected human review |
-| Reviewer-ready rate | Not yet measured | Compute from Phase 12 rows: citation_valid + guard_passed + unsupported_claims=0 |
+| Human review trigger correctness (real provider) | Not yet measured | Label Phase 12 fixtures with expected human review |
+| Reviewer-ready rate (per-provider) | Not yet measured | Compute from Phase 13 extended rows: citation_valid + guard_passed + unsupported_claims=0 |

@@ -14,7 +14,7 @@
 
 ---
 
-## 2026-05-07 -- Phase 13: Extended Draft Evaluation Metrics (Planning)
+## 2026-05-07 -- Phase 13: Extended Draft Evaluation Metrics (Planning + Implementation)
 
 ### OpenSpec Change Created
 - openspec/changes/add-extended-draft-evaluation-metrics/
@@ -28,6 +28,28 @@ Fill Phase 12 "not-yet-measured" gaps:
 - Citation precision, evidence coverage, unsupported claim rate
 - Forbidden promise rate, guard pass rate, citation validation pass rate
 - Reviewer-ready rate, human review trigger correctness
+
+### Implementation (Phase 13.2 + 13.3 + 13.4 + 13.5)
+
+**Critical discovery**: All metric functions and schemas already exist from Phase 11.8:
+- `src/ticketpilot/evaluation/draft_metrics.py` — `compute_citation_precision()`, `compute_evidence_coverage()`, etc.
+- `src/ticketpilot/evaluation/schemas.py` — `DraftEvaluationRow`, `DraftEvaluationSummary`
+- `tests/unit/test_draft_metrics.py` — 32 comprehensive tests (all passing)
+
+**Phase 13.3**: Extended `scripts/run_phase12_llm_provider_comparison.py` with:
+- `--extended-rows` flag to output `DraftEvaluationRow` JSON
+- `generate_draft()` integration with proper `TicketOutput` construction
+- Per-case serialization: citation_validation, guard_result, available_evidence_count, etc.
+- `compute_draft_evaluation_summary()` computation from rows
+
+**Results (FakeLLMProvider, 25 cases)**:
+- Citation precision: 100% (25/25)
+- Citation validation pass rate: 100% (25/25)
+- Guard pass rate: 0% (0/25) — template-based provider produces uncited claims
+- Unsupported claim rate: 0%
+- Human review trigger accuracy: 100%
+
+**Portfolio docs updated**: metrics dashboard, provider comparison analysis, reviewer-ready metric
 - Latency / cost if available
 
 ### Metrics Source

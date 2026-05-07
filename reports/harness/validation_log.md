@@ -25,6 +25,36 @@
 
 **Status**: PASSED
 
+---
+
+## 2026-05-07 -- Phase 13.2: Metric Functions (Already Implemented in Phase 11.8)
+
+| Check | Result |
+|---|---|
+| Source code | `draft_metrics.py` already exists from Phase 11.8 |
+| Schemas | `DraftEvaluationRow`/`DraftEvaluationSummary` already exist from Phase 11.8 |
+| Tests | `test_draft_metrics.py` already exists (32 tests) |
+| Validation | 32/32 passed |
+
+**Status**: PASSED — No new implementation needed; all components from Phase 11.8
+
+---
+
+## 2026-05-07 -- Phase 13.3: Extend Provider Comparison Runner
+
+| Check | Result |
+|---|---|
+| Ruff | All checks passed |
+| Script update | `run_phase12_llm_provider_comparison.py` extended with `--extended-rows` |
+| `generate_draft()` | Integrated with `TicketOutput` construction |
+| `DraftEvaluationRow` | Serialization from `DraftGenerationResult` fields |
+| Test run | 25/25 successful |
+| Extended rows output | `phase12_extended_eval_rows_*.json` generated |
+| Summary metrics | citation_precision=1.0, guard_pass_rate=0.0, human_review_accuracy=1.0 |
+| Unit tests | `test_draft_metrics.py` 32/32 passed, `test_draft_generator.py` 33/33 passed |
+
+**Status**: PASSED — Runner now produces extended `DraftEvaluationRow` JSON with full citation and guard metrics
+
 *Tracks validation runs, quality gate results, and test outcomes.*
 
 ---
