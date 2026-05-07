@@ -39,6 +39,12 @@
 - Root causes: WSL psycopg DLL loading + TICKETPILOT_LLM_PROVIDER env in .env.local
 - Phase 12C reports preserved intact
 
+### Phase 12C.2 Notes (2026-05-07)
+- Quality gate fully restored: strict policy enforced (no test skipping)
+- scripts/run_quality_gate.sh isolation added: TICKETPILOT_LLM_PROVIDER=fake before unit/integration runs
+- Quality gate result: PASSED (1069 unit + 146 integration tests, coverage 87%, all checks clean)
+- .env.local preserved intact (real provider still available for local dev)
+
 ---
 
 ## 2026-05-07 -- Phase 12B: Agent Error Memory and Repair Learning System
