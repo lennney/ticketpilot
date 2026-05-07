@@ -149,8 +149,8 @@ The following metrics are not yet available from repo reports:
 
 | Metric | Status | Shortest path to obtain |
 |--------|--------|------------------------|
-| Guard pass rate for real provider | **Now measured**: 84% (21/25, guard-aware) | ✅ Done — Phase 13.10 |
+| Guard pass rate for real provider | **Now measured**: 84% (21/25, guard-aware) | Done — Phase 13.10 |
 | Real provider latency | Not yet measured | Time Phase 12 comparison runner API calls |
 | Real provider estimated cost | Not yet measured | Multiply API call count by per-token pricing |
 | Human review trigger correctness (real provider) | Not yet measured | Label Phase 12 fixtures with expected human review |
-| Reviewer-ready rate (per-provider) | **Fake=68%, Real=64%** | ✅ Computed from Phase 13.10: guard_passed + unsupported_claims=0 + citation_valid |
+| Reviewer-ready rate (per-provider) | **Fake=68%, Real=64%** | Computed from Phase 13.10: guard_passed + unsupported_claims=0 + citation_valid |
