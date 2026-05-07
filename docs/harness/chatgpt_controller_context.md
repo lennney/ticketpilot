@@ -92,12 +92,11 @@ The diagnosis followed 7 sub-phases in sequence:
 
 ## 5. Active OpenSpec Change
 
-**Phase 15.1 — align-chat-support-product-experience** (active)
-- Proposal: realign TicketPilot toward chat-style AI customer service copilot experience
-- Design: chat demo UI (Streamlit), pipeline-to-chat adapter, risk escalation display, evidence panel, human review handoff
-- Spec: `openspec/changes/align-chat-support-product-experience/specs/chat-support-experience/spec.md`
-- Tasks: 15.1 (done) → 15.2-15.8 pending
-- Scope: planning/spec in 15.1; runtime implementation in 15.2-15.7
+**Phase 15.2 — align-chat-support-product-experience** (active, Phase 15.2 done)
+- Phase 15.1: planning and spec created
+- Phase 15.2: chat module (`src/ticketpilot/chat/`), Streamlit UI skeleton, 50 unit tests
+- Tasks: 15.2 (done) → 15.3-15.8 pending
+- Scope: Phase 15.3 pipeline-to-chat adapter is next
 - Phase 14 guard taxonomy paused (14.3-14.7), guard remains as safety foundation
 
 **Phase 14.1 — add-guard-architecture-improvement-planning** (active, guard scope paused)
@@ -132,7 +131,8 @@ See `docs/harness/controller_decision_log.md` for full log.
 | Priority | Action | Phase | Type | Status |
 |---|---|---|---|---|
 | 1 | Phase 15.1 Chat Support Product Re-alignment Planning | 15.1 | Spec | Done |
-| 2 | Phase 15.2 Chat Demo UI Skeleton | 15.2 | Runtime | Pending |
+| 2 | Phase 15.2 Chat Demo UI Skeleton | 15.2 | Runtime | Done |
+| 3 | Phase 15.3 Pipeline-to-Chat Adapter | 15.3 | Runtime | Pending |
 | — | Phase 14.3 Safe Language Classifier | 14.3 | Runtime | Pending |
 | — | Phase 14.4 Claim Guard Integration | 14.4 | Runtime | Pending |
 | — | Phase 14.5 Evaluation Runner Extension | 14.5 | Runtime | Pending |
@@ -168,12 +168,13 @@ You are working on TicketPilot, a local deterministic human review workflow for
 customer service ticket triage. Read `AGENTS.md` for the project constitution.
 
 Current state:
-- Phase 15.1 active — chat support product experience re-alignment
+- Phase 15.2 active — chat demo UI skeleton created
 - Active OpenSpec change: align-chat-support-product-experience
-- Current baseline: 1087 unit, 146 integration, 0 skipped, 86.62% coverage
+- Current baseline: 1137 unit (+50), 146 integration, 0 skipped
 - Product direction: chat-style AI customer service copilot (e-commerce scenario)
 - Backend complete: intent classification, risk detection, evidence retrieval, draft generation, citation validation, claim guard, human review console
-- Next: Streamlit chat demo UI (Phase 15.2)
+- Chat module: src/ticketpilot/chat/ with schemas and Streamlit UI skeleton
+- Next: Phase 15.3 pipeline-to-chat adapter
 
 Key boundaries:
 - Local demo / portfolio prototype — not production

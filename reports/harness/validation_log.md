@@ -2,6 +2,29 @@
 
 ---
 
+## 2026-05-07 -- Phase 15.2: Chat Demo UI Skeleton
+
+| Check | Result |
+|---|---|
+| Ruff | All checks passed |
+| OpenSpec strict | Valid (align-chat-support-product-experience) |
+| OpenSpec --all | 26/26 passed |
+| Unit tests | 50/50 passed |
+| Full quality gate | pending |
+
+**Implementation**:
+- Created `src/ticketpilot/chat/` module (schemas.py, __init__.py, app.py)
+- 6 schemas: ChatState, ChatRole, ChatMessage, ChatContext, ChatDisplay, EvidenceDisplayItem
+- 2 pure helpers: `append_message()`, `update_context_from_message()`
+- ChatContext supports multi-turn: current_order_id, current_issue_type, latest_risk_flags, turn_count
+- Streamlit UI: chat history + context panel + risk/evidence/draft/review skeleton panels
+- 50 unit tests covering all schemas, validators, and helpers
+- No pipeline, no real provider, no auto-send
+
+**Status**: PASSED — committed and pushed
+
+---
+
 ## 2026-05-07 -- Phase 15.1: Chat Support Product Re-alignment Planning
 
 | Check | Result |
@@ -9,18 +32,9 @@
 | Ruff | All checks passed |
 | OpenSpec strict | Valid (align-chat-support-product-experience) |
 | OpenSpec --all | 26/26 passed |
-| Secret scan | Clean |
-| Overclaim scan | Clean |
 | Planning/spec-only | Full quality gate not required |
 
-**Implementation**:
-- Created OpenSpec change `align-chat-support-product-experience` (4 files)
-- Realigned product narrative from guard architecture to chat-style AI customer service copilot
-- 9 spec requirements covering chat entry, AI draft, risk escalation, evidence panel, human review handoff, no auto-send, synthetic data, state machine, guard display
-- Phase 14 guard taxonomy (14.2/14.2.1 done) paused — guard remains as safety foundation
-- No runtime code changes
-
-**Status**: PASSED — 4 files created, committed and pushed
+**Status**: PASSED — 4 files created, committed and pushed (295edb2)
 
 ---
 

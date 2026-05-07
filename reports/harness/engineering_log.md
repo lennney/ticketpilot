@@ -2,6 +2,28 @@
 
 ---
 
+## 2026-05-07 — Phase 15.2: Chat Demo UI Skeleton
+
+**Implementation**:
+- Created `src/ticketpilot/chat/` module with 6 Pydantic schemas and 2 pure helper functions
+- `ChatContext` supports multi-turn conversation: tracks current_order_id, current_issue_type, latest_risk_flags, latest_severity, latest_evidence_ids, latest_citation_ids, latest_guard_passed, human_review_required, handoff_reason, turn_count
+- `append_message()`: pure function returning new ChatSession, increments turn_count for USER messages
+- `update_context_from_message()`: reads metadata keys (detected_order_id, issue_type, risk_flags, etc.) without NLP parsing
+- Streamlit app with 5 panels: chat history, context panel, risk panel, evidence panel, draft panel
+- EvidenceDisplayItem: chunk_id + doc_type validation, optional title/score/content_preview
+
+**Key Design Decisions**:
+- ChatContext is NOT a summarization layer — it only stores structured metadata from pipeline output
+- No NLP for order ID extraction in Phase 15.2 — natural language parsing deferred to Phase 15.3 adapter
+- Once human_review_required is True, it stays True (only cleared by future reviewer action)
+- Short follow-up questions ("谢谢", "好的") do not overwrite current_order_id
+
+**Files**: src/ticketpilot/chat/{__init__,schemas,app}.py, tests/unit/test_chat_schemas.py (50 tests)
+
+**Quality Gate**: 50 new tests pass, ruff clean, OpenSpec 26/26
+
+---
+
 ## 2026-05-07 — Phase 15.1: Chat Support Product Re-alignment Planning
 
 **Problem**: Recent iterations (Phase 13-14) drifted toward guard taxonomy internal engineering details. Product narrative was "工单分诊 + guard architecture" rather than the original vision: AI customer service copilot (e-commerce scenario).

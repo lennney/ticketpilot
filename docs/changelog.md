@@ -1,5 +1,20 @@
 # TicketPilot Changelog
 
+## 2026-05-07 -- Phase 15.2: Chat Demo UI Skeleton
+
+### Added
+- `src/ticketpilot/chat/` module with 6 Pydantic schemas and 2 pure helper functions
+- `ChatContext` for multi-turn conversation: current_order_id, current_issue_type, latest_risk_flags, turn_count
+- `append_message()` and `update_context_from_message()` pure helpers
+- Streamlit chat app with boundary banner, chat history, context panel, risk/evidence/draft/review skeleton panels
+- 50 unit tests for all schemas, validators, and helpers
+
+### Validation
+- 50/50 unit tests passed
+- Ruff: All checks passed
+- OpenSpec: 26/26 passed
+- No pipeline, no real provider, no auto-send
+
 ## 2026-05-07 -- Phase 15.1: Chat Support Product Re-alignment Planning
 
 ### Added

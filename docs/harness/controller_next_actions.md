@@ -32,6 +32,43 @@
 
 ### Commit
 
+`295edb2` pushed
+
+---
+
+## Completed Batch: Phase 15.2 — Chat Demo UI Skeleton
+
+### What Was Done
+
+- Created `src/ticketpilot/chat/` module with schemas and Streamlit UI skeleton
+- Defined 6 schemas: ChatState, ChatRole, ChatMessage, ChatContext, ChatDisplay, EvidenceDisplayItem
+- Added pure helpers: `append_message()`, `update_context_from_message()`
+- Built Streamlit app with chat history, context panel, risk panel, evidence panel, draft panel, human review panel
+- Added 50 unit tests covering all schemas, validators, and helper functions
+- Multi-turn context support: current_order_id, current_issue_type, latest_risk_flags, turn_count
+- No pipeline integration, no real provider calls, no auto-send
+
+### Files Created
+
+- `src/ticketpilot/chat/__init__.py`
+- `src/ticketpilot/chat/schemas.py`
+- `src/ticketpilot/chat/app.py`
+- `tests/unit/test_chat_schemas.py`
+
+### Files Modified
+
+- `openspec/changes/align-chat-support-product-experience/tasks.md` (Phase 15.2 marked done)
+
+### Validation
+
+- Unit tests: 50/50 passed
+- Ruff: Clean
+- OpenSpec strict: Valid
+- OpenSpec --all: 26/26 passed
+- Full quality gate: pending
+
+### Commit
+
 `pending`
 
 ---

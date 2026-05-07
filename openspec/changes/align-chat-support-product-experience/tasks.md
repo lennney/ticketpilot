@@ -2,17 +2,19 @@
 
 ## Task List
 
-- [x] 15.1: Product Re-alignment Planning（this phase）
+- [x] 15.1: Product Re-alignment Planning
   - Create proposal.md, design.md, tasks.md, spec.md
   - Run OpenSpec strict and --all validation
   - Update harness docs
   - No runtime code changes
 
-- [ ] 15.2: Chat Demo UI Skeleton
+- [x] 15.2: Chat Demo UI Skeleton
   - Create `src/ticketpilot/chat/` module
   - Define `ChatMessage`, `ChatSession`, `ChatState`, `ChatDisplay` schemas
-  - Build Streamlit chat UI with user input + chat history display
-  - No backend logic yet
+  - Define `ChatContext` and `EvidenceDisplayItem` for multi-turn support
+  - Add `append_message()` and `update_context_from_message()` pure helpers
+  - Build Streamlit chat UI with context panel + skeleton panels
+  - No backend logic yet (pipeline integration in Phase 15.3)
 
 - [ ] 15.3: Pipeline-to-Chat Adapter
   - Implement `ticket_output_to_chat_display()` in adapter.py
