@@ -45,7 +45,7 @@ Fill Phase 12 "not-yet-measured" gaps:
 **Results (FakeLLMProvider, 25 cases)**:
 - Citation precision: 100% (25/25)
 - Citation validation pass rate: 100% (25/25)
-- Guard pass rate: 0% (0/25) — template-based provider produces uncited claims
+- Guard pass rate: 68% (17/25) — fixed from 0% after UUID citation marker fix
 - Unsupported claim rate: 0%
 - Human review trigger accuracy: 100%
 
@@ -58,6 +58,34 @@ DraftGenerationResult already contains citation_validation (DraftCitationValidat
 ### Out of Scope
 - Retrieval tuning, RRF changes, embedding changes, knowledge expansion
 - Production deployment, auto-send, real-world benchmarks
+
+---
+
+## 2026-05-07 -- Phase 13.8: Guard Metric Interpretation and Fix
+
+### Root Cause Investigation
+Phase 13 extended runner showed guard_pass_rate=0% for FakeLLMProvider.
+Investigation revealed:
+- FakeLLMProvider template used `[N]` numeric markers (`[1]`, `[2]`) instead of `[UUID]` markers
+- Claim guard's `_extract_chunk_ids()` only recognizes `[UUID]` format
+- Draft had 0 `[UUID]` references → `has_uncited_claims=True` → guard failed
+- Citation validation passed because `cited_evidence_ids` (UUID list) was correct
+
+### Fixes Applied
+1. **FakeLLMProvider template**: Changed `[i]` to `[{ev.chunk_id}]` for citation markers
+2. **Generator severity propagation**: Added HIGH severity → must_human_review in generator.py
+3. **Test isolation**: Added `TICKETPILOT_LLM_PROVIDER=fake` to conftest.py to prevent .env.local interference
+
+### Results After Fix
+- Guard pass rate: 68% (17/25)
+- Remaining 8 failures are all HIGH-severity cases (privacy_risk, account_security_risk, legal_risk, compensation_risk)
+- These correctly fail `risk_flags_respected` check — FakeLLMProvider template lacks escalation acknowledgment language
+
+### Interpretation
+- guard_pass_rate=68% is NOT a production quality claim
+- FakeLLMProvider validates pipeline mechanics, not guard-compliant draft quality
+- Real provider output should be evaluated separately when .env.local is configured
+- No auto-send; human review remains required for all HIGH-severity cases
 
 ### Validation
 - openspec validate --strict: 23/23 passed

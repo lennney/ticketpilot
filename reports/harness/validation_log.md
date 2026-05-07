@@ -55,6 +55,26 @@
 
 **Status**: PASSED — Runner now produces extended `DraftEvaluationRow` JSON with full citation and guard metrics
 
+---
+
+## 2026-05-07 -- Phase 13.8: Guard Metric Interpretation and Fix
+
+| Check | Result |
+|---|---|
+| Root cause | FakeLLMProvider used `[N]` numeric markers instead of `[UUID]` chunk_id markers |
+| Citation validation | Passed (cited_evidence_ids correct, only text markers wrong) |
+| Claim guard | Failed (no UUID markers found → has_uncited_claims=True) |
+| Fix | Updated FakeLLMProvider template to use `[{ev.chunk_id}]` format |
+| After fix | guard_pass_rate=68% (17/25), remaining failures are HIGH-severity cases |
+| Severity propagation | Added HIGH severity → must_human_review in generator.py |
+| Test isolation | Added `TICKETPILOT_LLM_PROVIDER=fake` to conftest.py |
+| Ruff | All checks passed |
+| Unit tests | 123/123 passed (33 draft_generator + 32 draft_metrics + 58 claim_guard) |
+| OpenSpec --all | 23/23 passed |
+| Quality gate | PASSED |
+
+**Status**: PASSED
+
 *Tracks validation runs, quality gate results, and test outcomes.*
 
 ---
