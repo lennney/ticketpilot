@@ -29,7 +29,7 @@ class RetrievalResult(BaseModel):
     rank: int = Field(..., ge=1)
 
 
-class RetrievalTrace(BaseModel):
+class RetrievalSchema(BaseModel):
     """Retrieval trace model for debugging and analysis."""
 
     query: Optional[str] = None

@@ -33,8 +33,8 @@ A1: RetrievalTrace class collision fix（traces.py vs schema/retrieval.py）
 然后 commit 并 push
 
 ## 技术债优先级
-P1: A1（RetrievalTrace冲突）
-P2: A2 ✅（ARCHITECTURE.md同步：更新opt-in LLM/embedding描述、添加Phase15 Chat模块）、B1 ✅（claim_guard映射错误）、B2 ✅（_build_prompt_input丢弃）、B3 ✅（safe-fallback重复）
+P1: 全部完成 ✅
+P2: -
 P3: C1（METRICS过时）
 
 ## 当前技术债 OpenSpec

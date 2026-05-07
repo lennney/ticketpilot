@@ -38,11 +38,11 @@
 
 ### A1: Fix RetrievalTrace Class Collision (If Time Permits)
 
-- [ ] Identify which `RetrievalTrace` is used where
-- [ ] Rename `retrieval/schema/retrieval.py`'s class to `RetrievalSchema`
-- [ ] Update any imports from `retrieval/schema/retrieval.py`
-- [ ] Run unit tests to verify no regression
-- [ ] Update tasks.md when done
+- [x] Identify which `RetrievalTrace` is used where
+- [x] Rename `retrieval/schema/retrieval.py`'s class to `RetrievalSchema`
+- [x] Update any imports from `retrieval/schema/retrieval.py`
+- [x] Run unit tests to verify no regression
+- [x] Update tasks.md when done
 
 ## Dependencies
 
