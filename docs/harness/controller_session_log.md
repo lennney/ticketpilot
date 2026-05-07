@@ -5,6 +5,18 @@
 
 ---
 
+## 2026-05-07 — Phase 15.3: Pipeline-to-Chat Adapter
+
+**Summary**: Implemented `src/ticketpilot/chat/adapter.py` with 3 pure functions bridging pipeline output to chat UI display. `ticket_output_to_chat_display()` converts TicketOutput + optional DraftGenerationResult to ChatDisplay with conservative human_review_required (HIGH severity, guard fail, no evidence, or pre-existing must_human_review all trigger True). `evidence_to_display_items()` maps EvidenceCandidate list to EvidenceDisplayItem list with 120-char content preview truncation. `chat_display_to_context_metadata()` converts ChatDisplay to metadata consumed by update_context_from_message(). 29 unit tests, full quality gate passed (1166 unit + 146 integration, 0 skipped, 83.68% coverage). No real provider calls, no auto-send.
+
+**Files Created**: src/ticketpilot/chat/adapter.py, tests/unit/test_chat_adapter.py
+
+**Files Modified**: src/ticketpilot/chat/__init__.py, openspec/changes/align-chat-support-product-experience/tasks.md, docs/changelog.md, all harness docs
+
+**Phase Status**: Phase 15.3 complete. Phase 15.4 (Risk Escalation Display) next.
+
+---
+
 ## 2026-05-07 — Phase 15.2: Chat Demo UI Skeleton
 
 **Summary**: Created `src/ticketpilot/chat/` module with 6 Pydantic schemas, 2 pure helper functions, Streamlit UI skeleton with 5 panels, and 50 unit tests. Multi-turn context support: `ChatContext` tracks `current_order_id`, `current_issue_type`, `latest_risk_flags`, `turn_count`. Pure helpers `append_message()` and `update_context_from_message()` for Streamlit state management. No pipeline integration, no real provider calls, no auto-send. 50/50 tests pass, ruff clean, OpenSpec 26/26.

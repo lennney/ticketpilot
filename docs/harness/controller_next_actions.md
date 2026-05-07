@@ -36,6 +36,42 @@
 
 ---
 
+## Completed Batch: Phase 15.3 — Pipeline-to-Chat Adapter
+
+### What Was Done
+
+- Created `src/ticketpilot/chat/adapter.py` with 3 pure functions
+- `ticket_output_to_chat_display()`: converts TicketOutput + optional DraftGenerationResult to ChatDisplay
+- `evidence_to_display_items()`: maps EvidenceCandidate list to EvidenceDisplayItem with 120-char preview truncation
+- `chat_display_to_context_metadata()`: converts ChatDisplay to metadata for update_context_from_message()
+- Conservative human_review_required: HIGH severity, guard fail, no evidence, pre-existing must_human_review all trigger True
+- Added 29 unit tests covering all adapter behaviors
+- No real provider calls, no auto-send
+
+### Files Created
+
+- `src/ticketpilot/chat/adapter.py`
+- `tests/unit/test_chat_adapter.py`
+
+### Files Modified
+
+- `src/ticketpilot/chat/__init__.py` (added adapter exports)
+- `openspec/changes/align-chat-support-product-experience/tasks.md` (Phase 15.3 marked done)
+
+### Validation
+
+- Focused chat adapter tests: 29/29 passed
+- Full quality gate: 1166 unit + 146 integration, 0 skipped, 83.68% coverage
+- Ruff: Clean
+- OpenSpec --all: 26/26 passed
+- Secret scan: Clean
+
+### Commit
+
+`c5a9191` pushed
+
+---
+
 ## Completed Batch: Phase 15.2 — Chat Demo UI Skeleton
 
 ### What Was Done

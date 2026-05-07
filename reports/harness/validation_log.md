@@ -2,6 +2,29 @@
 
 ---
 
+## 2026-05-07 -- Phase 15.3: Pipeline-to-Chat Adapter
+
+| Check | Result |
+|---|---|
+| Ruff | All checks passed |
+| OpenSpec strict | Valid (align-chat-support-product-experience) |
+| OpenSpec --all | 26/26 passed |
+| Unit tests (adapter) | 29/29 passed |
+| Full quality gate | 1166 unit + 146 integration, 0 skipped, 83.68% |
+
+**Implementation**:
+- Created `src/ticketpilot/chat/adapter.py` (3 pure functions)
+- `ticket_output_to_chat_display()`: TicketOutput + optional DraftGenerationResult → ChatDisplay
+- `evidence_to_display_items()`: EvidenceCandidate list → EvidenceDisplayItem list (120-char preview)
+- `chat_display_to_context_metadata()`: ChatDisplay → metadata dict for update_context_from_message()
+- Conservative human_review_required: HIGH severity, guard fail, no evidence, or pre-existing must_human_review trigger True
+- 29 unit tests covering all adapter behaviors
+- No real provider, no auto-send
+
+**Status**: PASSED — committed and pushed (c5a9191)
+
+---
+
 ## 2026-05-07 -- Phase 15.2: Chat Demo UI Skeleton
 
 | Check | Result |
@@ -10,7 +33,7 @@
 | OpenSpec strict | Valid (align-chat-support-product-experience) |
 | OpenSpec --all | 26/26 passed |
 | Unit tests | 50/50 passed |
-| Full quality gate | pending |
+| Full quality gate | 1166 unit + 146 integration, 0 skipped, 83.68% (integrated in Phase 15.3 gate) |
 
 **Implementation**:
 - Created `src/ticketpilot/chat/` module (schemas.py, __init__.py, app.py)

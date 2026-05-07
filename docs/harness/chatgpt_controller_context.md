@@ -46,11 +46,14 @@
 | Phase 13 | **Archived** | Extended Draft Evaluation Metrics — extended Phase 12 comparison with citation validation, claim guard, reviewer-ready metrics. OpenSpec change created. |
 | Phase 13.10 | **Archived** | Guard-Aware Provider Prompting Experiment — real provider guard pass 4%→84%, citation validation 12%→76%, reviewer-ready 4%→64%. OpenSpec change archived, spec promoted. |
 | Phase 13.10.2 | **Completed** | Clean archive working tree — staged deletions committed, intermediate timestamped eval files restored to working tree. |
-| Phase 14.1 | **Active** | Guard Architecture Improvement Planning — granular failure taxonomy OpenSpec change created, Phase 13.10 failure analysis complete, 7 sub-tasks planned (14.1 done, 14.2-14.7 pending). |
+| Phase 14.1 | **Completed** | Guard Architecture Improvement Planning — granular failure taxonomy OpenSpec change created, Phase 13.10 failure analysis complete, 7 sub-tasks planned (14.2-14.2.1 done, 14.3-14.7 pending). |
+| Phase 15.1 | **Completed** | Chat Support Product Re-alignment Planning — aligned product direction from guard architecture to chat-style AI customer service copilot. |
+| Phase 15.2 | **Completed** | Chat Demo UI Skeleton — chat module with 6 schemas, 2 pure helpers, Streamlit UI, 50 unit tests. |
+| Phase 15.3 | **Active** | Pipeline-to-Chat Adapter — ticket_output_to_chat_display(), evidence_to_display_items(), chat_display_to_context_metadata(), 29 tests, quality gate passed. |
 
 ## 4. Current Working Context
 
-**Phase 12A complete and archived. Phase 12B (Error Memory) is the current active batch. Phase 12C is the next recommended phase after archive.**
+**Phase 15.3 complete. Phase 15.4 (Risk Escalation Display) next. Phase 14 guard taxonomy paused.**
 
 ### Phase 11 Evidence Chain
 
@@ -92,11 +95,12 @@ The diagnosis followed 7 sub-phases in sequence:
 
 ## 5. Active OpenSpec Change
 
-**Phase 15.2 — align-chat-support-product-experience** (active, Phase 15.2 done)
+**Phase 15.3 — align-chat-support-product-experience** (active, Phase 15.3 done, 15.4 next)
 - Phase 15.1: planning and spec created
 - Phase 15.2: chat module (`src/ticketpilot/chat/`), Streamlit UI skeleton, 50 unit tests
-- Tasks: 15.2 (done) → 15.3-15.8 pending
-- Scope: Phase 15.3 pipeline-to-chat adapter is next
+- Phase 15.3: pipeline-to-chat adapter, 29 unit tests, full quality gate passed
+- Tasks: 15.3 (done) → 15.4-15.8 pending
+- Scope: Phase 15.4 risk escalation display is next
 - Phase 14 guard taxonomy paused (14.3-14.7), guard remains as safety foundation
 
 **Phase 14.1 — add-guard-architecture-improvement-planning** (active, guard scope paused)
@@ -130,15 +134,14 @@ See `docs/harness/controller_decision_log.md` for full log.
 
 | Priority | Action | Phase | Type | Status |
 |---|---|---|---|---|
-| 1 | Phase 15.1 Chat Support Product Re-alignment Planning | 15.1 | Spec | Done |
-| 2 | Phase 15.2 Chat Demo UI Skeleton | 15.2 | Runtime | Done |
-| 3 | Phase 15.3 Pipeline-to-Chat Adapter | 15.3 | Runtime | Pending |
+| 1 | Phase 15.4 Risk Escalation Display | 15.4 | Runtime | Pending |
+| 2 | Phase 15.5 Evidence and Draft Panel | 15.5 | Runtime | Pending |
+| 3 | Phase 15.6 Human Review Queue Link | 15.6 | Runtime | Pending |
 | — | Phase 14.3 Safe Language Classifier | 14.3 | Runtime | Pending |
 | — | Phase 14.4 Claim Guard Integration | 14.4 | Runtime | Pending |
 | — | Phase 14.5 Evaluation Runner Extension | 14.5 | Runtime | Pending |
 | — | Phase 14.6 Reviewer Console / Portfolio | 14.6 | Docs | Pending |
 | — | Phase 14.7 Final Validation and Archive | 14.7 | Validation | Pending |
-| — | Query expansion audit (from Phase 10 findings) | — | Analysis | Future |
 | — | Query expansion audit (from Phase 10 findings) | — | Analysis | Future |
 | — | Guard architecture improvement for risk escalation compliance | — | Analysis | Future |
 
@@ -168,13 +171,13 @@ You are working on TicketPilot, a local deterministic human review workflow for
 customer service ticket triage. Read `AGENTS.md` for the project constitution.
 
 Current state:
-- Phase 15.2 active — chat demo UI skeleton created
+- Phase 15.3 active — pipeline-to-chat adapter complete
 - Active OpenSpec change: align-chat-support-product-experience
-- Current baseline: 1137 unit (+50), 146 integration, 0 skipped
+- Current baseline: 1166 unit (+79), 146 integration, 0 skipped
 - Product direction: chat-style AI customer service copilot (e-commerce scenario)
 - Backend complete: intent classification, risk detection, evidence retrieval, draft generation, citation validation, claim guard, human review console
-- Chat module: src/ticketpilot/chat/ with schemas and Streamlit UI skeleton
-- Next: Phase 15.3 pipeline-to-chat adapter
+- Chat module: src/ticketpilot/chat/ with schemas, adapter, and Streamlit UI skeleton
+- Next: Phase 15.4 risk escalation display
 
 Key boundaries:
 - Local demo / portfolio prototype — not production

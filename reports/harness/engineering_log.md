@@ -2,6 +2,28 @@
 
 ---
 
+## 2026-05-07 — Phase 15.3: Pipeline-to-Chat Adapter
+
+**Implementation**:
+- Created `src/ticketpilot/chat/adapter.py` with 3 pure functions
+- `ticket_output_to_chat_display()`: converts TicketOutput + optional DraftGenerationResult to ChatDisplay
+- `evidence_to_display_items()`: maps EvidenceCandidate list to EvidenceDisplayItem list with 120-char preview truncation
+- `chat_display_to_context_metadata()`: converts ChatDisplay to metadata consumed by update_context_from_message()
+- Conservative human_review_required logic: HIGH severity, guard fail, no evidence, or pre-existing must_human_review all trigger True
+
+**Key Design Decisions**:
+- Adapter is a pure transformation layer — no pipeline execution, no LLM calls
+- Human review decision is conservative: any of 5 conditions triggers True
+- No evidence → escalation_reason set to "no evidence retrieved"
+- Guard failure escalation_reason defaults to "guard: {failure_reasons}" when draft.escalation_reason not set
+- Content preview truncation uses ASCII chars to avoid encoding issues in tests
+
+**Files**: src/ticketpilot/chat/adapter.py, tests/unit/test_chat_adapter.py (29 tests)
+
+**Quality Gate**: 1166 unit + 146 integration (0 skipped), coverage 83.68%, ruff clean, OpenSpec 26/26
+
+---
+
 ## 2026-05-07 — Phase 15.2: Chat Demo UI Skeleton
 
 **Implementation**:

@@ -16,10 +16,14 @@
   - Build Streamlit chat UI with context panel + skeleton panels
   - No backend logic yet (pipeline integration in Phase 15.3)
 
-- [ ] 15.3: Pipeline-to-Chat Adapter
+- [x] 15.3: Pipeline-to-Chat Adapter
   - Implement `ticket_output_to_chat_display()` in adapter.py
+  - Implement `evidence_to_display_items()` helper
+  - Implement `chat_display_to_context_metadata()` helper
   - Wire pipeline output to chat UI display
-  - Risk decision matrix: severity × evidence × guard → action
+  - Risk decision matrix: severity × evidence × guard → human_review_required
+  - 29 unit tests
+  - Full quality gate passed: 1166 unit + 146 integration, 0 skipped, 83.68%
 
 - [ ] 15.4: Risk Escalation Display
   - Show risk_badge (LOW/MEDIUM/HIGH) with color coding

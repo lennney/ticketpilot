@@ -1,5 +1,23 @@
 # TicketPilot Changelog
 
+## 2026-05-07 -- Phase 15.3: Pipeline-to-Chat Adapter
+
+### Added
+- `src/ticketpilot/chat/adapter.py`: 3 pure functions for pipeline-to-UI bridging
+- `ticket_output_to_chat_display()`: converts TicketOutput + optional DraftGenerationResult to ChatDisplay
+- `evidence_to_display_items()`: maps EvidenceCandidate list to EvidenceDisplayItem list with 120-char preview truncation
+- `chat_display_to_context_metadata()`: converts ChatDisplay to metadata for update_context_from_message()
+- Conservative human_review_required: HIGH severity, guard fail, no evidence, or pre-existing must_human_review all trigger True
+
+### Validation
+- 1166 unit + 146 integration tests, 0 skipped, 83.68% coverage
+- Ruff: All checks passed
+- OpenSpec: 26/26 passed
+
+### Boundary
+- Adapter only — no real provider calls in Phase 15.3
+- No auto-send
+
 ## 2026-05-07 -- Phase 15.2: Chat Demo UI Skeleton
 
 ### Added
