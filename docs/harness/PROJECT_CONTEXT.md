@@ -13,15 +13,22 @@ owner: controller
 - Fake embedding default
 
 ## 当前阶段
-Phase 15.4（Chat UI 集成）+ 技术债整理
+Phase 15.4（Chat UI Risk Escalation Display）
 
 ## Active OpenSpec
 - `align-chat-support-product-experience`（Phase 15）
-- `address-technical-debt`（技术债修复）
 
-## tasks.md 位置
-- Phase 15: openspec/changes/align-chat-support-product-experience/tasks.md
-- Tech debt: openspec/changes/address-technical-debt/tasks.md
+## Phase Loop 状态
+- [x] Step 1: Planner (project-director subagent) ✅
+- [x] Step 2: Requirements Analysis (general-purpose subagent) ✅
+- [ ] Step 3: Implementation (backend-engineer subagent)
+- [ ] Step 4: Review (code-reviewer subagent)
+- [ ] Step 5: Doc Review (code-reviewer subagent)
+- [ ] Step 6: Experience Consolidation (general-purpose subagent)
+- [ ] Step 7: Controller Coordination (commit + push)
+
+## 下一步任务
+Step 3: Implementation — dispatch backend-engineer with phase15.4_requirements.md
 
 ## 技术栈
 - Python 3.11 / uv

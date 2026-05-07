@@ -10,7 +10,6 @@ This document extends AGENTS.md, not replaces it. It operationalizes:
 - Section 12 (Controller Context Rules)
 - Section 15 (Context Compression Handoff Rules)
 
-
 ---
 
 ## Phase Loop Diagram
@@ -35,7 +34,7 @@ This document extends AGENTS.md, not replaces it. It operationalizes:
 |      Input: requirement spec, implementation guidelines              |
 |      Output: code/docs/artifact                                       |
 |      v                                                                 |
-|  [4] REVIEW                                                           |
+|  [4] REVIEW                                                          |
 |      Verifies implementation against requirements                     |
 |      Input: implementation output, requirement spec                  |
 |      Output: pass / fail with specific issues                         |
@@ -45,13 +44,13 @@ This document extends AGENTS.md, not replaces it. It operationalizes:
 |      Input: modified/new files, related docs                         |
 |      Output: doc pass / fail with missing items                       |
 |      v                                                                 |
-|  [6] EXPERIENCE CONSOLIDATION                                         |
+|  [6] EXPERIENCE CONSOLIDATION                                        |
 |      Extracts learnings, updates rules/playbook                       |
-|      Input: what worked, what failed, patterns observed               |
+|      Input: what worked, what failed, patterns observed              |
 |      Output: updated repair_playbook.md, agent_learning_rules.md      |
 |      v                                                                 |
-|  [7] CONTROLLER COORDINATION                                          |
-|      Orchestrates handoffs, checks exit criteria, decides next step   |
+|  [7] CONTROLLER COORDINATION                                         |
+|      Orchestrates handoffs, checks exit criteria, decides next step  |
 |      Input: all role outputs, PROJECT_CONTEXT.md                      |
 |      Output: commit + push, or loop back to step 3/4, or phase done  |
 |                                                                       |
@@ -63,6 +62,56 @@ This document extends AGENTS.md, not replaces it. It operationalizes:
 
 ---
 
+## Task Type Markers
+
+**Every task in tasks.md MUST have a type marker**. This determines execution path.
+
+| Marker | Meaning | Who Executes | Controller Role |
+|--------|---------|--------------|-----------------|
+| **[CODE]** | Code implementation, refactoring, or module changes | subagent (backend-engineer) | Orchestrate + review |
+| **[DOC]** | Documentation-only: README, comments, non-code docs | Controller (self) | Execute directly |
+| **[DATA]** | Data files: seed data, eval data, config changes | subagent or Controller | Orchestrate or execute |
+| **[TEST]** | Adding/updating tests | subagent (backend-engineer) | Orchestrate + verify |
+| **[AUTO]** | Automated verification or CI tasks | Controller (self) | Execute + report |
+
+**Decision Rules**:
+- Unmarked task = assume **[CODE]** (safer, always delegates)
+- If unsure: use **[CODE]** and delegate
+- **[DOC]** only if NO code changes required at all
+
+---
+
+## Trigger Conditions
+
+Each role step has explicit trigger conditions. Controller checks these before dispatching.
+
+### Step 1 - Planner
+**Trigger**: Phase loaded from tasks.md, current state read from PROJECT_CONTEXT.md
+
+### Step 2 - Requirements Analysis
+**Trigger**: Step 1 plan exists and approved by Controller
+
+### Step 3 - Implementation
+**Trigger**: Step 2 requirements are unambiguous and complete
+
+**Additional Trigger Check for [CODE] tasks**:
+- MUST dispatch to subagent (never execute code directly)
+- Verify subagent result file will be written
+
+### Step 4 - Review
+**Trigger**: Step 3 implementation output exists and tests pass locally
+
+### Step 5 - Doc Review
+**Trigger**: Step 4 review passed OR issues are fixable without design change
+
+### Step 6 - Experience Consolidation
+**Trigger**: Steps 1-5 completed (pass or fail), regardless of outcome
+
+### Step 7 - Controller Coordination
+**Trigger**: Step 6 complete
+
+---
+
 ## Role Responsibilities
 
 ### [1] Planner
@@ -70,7 +119,7 @@ This document extends AGENTS.md, not replaces it. It operationalizes:
 **Purpose**: Create a clear, executable plan for the phase.
 
 **Receives**:
-- Phase goal from tasks.md (e.g., Phase 15.4: Streamlit chat UI integration)
+- Phase goal from tasks.md with TYPE marker (e.g., Phase 15.4 **[CODE]**: Streamlit chat UI integration)
 - Previous phase results (if any)
 - Known constraints (from PROJECT_CONTEXT.md)
 
@@ -86,6 +135,8 @@ This document extends AGENTS.md, not replaces it. It operationalizes:
 
 **Who performs**: Controller (self) or project-director subagent for complex phases.
 
+**Critical Check**: If task is **[CODE]**, plan must include delegation to subagent, not Controller self-implementation.
+
 ---
 
 ### [2] Requirements Analysis
@@ -93,7 +144,7 @@ This document extends AGENTS.md, not replaces it. It operationalizes:
 **Purpose**: Convert high-level plan into concrete requirements.
 
 **Receives**:
-- Planner step-by-step plan
+- Planner step-by-step plan with TYPE markers
 - Domain knowledge (from docs/technical/, ARCHITECTURE.md)
 - Existing OpenSpec specs
 
@@ -118,7 +169,7 @@ This document extends AGENTS.md, not replaces it. It operationalizes:
 **Purpose**: Execute based on requirements.
 
 **Receives**:
-- Requirement spec
+- Requirement spec with TYPE marker
 - Implementation guidelines (from AGENTS.md, repair_playbook.md)
 - Tech stack constraints
 
@@ -132,16 +183,23 @@ This document extends AGENTS.md, not replaces it. It operationalizes:
 - Unit tests pass for the modified module
 - No ruff errors
 
-**Who performs**: Specialized subagent based on type:
+**Who performs**: Specialized subagent based on TYPE:
 
-| Task Type        | Subagent          | Verification    |
-|------------------|-------------------|-----------------|
-| Backend code     | backend-engineer  | code-reviewer   |
-| Architecture     | code-reviewer     | Controller      |
-| Documentation    | Controller (self) | doc-reviewer    |
-| Data/pipeline    | backend-engineer  | tests           |
+| Task Type | Subagent | Verification |
+|-----------|----------|--------------|
+| [CODE] | backend-engineer | code-reviewer |
+| [DATA] | backend-engineer | tests |
+| [TEST] | backend-engineer | Controller verifies |
+| [DOC] | Controller (self) | doc-reviewer |
 
-**Key Constraint**: Controller NEVER implements code directly. Always delegate.
+**CRITICAL RULE - Lesson 1 Fix**:
+
+    +------------------------------------------------------------------+
+    |  CONTROLLER NEVER IMPLEMENTS CODE DIRECTLY                        |
+    |  For [CODE] tasks: ALWAYS dispatch to backend-engineer subagent   |
+    |  Controller role = Orchestrate + Review + Approve                |
+    |  Controller NEVER = Implement + Write code                        |
+    +------------------------------------------------------------------+
 
 ---
 
@@ -150,7 +208,7 @@ This document extends AGENTS.md, not replaces it. It operationalizes:
 **Purpose**: Verify implementation against requirements.
 
 **Receives**:
-- Implementation output
+- Implementation output (from subagent result file)
 - Requirement spec (from step 2)
 - Acceptance test criteria
 
@@ -253,7 +311,7 @@ This document extends AGENTS.md, not replaces it. It operationalizes:
 
 4. **Decision Authority** (per AGENTS.md Section 11)
    - Controller acts autonomously on execution decisions
-   - Controller asks human only when: genuinely blocked, non-negotiable rule at risk, A-class change, deletion risk
+   - Controller asks human only when: genuinely blocked, non-negotiable rule is at risk, A-class change, deletion risk
 
 5. **Context Management** (per AGENTS.md Section 12)
    - Update PROJECT_CONTEXT.md after phase completion
@@ -262,7 +320,11 @@ This document extends AGENTS.md, not replaces it. It operationalizes:
    - Store structured handoff summaries (not raw logs)
 
 6. **Compression Handling** (per AGENTS.md Section 15)
-   - If context compresses mid-phase: check subagent status first, write compression_handoff.md, commit partial state if subagent completed, resume from handoff on resume
+   - **Lesson 2 Fix**: On compression, FIRST check subagent status
+   - If subagent completed: write output, then compress
+   - If subagent in-flight: wait or commit partial state first
+   - NEVER compress mid-subagent-work (results will be lost)
+   - Write compression_handoff.md with subagent status clearly marked
 
 **Exit Criteria**:
 - Phase fully complete: commit + push
@@ -275,32 +337,30 @@ This document extends AGENTS.md, not replaces it. It operationalizes:
 
 Each role transition follows this protocol:
 
-```
-+-----------------------------------------------------------------------+
-|                         HANDOFF PROTOCOL                              |
-+-----------------------------------------------------------------------+
-|                                                                       |
-|  BEFORE HANDOFF (current role):                                      |
-|  1. Verify exit criteria met (all checks green)                      |
-|  2. Write structured output to designated file                       |
-|  3. Update tasks.md status (if applicable)                          |
-|  4. Notify Controller of completion                                   |
-|                                                                       |
-|  HANDOFF SIGNAL (Controller):                                         |
-|  1. Read previous role output file                                   |
-|  2. Validate output completeness                                      |
-|  3. Dispatch next role with explicit input reference                 |
-|  4. Set clear scope and acceptance criteria for next role            |
-|                                                                       |
-|  AFTER HANDOFF (next role):                                          |
-|  1. Read handoff input file(s)                                       |
-|  2. Acknowledge scope                                                 |
-|  3. Execute and produce output                                       |
-|  4. Write output to designated file                                  |
-|  5. Notify Controller of completion                                   |
-|                                                                       |
-+-----------------------------------------------------------------------+
-```
+    +-----------------------------------------------------------------------+
+    |                         HANDOFF PROTOCOL                              |
+    +-----------------------------------------------------------------------+
+    |                                                                       |
+    |  BEFORE HANDOFF (current role):                                      |
+    |  1. Verify exit criteria met (all checks green)                      |
+    |  2. Write structured output to designated file                       |
+    |  3. Update tasks.md status (if applicable)                          |
+    |  4. Notify Controller of completion                                  |
+    |                                                                       |
+    |  HANDOFF SIGNAL (Controller):                                        |
+    |  1. Read previous role output file                                   |
+    |  2. Validate output completeness                                     |
+    |  3. Dispatch next role with explicit input reference                |
+    |  4. Set clear scope and acceptance criteria for next role            |
+    |                                                                       |
+    |  AFTER HANDOFF (next role):                                          |
+    |  1. Read handoff input file(s)                                       |
+    |  2. Acknowledge scope                                                 |
+    |  3. Execute and produce output                                       |
+    |  4. Write output to designated file                                  |
+    |  5. Notify Controller of completion                                  |
+    |                                                                       |
+    +-----------------------------------------------------------------------+
 
 ### Handoff Output Locations
 
@@ -317,6 +377,7 @@ Each role transition follows this protocol:
 
 Each handoff output MUST contain:
 - **Phase ID**: Which phase this is for
+- **Task TYPE**: [CODE] / [DOC] / [DATA] / [TEST] / [AUTO]
 - **Role**: Who produced this output
 - **Timestamp**: When produced
 - **Summary**: What was done in 1-2 sentences
@@ -330,62 +391,68 @@ Each handoff output MUST contain:
 
 Use this checklist for each phase loop cycle:
 
-```
-CONTROLLER COORDINATION CHECKLIST
-=================================
+    CONTROLLER COORDINATION CHECKLIST
+    =================================
 
-PHASE: [phase number and name]
-LOOP COUNT: [1/2/3]
+    PHASE: [phase number and name]
+    TASK TYPE: [CODE/DOC/DATA/TEST/AUTO]
+    LOOP COUNT: [1/2/3]
 
-[ ] Read PROJECT_CONTEXT.md for current state
-[ ] Read tasks.md for phase requirements
-[ ] Confirm active OpenSpec change
+    [ ] Read PROJECT_CONTEXT.md for current state
+    [ ] Read tasks.md for phase requirements
+    [ ] Confirm active OpenSpec change
+    [ ] Note task type - determines delegation strategy
 
-STEP 1 - PLANNER
-[ ] Planner created/modified plan
-[ ] Plan has numbered steps with acceptance criteria
-[ ] Plan approved by Controller
+    STEP 1 - PLANNER
+    [ ] Planner created/modified plan
+    [ ] Plan has numbered steps with acceptance criteria
+    [ ] Plan approved by Controller
+    [ ] For [CODE]: plan delegates to subagent, not Controller
 
-STEP 2 - REQUIREMENTS ANALYSIS
-[ ] Requirements spec produced
-[ ] All plan steps have corresponding requirements
-[ ] No ambiguous requirements
+    STEP 2 - REQUIREMENTS ANALYSIS
+    [ ] Requirements spec produced
+    [ ] All plan steps have corresponding requirements
+    [ ] No ambiguous requirements
 
-STEP 3 - IMPLEMENTATION
-[ ] Implementation subagent dispatched
-[ ] Code/docs produced
-[ ] Unit tests for modified module pass
-[ ] Ruff clean
-[ ] Subagent result written to designated file
+    STEP 3 - IMPLEMENTATION
+    [TYPE CHECK]
+    [CODE]: [ ] Dispatched to backend-engineer subagent
+    [CODE]: [ ] Controller did NOT implement code directly
+    [DOC]:  [ ] Executed by Controller (doc-only, no code changes)
+    [DATA]: [ ] Executed appropriately
+    [ ] Implementation complete
+    [ ] Unit tests for modified module pass
+    [ ] Ruff clean
+    [ ] Subagent result written to designated file
 
-STEP 4 - REVIEW
-[ ] Review subagent dispatched
-[ ] Review result: PASS / FAIL
-[ ] If FAIL: issues documented, retry count incremented
-[ ] If PASS: proceed to step 5
+    STEP 4 - REVIEW
+    [ ] Review subagent dispatched
+    [ ] Review result: PASS / FAIL
+    [ ] If FAIL: issues documented, retry count incremented
+    [ ] If PASS: proceed to step 5
 
-STEP 5 - DOC REVIEW
-[ ] Doc review completed
-[ ] Boundary wording verified in portfolio docs
-[ ] Doc result: PASS / FAIL
-[ ] If FAIL: issues documented, back to step 3
+    STEP 5 - DOC REVIEW
+    [ ] Doc review completed
+    [ ] Boundary wording verified in portfolio docs
+    [ ] Doc result: PASS / FAIL
+    [ ] If FAIL: issues documented, back to step 3
 
-STEP 6 - EXPERIENCE CONSOLIDATION
-[ ] Error patterns documented (if any)
-[ ] repair_playbook.md updated (if new patterns)
-[ ] agent_learning_rules.md updated (if new rules)
+    STEP 6 - EXPERIENCE CONSOLIDATION
+    [ ] Error patterns documented (if any)
+    [ ] repair_playbook.md updated (if new patterns)
+    [ ] agent_learning_rules.md updated (if new rules)
+    [ ] Compression handoff status verified (if context was compressed)
 
-STEP 7 - CONTROLLER COORDINATION
-[ ] All exit criteria met
-[ ] tasks.md updated with phase status
-[ ] PROJECT_CONTEXT.md updated
-[ ] Decision made: commit+push / loop-back / escalate
+    STEP 7 - CONTROLLER COORDINATION
+    [ ] All exit criteria met
+    [ ] tasks.md updated with phase status
+    [ ] PROJECT_CONTEXT.md updated
+    [ ] Decision made: commit+push / loop-back / escalate
 
-COMMIT DECISION:
-[ ] Commit and push
-[ ] Loop back to step [3/4/5], retry [1/2/3]
-[ ] Escalate to human (blocker: [description])
-```
+    COMMIT DECISION:
+    [ ] Commit and push
+    [ ] Loop back to step [3/4/5], retry [1/2/3]
+    [ ] Escalate to human (blocker: [description])
 
 ---
 
@@ -425,6 +492,30 @@ After max retries:
 
 ---
 
+## Lessons Learned (Encoded in Workflow)
+
+### Lesson 1: Controller kept implementing code directly
+**Problem**: Controller violated subagent principle, did B2 task directly
+**Rule**: All roles (Planner, Req Analysis, Implementation, Review, Doc Review, Experience) must be subagents for [CODE] tasks. Controller only orchestrates.
+
+### Lesson 2: Context compression lost rules
+**Problem**: Compression happened mid-work, AGENTS.md rules were not followed on resume
+**Rule**: On compression, check subagent status FIRST. Write compression_handoff.md with explicit subagent status: completed / in-flight (committed) / in-flight (not committed).
+
+### Lesson 3: tasks.md had no task-type marking
+**Problem**: Could not tell from A2 "update ARCHITECTURE.md" that it was doc-only vs A1 "fix RetrievalTrace" that it was code
+**Rule**: All tasks MUST have [CODE]/[DOC]/[DATA]/[TEST]/[AUTO] marker. Unmarked = assume [CODE] (delegate).
+
+### Lesson 4: Missing trigger conditions
+**Problem**: Rules existed but did not explicitly say WHEN to trigger
+**Rule**: Each step has explicit "Trigger" section. Controller checks trigger conditions before dispatching.
+
+### Lesson 5: Contradictions in rules
+**Problem**: Section 9 vs 11 contradiction in AGENTS.md about code implementation
+**Rule**: Unified - Controller NEVER implements code. Always delegate to subagent for [CODE] tasks.
+
+---
+
 ## Integration with AGENTS.md
 
 This document extends these sections:
@@ -435,6 +526,7 @@ PHASE_LOOP operationalizes "Act First, Ask Only When Blocked":
 - Steps 1-6 are autonomous execution (no human interruption)
 - Step 7 is the decision point (commit / retry / escalate)
 - Escalation triggers documented in step 7 match Section 11 escalation triggers
+- **Subagent Principle** (Section 11): All [CODE] tasks delegated to backend-engineer
 
 ### Section 12: Controller Context Rules
 
@@ -447,11 +539,12 @@ PHASE_LOOP enforces:
 
 ### Section 15: Context Compression Handoff Rules
 
-PHASE_LOOP adds:
+PHASE_LOOP adds explicit trigger check:
 - Step 7 includes compression detection
 - If compress during loop: write compression_handoff.md
-- Check subagent status before compression
+- **Check subagent status before compression**
 - Resume from handoff file on resume
+- Subagent status MUST be explicitly recorded
 
 ### Not Duplicated (kept in AGENTS.md)
 
@@ -483,9 +576,10 @@ PHASE_LOOP adds:
 
 ## Example: Phase Execution
 
-Phase 15.4: Fix RetrievalTrace class collision
+Phase 15.4 **[CODE]**: Fix RetrievalTrace class collision
 
 **STEP 1 - PLANNER** (Controller)
+- Task type: [CODE] (requires delegation)
 - Output: subagent_results/phase15.4_plan.md
 - Steps: Identify conflict, choose strategy, implement rename, update refs, run tests
 - Acceptance: No class name collision, all tests pass
@@ -497,9 +591,10 @@ Phase 15.4: Fix RetrievalTrace class collision
 - FR2: All imports must be updated
 - FR3: Tests must still pass
 
-**STEP 3 - IMPLEMENTATION** (backend-engineer subagent)
+**STEP 3 - IMPLEMENTATION** (backend-engineer subagent) - **NOT Controller**
 - Input: subagent_results/phase15.4_requirements.md
 - Output: subagent_results/retrievaltrace_fix_result.md + code changes
+- **Controller did NOT write code** - delegated to subagent
 
 **STEP 4 - REVIEW** (code-reviewer subagent)
 - Input: implementation output + requirements
@@ -522,18 +617,19 @@ Phase 15.4: Fix RetrievalTrace class collision
 - Commit and push
 
 ---
-
 ## Summary
 
 | Concept          | Definition                                                                 |
 |------------------|----------------------------------------------------------------------------|
 | Phase            | One logical unit of work from tasks.md                                     |
 | Loop             | 7 steps executed in sequence per phase                                     |
-| Controller       | Orchestrates loop, delegates execution                                     |
+| Controller       | Orchestrates loop, delegates execution, NEVER implements code              |
+| Task Type        | [CODE]/[DOC]/[DATA]/[TEST]/[AUTO] - determines execution path             |
+| Trigger          | Explicit conditions checked before each step dispatch                      |
 | Roles            | Planner, Requirements Analysis, Implementation, Review, Doc Review, Experience Consolidation |
 | Handoff          | Structured output passed between roles                                    |
 | Exit criteria    | Conditions that must be met before moving to next role                     |
 | Repeat mechanism | Retry logic with max 3 retries per step                                    |
-| Compression      | System-triggered context save with recovery protocol                       |
+| Compression      | System-triggered context save - check subagent status FIRST                |
 
 This design minimizes human involvement while ensuring quality through automated checks and structured reviews.
