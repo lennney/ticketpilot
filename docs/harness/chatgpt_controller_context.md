@@ -21,11 +21,11 @@
 
 | Check | Result |
 |---|---|
-| Unit tests | 1069 passed |
+| Unit tests | 1078 passed |
 | Integration tests | 146 passed, 0 skipped |
-| Coverage | ≥70% (86.71%) |
+| Coverage | ≥70% (86.56%) |
 | Ruff | All checks passed |
-| OpenSpec validate --all | 20/20 passed (post-Phase-12A archive) |
+| OpenSpec validate --all | 24/24 passed (post-Phase-13.10 archive) |
 | Secret scan | Clean |
 | Overclaim scan | Clean |
 
@@ -43,7 +43,9 @@
 | Phase 12B | **Archived** | Agent Error Memory and Repair Learning System — harness/process improvement only, no product runtime changes. |
 | Phase 12C | **Archived** | Optional Real Provider Run — fake baseline validated, real provider (deepseek-v4-pro) run completed 2026-05-07. |
 | Phase 12D.1 | **Completed** | Resolved untracked openspec/specs/error-memory directory — promoted spec was not committed in Phase 12B archive. |
-| Phase 13 | **Active** | Extended Draft Evaluation Metrics — plan phase to extend Phase 12 comparison with citation validation, claim guard, reviewer-ready metrics. OpenSpec change created. |
+| Phase 13 | **Archived** | Extended Draft Evaluation Metrics — extended Phase 12 comparison with citation validation, claim guard, reviewer-ready metrics. OpenSpec change created. |
+| Phase 13.10 | **Archived** | Guard-Aware Provider Prompting Experiment — real provider guard pass 4%→84%, citation validation 12%→76%, reviewer-ready 4%→64%. OpenSpec change archived, spec promoted. |
+| Phase 13.10.1 | **Completed** | Final validation and archive — full quality gate 1078+146, OpenSpec 24/24, clean baseline established. |
 
 ## 4. Current Working Context
 
@@ -84,15 +86,14 @@ The diagnosis followed 7 sub-phases in sequence:
 - Archived OpenSpec change is at `openspec/changes/archive/2026-05-06-add-hybrid-retrieval-ranking-diagnosis/`
 - Specs promoted: `openspec/specs/retrieval-evaluation/`, `openspec/specs/retrieval-trace/`
 - Portfolio snapshots (Phase 8/9/10) are read-only
+- Phase 13.10 archived: `openspec/changes/archive/2026-05-07-add-guard-aware-provider-prompting/`
+- Spec promoted: `openspec/specs/guard-aware-prompting/spec.md`
 
 ## 5. Active OpenSpec Change
 
-**Phase 11.8 — Offline Draft Evaluation** (active)
-- draft_metrics.py with 4 pure metric functions + summary aggregation
-- DraftEvaluationRow + DraftEvaluationSummary schemas in evaluation/schemas.py
-- CLI runner run_draft_evaluation.py using FakeLLMProvider (no network, no API keys)
-- 32 unit tests + 7 integration tests, all pass
-- Markdown report: scope boundaries, metric definitions, summary, limitations
+**None** — all Phase 13 OpenSpec changes are archived. No active change.
+
+## 6. Current Decisions
 
 ## 6. Current Decisions
 
@@ -108,6 +109,9 @@ The diagnosis followed 7 sub-phases in sequence:
 | D8 | Default next phase is Evidence-Grounded LLM Draft Generation | Product frontier moves from evidence retrieval to evidence-grounded generation; continued retrieval tuning has diminishing portfolio value | 2026-05-06 |
 | D9 | Phase 11 complete — 8-layer safety architecture validated | Safety architecture is foundational for AI-assisted workflows; demonstrating safety-first design has portfolio value | 2026-05-06 |
 | D10 | Phase 11 archived; next phase is Demo Readiness | Phase 11 archived, Phase 12 (Demo Readiness and Portfolio Delivery) is recommended next | 2026-05-06 |
+| D11 | Phase 13 complete — extended draft evaluation metrics confirmed | Real provider guard pass 4%→84% after guard-aware prompt; 4 remaining failures are correct guard behavior; OpenSpec archived | 2026-05-07 |
+| D12 | Guard-aware prompting is effective but not sufficient | Real provider guard pass improved from 4% to 84% via structured prompt; remaining failures (risk escalation, unsupported claims) require guard architecture improvement not prompt-only fix | 2026-05-07 |
+| D13 | Phase 13.10 is archived; next phase is TBD | All Phase 13 changes complete and archived; no active OpenSpec change; next batch to be defined | 2026-05-07 |
 
 See `docs/harness/controller_decision_log.md` for full log.
 
@@ -115,9 +119,10 @@ See `docs/harness/controller_decision_log.md` for full log.
 
 | Priority | Action | Phase | Type | Status |
 |---|---|---|---|---|
-| 1 | Demo Readiness and Portfolio Delivery — Phase 12 | 12 | Docs | Next |
-| — | Real Provider Optional Experiment (only if explicitly prioritized) | 12 | Analysis | Alternative |
+| 1 | Phase 13.10.1 final validation and archive | 13.10.1 | Validation | In Progress |
+| — | Next phase TBD (no active OpenSpec change) | — | — | Pending |
 | — | Query expansion audit (from Phase 10 findings) | — | Analysis | Future |
+| — | Guard architecture improvement for risk escalation compliance | — | Analysis | Future |
 
 See `docs/harness/controller_next_actions.md` for full details with allowed/forbidden files and validation commands.
 
@@ -145,12 +150,12 @@ You are working on TicketPilot, a local deterministic human review workflow for
 customer service ticket triage. Read `AGENTS.md` for the project constitution.
 
 Current state:
-- Phase 10 cleanly archived
-- Phase 11.4 code complete — active OpenSpec change: add-evidence-grounded-llm-draft
-- Current baseline: 878 unit, 119 integration, 0 skipped, 86.35% coverage
-- Latest commit: pending
-- Metric granularity thesis confirmed: 78% of wrong cases reclassified as doc-ID found
-- Doc-ID Recall@10: 91.9% (+32.5% over doc-type 59.4%)
+- Phase 13.10 cleanly archived — guard-aware prompting experiment complete
+- Phase 13 complete — no active OpenSpec change
+- Current baseline: 1078 unit, 146 integration, 0 skipped, 86.56% coverage
+- Latest commit: 985349e — feat: add guard-aware provider prompting experiment
+- Real provider (deepseek-v4-pro): guard pass 4%→84%, citation validation 12%→76%, reviewer-ready 4%→64%
+- Remaining 4 failures: correct guard behavior (risk escalation, unsupported claims, forbidden promise)
 
 Key boundaries:
 - Local demo / portfolio prototype — not production

@@ -1,5 +1,41 @@
 # TicketPilot Changelog
 
+## 2026-05-07 -- Phase 13.10: Guard-Aware Provider Prompting Experiment
+
+### Added
+- Guard-aware structured prompt in `OpenAICompatibleProvider.generate_draft()` requiring inline `[chunk_id]` citation markers, safe fallback instruction, and forbidden promise patterns
+- OpenSpec delta spec: `openspec/specs/guard-aware-prompting/spec.md`
+- 16 new unit tests in `TestGuardAwarePrompting` covering citation format, numeric citation prohibition, safe fallback, no-auto-send boundary, forbidden promises, risk escalation
+
+### Changed
+- Real provider (deepseek-v4-pro, 25 synthetic cases):
+  - Citation validation pass: 12% → 76% (+64 pp)
+  - Claim guard pass: 4% → 84% (+80 pp)
+  - Unsupported claim rate: 88% → 24% (-64 pp)
+  - Human review triggers: 100% → 48% (-52 pp)
+  - Reviewer-ready rate: 4% → 64% (+60 pp)
+  - Safe fallback rate: 4% → 84% (+80 pp)
+- FakeLLMProvider unchanged: citation validation 100%, guard pass 68%
+- Metrics dashboard and reviewer-ready metric docs updated
+
+### Root Cause
+Phase 13.9 bare-bones prompt produced free-form text without `[chunk_id]` markers. Claim guard's `_extract_chunk_ids()` only recognizes `[UUID]` format, not `[N]` numeric citations.
+
+### Remaining Failures
+4 guard failures (real provider) are correct guard behavior:
+- p12_011, p12_015: risk escalation not acknowledged
+- p12_018: unsupported claims + forbidden promise
+- p12_021: uncited substantive claim
+
+### Boundary
+Offline fixture-based comparison on 25 synthetic cases — not a benchmark, not production validation. Human review mandatory. No auto-send.
+
+### Validation
+- Phase 13.10 focused: ruff clean, OpenSpec strict pass, 59 prompt builder + 33 draft generator + 58 claim guard tests — all passed
+- Phase 13.10.1 full quality gate: 1078 unit + 146 integration, 0 skipped, coverage 86.56%, OpenSpec 24/24, secret scan clean — PASSED
+- OpenSpec change archived: `openspec/changes/archive/2026-05-07-add-guard-aware-provider-prompting/`
+- Spec promoted: `openspec/specs/guard-aware-prompting/spec.md`
+
 ## 2026-05-07 -- Phase 13.9: Real Provider Extended Comparison + Script Bug Fix
 
 ### Fixed

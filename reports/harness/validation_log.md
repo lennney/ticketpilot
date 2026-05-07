@@ -2,6 +2,33 @@
 
 ---
 
+## 2026-05-07 -- Phase 13.10.1: Final Validation and Archive — Guard-Aware Prompting
+
+| Check | Result |
+|---|---|
+| Ruff | All checks passed |
+| Unit tests (prompt builder) | 59 passed |
+| Unit tests (draft generator) | 33 passed |
+| Unit tests (claim guard) | 58 passed |
+| Full quality gate | 1078 unit + 146 integration, 0 skipped, coverage 86.56% |
+| OpenSpec --all | 24/24 passed |
+| Secret scan | Clean |
+| Overclaim scan | Clean — all matches in appropriate boundary/negative contexts |
+| OpenSpec archive | add-guard-aware-provider-prompting → 2026-05-07-add-guard-aware-provider-prompting |
+| Spec promoted | openspec/specs/guard-aware-prompting/spec.md |
+| OpenSpec --all after archive | 24/24 passed |
+
+**Phase 13.10 real provider metrics confirmed**:
+- Citation validation pass: 12% → 76%
+- Claim guard pass: 4% → 84%
+- Reviewer-ready rate: 4% → 64%
+- Remaining 4 failures: correct guard behavior (risk escalation, unsupported claims, forbidden promises)
+- Boundary: offline fixture-based, not benchmark, not production
+
+**Status**: PASSED — archive commit is clean baseline (985349e confirmed)
+
+---
+
 ## 2026-05-07 -- Phase 13.9.1: Validation Closure — Strict Full Quality Gate
 
 | Check | Result |

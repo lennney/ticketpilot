@@ -2,6 +2,37 @@
 
 ---
 
+## 2026-05-07 — Phase 13.10: Guard-Aware Provider Prompting Experiment
+
+**Problem**: Phase 13.9 real provider (deepseek-v4-pro) generated free-form Chinese text (80–174 chars) without inline `[chunk_id]` citation markers. Claim guard's `_extract_chunk_ids()` only recognizes `[UUID]` format, not `[N]` numeric citations. Result: citation validation pass 12%, claim guard pass 4%, human review triggers 100%.
+
+**Root Cause**: `OpenAICompatibleProvider.generate_draft()` used hardcoded bare-bones prompt (lines 249–261) that formatted evidence as `[1] Title: content...` and did not instruct the LLM to include `[chunk_id]` markers in generated text.
+
+**Solution**: Replaced hardcoded prompt with guard-aware structured prompt using `format_evidence_block()` (produces `[chunk_id]` format) and explicit safety rules requiring `[{chunk_id}]` inline citations, forbidding numeric `[N]` citations, instructing safe fallback when evidence insufficient.
+
+**Key Engineering Decision D14**: Guard-aware prompt is a prompt contract, not a guard weakening. The prompt instructs the LLM to include citation markers; the guard still validates them. If the LLM ignores the instruction, the guard correctly fails.
+
+**Results** (real provider, 25 synthetic cases):
+- Citation validation pass: 12% → 76% (+64 pp)
+- Claim guard pass: 4% → 84% (+80 pp)
+- Unsupported claim rate: 88% → 24% (-64 pp)
+- Human review triggers: 100% → 48% (-52 pp)
+- Reviewer-ready rate: 4% → 64% (+60 pp)
+- Safe fallback rate: 4% → 84% (+80 pp)
+
+**Remaining 4 failures** (all correct guard behavior):
+- p12_011, p12_015: risk escalation not acknowledged (citations present but no escalation language)
+- p12_018: 2 unsupported claims + 1 forbidden promise
+- p12_021: uncited substantive claim (LLM ignored citation instruction)
+
+**Trade-off discovered**: 84% safe fallback rate — expected consequence of the prompt instructing conservative citing. Acceptable because safe fallback cases correctly trigger human review.
+
+**Spec promoted**: `openspec/specs/guard-aware-prompting/spec.md` — 5 requirements covering Inline Citation Markers, Evidence Sufficiency Fallback, Forbidden Promise Patterns, No-Auto-Send Boundary, Risk Flag Escalation Acknowledgment.
+
+**Boundary**: Offline fixture-based evaluation on 25 synthetic cases with mock evidence — NOT a benchmark. Human review mandatory. No auto-send.
+
+---
+
 ## 2026-05-07 — Phase 13: Extended Draft Evaluation Metrics (Planning)
 
 **Problem**: Phase 12 provider comparison established baseline (25 cases, fake+real, 25/25 success, 8 HR triggers each) but left several metrics as "not yet measured": citation precision, evidence coverage, unsupported claim rate, forbidden promise rate, guard pass rate, citation validation pass rate, reviewer-ready rate.

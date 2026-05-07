@@ -662,19 +662,63 @@
 
 ---
 
-## Next Batch: Phase 13 — Extended Draft Evaluation Metrics
+## Completed Batch: Phase 13.10.1 — Final Validation and Archive — Guard-Aware Prompting
 
-**Phase 13 OpenSpec change created**: `add-extended-draft-evaluation-metrics`
+### What Was Done
 
-Recommended scope (7 sub-tasks):
-- 13.2: Create `draft_comparison_metrics.py` with pure metric functions
-- 13.3: Extend `run_phase12_llm_provider_comparison.py` to extract citation validation + guard results
-- 13.4: Add unit tests for new metric functions
-- 13.5: Regenerate fake baseline comparison with extended metrics
-- 13.6: Update portfolio docs with new metrics
-- 13.7: Final validation and archive
+- Verified Phase 13.10 outputs: guard-aware prompt in llm_provider.py, 16 guard-aware unit tests, Phase 13.10 report, summary JSON, portfolio docs updated
+- Ran focused tests: prompt builder 59/59, draft generator 33/33, claim guard 58/58 — all passed
+- Ran full quality gate: 1078 unit + 146 integration, 0 skipped, coverage 86.56%, ruff clean, OpenSpec 24/24, secret scan clean — PASSED
+- Ran overclaim scan: clean — all matches in appropriate boundary/negative contexts
+- Archived OpenSpec change: `add-guard-aware-provider-prompting` → `archive/2026-05-07-add-guard-aware-provider-prompting/`
+- Spec promoted: `openspec/specs/guard-aware-prompting/spec.md` (+5 requirements)
+- Updated all harness docs: changelog, validation_log, engineering_log, controller_session_log, controller_next_actions, chatgpt_controller_context
 
-Key goal: fill Phase 12 dashboard "not-yet-measured" gaps — citation precision, evidence coverage, unsupported claim rate, forbidden promise rate, guard pass rate, reviewer-ready rate.
+### Files Modified
 
-Alternative:
-- Query Expansion Audit (Phase 10 found 9 genuine zero-hit cases)
+- `docs/changelog.md`
+- `reports/harness/validation_log.md`
+- `reports/harness/engineering_log.md`
+- `docs/harness/controller_session_log.md`
+- `docs/harness/chatgpt_controller_context.md`
+- `docs/harness/controller_next_actions.md`
+
+### Validation
+
+- Full quality gate: ✅ PASSED — 1078 unit + 146 integration, 0 skipped, 86.56% coverage
+- Ruff: ✅ Clean
+- OpenSpec --all: ✅ 24/24 passed (pre-archive)
+- OpenSpec --all (post-archive): ✅ 24/24 passed
+- Secret scan: ✅ Clean
+- Overclaim scan: ✅ Clean
+- Archive: ✅ Successful — `openspec/changes/archive/2026-05-07-add-guard-aware-provider-prompting/`
+
+### Phase 13.10 Real Provider Metrics Confirmed
+
+| Metric | Phase 13.9 Baseline | Phase 13.10 Guard-Aware | Change |
+|--------|---------------------|-------------------------|--------|
+| Citation validation pass | 12% (3/25) | 76% (19/25) | +64 pp |
+| Claim guard pass | 4% (1/25) | 84% (21/25) | +80 pp |
+| Unsupported claim rate | 88% (22/25) | 24% (6/25) | -64 pp |
+| Human review triggers | 100% (25/25) | 48% (12/25) | -52 pp |
+| Reviewer-ready rate | 4% (1/25) | 64% (16/25) | +60 pp |
+| Safe fallback rate | 4% (1/25) | 84% (21/25) | +80 pp |
+
+### Boundary
+
+Offline fixture-based comparison on 25 synthetic cases with mock evidence — NOT a benchmark, NOT production validation. Human review mandatory. No auto-send.
+
+### Commit
+
+`pending` (Phase 13.10 commit 985349e already pushed; this archive update needs separate commit)
+
+---
+
+## Next Batch: TBD — No Active OpenSpec Change
+
+All Phase 13 OpenSpec changes are archived. No active OpenSpec change. Next batch to be defined.
+
+Potential directions:
+- Query expansion audit (Phase 10 found 9 genuine zero-hit cases)
+- Guard architecture improvement for risk escalation compliance (Phase 13.10 remaining failures)
+- Next-phase planning (Phase 14)

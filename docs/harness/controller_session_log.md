@@ -5,6 +5,25 @@
 
 ---
 
+## 2026-05-07 — Phase 13.10.1: Final Validation and Archive — Guard-Aware Prompting
+
+**Summary**: Ran final validation and archived `add-guard-aware-provider-prompting` OpenSpec change. Focused tests (prompt builder 59, draft generator 33, claim guard 58) all passed. Full quality gate: 1078 unit + 146 integration, 0 skipped, coverage 86.56%, ruff clean, OpenSpec 24/24, secret scan clean. Overclaim scan clean. OpenSpec archive created `2026-05-07-add-guard-aware-provider-prompting/`, spec promoted to `openspec/specs/guard-aware-prompting/spec.md`. Phase 13.10 committed at `985349e`, this archive creates new baseline.
+
+**Files Modified**: docs/changelog.md, reports/harness/validation_log.md, docs/harness/controller_session_log.md, docs/harness/chatgpt_controller_context.md, reports/harness/engineering_log.md, docs/harness/controller_next_actions.md
+
+**Phase 13.10 key metrics** (real provider, deepseek-v4-pro, 25 cases):
+- Guard pass: 4% → 84% (+80 pp)
+- Citation validation pass: 12% → 76% (+64 pp)
+- Reviewer-ready: 4% → 64% (+60 pp)
+- Remaining 4 failures: correct guard behavior
+- Boundary: offline fixture-based, not benchmark, not production
+
+**Validation**: Full quality gate PASSED — 1078 unit + 146 integration, 0 skipped, 86.56% coverage, ruff clean, OpenSpec 24/24
+
+**Phase Status**: Phase 13.10 complete. Clean baseline established at archive commit.
+
+---
+
 ## 2026-05-07 — Phase 12D.1: Resolve Untracked OpenSpec Spec Directory
 
 **Summary**: Inspected untracked `openspec/specs/error-memory/`. Root cause: Phase 12B archive promoted spec but did not stage it. Resolution: added spec file, committed and pushed `df03c54`. Validation: 23/23 OpenSpec passed.
