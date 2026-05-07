@@ -28,7 +28,12 @@ Phase 15.4（Chat UI Risk Escalation Display）
 - [ ] Step 7: Controller Coordination (commit + push)
 
 ## 下一步任务
-Step 3: Implementation — dispatch backend-engineer with phase15.4_requirements.md
+Phase 15.6: Human Review Queue Link (完整 loop)
+
+## Phase Loop 规则 (更新)
+- Requirements Analysis: 必须像产品经理一样详细，包含字段定义
+- Skills/Learning: 错误/模式 → codify 到 skills/ 可复用
+- Code Review 失败 → 进入 Fix Phase，不忽视
 
 ## 技术栈
 - Python 3.11 / uv

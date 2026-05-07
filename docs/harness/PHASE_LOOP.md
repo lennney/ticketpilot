@@ -52,11 +52,11 @@ This document extends AGENTS.md, not replaces it. It operationalizes:
 |  [7] CONTROLLER COORDINATION                                         |
 |      Orchestrates handoffs, checks exit criteria, decides next step  |
 |      Input: all role outputs, PROJECT_CONTEXT.md                      |
-|      Output: commit + push, or loop back to step 3/4, or phase done  |
+|      Output: commit + push, loop back to Fix Phase, or phase done   |
 |                                                                       |
 +-----------------------------------------------------------------------+
 
-    Loop back: Review/Doc fails -> back to [3] Implementation (max 3 retries)
+    Loop back: Review/Doc fails -> Fix Phase -> back to [3] Implementation (max 3 retries)
     Phase done: All steps pass -> commit + push -> next phase
 ```
 
@@ -112,6 +112,101 @@ Each role step has explicit trigger conditions. Controller checks these before d
 
 ---
 
+---
+
+## Fix Phase (Code Review Failure Handling)
+
+When Review [4] or Doc Review [5] fails, the Controller enters Fix Phase before looping back.
+
+```
++-----------------------------------------------------------------------+
+|                         FIX PHASE                                      |
++-----------------------------------------------------------------------+
+|                                                                       |
+|  [F1] ISSUE DOCUMENTATION                                            |
+|      Record specific review findings with evidence                   |
+|      Input: review output, line numbers, error patterns              |
+|      v                                                                 |
+|  [F2] ROOT CAUSE ANALYSIS                                            |
+|      Determine WHY the issue occurred                                 |
+|      Input: implementation output, requirements, review findings     |
+|      v                                                                 |
+|  [F3] SKILL CODIFICATION (if new pattern discovered)                 |
+|      Check if this error is a new pattern                             |
+|      Input: error_memory.jsonl, repair_playbook.md                   |
+|      Output: new skill entry if pattern is novel                      |
+|      v                                                                 |
+|  [F4] FIX PLAN                                                        |
+|      Create specific fix instructions for implementation             |
+|      Input: root cause, review suggestions, Controller knowledge     |
+|      Output: fix guidance document                                    |
+|      v                                                                 |
+|  [F5] RETRY DECISION                                                  |
+|      Check retry count, decide next action                            |
+|      Input: retry count (max 3), fix complexity                       |
+|      Output: loop back to [3] / escalate to human                     |
+|                                                                       |
++-----------------------------------------------------------------------+
+```
+
+### Fix Phase Rules
+
+| Rule | Description |
+|------|-------------|
+| **Max Retries** | 3 total retries per phase |
+| **Escalation Trigger** | After 3rd retry failure, escalate to human |
+| **Fix Phase Entry** | Always enter Fix Phase before retry |
+| **Skill Codification** | If new error pattern found, create skill entry |
+| **Documentation** | All issues documented in review output |
+
+### Fix Phase Entry Criteria
+
+**Enter Fix Phase when**:
+- Review [4] returns FAIL
+- Doc Review [5] returns FAIL
+- Any step returns unexpected errors
+
+**Skip to direct retry when**:
+- Typo fixes only
+- Formatting changes (ruff fix)
+- Documentation additions
+
+### Escalation Format
+
+When escalating after max retries:
+
+```
+## Escalation Report
+
+**Phase**: [phase number and name]
+**Task Type**: [CODE/DOC/DATA/TEST/AUTO]
+**Total Retries**: 3
+
+### What Was Tried
+
+1. **Attempt 1**: [what was done]
+2. **Attempt 2**: [what was done]
+3. **Attempt 3**: [what was done]
+
+### What Failed
+
+- [Specific failure 1]
+- [Specific failure 2]
+
+### Root Cause Analysis
+
+[Why the implementation keeps failing]
+
+### Options Considered
+
+1. [Option 1] - pros/cons
+2. [Option 2] - pros/cons
+
+### Recommendation
+
+[Controller's recommended path forward]
+```
+
 ## Role Responsibilities
 
 ### [1] Planner
@@ -133,7 +228,60 @@ Each role step has explicit trigger conditions. Controller checks these before d
 - Each step has concrete acceptance criteria
 - Controller approves the plan
 
-**Who performs**: Controller (self) or project-director subagent for complex phases.
+**Who performs**: Controller (self)
+#### Skills Codification Process
+
+When a pattern or error is discovered:
+
+1. **Check for existing skill**: Search docs/harness/skills/ for similar patterns
+2. **If new pattern**: Create new skill entry using TEMPLATE.md
+3. **If known pattern**: Update existing skill with new learnings
+4. **Update repair_playbook**: Add error -> fix mapping
+5. **Log to error_memory**: Structured entry for future reference
+
+```
++-----------------------------------------------------------------------+
+|                    SKILLS CODIFICATION WORKFLOW                        |
++-----------------------------------------------------------------------+
+|                                                                       |
+|  [1] PATTERN DETECTION                                               |
+|      An error or pattern is discovered during phase execution        |
+|      v                                                                 |
+|  [2] EXISTING SKILL CHECK                                            |
+|      Search docs/harness/skills/ for matching pattern               |
+|      v                                                                 |
+|      +------------------------------------------------------------+   |
+|      | Pattern is KNOWN    | Pattern is NEW                       |   |
+|      +------------------------------------------------------------+   |
+|      | Update skill with   | Create new skill entry               |   |
+|      | new learnings      | using TEMPLATE.md                    |   |
+|      +------------------------------------------------------------+   |
+|      |                                                          v     |
+|  [3] UPDATE REPAIR PLAYBOOK                                          |
+|      Add error -> fix mapping                                        |
+|      v                                                                 |
+|  [4] LOG TO ERROR MEMORY                                            |
+|      Structured JSONL entry                                          |
+|      v                                                                 |
+|  [5] INJECT INTO IMPLEMENTATION GUIDANCE                             |
+|      Reference skill in Fix Phase dispatch                           |
+|                                                                       |
++-----------------------------------------------------------------------+
+```
+
+#### Skill Entry Requirements
+
+| Field | Required | Description |
+|-------|----------|-------------|
+| Skill ID | Yes | `skill_{domain}_{short_name}` format |
+| Version | Yes | Semantic versioning |
+| Pattern Type | Yes | error_fix / best_practice / anti_pattern |
+| Problem Statement | Yes | Clear description of the issue |
+| Solution Steps | Yes | Numbered action items |
+| Code Examples | Conditional | Before/after for code patterns |
+| Validation | Yes | How to verify the fix |
+| Related Skills | No | Links to related skill entries |
+ or project-director subagent for complex phases.
 
 **Critical Check**: If task is **[CODE]**, plan must include delegation to subagent, not Controller self-implementation.
 
@@ -161,6 +309,142 @@ Each role step has explicit trigger conditions. Controller checks these before d
 - No assumptions left unspoken
 
 **Who performs**: Dedicated subagent (general-purpose with requirements-analyst role) or Controller for simple phases.
+
+#### Requirements Analysis Template (Product Manager Spec)
+
+Requirements must be detailed enough to code from without asking questions.
+
+```
+## Requirements Specification: {Phase Name}
+
+### Phase Information
+- **Phase ID**: {phase_number}
+- **Task Type**: [CODE/DOC/DATA/TEST/AUTO]
+- **Priority**: Critical / High / Medium / Low
+- **OpenSpec Reference**: {if applicable}
+
+---
+
+### Functional Requirements
+
+#### FR-{number}: {Requirement Title}
+
+| Field | Value |
+|-------|-------|
+| **ID** | FR-{number} |
+| **Title** | {Short descriptive title} |
+| **Type** | `feature` / `bug_fix` / `refactor` / `enhancement` |
+| **Module** | {affected module(s)} |
+
+**Description**:
+{Detailed description of what this requirement does. Be specific about behavior.}
+
+**Fields** (for data/API requirements):
+
+| Field Name | Type | Required | Description | Valid Values / Constraints |
+|------------|------|----------|-------------|-----------------------------|
+| {field_name} | {string/int/boolean/object/array} | Yes/No | {description} | {constraints} |
+
+**API Signature** (if applicable):
+\`\`\`python
+{function_signature}
+# or
+{endpoint}: {method}
+\`\`\`
+
+**Data Structure** (if applicable):
+\`\`\`python
+class {ClassName}:
+    """Description of the data structure."""
+    
+    {field_name}: {type}
+    """Description of this field."""
+    
+    def {method_name}(self, {params}) -> {return_type}:
+        """Description of this method."""
+\`\`\`
+
+**Acceptance Criteria**:
+- [ ] {Specific check 1}
+- [ ] {Specific check 2}
+- [ ] {Specific check 3}
+
+**Test Strategy**:
+| Test Type | Scope | Method |
+|-----------|-------|--------|
+| Unit | {module} | {test file} |
+| Integration | {flow} | {test file} |
+
+**Related Requirements**:
+- {other FR IDs that relate}
+
+**Edge Cases**:
+- {edge case 1} -> expected behavior
+- {edge case 2} -> expected behavior
+
+---
+
+### Non-Functional Requirements
+
+#### NFR-{number}: {Title}
+
+| Field | Value |
+|-------|-------|
+| **Type** | `performance` / `security` / `compatibility` / `maintainability` / `reliability` |
+
+**Requirement**: {specific constraint}
+
+**Measurement**: {how to verify}
+
+---
+
+### Constraints
+
+| Constraint | Description | Source |
+|------------|-------------|--------|
+| {constraint_id} | {description} | {OpenSpec / legacy / implicit} |
+
+---
+
+### Out of Scope
+
+- {item 1}
+- {item 2}
+
+---
+
+### Dependencies
+
+| Dependency | Type | Required For | Notes |
+|------------|------|--------------|-------|
+| {module} | `import` / `runtime` / `build` | {FR ID} | {notes} |
+
+---
+
+### Verification Plan
+
+| FR ID | Verification Method | Expected Result |
+|-------|---------------------|------------------|
+| FR-1 | {test/check} | {expected outcome} |
+
+---
+
+### Open Questions
+
+| Question | Impact | Resolution Plan |
+|----------|--------|-----------------|
+| {question} | {High/Medium/Low} | {plan to resolve} |
+
+---
+
+### Change Log
+
+| Version | Date | Change |
+|---------|------|--------|
+| 1.0.0 | YYYY-MM-DD | Initial requirements |
+\`\`\`
+
+
 
 ---
 
@@ -225,12 +509,9 @@ Each role step has explicit trigger conditions. Controller checks these before d
 **Who performs**: code-reviewer subagent
 
 **Repeat Mechanism**:
-- If FAIL: loop back to [3] Implementation
+- If FAIL: enter Fix Phase
 - Max 3 retries per phase
-- If still failing after 3 retries: escalate to human with:
-  - What was tried
-  - What failed
-  - Options considered
+- If still failing after 3 retries: escalate to human with escalation report
 
 ---
 
@@ -253,7 +534,60 @@ Each role step has explicit trigger conditions. Controller checks these before d
 - Boundary wording present in portfolio docs
 - No misleading claims
 
-**Who performs**: Controller (self) for simple docs, doc-reviewer subagent for complex docs
+**Who performs**: Controller (self)
+#### Skills Codification Process
+
+When a pattern or error is discovered:
+
+1. **Check for existing skill**: Search docs/harness/skills/ for similar patterns
+2. **If new pattern**: Create new skill entry using TEMPLATE.md
+3. **If known pattern**: Update existing skill with new learnings
+4. **Update repair_playbook**: Add error -> fix mapping
+5. **Log to error_memory**: Structured entry for future reference
+
+```
++-----------------------------------------------------------------------+
+|                    SKILLS CODIFICATION WORKFLOW                        |
++-----------------------------------------------------------------------+
+|                                                                       |
+|  [1] PATTERN DETECTION                                               |
+|      An error or pattern is discovered during phase execution        |
+|      v                                                                 |
+|  [2] EXISTING SKILL CHECK                                            |
+|      Search docs/harness/skills/ for matching pattern               |
+|      v                                                                 |
+|      +------------------------------------------------------------+   |
+|      | Pattern is KNOWN    | Pattern is NEW                       |   |
+|      +------------------------------------------------------------+   |
+|      | Update skill with   | Create new skill entry               |   |
+|      | new learnings      | using TEMPLATE.md                    |   |
+|      +------------------------------------------------------------+   |
+|      |                                                          v     |
+|  [3] UPDATE REPAIR PLAYBOOK                                          |
+|      Add error -> fix mapping                                        |
+|      v                                                                 |
+|  [4] LOG TO ERROR MEMORY                                            |
+|      Structured JSONL entry                                          |
+|      v                                                                 |
+|  [5] INJECT INTO IMPLEMENTATION GUIDANCE                             |
+|      Reference skill in Fix Phase dispatch                           |
+|                                                                       |
++-----------------------------------------------------------------------+
+```
+
+#### Skill Entry Requirements
+
+| Field | Required | Description |
+|-------|----------|-------------|
+| Skill ID | Yes | `skill_{domain}_{short_name}` format |
+| Version | Yes | Semantic versioning |
+| Pattern Type | Yes | error_fix / best_practice / anti_pattern |
+| Problem Statement | Yes | Clear description of the issue |
+| Solution Steps | Yes | Numbered action items |
+| Code Examples | Conditional | Before/after for code patterns |
+| Validation | Yes | How to verify the fix |
+| Related Skills | No | Links to related skill entries |
+ for simple docs, doc-reviewer subagent for complex docs
 
 **Key Check** (per AGENTS.md Section 13):
 - Fake embeddings: Pipeline verification only -- no semantic retrieval quality
@@ -266,7 +600,7 @@ Each role step has explicit trigger conditions. Controller checks these before d
 
 ### [6] Experience Consolidation
 
-**Purpose**: Extract learnings to improve future phases.
+**Purpose**: Extract learnings to improve future phases, codify patterns into reusable skills.
 
 **Receives**:
 - Phase execution log (what happened at each step)
@@ -278,13 +612,68 @@ Each role step has explicit trigger conditions. Controller checks these before d
 - Updates to repair_playbook.md (if new error pattern found)
 - Updates to agent_learning_rules.md (if new stable rule found)
 - Entries to error_memory.jsonl (if errors encountered)
+- **Skill entries** (if new patterns discovered) in docs/harness/skills/
 - Lessons for next phase handoff
 
 **Exit Criteria**:
 - All new patterns documented
 - No undocumented error left untracked
+- New skills created for novel patterns
 
 **Who performs**: Controller (self)
+#### Skills Codification Process
+
+When a pattern or error is discovered:
+
+1. **Check for existing skill**: Search docs/harness/skills/ for similar patterns
+2. **If new pattern**: Create new skill entry using TEMPLATE.md
+3. **If known pattern**: Update existing skill with new learnings
+4. **Update repair_playbook**: Add error -> fix mapping
+5. **Log to error_memory**: Structured entry for future reference
+
+```
++-----------------------------------------------------------------------+
+|                    SKILLS CODIFICATION WORKFLOW                        |
++-----------------------------------------------------------------------+
+|                                                                       |
+|  [1] PATTERN DETECTION                                               |
+|      An error or pattern is discovered during phase execution        |
+|      v                                                                 |
+|  [2] EXISTING SKILL CHECK                                            |
+|      Search docs/harness/skills/ for matching pattern               |
+|      v                                                                 |
+|      +------------------------------------------------------------+   |
+|      | Pattern is KNOWN    | Pattern is NEW                       |   |
+|      +------------------------------------------------------------+   |
+|      | Update skill with   | Create new skill entry               |   |
+|      | new learnings      | using TEMPLATE.md                    |   |
+|      +------------------------------------------------------------+   |
+|      |                                                          v     |
+|  [3] UPDATE REPAIR PLAYBOOK                                          |
+|      Add error -> fix mapping                                        |
+|      v                                                                 |
+|  [4] LOG TO ERROR MEMORY                                            |
+|      Structured JSONL entry                                          |
+|      v                                                                 |
+|  [5] INJECT INTO IMPLEMENTATION GUIDANCE                             |
+|      Reference skill in Fix Phase dispatch                           |
+|                                                                       |
++-----------------------------------------------------------------------+
+```
+
+#### Skill Entry Requirements
+
+| Field | Required | Description |
+|-------|----------|-------------|
+| Skill ID | Yes | `skill_{domain}_{short_name}` format |
+| Version | Yes | Semantic versioning |
+| Pattern Type | Yes | error_fix / best_practice / anti_pattern |
+| Problem Statement | Yes | Clear description of the issue |
+| Solution Steps | Yes | Numbered action items |
+| Code Examples | Conditional | Before/after for code patterns |
+| Validation | Yes | How to verify the fix |
+| Related Skills | No | Links to related skill entries |
+
 
 ---
 
@@ -304,8 +693,8 @@ Each role step has explicit trigger conditions. Controller checks these before d
    - Document failures with specific evidence
 
 3. **Loop Control**
-   - If Review [4] fails: back to Implementation [3]
-   - If Doc Review [5] fails: back to Implementation [3]
+   - If Review [4] fails: enter Fix Phase
+   - If Doc Review [5] fails: enter Fix Phase
    - Max 3 retries per phase
    - After 3 retries: escalate to human
 
@@ -328,7 +717,7 @@ Each role step has explicit trigger conditions. Controller checks these before d
 
 **Exit Criteria**:
 - Phase fully complete: commit + push
-- OR: Loop back initiated (with retry counter incremented)
+- OR: Fix Phase entered (with retry counter incremented)
 - OR: Escalation documented with options
 
 ---
@@ -372,6 +761,7 @@ Each role transition follows this protocol:
 | Review                    | Controller      | subagent_results/{task_id}_review.md         | Markdown    |
 | Doc Review                | Controller      | subagent_results/{task_id}_doc_review.md     | Markdown    |
 | Experience Consolidation  | Controller      | reports/harness/error_memory.jsonl          | JSONL       |
+| Fix Phase                 | Implementation  | subagent_results/{phase}_fix_guidance.md    | Markdown    |
 
 ### Handoff Content Requirements
 
@@ -410,9 +800,12 @@ Use this checklist for each phase loop cycle:
     [ ] For [CODE]: plan delegates to subagent, not Controller
 
     STEP 2 - REQUIREMENTS ANALYSIS
-    [ ] Requirements spec produced
+    [ ] Requirements spec produced using Product Manager template
     [ ] All plan steps have corresponding requirements
     [ ] No ambiguous requirements
+    [ ] Field definitions included for data/API requirements
+    [ ] API signatures specified (if applicable)
+    [ ] Acceptance criteria are actionable
 
     STEP 3 - IMPLEMENTATION
     [TYPE CHECK]
@@ -428,26 +821,34 @@ Use this checklist for each phase loop cycle:
     STEP 4 - REVIEW
     [ ] Review subagent dispatched
     [ ] Review result: PASS / FAIL
-    [ ] If FAIL: issues documented, retry count incremented
+    [ ] If FAIL: enter Fix Phase
     [ ] If PASS: proceed to step 5
 
     STEP 5 - DOC REVIEW
     [ ] Doc review completed
     [ ] Boundary wording verified in portfolio docs
     [ ] Doc result: PASS / FAIL
-    [ ] If FAIL: issues documented, back to step 3
+    [ ] If FAIL: enter Fix Phase
 
     STEP 6 - EXPERIENCE CONSOLIDATION
     [ ] Error patterns documented (if any)
     [ ] repair_playbook.md updated (if new patterns)
     [ ] agent_learning_rules.md updated (if new rules)
+    [ ] Skills codified (if new patterns discovered)
     [ ] Compression handoff status verified (if context was compressed)
 
     STEP 7 - CONTROLLER COORDINATION
     [ ] All exit criteria met
     [ ] tasks.md updated with phase status
     [ ] PROJECT_CONTEXT.md updated
-    [ ] Decision made: commit+push / loop-back / escalate
+    [ ] Decision made: commit+push / Fix Phase / escalate
+
+    FIX PHASE (if entered):
+    [ ] F1: Issue documented with evidence
+    [ ] F2: Root cause identified
+    [ ] F3: Skill codification checked
+    [ ] F4: Fix plan created
+    [ ] F5: Retry decision made (loop back / escalate)
 
     COMMIT DECISION:
     [ ] Commit and push
@@ -481,9 +882,10 @@ After Implementation [3] completes, Controller triggers:
 
 | Step               | Max Retries | On Failure                                                     |
 |--------------------|-------------|----------------------------------------------------------------|
-| Implementation [3] | 3           | Back to [3] with fixes from Review                             |
-| Review [4]         | 3           | Back to [3] if impl issue, escalate if requirements issue       |
-| Doc Review [5]     | 3           | Back to [3] if content issue                                   |
+| Implementation [3]  | 3           | Enter Fix Phase, then back to [3]                               |
+| Review [4]         | 3           | Enter Fix Phase if impl issue, escalate if requirements issue    |
+| Doc Review [5]     | 3           | Enter Fix Phase if content issue                                |
+| Fix Phase          | N/A         | Always enters before retry, not counted separately              |
 
 After max retries:
 - Document what was tried
@@ -513,6 +915,14 @@ After max retries:
 ### Lesson 5: Contradictions in rules
 **Problem**: Section 9 vs 11 contradiction in AGENTS.md about code implementation
 **Rule**: Unified - Controller NEVER implements code. Always delegate to subagent for [CODE] tasks.
+
+### Lesson 6: Skills not codified
+**Problem**: Error patterns were documented but not made reusable
+**Rule**: New patterns -> skill entries in docs/harness/skills/ using TEMPLATE.md
+
+### Lesson 7: Fix Phase workflow missing
+**Problem**: Review failures led directly to retry without systematic analysis
+**Rule**: Always enter Fix Phase before retry. Document issue, analyze root cause, codify skill, create fix plan.
 
 ---
 
@@ -568,6 +978,8 @@ PHASE_LOOP adds explicit trigger check:
 | Error memory               | reports/harness/error_memory.jsonl            |
 | Repair playbook            | reports/harness/repair_playbook.md             |
 | Agent learning rules       | docs/harness/agent_learning_rules.md          |
+| Skills directory           | docs/harness/skills/                          |
+| Skills template            | docs/harness/skills/TEMPLATE.md              |
 | Project context            | docs/harness/PROJECT_CONTEXT.md               |
 | Compression handoff        | reports/harness/compression_handoff_{ts}.md    |
 | Controller coordination     | docs/harness/CONTROLLER_HARNESS_PRACTICE.md    |
@@ -616,6 +1028,50 @@ Phase 15.4 **[CODE]**: Fix RetrievalTrace class collision
 - Update PROJECT_CONTEXT.md
 - Commit and push
 
+
+## Example: Phase with Fix Phase
+
+Phase 15.5 **[CODE]**: Add pagination to ticket retrieval
+
+**STEPS 1-3**: Completed as normal
+
+**STEP 4 - REVIEW** (code-reviewer subagent)
+- Input: implementation output + requirements
+- Output: subagent_results/phase15.5_review.md
+- Result: **FAIL**
+- Issues:
+  - Line 45: Missing offset parameter handling
+  - Line 67: Page size validation missing
+
+**FIX PHASE ENTERED** (retry count: 1)
+
+**F1 - Issue Documentation**
+- Documented line 45 and 67 issues with code snippets
+
+**F2 - Root Cause Analysis**
+- Offset parameter not included in API signature
+- Validation logic missing in service layer
+
+**F3 - Skill Codification**
+- Searched docs/harness/skills/ for pagination patterns
+- Found skill_retrieval_pagination_offset - updated with new learning
+- If new pattern: create new skill entry
+
+**F4 - Fix Plan**
+- Add offset parameter to API signature
+- Add page_size validation (1-100 range)
+- Update unit tests
+
+**F5 - Retry Decision**
+- Retry count 1 < 3: loop back to [3]
+
+**STEPS 3-5 RETRIED** with fixes applied
+
+**STEP 4 - REVIEW** (second attempt)
+- Result: **PASS**
+
+**STEPS 5-7 COMPLETED**
+
 ---
 ## Summary
 
@@ -629,7 +1085,9 @@ Phase 15.4 **[CODE]**: Fix RetrievalTrace class collision
 | Roles            | Planner, Requirements Analysis, Implementation, Review, Doc Review, Experience Consolidation |
 | Handoff          | Structured output passed between roles                                    |
 | Exit criteria    | Conditions that must be met before moving to next role                     |
-| Repeat mechanism | Retry logic with max 3 retries per step                                    |
+| Fix Phase        | Systematic failure analysis before retry (5 sub-steps)                    |
+| Skills Codification | Extract learnings into reusable skill entries                          |
+| Repeat mechanism | Max 3 retries per phase, Fix Phase entered before each retry |
 | Compression      | System-triggered context save - check subagent status FIRST                |
 
-This design minimizes human involvement while ensuring quality through automated checks and structured reviews.
+This design minimizes human involvement while ensuring quality through automated checks, systematic fix workflows, and reusable skill codification.
