@@ -22,25 +22,28 @@ Both providers received the same evidence (mock) and the same case parameters. T
 
 ## 2. Summary Comparison (Phase 13 Extended)
 
-| Metric | FakeLLMProvider | OpenAICompatibleProvider (deepseek-v4-pro) |
-|--------|-----------------|---------------------------------------------|
+| Metric | FakeLLMProvider | Real Provider (deepseek-v4-pro) |
+|--------|-----------------|----------------------------------|
 | Cases | 25 | 25 |
 | Success count | 25 / 25 (100%) | 25 / 25 (100%) |
-| Avg confidence | 0.825 | 0.70 (Phase 12 run) |
-| Human review triggers | 25 / 25 (100%) | 8 / 25 (Phase 12 run) |
-| Has citations | 25 / 25 (100%) | 25 / 25 (100%) |
-| API errors | N/A (no network) | 0 |
-| Citation precision | 100% (25/25) | 100% (Phase 12 run) |
-| Citation validation pass rate | 100% (25/25) | 100% (Phase 12 run) |
-| Unsupported claim rate | 0% (0/25) | 0% (Phase 12 run) |
-| Forbidden promise count | 0 | 0 (Phase 12 run) |
-| Guard pass rate | 68% (17/25) | — (real provider not run in Phase 13) |
-| Evidence coverage avg | 100% | — |
-| Safe fallback rate | 0% | — |
+| Avg confidence | 0.825 | 0.70 |
+| Human review triggers | 8 / 25 (32%) | 25 / 25 (100%) |
+| Citation precision | 100% (25/25) | 100% (25/25) |
+| Citation validation pass rate | 100% (25/25) | 12% (3/25) |
+| Unsupported claim rate | 0% (0/25) | 88% (22/25) |
+| Forbidden promise count | 0 | 1 |
+| Guard pass rate | 68% (17/25) | 4% (1/25) |
+| Evidence coverage avg | 100% | 100% |
+| Safe fallback rate | 0% | 4% (1/25) |
+| API errors | N/A | 0 |
 
-**Source**: Phase 13 extended output: `reports/eval/phase12_llm_provider_comparison_summary.json`
-**Note**: Human review triggers show 25/25 because the generator now propagates HIGH severity
-to must_human_review. Phase 12 runs showed 8/25 triggers from real provider output.
+**Source**: Phase 13 extended output: `reports/eval/phase12_extended_eval_rows_20260507_150527.json`
+
+**Real provider root cause**: The real LLM (deepseek-v4-pro) generates short free-form Chinese text (80–174 chars) without inline `[chunk_id]` citation markers. The claim guard's content-level check flags `has_uncited_claims=True` for substantive content without markers. Citation validator's structural check also fails because no `[uuid]` markers exist in text. This is an expected behavior for a free-form LLM without guard-aware prompting. **Human review is correctly triggered for all 25 cases. No auto-send.**
+
+**Fake provider interpretation**: FakeLLMProvider uses a guard-aware template that includes `[UUID]` citation markers inline. Guard failures (8/25) are all HIGH-severity cases lacking escalation acknowledgment language in the template — correct guard behavior, not a bug.
+
+**Boundary**: This is an offline fixture-based comparison on 25 synthetic cases with mock evidence — not a benchmark, not production evaluation.
 
 ---
 

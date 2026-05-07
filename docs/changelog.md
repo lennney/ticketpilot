@@ -1,5 +1,28 @@
 # TicketPilot Changelog
-# TicketPilot Changelog
+
+## 2026-05-07 -- Phase 13.9: Real Provider Extended Comparison + Script Bug Fix
+
+### Fixed
+- Comparison script missing `actual_human_review` from `result_dict` — field was computed in `_build_row_from_result` but not propagated to output dict
+
+### Added
+- Full 25-case extended comparison for both FakeLLMProvider and OpenAICompatibleProvider (deepseek-v4-pro)
+- Extended `DraftEvaluationRow` output with citation validation and claim guard metrics
+
+### Changed
+- FakeLLMProvider: citation validation pass 100%, claim guard pass 68%, unsupported claim rate 0%
+- Real provider (deepseek-v4-pro): citation validation pass 12%, claim guard pass 4%, unsupported claim rate 88%
+
+### Root Cause
+Real provider generates short free-form Chinese text (80–174 chars) without inline `[chunk_id]` citation markers. Claim guard flags substantive content without markers as `has_uncited_claims=True`. Citation validator structural check also fails. This is expected behavior for a free-form LLM without guard-aware prompting.
+
+### Validation
+- Phase 13.9 focused validation: ruff, OpenSpec --all, 65 draft unit tests — passed
+- Phase 13.9.1 strict full quality gate: 1069 unit + 146 integration, coverage 87%, secret scan clean — passed
+- OpenSpec --all: 23/23 passed
+
+### Boundary
+Offline fixture-based comparison on 25 synthetic cases with mock evidence — not a benchmark. Real provider output characteristics require guard-aware prompt engineering. Human review remains mandatory.
 
 ## 2026-05-07 -- Phase 12D.1: Resolve Untracked OpenSpec Spec Directory
 

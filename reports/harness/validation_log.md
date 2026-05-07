@@ -2,6 +2,34 @@
 
 ---
 
+## 2026-05-07 -- Phase 13.9.1: Validation Closure — Strict Full Quality Gate
+
+| Check | Result |
+|---|---|
+| Ruff | All checks passed |
+| Unit tests | 1069 passed |
+| Integration tests | 146 passed, 0 skipped |
+| Coverage | 87% (>= 70% threshold) |
+| OpenSpec --all | 23/23 passed |
+| Secret scan | Clean |
+| Docs-only batch | Full quality gate not required (Phase 13.9 focused validation) |
+| Strict full gate | Run on top of Phase 13.9 to establish clean baseline |
+
+**Phase 13.9 had**: ruff, OpenSpec, 65 draft unit tests — passed. Full gate was not run (docs/portfolio-only batch).
+**Phase 13.9.1 ran**: `scripts/run_quality_gate.sh` on top of 0e050d6 — passed.
+
+**Phase 13.9 key metrics confirmed**:
+- Fake citation validation pass: 100% (25/25)
+- Real citation validation pass: 12% (3/25)
+- Fake claim guard pass: 68% (17/25)
+- Real claim guard pass: 4% (1/25)
+- Real unsupported claim rate: 88% (22/25)
+- Real human review triggers: 100% (25/25)
+
+**Status**: PASSED — 0e050d6 is confirmed clean baseline.
+
+---
+
 ## 2026-05-07 -- Phase 13.9: Real Provider Extended Comparison Run
 
 | Check | Result |
@@ -18,11 +46,9 @@
 | Script bug fix | Added missing `actual_human_review` field to `result_dict` |
 | Portfolio docs | Updated metrics dashboard and reviewer-ready metric doc |
 | OpenSpec --all | 23/23 passed |
-| Docs-only batch | Full quality gate not required |
+| Docs-only batch | Full quality gate not required (strict gate run separately in Phase 13.9.1) |
 
-**Root cause of real provider low guard/citation-valid rates**: Real LLM (deepseek-v4-pro) generates short free-form Chinese text (80–174 chars) without inline `[chunk_id]` citation markers. The claim guard's content-level check flags `has_uncited_claims=True` for substantive text without markers. Citation validator's structural check also fails because no `[uuid]` markers exist in text. This is an expected behavior for a free-form LLM without guard-aware prompting.
-
-**Next**: Run full quality gate, commit, and push.
+**Root cause of real provider low guard/citation-valid rates**: Real LLM (deepseek-v4-pro) generates short free-form Chinese text (80–174 chars) without inline `[chunk_id]` citation markers. The claim guard's content-level check flags `has_uncited_claims=True` for substantive text without markers. Citation validator's structural check also fails because no `[uuid]` markers exist in text. This is an expected behavior for a free-form LLM without guard-aware prompting. No auto-send. Human review required for all cases.
 
 **Status**: PASSED — Real provider metrics now available; portfolio docs updated
 
