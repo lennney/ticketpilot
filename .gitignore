@@ -51,3 +51,4 @@ secrets/
 
 # Broken venv (corrupted symlink)
 .venv_broken/
+subagent_results

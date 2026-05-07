@@ -266,3 +266,22 @@ Context compression is automatic (system-triggered at ~80% context limit). When 
    - Resume from where handoff says "待做" (todo)
 
 **Anti-pattern to avoid**: Treating compression as a handoff point. Compression is for state recovery only. Real handoffs happen at task boundaries with commits.
+
+## 16. Phase Loop Workflow
+
+Each phase (logical unit from tasks.md) follows a 7-step loop. See `docs/harness/PHASE_LOOP.md` for full workflow:
+
+| Step | Role | What it does |
+|------|------|--------------|
+| 1 | Planner | Create step-by-step plan with acceptance criteria |
+| 2 | Requirements Analysis | Convert plan to specific requirements |
+| 3 | Implementation | Execute based on requirements (via subagent) |
+| 4 | Review | Verify against requirements (code-reviewer) |
+| 5 | Doc Review | Verify documentation accuracy |
+| 6 | Experience Consolidation | Extract learnings, update rules/playbook |
+| 7 | Controller Coordination | Orchestrate handoffs, check exit criteria, commit |
+
+**Key rules**:
+- Loop back: Review/Doc fails → back to Implementation (max 3 retries, then escalate)
+- Phase done: All steps pass → commit + push → next phase
+- Controller never implements code directly (always delegate to subagent)
