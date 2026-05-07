@@ -21,10 +21,10 @@ Phase 15.4（Chat UI Risk Escalation Display）
 ## Phase Loop 状态
 - [x] Step 1: Planner (project-director subagent) ✅
 - [x] Step 2: Requirements Analysis (general-purpose subagent) ✅
-- [ ] Step 3: Implementation (backend-engineer subagent)
-- [ ] Step 4: Review (code-reviewer subagent)
-- [ ] Step 5: Doc Review (code-reviewer subagent)
-- [ ] Step 6: Experience Consolidation (general-purpose subagent)
+- [x] Step 3: Implementation (backend-engineer subagent) ✅
+- [x] Step 4: Review (code-reviewer subagent) ✅
+- [x] Step 5: Doc Review (code-reviewer subagent) ✅ (2 issues fixed: tasks.md, ARCHITECTURE.md boundary)
+- [x] Step 6: Experience Consolidation (general-purpose subagent) ✅
 - [ ] Step 7: Controller Coordination (commit + push)
 
 ## 下一步任务

@@ -22,6 +22,31 @@ from ticketpilot.chat import (
 )
 
 # ---------------------------------------------------------------------------
+# Risk flag labels — maps RiskFlag enum values to Chinese labels
+# ---------------------------------------------------------------------------
+
+RISK_FLAG_LABELS: dict[str, str] = {
+    "complaint_risk": "投诉风险",
+    "compensation_risk": "补偿风险",
+    "legal_risk": "法律风险",
+    "privacy_risk": "隐私风险",
+    "account_security_risk": "账户安全风险",
+    "policy_conflict": "政策冲突",
+    "insufficient_evidence": "证据不足",
+    "low_confidence": "置信度低",
+}
+
+# ---------------------------------------------------------------------------
+# Risk badge color configuration (HTML hex colors)
+# ---------------------------------------------------------------------------
+
+RISK_BADGE_COLORS: dict[str, tuple[str, str]] = {
+    "HIGH": ("#dc2626", "#fef2f2"),
+    "MEDIUM": ("#d97706", "#fffbeb"),
+    "LOW": ("#16a34a", "#f0fdf4"),
+}
+
+# ---------------------------------------------------------------------------
 # Page config
 # ---------------------------------------------------------------------------
 
@@ -116,22 +141,21 @@ def _render_context_panel(ctx: ChatContext) -> None:
 
     with col2:
         st.markdown("**风险等级**")
-        severity_text = ctx.latest_severity if ctx.latest_severity else "暂无"
-        severity_color = ""
-        if severity_text == "HIGH":
-            severity_color = "🔴 HIGH"
-        elif severity_text == "MEDIUM":
-            severity_color = "🟡 MEDIUM"
-        elif severity_text == "LOW":
-            severity_color = "🟢 LOW"
-        st.text(
-            severity_color or severity_text,
-            disabled=True,
-        )
+        if ctx.latest_severity:
+            text_color, bg_color = RISK_BADGE_COLORS.get(ctx.latest_severity, ("#666666", "#f5f5f5"))
+            badge_html = (
+                f"<span style='background-color:{bg_color};color:{text_color};"
+                f"padding:2px 8px;border-radius:4px;font-weight:bold;'>"
+                f"{ctx.latest_severity}</span>"
+            )
+            st.markdown(badge_html, unsafe_allow_html=True)
+        else:
+            st.text("暂无", disabled=True)
         st.markdown("**风险标记**")
         if ctx.latest_risk_flags:
             for flag in ctx.latest_risk_flags:
-                st.text(f"• {flag}", disabled=True)
+                label = RISK_FLAG_LABELS.get(flag, flag)
+                st.markdown(f"- {label}", unsafe_allow_html=True)
         else:
             st.text("暂无", disabled=True)
         st.markdown("**对话轮数**")
@@ -147,17 +171,19 @@ def _render_risk_panel(display: ChatDisplay | None) -> None:
         return
 
     if display.risk_badge:
-        badge_color = {
-            "HIGH": "🔴 HIGH",
-            "MEDIUM": "🟡 MEDIUM",
-            "LOW": "🟢 LOW",
-        }.get(display.risk_badge, display.risk_badge)
-        st.metric("风险等级", badge_color)
+        text_color, bg_color = RISK_BADGE_COLORS.get(display.risk_badge, ("#666666", "#f5f5f5"))
+        badge_html = (
+            f"<span style='background-color:{bg_color};color:{text_color};"
+            f"padding:4px 12px;border-radius:4px;font-weight:bold;'>"
+            f"风险等级: {display.risk_badge}</span>"
+        )
+        st.markdown(badge_html, unsafe_allow_html=True)
 
     if display.risk_flags:
         st.markdown("**风险标记**:")
         for flag in display.risk_flags:
-            st.markdown(f"- `{flag}`")
+            label = RISK_FLAG_LABELS.get(flag, flag)
+            st.markdown(f"- {label}")
     else:
         st.info("暂无风险评估")
 
@@ -165,7 +191,12 @@ def _render_risk_panel(display: ChatDisplay | None) -> None:
 
     # Human review status
     if display.human_review_required:
-        st.error("🚨 需要人工审核")
+        if display.risk_badge == "HIGH":
+            st.error("🚨 需要人工审核 — 高风险工单")
+        elif display.guard_passed is False:
+            st.error("🚨 需要人工审核 — Guard 校验失败")
+        else:
+            st.warning("⚠️ 需要人工审核")
         if display.escalation_reason:
             st.markdown(f"*原因*: {display.escalation_reason}")
     else:

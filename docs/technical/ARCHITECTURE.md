@@ -195,6 +195,7 @@ Actions: APPROVE / EDIT / ESCALATE / REJECT. Each action appends `ReviewDecision
 - **EvidenceDisplayItem**: Structured evidence display with chunk_id, content snippet, source type, and relevance score
 - Risk decision matrix: severity × evidence × guard → `human_review_required` in chat context
 - Phase 15.4+ connects risk escalation display, evidence/draft panels, and human review queue
+- **Boundary**: High-risk outputs require human review — TicketPilot never sends customer replies automatically
 
 ---
 
