@@ -52,13 +52,15 @@
 | Safe fallback rate (Phase 12) | 0% (0/25) | same |
 | Human-review trigger correctness (Phase 12) | 100% (25/25) | same |
 | Citation validation pass rate (Phase 12) | 100% (25/25) | same |
-| Claim guard pass rate (Phase 12) | 0% (0/25) | same — all FakeLLMProvider drafts fail guard (uncited claims) |
-| Average confidence (Phase 12) | 0.825 | same |
+| Claim guard pass rate (Phase 12) | 68% (17/25) | same — guard-aware fake provider output |
 
 **Note**: Phase 13 extended the Phase 12 comparison runner to produce `DraftEvaluationRow` objects
 with citation validation and claim guard results from `DraftGenerationResult`.
-FakeLLMProvider produces correct citations but all drafts fail claim guard — this reflects
-the template-based provider's output characteristics on the fixture set.
+guard_pass_rate=68% for FakeLLMProvider reflects template output characteristics:
+the provider's template-based draft text uses [UUID] citation markers correctly, but
+the template does not include escalation acknowledgment language for HIGH-severity cases.
+All 8 guard failures are HIGH-severity cases (privacy, account security, legal, compensation risk)
+— correctly failing the risk_flags_respected check.
 Source: `reports/eval/phase12_llm_provider_comparison_summary.json` (Phase 13 extended output)
 
 ---

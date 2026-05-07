@@ -27,21 +27,20 @@ Both providers received the same evidence (mock) and the same case parameters. T
 | Cases | 25 | 25 |
 | Success count | 25 / 25 (100%) | 25 / 25 (100%) |
 | Avg confidence | 0.825 | 0.70 (Phase 12 run) |
-| Human review triggers | 0 / 25 (0%) | 8 / 25 (Phase 12 run) |
+| Human review triggers | 25 / 25 (100%) | 8 / 25 (Phase 12 run) |
 | Has citations | 25 / 25 (100%) | 25 / 25 (100%) |
 | API errors | N/A (no network) | 0 |
 | Citation precision | 100% (25/25) | 100% (Phase 12 run) |
 | Citation validation pass rate | 100% (25/25) | 100% (Phase 12 run) |
 | Unsupported claim rate | 0% (0/25) | 0% (Phase 12 run) |
 | Forbidden promise count | 0 | 0 (Phase 12 run) |
-| Guard pass rate | 0% (0/25) | — (real provider not run in Phase 13) |
+| Guard pass rate | 68% (17/25) | — (real provider not run in Phase 13) |
 | Evidence coverage avg | 100% | — |
 | Safe fallback rate | 0% | — |
 
 **Source**: Phase 13 extended output: `reports/eval/phase12_llm_provider_comparison_summary.json`
-**Note**: Human review triggers show 0/25 in Phase 13 because the TicketOutput construction
-always sets `must_human_review=False` (no risk_assessment flags trigger HR in this setup).
-Phase 12 runs showed 8/25 triggers from real provider output.
+**Note**: Human review triggers show 25/25 because the generator now propagates HIGH severity
+to must_human_review. Phase 12 runs showed 8/25 triggers from real provider output.
 
 ---
 

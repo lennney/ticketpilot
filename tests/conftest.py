@@ -6,6 +6,9 @@ import site
 import sys
 import tempfile
 
+# Ensure tests use FakeLLMProvider by default, regardless of .env.local
+os.environ.setdefault("TICKETPILOT_LLM_PROVIDER", "fake")
+
 
 def _setup_psycopg_dll_path():
     """Copy psycopg DLLs to local temp dir for Windows DLL loader."""

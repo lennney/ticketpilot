@@ -99,7 +99,7 @@ reviewer_ready_rate = (
 
 ---
 
-## Phase 13 Implementation Results
+## Phase 13 Implementation Results (Fixed)
 
 The Phase 13 extended runner produced `DraftEvaluationRow` objects for all 25 FakeLLMProvider cases.
 From the extended output (`phase12_llm_provider_comparison_summary.json`):
@@ -107,14 +107,25 @@ From the extended output (`phase12_llm_provider_comparison_summary.json`):
 | Metric | Value |
 |--------|-------|
 | Citation validation pass rate | 100% (25/25) |
-| Claim guard pass rate | 0% (0/25) |
+| Claim guard pass rate | 68% (17/25) — fixed from 0% after UUID citation fix |
 | Unsupported claim rate | 0% (0/25) |
-| Reviewer-ready rate (FakeLLMProvider) | 0% — guard fails on all 25 cases |
+| Reviewer-ready rate (FakeLLMProvider) | 17/25 (68%) |
 
-The 0% reviewer-ready rate for FakeLLMProvider reflects the template-based provider's output:
-drafts contain uncited claims in the text, causing the claim guard's `has_uncited_claims` check to fail.
-This is an expected characteristic of template-based generation — real LLM providers would
-likely produce different reviewer-ready rates.
+**Root cause of initial 0% guard pass rate**: FakeLLMProvider template used `[N]` numeric markers
+instead of `[UUID]` chunk_id markers. Claim guard's `_extract_chunk_ids()` only recognizes `[UUID]`
+format, so no chunk IDs were found in the text → `has_uncited_claims = True` → guard failed.
+Fix: updated template to use `[{ev.chunk_id}]` format. After fix: 17/25 pass guard.
+
+**Remaining failures**: All 8 are HIGH-severity cases where FakeLLMProvider template does not
+include escalation acknowledgment language (e.g., "转人工", "人工处理"). This is correct behavior —
+the claim guard's `risk_flags_respected` check correctly identifies that HIGH-risk drafts require
+acknowledgment. A real LLM provider would likely produce different guard pass rates.
+
+**Key interpretation**:
+- FakeLLMProvider validates pipeline mechanics, not guard-compliant draft quality
+- guard_pass_rate=68% for fake provider reflects template limitations, not a guard bug
+- Real provider output should be evaluated separately when env is configured
+- No auto-send; human review remains required for all HIGH-severity cases
 
 **Next step**: Run extended runner with real provider (`.env.local` configured) to get per-provider reviewer-ready rates.
 

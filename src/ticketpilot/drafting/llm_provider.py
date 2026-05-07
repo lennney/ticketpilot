@@ -124,16 +124,16 @@ class FakeLLMProvider(LLMProvider):
                 )
             )
 
-        # Build deterministic draft text
+        # Build deterministic draft text using [chunk_id] markers for claim guard
         cited_ids = [str(ev.chunk_id) for ev in top_n]
         lines: list[str] = [
             f"您好，关于您反馈的{issue_type}问题，",
         ]
-        for i, ev in enumerate(top_n, start=1):
+        for ev in top_n:
             title = getattr(ev, "title", None)
             label = f"（{title}）" if title else ""
             lines.append(
-                f"根据相关资料{label}[{i}]，{ev.content[:100]}。"
+                f"根据相关资料{label}[{ev.chunk_id}]，{ev.content[:100]}。"
             )
         lines.append("")
         lines.append("希望以上信息对您有帮助。如有其他问题，请随时联系我们。")

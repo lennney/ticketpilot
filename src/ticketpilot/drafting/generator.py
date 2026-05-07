@@ -245,8 +245,16 @@ def generate_draft(
     )
 
     # 7. Human review propagation — never downgrade
+    # Check severity level — HIGH always triggers human review
+    severity_high = (
+        ticket_output.risk_assessment.severity.value == "high"
+        if ticket_output.risk_assessment
+        else False
+    )
     if draft.must_human_review:
         pass  # already true
+    elif severity_high:
+        draft.must_human_review = True
     elif struct_validation.must_human_review:
         draft.must_human_review = True
     elif not guard_result.guard_passed:

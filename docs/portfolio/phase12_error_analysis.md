@@ -86,9 +86,26 @@
 - Guard failure sets `escalation_reason` and forces human review
 - Source: `src/ticketpilot/drafting/claim_guard.py`
 
-**Remaining limitation**: Claim guard was not run on Phase 12 comparison rows. Forbidden promise rate and unsupported claim rate are not yet measured.
+**Phase 13 investigation**: Guard pass rate was 0% in initial Phase 13 run. Root cause identified:
+- FakeLLMProvider template used `[N]` numeric markers (`[1]`, `[2]`) instead of `[UUID]` chunk_id markers
+- Claim guard's `_extract_chunk_ids()` only recognizes `[UUID]` format
+- Draft had 0 `[UUID]` references → `has_uncited_claims = True` → guard failed
+- Citation validation passed because `cited_evidence_ids` (UUID list) was correct — only the text markers were wrong
 
-**Next improvement**: Extend Phase 12 runner to output claim guard results per case.
+**Fix applied** (Phase 13.8): Updated FakeLLMProvider to use `[{ev.chunk_id}]` instead of `[{i}]` in draft text.
+After fix: guard pass rate = 68% (17/25). The remaining 8 failures are all HIGH-severity cases
+(privacy_risk, account_security_risk, legal_risk, compensation_risk) where FakeLLMProvider
+template does not include escalation acknowledgment language — correctly failing risk_flags_respected check.
+
+**Result interpretation**:
+- FakeLLMProvider validates pipeline mechanics, not guard-compliant draft quality
+- guard_pass_rate=68% for FakeLLMProvider reflects template limitations, not a guard bug
+- Real provider output should be evaluated separately when env is configured
+- No auto-send; human review remains required for all HIGH-severity cases
+
+**Remaining limitation**: Real provider guard pass rate unknown — requires .env.local configuration.
+
+**Next improvement**: Run extended Phase 13 runner with real provider to get per-provider guard metrics.
 
 ---
 
