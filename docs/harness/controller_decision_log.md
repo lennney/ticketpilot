@@ -25,6 +25,17 @@ Each decision entry records: date, decision, context, alternatives considered, a
 
 ---
 
+## D14 — 2026-05-07: Guard Taxonomy Enables Granular Failure Analysis
+
+- **Decision**: Phase 13.10 guard failures collapse to simplified booleans. A granular `GuardFailureType` taxonomy (8 types) enables per-failure-type metrics, better failure interpretation, and targeted improvement strategies.
+- **Context**: 4 remaining Phase 13.10 guard failures: p12_011/015 → MISSING_RISK_ESCALATION (correct), p12_018 → UNSUPPORTED_POLICY_CLAIM + FORBIDDEN_PROMISE (correct), p12_021 → discrepancy (report says uncited substantive claim, summary JSON says risk_flags_respected). Current GuardResult cannot distinguish these modes.
+- **Key finding**: p12_021 is an AMBIGUOUS_GUARD_CASE — row-level data shows all fields as None. The taxonomy surfaces this ambiguity rather than hiding it.
+- **Alternatives**: Weaken guard to pass these cases (forbidden), keep simplified booleans (ambiguous cases hidden), accept lower guard pass rate as permanent (loses diagnostic value)
+- **Why this won**: Taxonomy is additive, does not weaken guard, enables better failure diagnosis and targeted improvement
+- **Constraint**: No guard weakening, no human review reduction, no auto-send change
+
+---
+
 ## D6 — 2026-05-06: Add Doc-Level Golden Labels Is Next Priority
 
 - **Decision**: Next concrete action is adding `expected_relevant_doc_ids` to `golden_expectations.csv`

@@ -5,6 +5,14 @@
 
 ---
 
+## 2026-05-07 — Phase 14.1: Guard Architecture Improvement Planning
+
+**Summary**: Created OpenSpec change `add-guard-architecture-improvement-planning` (4 files, 403 lines). Phase 13.10 failure analysis: p12_011/015 → MISSING_RISK_ESCALATION (correct block), p12_018 → UNSUPPORTED_POLICY_CLAIM + FORBIDDEN_PROMISE (correct block), p12_021 → AMBIGUOUS_GUARD_CASE (discrepancy: report says uncited substantive claim, summary JSON says risk_flags_respected — needs manual recheck). Taxonomy: 8 granular types extending GuardResult without weakening guard. Validated: OpenSpec 25/25, ruff clean, secret scan clean. Commit de0c396 pushed.
+
+**Phase Status**: Phase 14.1 complete. OpenSpec change active. Tasks 14.2-14.7 pending.
+
+---
+
 ## 2026-05-07 — Phase 13.10.1: Final Validation and Archive — Guard-Aware Prompting
 
 **Summary**: Ran final validation and archived `add-guard-aware-provider-prompting` OpenSpec change. Focused tests (prompt builder 59, draft generator 33, claim guard 58) all passed. Full quality gate: 1078 unit + 146 integration, 0 skipped, coverage 86.56%, ruff clean, OpenSpec 24/24, secret scan clean. Overclaim scan clean. OpenSpec archive created `2026-05-07-add-guard-aware-provider-prompting/`, spec promoted to `openspec/specs/guard-aware-prompting/spec.md`. Phase 13.10 committed at `985349e`, this archive creates new baseline.

@@ -662,6 +662,51 @@
 
 ---
 
+## Completed Batch: Phase 14.1 — Guard Architecture Improvement Planning
+
+### What Was Done
+
+- Created OpenSpec change `add-guard-architecture-improvement-planning` with 4 files
+- proposal.md: root cause analysis — Phase 13.10 guard failures collapse to simplified booleans; 8-type taxonomy proposed
+- design.md: before/after architecture, failure mapping table for p12_011/015/018/021
+- tasks.md: 7 sub-tasks (14.1 done, 14.2-14.7 pending)
+- spec.md: 6 requirements with OpenSpec scenarios (No Guard Weakening explicit non-requirement)
+
+### Phase 13.10 Failure Analysis
+
+| Case | Current Failure | Proposed Taxonomy | Interpretation |
+|---|---|---|---|
+| p12_011 | risk_flags_respected=False | MISSING_RISK_ESCALATION | Correct block — privacy risk flag not acknowledged |
+| p12_015 | risk_flags_respected=False | MISSING_RISK_ESCALATION | Correct block — legal risk flag not acknowledged |
+| p12_018 | has_uncited_claims=True + has_forbidden_promise=True | UNSUPPORTED_POLICY_CLAIM + FORBIDDEN_PROMISE | Correct block — 2 uncited claims + forbidden compensation amount |
+| p12_021 | Report: uncited substantive claim; Summary: risk_flags_respected | AMBIGUOUS_GUARD_CASE | Discrepancy between report text and summary JSON — requires manual recheck |
+
+### Key Finding
+
+p12_021 is a **discrepancy case**: the Phase 13.10 report describes "Substantive content without [chunk_id] citation markers" (has_uncited_claims), but the summary JSON shows reason=risk_flags_respected. The row-level data (extended eval rows) shows all fields as None. This ambiguity is the primary motivation for the taxonomy — to surface such cases rather than collapse them.
+
+### Files Created
+
+- `openspec/changes/add-guard-architecture-improvement-planning/proposal.md`
+- `openspec/changes/add-guard-architecture-improvement-planning/design.md`
+- `openspec/changes/add-guard-architecture-improvement-planning/tasks.md`
+- `openspec/changes/add-guard-architecture-improvement-planning/specs/guard-architecture/spec.md`
+
+### Validation
+
+- openspec validate --strict: ✅ Valid
+- openspec validate --all: ✅ 25/25 passed
+- ruff check: ✅ Clean
+- Secret scan: ✅ Clean
+- Overclaim scan: ✅ Clean
+- Full quality gate: Not run (planning/spec-only, no runtime code)
+
+### Commit
+
+`de0c396` pushed to `origin/master`
+
+---
+
 ## Completed Batch: Phase 13.10.1 — Final Validation and Archive — Guard-Aware Prompting
 
 ### What Was Done
@@ -714,7 +759,23 @@ Offline fixture-based comparison on 25 synthetic cases with mock evidence — NO
 
 ---
 
-## Next Batch: TBD — No Active OpenSpec Change
+## Next Batch: Phase 14.2 — Guard Taxonomy Data Model
+
+**Phase 14.1 is complete.** OpenSpec change `add-guard-architecture-improvement-planning` is active with tasks 14.2-14.7 pending.
+
+Scope for 14.2 (Guard Taxonomy Data Model):
+- Add `GuardFailureType` enum to drafting/schemas.py or drafting/claim_guard.py
+- Extend `GuardResult` with `failure_reasons: list[GuardFailureType]`
+- Backward compatible: existing boolean fields unchanged
+- Add unit tests for new taxonomy
+- No guard weakening, no human review reduction
+
+Stop conditions for 14.2:
+- guard_passed logic changes
+- human review requirements reduced
+- real provider called
+- retrieval/embedding/knowledge changes
+- coverage drops below 70%
 
 All Phase 13 OpenSpec changes are archived. No active OpenSpec change. Next batch to be defined.
 

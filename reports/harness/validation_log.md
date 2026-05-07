@@ -2,6 +2,27 @@
 
 ---
 
+## 2026-05-07 -- Phase 14.1: Guard Architecture Improvement Planning
+
+| Check | Result |
+|---|---|
+| Ruff | All checks passed |
+| OpenSpec strict | Valid (add-guard-architecture-improvement-planning) |
+| OpenSpec --all | 25/25 passed |
+| Secret scan | Clean |
+| Overclaim scan | Clean |
+| Planning/spec-only | Full quality gate not run |
+
+**Phase 13.10 failure analysis completed**:
+- p12_011: MISSING_RISK_ESCALATION — correct block
+- p12_015: MISSING_RISK_ESCALATION — correct block
+- p12_018: UNSUPPORTED_POLICY_CLAIM + FORBIDDEN_PROMISE — correct block
+- p12_021: AMBIGUOUS_GUARD_CASE — discrepancy between report and summary JSON
+
+**Status**: PASSED — OpenSpec change created, committed de0c396
+
+---
+
 ## 2026-05-07 -- Phase 13.10.1: Final Validation and Archive — Guard-Aware Prompting
 
 | Check | Result |

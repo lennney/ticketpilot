@@ -2,6 +2,36 @@
 
 ---
 
+## 2026-05-07 — Phase 14.1: Guard Architecture Improvement Planning
+
+**Root Cause**: Phase 13.10 showed 4 remaining guard failures collapsed to simplified booleans. Current GuardResult has 3 boolean fields (`has_uncited_claims`, `has_forbidden_promise`, `risk_flags_respected`) that cannot distinguish between distinct failure modes.
+
+**Key Discovery — p12_021 Discrepancy**:
+- Phase 13.10 report text: "Substantive content without [chunk_id] citation markers" → has_uncited_claims
+- Phase 13.10 summary JSON: reason=risk_flags_respected
+- Extended eval rows: all fields None (data not captured correctly in Phase 13.10 runner)
+- This ambiguity is the primary motivation for granular taxonomy
+
+**Taxonomy Design**: 8 granular types extending GuardResult backward-compatibly:
+- UNSUPPORTED_POLICY_CLAIM (from has_uncited_claims)
+- FORBIDDEN_PROMISE (from has_forbidden_promise)
+- MISSING_RISK_ESCALATION (from risk_flags_respected=False)
+- SAFE_ESCALATION_STATEMENT (positive signal)
+- MANUAL_REVIEW_ACKNOWLEDGEMENT (positive signal)
+- EVIDENCE_INSUFFICIENT_FALLBACK (safe fallback)
+- AMBIGUOUS_GUARD_CASE (catch-all for indeterminate)
+- UNCited_SUBSTANTIVE_CLAIM (alias for UNSUPPORTED_POLICY_CLAIM)
+
+**Non-Requirements (explicit)**:
+- No guard weakening — boolean fields and guard_passed unchanged
+- No human review reduction
+- No auto-send change
+- No real provider calls
+
+**Spec**: openspec/specs/guard-architecture/spec.md — 6 requirements including explicit No Guard Weakening
+
+---
+
 ## 2026-05-07 — Phase 13.10: Guard-Aware Provider Prompting Experiment
 
 **Problem**: Phase 13.9 real provider (deepseek-v4-pro) generated free-form Chinese text (80–174 chars) without inline `[chunk_id]` citation markers. Claim guard's `_extract_chunk_ids()` only recognizes `[UUID]` format, not `[N]` numeric citations. Result: citation validation pass 12%, claim guard pass 4%, human review triggers 100%.

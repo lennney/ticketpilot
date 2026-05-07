@@ -45,7 +45,8 @@
 | Phase 12D.1 | **Completed** | Resolved untracked openspec/specs/error-memory directory — promoted spec was not committed in Phase 12B archive. |
 | Phase 13 | **Archived** | Extended Draft Evaluation Metrics — extended Phase 12 comparison with citation validation, claim guard, reviewer-ready metrics. OpenSpec change created. |
 | Phase 13.10 | **Archived** | Guard-Aware Provider Prompting Experiment — real provider guard pass 4%→84%, citation validation 12%→76%, reviewer-ready 4%→64%. OpenSpec change archived, spec promoted. |
-| Phase 13.10.1 | **Completed** | Final validation and archive — full quality gate 1078+146, OpenSpec 24/24, clean baseline established. |
+| Phase 13.10.2 | **Completed** | Clean archive working tree — staged deletions committed, intermediate timestamped eval files restored to working tree. |
+| Phase 14.1 | **Active** | Guard Architecture Improvement Planning — granular failure taxonomy OpenSpec change created, Phase 13.10 failure analysis complete, 7 sub-tasks planned (14.1 done, 14.2-14.7 pending). |
 
 ## 4. Current Working Context
 
@@ -91,7 +92,12 @@ The diagnosis followed 7 sub-phases in sequence:
 
 ## 5. Active OpenSpec Change
 
-**None** — all Phase 13 OpenSpec changes are archived. No active change.
+**Phase 14.1 — add-guard-architecture-improvement-planning** (active)
+- Proposal: granular `GuardFailureType` taxonomy (8 types) to classify distinct guard failure modes
+- Design: extend `GuardResult` with `failure_reasons: list[GuardFailureType]`, backward compatible
+- Spec: `openspec/specs/guard-architecture/spec.md` (planned for promotion)
+- Tasks: 14.1 (done) → 14.2-14.7 pending
+- Scope: planning/spec only in 14.1; runtime implementation in 14.2-14.6
 
 ## 6. Current Decisions
 
@@ -112,6 +118,7 @@ The diagnosis followed 7 sub-phases in sequence:
 | D11 | Phase 13 complete — extended draft evaluation metrics confirmed | Real provider guard pass 4%→84% after guard-aware prompt; 4 remaining failures are correct guard behavior; OpenSpec archived | 2026-05-07 |
 | D12 | Guard-aware prompting is effective but not sufficient | Real provider guard pass improved from 4% to 84% via structured prompt; remaining failures (risk escalation, unsupported claims) require guard architecture improvement not prompt-only fix | 2026-05-07 |
 | D13 | Phase 13.10 is archived; next phase is TBD | All Phase 13 changes complete and archived; no active OpenSpec change; next batch to be defined | 2026-05-07 |
+| D14 | Guard taxonomy enables granular failure analysis | Phase 13.10 failures collapse to booleans; granular taxonomy (8 types) enables per-failure-type metrics and targeted improvement | 2026-05-07 |
 
 See `docs/harness/controller_decision_log.md` for full log.
 
@@ -119,8 +126,14 @@ See `docs/harness/controller_decision_log.md` for full log.
 
 | Priority | Action | Phase | Type | Status |
 |---|---|---|---|---|
-| 1 | Phase 13.10.1 final validation and archive | 13.10.1 | Validation | In Progress |
-| — | Next phase TBD (no active OpenSpec change) | — | — | Pending |
+| 1 | Phase 14.1 planning and spec (OpenSpec change created) | 14.1 | Spec | Done |
+| 2 | Phase 14.2 Guard Taxonomy Data Model | 14.2 | Runtime | Pending |
+| — | Phase 14.3 Safe Language Classifier | 14.3 | Runtime | Pending |
+| — | Phase 14.4 Claim Guard Integration | 14.4 | Runtime | Pending |
+| — | Phase 14.5 Evaluation Runner Extension | 14.5 | Runtime | Pending |
+| — | Phase 14.6 Reviewer Console / Portfolio | 14.6 | Docs | Pending |
+| — | Phase 14.7 Final Validation and Archive | 14.7 | Validation | Pending |
+| — | Query expansion audit (from Phase 10 findings) | — | Analysis | Future |
 | — | Query expansion audit (from Phase 10 findings) | — | Analysis | Future |
 | — | Guard architecture improvement for risk escalation compliance | — | Analysis | Future |
 
@@ -150,12 +163,12 @@ You are working on TicketPilot, a local deterministic human review workflow for
 customer service ticket triage. Read `AGENTS.md` for the project constitution.
 
 Current state:
-- Phase 13.10 cleanly archived — guard-aware prompting experiment complete
-- Phase 13 complete — no active OpenSpec change
+- Phase 14.1 active — guard architecture improvement planning
+- Phase 13 complete and archived — guard-aware prompting: real provider guard pass 4%→84%
+- Active OpenSpec change: add-guard-architecture-improvement-planning
 - Current baseline: 1078 unit, 146 integration, 0 skipped, 86.56% coverage
-- Latest commit: 985349e — feat: add guard-aware provider prompting experiment
-- Real provider (deepseek-v4-pro): guard pass 4%→84%, citation validation 12%→76%, reviewer-ready 4%→64%
-- Remaining 4 failures: correct guard behavior (risk escalation, unsupported claims, forbidden promise)
+- Phase 13.10 remaining 4 failures: all correct guard behavior (p12_011/015 missing risk escalation, p12_018 unsupported+forbidden, p12_021 ambiguous)
+- Phase 14 taxonomy: 8 granular failure types for better failure interpretation
 
 Key boundaries:
 - Local demo / portfolio prototype — not production
