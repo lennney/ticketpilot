@@ -5,6 +5,37 @@
 
 ---
 
+## Completed Batch: Phase 15.1 — Chat Support Product Re-alignment Planning
+
+### What Was Done
+
+- Created OpenSpec change `align-chat-support-product-experience` with 4 files (proposal, design, tasks, spec)
+- Realigned product narrative from "guard architecture" to "chat-style AI customer service copilot"
+- Defined 9 spec requirements: chat entry, AI draft, risk escalation, evidence panel, human review handoff, no auto-send, synthetic data, state machine, guard display
+- Defined Phase 15.2-15.8 tasks (15.1 done, 15.2-15.8 pending)
+- Phase 14 guard taxonomy (14.2/14.2.1 done) paused — guard remains as safety foundation
+- No runtime code changes
+
+### Files Created
+
+- `openspec/changes/align-chat-support-product-experience/proposal.md`
+- `openspec/changes/align-chat-support-product-experience/design.md`
+- `openspec/changes/align-chat-support-product-experience/tasks.md`
+- `openspec/changes/align-chat-support-product-experience/specs/chat-support-experience/spec.md`
+
+### Validation
+
+- OpenSpec strict: Valid
+- OpenSpec --all: 26/26 passed
+- Ruff: Clean
+- Planning/spec-only batch: Full quality gate not required
+
+### Commit
+
+`pending`
+
+---
+
 ## Completed Batch: Phase 12D.1 — Resolve Untracked OpenSpec Spec Directory
 
 ### What Was Done

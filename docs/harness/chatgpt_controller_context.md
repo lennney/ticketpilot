@@ -92,12 +92,17 @@ The diagnosis followed 7 sub-phases in sequence:
 
 ## 5. Active OpenSpec Change
 
-**Phase 14.1 — add-guard-architecture-improvement-planning** (active)
-- Proposal: granular `GuardFailureType` taxonomy (8 types) to classify distinct guard failure modes
-- Design: extend `GuardResult` with `failure_reasons: list[GuardFailureType]`, backward compatible
-- Spec: `openspec/specs/guard-architecture/spec.md` (planned for promotion)
-- Tasks: 14.1 (done) → 14.2-14.7 pending
-- Scope: planning/spec only in 14.1; runtime implementation in 14.2-14.6
+**Phase 15.1 — align-chat-support-product-experience** (active)
+- Proposal: realign TicketPilot toward chat-style AI customer service copilot experience
+- Design: chat demo UI (Streamlit), pipeline-to-chat adapter, risk escalation display, evidence panel, human review handoff
+- Spec: `openspec/changes/align-chat-support-product-experience/specs/chat-support-experience/spec.md`
+- Tasks: 15.1 (done) → 15.2-15.8 pending
+- Scope: planning/spec in 15.1; runtime implementation in 15.2-15.7
+- Phase 14 guard taxonomy paused (14.3-14.7), guard remains as safety foundation
+
+**Phase 14.1 — add-guard-architecture-improvement-planning** (active, guard scope paused)
+- Phase 14.2/14.2.1 complete (guard taxonomy data model)
+- Phase 14.3-14.7 paused,优先级低于 chat demo
 
 ## 6. Current Decisions
 
@@ -126,9 +131,8 @@ See `docs/harness/controller_decision_log.md` for full log.
 
 | Priority | Action | Phase | Type | Status |
 |---|---|---|---|---|
-| 1 | Phase 14.1 planning and spec (OpenSpec change created) | 14.1 | Spec | Done |
-| 2 | Phase 14.2 Guard Taxonomy Data Model | 14.2 | Runtime | Done |
-| — | Phase 14.2.1 Guard Taxonomy Cleanup | 14.2.1 | Runtime | Done |
+| 1 | Phase 15.1 Chat Support Product Re-alignment Planning | 15.1 | Spec | Done |
+| 2 | Phase 15.2 Chat Demo UI Skeleton | 15.2 | Runtime | Pending |
 | — | Phase 14.3 Safe Language Classifier | 14.3 | Runtime | Pending |
 | — | Phase 14.4 Claim Guard Integration | 14.4 | Runtime | Pending |
 | — | Phase 14.5 Evaluation Runner Extension | 14.5 | Runtime | Pending |
@@ -164,12 +168,12 @@ You are working on TicketPilot, a local deterministic human review workflow for
 customer service ticket triage. Read `AGENTS.md` for the project constitution.
 
 Current state:
-- Phase 14.1 active — guard architecture improvement planning
-- Phase 13 complete and archived — guard-aware prompting: real provider guard pass 4%→84%
-- Active OpenSpec change: add-guard-architecture-improvement-planning
-- Current baseline: 1078 unit, 146 integration, 0 skipped, 86.56% coverage
-- Phase 13.10 remaining 4 failures: all correct guard behavior (p12_011/015 missing risk escalation, p12_018 unsupported+forbidden, p12_021 ambiguous)
-- Phase 14 taxonomy: 8 granular failure types for better failure interpretation
+- Phase 15.1 active — chat support product experience re-alignment
+- Active OpenSpec change: align-chat-support-product-experience
+- Current baseline: 1087 unit, 146 integration, 0 skipped, 86.62% coverage
+- Product direction: chat-style AI customer service copilot (e-commerce scenario)
+- Backend complete: intent classification, risk detection, evidence retrieval, draft generation, citation validation, claim guard, human review console
+- Next: Streamlit chat demo UI (Phase 15.2)
 
 Key boundaries:
 - Local demo / portfolio prototype — not production

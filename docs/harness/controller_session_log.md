@@ -5,13 +5,25 @@
 
 ---
 
+## 2026-05-07 — Phase 15.1: Chat Support Product Re-alignment Planning
+
+**Summary**: Created OpenSpec change `align-chat-support-product-experience` to realign product direction from "guard architecture" to "chat-style AI customer service copilot" (e-commerce scenario). Defined 9 spec requirements covering chat entry, AI draft, risk escalation, evidence panel, human review handoff, no auto-send boundary, synthetic data boundary, state machine, and guard display. Planned Phase 15.2-15.8 tasks. Phase 14 guard taxonomy (14.2/14.2.1 done) paused — guard remains as safety foundation. OpenSpec 26/26 passed.
+
+**Files Created**: openspec/changes/align-chat-support-product-experience/{proposal,design,tasks}.md + specs/chat-support-experience/spec.md
+
+**Files Modified**: docs/changelog.md, docs/harness/{chatgpt_controller_context,controller_next_actions,controller_session_log}.md, reports/harness/{engineering_log,validation_log}.md
+
+**Phase Status**: Phase 15.1 complete. Phase 15.2 (Chat Demo UI Skeleton) next.
+
+---
+
 ## 2026-05-07 — Phase 14.2.1: Guard Taxonomy Cleanup
 
 **Summary**: Fixed enum canonical name from misspelled UNCUTED_SUBSTANTIVE_CLAIM to correct UNCITED_SUBSTANTIVE_CLAIM. Changed failure_reasons to failure-only semantics (only populated when guard_passed=False). Updated test to assert empty failure_reasons for safe fallback with guard_passed=True. Full quality gate: 1087 unit + 146 integration, 0 skipped, coverage 86.62%, OpenSpec 25/25. Diff scan: secret clean, overclaim clean.
 
 **Files Modified**: src/ticketpilot/drafting/claim_guard.py, tests/unit/test_claim_guard.py, openspec/changes/add-guard-architecture-improvement-planning/tasks.md
 
-**Phase Status**: Phase 14.2.1 complete. Tasks 14.3-14.7 pending.
+**Phase Status**: Phase 14.2.1 complete. Guard taxonomy paused (优先级低于 chat demo). Tasks 14.3-14.7 pending.
 
 ---
 

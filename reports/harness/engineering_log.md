@@ -2,6 +2,35 @@
 
 ---
 
+## 2026-05-07 — Phase 15.1: Chat Support Product Re-alignment Planning
+
+**Problem**: Recent iterations (Phase 13-14) drifted toward guard taxonomy internal engineering details. Product narrative was "工单分诊 + guard architecture" rather than the original vision: AI customer service copilot (e-commerce scenario).
+
+**Solution**: Created `align-chat-support-product-experience` OpenSpec change to realign product direction.
+
+**New Product Narrative**:
+- Before: 工单分诊 + guard architecture + evidence draft backend
+- After: 面向中文电商的 AI 客服 Copilot — 前台聊天体验 + 后台人工审核台
+
+**Key Design Decisions**:
+- Chat demo uses Streamlit (not React/Next.js) — MVP simplicity
+- Pipeline output adapted via `ticket_output_to_chat_display()` — no pipeline changes needed
+- Guard taxonomy remains as safety foundation but is not the product narrative
+- Risk decision matrix: severity × evidence × guard → human_review_required
+- No auto-send: all drafts are demo display only
+- Existing review console reused as human reviewer takeover interface
+
+**Phase 14 Guard Status**:
+- 14.2/14.2.1 complete: GuardFailureType taxonomy implemented
+- 14.3-14.7 paused: safe language classifier, guard integration, evaluation runner, reviewer console, final validation — all lower priority than chat demo
+- Will resume after Phase 15.x chat demo is complete
+
+**Files**: openspec/changes/align-chat-support-product-experience/ (4 files)
+
+**Validation**: OpenSpec strict valid, --all 26/26 passed, ruff clean
+
+---
+
 ## 2026-05-07 — Phase 14.2.1: Guard Taxonomy Cleanup
 
 **Problem**: Phase 14.2 enum had a misspelled canonical name (UNCUTED vs UNCITED) and failure_reasons was populated for guard_passed=True safe fallback cases.

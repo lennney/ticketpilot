@@ -1,5 +1,23 @@
 # TicketPilot Changelog
 
+## 2026-05-07 -- Phase 15.1: Chat Support Product Re-alignment Planning
+
+### Added
+- OpenSpec change `align-chat-support-product-experience` with 4 files (proposal, design, tasks, spec)
+- Product narrative re-aligned from "guard architecture" to "chat-style AI customer service copilot"
+
+### Product Direction Change
+- Before: 工单分诊 + guard architecture + evidence draft backend
+- After: 面向中文电商的 AI 客服 Copilot — 前台聊天体验 + 后台人工审核台
+- Backend capabilities (intent classification, risk detection, evidence retrieval, draft generation, citation validation, claim guard, human review console) remain unchanged
+- Guard taxonomy (Phase 14.2/14.2.1 done) remains as safety foundation but is not the product narrative
+- Phase 14.3-14.7 paused — chat demo takes priority
+
+### Validation
+- OpenSpec strict: Valid
+- OpenSpec --all: 26/26 passed
+- Planning/spec-only batch: Full quality gate not required
+
 ## 2026-05-07 -- Phase 14.2.1: Guard Taxonomy Cleanup
 
 ### Fixed

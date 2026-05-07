@@ -2,6 +2,28 @@
 
 ---
 
+## 2026-05-07 -- Phase 15.1: Chat Support Product Re-alignment Planning
+
+| Check | Result |
+|---|---|
+| Ruff | All checks passed |
+| OpenSpec strict | Valid (align-chat-support-product-experience) |
+| OpenSpec --all | 26/26 passed |
+| Secret scan | Clean |
+| Overclaim scan | Clean |
+| Planning/spec-only | Full quality gate not required |
+
+**Implementation**:
+- Created OpenSpec change `align-chat-support-product-experience` (4 files)
+- Realigned product narrative from guard architecture to chat-style AI customer service copilot
+- 9 spec requirements covering chat entry, AI draft, risk escalation, evidence panel, human review handoff, no auto-send, synthetic data, state machine, guard display
+- Phase 14 guard taxonomy (14.2/14.2.1 done) paused — guard remains as safety foundation
+- No runtime code changes
+
+**Status**: PASSED — 4 files created, committed and pushed
+
+---
+
 ## 2026-05-07 -- Phase 14.2.1: Guard Taxonomy Cleanup
 
 | Check | Result |
@@ -20,7 +42,7 @@
 - Safe fallback signals deferred to future guard_signals/reporting phase
 - Updated test: `test_safe_fallback_guard_passed_empty_failure_reasons` now asserts failure_reasons==[]
 
-**Status**: PASSED — 3 files modified, committed and pushed
+**Status**: PASSED — 3 files modified, committed and pushed (c59604e)
 
 ---
 
