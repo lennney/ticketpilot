@@ -101,33 +101,46 @@ reviewer_ready_rate = (
 
 ## Phase 13 Implementation Results (Fixed)
 
-The Phase 13 extended runner produced `DraftEvaluationRow` objects for all 25 FakeLLMProvider cases.
-From the extended output (`phase12_llm_provider_comparison_summary.json`):
+The Phase 13 extended runner produced `DraftEvaluationRow` objects for all 25 cases per provider.
+
+### FakeLLMProvider
 
 | Metric | Value |
 |--------|-------|
 | Citation validation pass rate | 100% (25/25) |
-| Claim guard pass rate | 68% (17/25) — fixed from 0% after UUID citation fix |
+| Claim guard pass rate | 68% (17/25) |
 | Unsupported claim rate | 0% (0/25) |
-| Reviewer-ready rate (FakeLLMProvider) | 17/25 (68%) |
+| Human review triggers | 32% (8/25) |
+| Reviewer-ready rate | 17/25 (68%) |
 
-**Root cause of initial 0% guard pass rate**: FakeLLMProvider template used `[N]` numeric markers
-instead of `[UUID]` chunk_id markers. Claim guard's `_extract_chunk_ids()` only recognizes `[UUID]`
-format, so no chunk IDs were found in the text → `has_uncited_claims = True` → guard failed.
-Fix: updated template to use `[{ev.chunk_id}]` format. After fix: 17/25 pass guard.
+Guard failures: 8 HIGH-severity cases lacking escalation acknowledgment language in template.
 
-**Remaining failures**: All 8 are HIGH-severity cases where FakeLLMProvider template does not
-include escalation acknowledgment language (e.g., "转人工", "人工处理"). This is correct behavior —
-the claim guard's `risk_flags_respected` check correctly identifies that HIGH-risk drafts require
-acknowledgment. A real LLM provider would likely produce different guard pass rates.
+### Real Provider (deepseek-v4-pro)
+
+| Metric | Value |
+|--------|-------|
+| Citation validation pass rate | 12% (3/25) |
+| Claim guard pass rate | 4% (1/25) |
+| Unsupported claim rate | 88% (22/25) |
+| Human review triggers | 100% (25/25) |
+| Reviewer-ready rate | 1/25 (4%) |
+
+**Root cause of real provider guard failures**: Real LLM generates short free-form Chinese text
+(typically 80–174 chars) without inline `[chunk_id]` citation markers. The claim guard's
+`_has_substantive_content()` check identifies substantive content without citations, flagging
+`has_uncited_claims=True`. This is a genuine failure mode — the model does not natively
+produce structured evidence-grounded drafts with inline citation IDs.
+
+**Citation structure vs. citation text**: The real provider correctly provides 2 citations
+in the structured `citations` field, but the raw draft text lacks `[uuid]` markers, causing
+both citation validation (structural) and claim guard (content-level) to fail.
 
 **Key interpretation**:
-- FakeLLMProvider validates pipeline mechanics, not guard-compliant draft quality
-- guard_pass_rate=68% for fake provider reflects template limitations, not a guard bug
-- Real provider output should be evaluated separately when env is configured
-- No auto-send; human review remains required for all HIGH-severity cases
-
-**Next step**: Run extended runner with real provider (`.env.local` configured) to get per-provider reviewer-ready rates.
+- FakeLLMProvider validates pipeline mechanics with a guard-aware template
+- Real provider validates LLM output characteristics without guard-aware prompting
+- guard_pass_rate=4% for real provider is not a bug — it's the expected behavior when an LLM
+  generates free-form text without citation marker instructions
+- A production deployment would need a guard-aware prompt template to get comparable rates
 
 ---
 
@@ -136,8 +149,9 @@ acknowledgment. A real LLM provider would likely produce different guard pass ra
 1. ~~**Extend Phase 12 comparison runner**~~ (DONE in Phase 13) Extended output now includes citation validation and claim guard results
 2. ~~**Re-run comparison**~~ (DONE in Phase 13) Extended rows generated with `DraftEvaluationRow` schema
 3. ~~**Compute reviewer-ready rate**~~ (DONE in Phase 13) Available from extended summary output
-4. **Compare between providers**: Run extended runner with real provider to get per-provider reviewer-ready rates
-5. **Set a minimum threshold**: Define acceptable reviewer-ready rate for system to proceed
+4. ~~**Compare between providers**~~ (DONE in Phase 13.9) Fake=68%, Real=4% — real provider requires guard-aware prompting
+5. **Guard-aware real provider prompt**: Extend system prompt to instruct real LLM to include `[chunk_id]` markers inline; re-run to get comparable guard pass rate
+6. **Set a minimum threshold**: Define acceptable reviewer-ready rate for system to proceed
 
 ---
 

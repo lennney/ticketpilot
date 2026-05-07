@@ -203,6 +203,7 @@ def run_provider_comparison(
                 "safe_fallback_used": row_data["safe_fallback_used"],
                 "unsupported_claim_count": row_data["unsupported_claim_count"],
                 "forbidden_promise_count": row_data["forbidden_promise_count"],
+                "actual_human_review": row_data["actual_human_review"],
                 "provider_name": row_data["provider_name"],
                 "model_name": row_data["model_name"],
             }
@@ -355,10 +356,6 @@ def _rows_to_eval_rows(rows: list[dict]) -> list[DraftEvaluationRow]:
 
 
 def main() -> int:
-    # Isolate from .env.local real provider
-    import os
-    os.environ.setdefault("TICKETPILOT_LLM_PROVIDER", "fake")
-
     parser = argparse.ArgumentParser(description="Phase 12 LLM Provider Comparison")
     parser.add_argument("--fixtures", type=Path, default=Path("tests/fixtures/phase12_draft_comparison_cases.json"))
     parser.add_argument("--limit", type=int, default=None, help="Limit number of cases to process")
@@ -396,23 +393,35 @@ def main() -> int:
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
 
     if args.extended_rows:
-        # Build DraftEvaluationRow objects and compute summary
+        # Build DraftEvaluationRow objects and compute summary for both providers
         fake_rows = _rows_to_eval_rows(fake_results["results"])
-        if fake_rows:
-            summary = compute_draft_evaluation_summary(fake_rows)
-            extended_data = {
-                "rows": [r.model_dump() for r in fake_rows],
-                "summary": summary.model_dump(),
-                "timestamp": timestamp,
-                "limit": args.limit,
-            }
-            json_path = args.output_dir / f"phase12_extended_eval_rows_{timestamp}.json"
-            with open(json_path, "w", encoding="utf-8") as f:
-                json.dump(extended_data, f, indent=2, ensure_ascii=False)
-            print(f"Extended rows JSON saved to: {json_path}")
-            print(f"  {len(fake_rows)} rows, citation_precision_avg={summary.citation_precision_avg:.3f}, "
-                  f"guard_pass_rate={summary.claim_guard_pass_rate:.3f}, "
-                  f"human_review_accuracy={summary.human_review_trigger_accuracy}")
+        real_rows = _rows_to_eval_rows(real_results["results"]) if real_results else []
+
+        # Compute per-provider summaries
+        fake_summary = compute_draft_evaluation_summary(fake_rows) if fake_rows else None
+        real_summary = compute_draft_evaluation_summary(real_rows) if real_rows else None
+
+        extended_data = {
+            "fake_rows": [r.model_dump() for r in fake_rows],
+            "fake_summary": fake_summary.model_dump() if fake_summary else None,
+            "real_rows": [r.model_dump() for r in real_rows],
+            "real_summary": real_summary.model_dump() if real_summary else None,
+            "timestamp": timestamp,
+            "limit": args.limit,
+        }
+
+        json_path = args.output_dir / f"phase12_extended_eval_rows_{timestamp}.json"
+        with open(json_path, "w", encoding="utf-8") as f:
+            json.dump(extended_data, f, indent=2, ensure_ascii=False)
+        print(f"Extended rows JSON saved to: {json_path}")
+        if fake_summary:
+            print(f"  Fake: {len(fake_rows)} rows, citation_precision={fake_summary.citation_precision_avg:.3f}, "
+                  f"guard_pass_rate={fake_summary.claim_guard_pass_rate:.3f}")
+        if real_summary:
+            print(f"  Real: {len(real_rows)} rows, citation_precision={real_summary.citation_precision_avg:.3f}, "
+                  f"guard_pass_rate={real_summary.claim_guard_pass_rate:.3f}")
+        elif real_results:
+            print(f"  Real: failed to compute summary ({len(real_results.get('results', []))} result rows)")
 
     # Always save legacy JSON
     json_path = args.output_dir / f"phase12_llm_provider_comparison_{timestamp}.json"
