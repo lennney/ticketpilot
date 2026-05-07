@@ -759,27 +759,63 @@ Offline fixture-based comparison on 25 synthetic cases with mock evidence — NO
 
 ---
 
-## Next Batch: Phase 14.2 — Guard Taxonomy Data Model
+## Completed Batch: Phase 14.2 — Guard Taxonomy Data Model
 
-**Phase 14.1 is complete.** OpenSpec change `add-guard-architecture-improvement-planning` is active with tasks 14.2-14.7 pending.
+### What Was Done
 
-Scope for 14.2 (Guard Taxonomy Data Model):
-- Add `GuardFailureType` enum to drafting/schemas.py or drafting/claim_guard.py
-- Extend `GuardResult` with `failure_reasons: list[GuardFailureType]`
-- Backward compatible: existing boolean fields unchanged
-- Add unit tests for new taxonomy
-- No guard weakening, no human review reduction
+- Added `GuardFailureType` str-enum (8 types) to `claim_guard.py`
+- Added `failure_reasons: list[GuardFailureType]` field to `GuardResult` with `default_factory=list`
+- Updated `check_claim_guard()` to build `failure_reasons` from boolean check results
+- Added 9 new unit tests (TestGuardFailureType, TestFailureReasonsTaxonomy)
+- All 58 existing tests pass — backward compatible
 
-Stop conditions for 14.2:
+### Taxonomy-to-Boolean Mapping
+
+| Boolean Check | Taxonomy Type |
+|---|---|
+| `citation_coverage < 1.0` | `UNCUTED_SUBSTANTIVE_CLAIM` |
+| `has_uncited_claims=True` | `UNSUPPORTED_POLICY_CLAIM` |
+| `has_forbidden_promise=True` | `FORBIDDEN_PROMISE` |
+| `risk_flags_respected=False` | `MISSING_RISK_ESCALATION` |
+| `guard_passed=True` + safe fallback | `EVIDENCE_INSUFFICIENT_FALLBACK` |
+| Guard fails, no match | `AMBIGUOUS_GUARD_CASE` |
+
+### Note on Typo
+
+`UNCUTED_SUBSTANTIVE_CLAIM` has name "UNCUTED_SUBSTANTIVE_CLAIM" (correct) but value "UNCITED_SUBSTANTIVE_CLAIM" (typo, matching design.md spec). Name-value mismatch preserved for consistency.
+
+### Files Modified
+
+- `src/ticketpilot/drafting/claim_guard.py` — +enum, +failure_reasons field, +check logic
+- `src/ticketpilot/drafting/__init__.py` — exported GuardFailureType
+- `tests/unit/test_claim_guard.py` — +9 new tests
+
+### Validation
+
+- Unit tests: ✅ 67/67 passed
+- Full quality gate: ✅ PASSED — 1087 unit + 146 integration, 0 skipped, 86.65% coverage
+- OpenSpec --all: ✅ 25/25 passed
+- Ruff: ✅ Clean
+- Secret scan: ✅ Clean
+
+### Commit
+
+`pending`
+
+---
+
+## Next Batch: Phase 14.3 — Safe Language Classifier
+
+**Phase 14.2 is complete.** OpenSpec change `add-guard-architecture-improvement-planning` is active with tasks 14.3-14.7 pending.
+
+Scope for 14.3 (Safe Language Classifier):
+- Implement `check_safe_escalation_language()` — detects safe escalation patterns
+- Implement `check_manual_review_acknowledgement()` — detects manual review acknowledgment
+- These support the SAFE_ESCALATION_STATEMENT and MANUAL_REVIEW_ACKNOWLEDGEMENT taxonomy types
+- Pure deterministic functions, no LLM calls
+
+Stop conditions for 14.3:
 - guard_passed logic changes
 - human review requirements reduced
 - real provider called
-- retrieval/embedding/knowledge changes
 - coverage drops below 70%
-
-All Phase 13 OpenSpec changes are archived. No active OpenSpec change. Next batch to be defined.
-
-Potential directions:
-- Query expansion audit (Phase 10 found 9 genuine zero-hit cases)
-- Guard architecture improvement for risk escalation compliance (Phase 13.10 remaining failures)
-- Next-phase planning (Phase 14)

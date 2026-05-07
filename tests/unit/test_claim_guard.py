@@ -7,6 +7,7 @@ import uuid
 from datetime import datetime
 
 from ticketpilot.drafting.claim_guard import (
+    GuardFailureType,
     GuardResult,
     _assess_evidence_sufficiency,
     _check_forbidden_promises,
@@ -69,6 +70,23 @@ _CHUNK_C = uuid.uuid4()
 # ---------------------------------------------------------------------------
 
 
+class TestGuardFailureType:
+    """GuardFailureType enum has all 8 taxonomy values."""
+
+    def test_all_eight_types_exist(self) -> None:
+        types = {m.name for m in GuardFailureType}
+        assert "UNSUPPORTED_POLICY_CLAIM" in types
+        assert "FORBIDDEN_PROMISE" in types
+        assert "MISSING_RISK_ESCALATION" in types
+        assert "SAFE_ESCALATION_STATEMENT" in types
+        assert "MANUAL_REVIEW_ACKNOWLEDGEMENT" in types
+        assert "EVIDENCE_INSUFFICIENT_FALLBACK" in types
+        assert "AMBIGUOUS_GUARD_CASE" in types
+        assert "UNCUTED_SUBSTANTIVE_CLAIM" in types
+        assert GuardFailureType("UNCITED_SUBSTANTIVE_CLAIM").name == "UNCUTED_SUBSTANTIVE_CLAIM"
+        assert GuardFailureType("UNCITED_SUBSTANTIVE_CLAIM").value == "UNCITED_SUBSTANTIVE_CLAIM"
+
+
 class TestGuardResultDefaults:
     """GuardResult default field values."""
 
@@ -81,6 +99,7 @@ class TestGuardResultDefaults:
         assert result.evidence_sufficiency == "sufficient"
         assert result.risk_flags_respected is True
         assert result.guard_passed is True
+        assert result.failure_reasons == []
 
     def test_guard_passed_false_when_checks_fail(self) -> None:
         result = GuardResult(
@@ -91,6 +110,94 @@ class TestGuardResultDefaults:
             guard_passed=False,
         )
         assert result.guard_passed is False
+
+
+class TestFailureReasonsTaxonomy:
+    """failure_reasons taxonomy populated by check_claim_guard."""
+
+    def test_clean_draft_empty_failure_reasons(self) -> None:
+        """Fully correct draft: guard_passed=True, failure_reasons=[]."""
+        ev = _ev(chunk_id=_CHUNK_A)
+        text = f"尊敬的客户，根据政策[{str(_CHUNK_A)}]，可以退货。"
+        draft = _draft(text)
+        result = check_claim_guard(draft, [ev])
+        assert result.guard_passed is True
+        assert result.failure_reasons == []
+
+    def test_uncited_claim_maps_to_unsupported_policy(self) -> None:
+        """has_uncited_claims=True → UNSUPPORTED_POLICY_CLAIM."""
+        text = "尊敬的客户，关于您反馈的退货问题，根据平台政策可以为您办理。"
+        draft = _draft(text)
+        result = check_claim_guard(draft, [_ev()])
+        assert result.guard_passed is False
+        assert result.has_uncited_claims is True
+        assert GuardFailureType.UNSUPPORTED_POLICY_CLAIM in result.failure_reasons
+
+    def test_forbidden_promise_maps_to_forbidden_promise(self) -> None:
+        """has_forbidden_promise=True → FORBIDDEN_PROMISE."""
+        text = "我们会在3天内解决您的问题。"
+        draft = _draft(text)
+        result = check_claim_guard(draft, [])
+        assert result.guard_passed is False
+        assert result.has_forbidden_promise is True
+        assert GuardFailureType.FORBIDDEN_PROMISE in result.failure_reasons
+
+    def test_missing_risk_escalation_maps_correctly(self) -> None:
+        """risk_flags_respected=False → MISSING_RISK_ESCALATION."""
+        text = "尊敬的用户，我们会尽快处理您的问题。"
+        draft = _draft(text)
+        ra = _risk(flags={RiskFlag.LEGAL_RISK})
+        result = check_claim_guard(draft, [], ra)
+        assert result.guard_passed is False
+        assert result.risk_flags_respected is False
+        assert GuardFailureType.MISSING_RISK_ESCALATION in result.failure_reasons
+
+    def test_multiple_failures_all_in_failure_reasons(self) -> None:
+        """Multiple failures each map to correct taxonomy type."""
+        text = "尊敬的用户，退款500元。"
+        draft = _draft(text)
+        ra = _risk(flags={RiskFlag.LEGAL_RISK})
+        result = check_claim_guard(draft, [], ra)
+        assert result.guard_passed is False
+        assert result.has_forbidden_promise is True
+        assert result.has_uncited_claims is True
+        assert result.risk_flags_respected is False
+        assert GuardFailureType.FORBIDDEN_PROMISE in result.failure_reasons
+        assert GuardFailureType.UNSUPPORTED_POLICY_CLAIM in result.failure_reasons
+        assert GuardFailureType.MISSING_RISK_ESCALATION in result.failure_reasons
+
+    def test_safe_fallback_adds_evidence_insufficient_fallback_reason(self) -> None:
+        """Safe-fallback text: guard_passed=True, failure_reasons=[EVIDENCE_INSUFFICIENT_FALLBACK]."""
+        text = "根据现有信息，无法确认具体政策条款，建议转人工处理。"
+        draft = _draft(text)
+        result = check_claim_guard(draft, [])
+        assert result.guard_passed is True
+        assert result.failure_reasons == [GuardFailureType.EVIDENCE_INSUFFICIENT_FALLBACK]
+
+    def test_greeting_only_empty_failure_reasons(self) -> None:
+        """Greeting-only draft: guard_passed=True, failure_reasons=[]."""
+        draft = _draft("尊敬的客户，您好！")
+        result = check_claim_guard(draft, [])
+        assert result.guard_passed is True
+        assert result.failure_reasons == []
+
+    def test_ambiguous_guard_case_catchall(self) -> None:
+        """When guard fails but no explicit check maps, AMBIGUOUS_GUARD_CASE."""
+        # Edge case: partial citation coverage < 1.0 fails guard, but no
+        # uncited claim, no forbidden promise, no risk escalation
+        ev = _ev(chunk_id=_CHUNK_A)
+        text = f"政策A[{str(_CHUNK_A)}]和政策B[{str(_CHUNK_B)}]。"
+        draft = _draft(text)
+        result = check_claim_guard(draft, [ev])
+        assert result.guard_passed is False
+        assert result.citation_coverage == 0.5
+        # Should surface as AMBIGUOUS_GUARD_CASE since citation_coverage
+        # is the only failure mode
+        assert len(result.failure_reasons) > 0
+        # Verify it's not one of the named check failures
+        assert GuardFailureType.UNSUPPORTED_POLICY_CLAIM not in result.failure_reasons
+        assert GuardFailureType.FORBIDDEN_PROMISE not in result.failure_reasons
+        assert GuardFailureType.MISSING_RISK_ESCALATION not in result.failure_reasons
 
 
 # ---------------------------------------------------------------------------

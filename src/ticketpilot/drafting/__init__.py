@@ -1,6 +1,6 @@
 """Evidence-grounded draft reply generation module."""
 
-from ticketpilot.drafting.claim_guard import GuardResult, check_claim_guard
+from ticketpilot.drafting.claim_guard import GuardFailureType, GuardResult, check_claim_guard
 from ticketpilot.drafting.citation_validator import CitationValidator
 from ticketpilot.drafting.draft_citation_validator import (
     DraftCitationValidationResult,
@@ -36,6 +36,7 @@ __all__ = [
     "DraftReply",
     "FakeDraftProvider",
     "FakeLLMProvider",
+    "GuardFailureType",
     "GuardResult",
     "LLMProvider",
     "LLMProviderConfig",

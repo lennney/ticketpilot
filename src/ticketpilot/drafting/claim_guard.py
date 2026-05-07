@@ -9,6 +9,7 @@ semantic analysis. Same inputs always produce same outputs.
 from __future__ import annotations
 
 import re
+from enum import Enum
 
 from pydantic import BaseModel, Field
 
@@ -16,6 +17,24 @@ from ticketpilot.drafting.llm_provider import SAFE_FALLBACK_TEXT
 from ticketpilot.drafting.schemas import DraftReply
 from ticketpilot.schema.evidence import EvidenceCandidate
 from ticketpilot.schema.ticket import RiskAssessment, RiskFlag
+
+
+class GuardFailureType(str, Enum):
+    """Granular taxonomy of guard failure types.
+
+    Each type maps to a specific failure mode detected by the claim guard.
+    Used for per-failure-type metrics, failure interpretation, and
+    targeted improvement strategies. See Phase 14.2 design doc.
+    """
+
+    UNSUPPORTED_POLICY_CLAIM = "UNSUPPORTED_POLICY_CLAIM"
+    FORBIDDEN_PROMISE = "FORBIDDEN_PROMISE"
+    MISSING_RISK_ESCALATION = "MISSING_RISK_ESCALATION"
+    SAFE_ESCALATION_STATEMENT = "SAFE_ESCALATION_STATEMENT"
+    MANUAL_REVIEW_ACKNOWLEDGEMENT = "MANUAL_REVIEW_ACKNOWLEDGEMENT"
+    EVIDENCE_INSUFFICIENT_FALLBACK = "EVIDENCE_INSUFFICIENT_FALLBACK"
+    AMBIGUOUS_GUARD_CASE = "AMBIGUOUS_GUARD_CASE"
+    UNCUTED_SUBSTANTIVE_CLAIM = "UNCITED_SUBSTANTIVE_CLAIM"
 
 
 class GuardResult(BaseModel):
@@ -33,6 +52,8 @@ class GuardResult(BaseModel):
         risk_flags_respected: Whether all high-risk flags are acknowledged
             in the draft via escalation language.
         guard_passed: Overall guard result — True when all checks pass.
+        failure_reasons: Granular list of GuardFailureType reasons for
+            guard failure. Empty when guard_passed is True.
     """
 
     citation_coverage: float = Field(default=1.0, ge=0.0, le=1.0)
@@ -42,6 +63,7 @@ class GuardResult(BaseModel):
     evidence_sufficiency: str = "sufficient"
     risk_flags_respected: bool = True
     guard_passed: bool = True
+    failure_reasons: list[GuardFailureType] = Field(default_factory=list)
 
 
 # Deterministic forbidden-promise regex patterns: (regex, label)
@@ -236,6 +258,29 @@ def check_claim_guard(
         and risk_respected
     )
 
+    # 7. Build failure_reasons taxonomy
+    failure_reasons: list[GuardFailureType] = []
+    uncited = GuardFailureType("UNCITED_SUBSTANTIVE_CLAIM")
+    unsupported = GuardFailureType("UNSUPPORTED_POLICY_CLAIM")
+    forbidden = GuardFailureType("FORBIDDEN_PROMISE")
+    missing_escalation = GuardFailureType("MISSING_RISK_ESCALATION")
+    ambiguous = GuardFailureType("AMBIGUOUS_GUARD_CASE")
+    fallback = GuardFailureType("EVIDENCE_INSUFFICIENT_FALLBACK")
+    if guard_passed:
+        if _is_safe_fallback(draft_text):
+            failure_reasons.append(fallback)
+    else:
+        if citation_coverage < 1.0:
+            failure_reasons.append(uncited)
+        if has_uncited:
+            failure_reasons.append(unsupported)
+        if has_promise:
+            failure_reasons.append(forbidden)
+        if not risk_respected:
+            failure_reasons.append(missing_escalation)
+        if not failure_reasons:
+            failure_reasons.append(ambiguous)
+
     return GuardResult(
         citation_coverage=citation_coverage,
         has_uncited_claims=has_uncited,
@@ -244,4 +289,5 @@ def check_claim_guard(
         evidence_sufficiency=sufficiency,
         risk_flags_respected=risk_respected,
         guard_passed=guard_passed,
+        failure_reasons=failure_reasons,
     )

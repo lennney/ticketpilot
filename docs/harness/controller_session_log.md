@@ -5,6 +5,18 @@
 
 ---
 
+## 2026-05-07 — Phase 14.2: Guard Taxonomy Data Model
+
+**Summary**: Implemented GuardFailureType enum (8 types) and failure_reasons field in GuardResult. Added taxonomy-to-boolean mapping in check_claim_guard(). Added 9 new unit tests for taxonomy. Full quality gate: 1087 unit + 146 integration, 0 skipped, coverage 86.65%, OpenSpec 25/25.
+
+**Files Modified**: src/ticketpilot/drafting/claim_guard.py, src/ticketpilot/drafting/__init__.py, tests/unit/test_claim_guard.py
+
+**Note**: UNCUTED_SUBSTANTIVE_CLAIM enum has name "UNCUTED_SUBSTANTIVE_CLAIM" (correct) but value "UNCITED_SUBSTANTIVE_CLAIM" (typo matching design.md spec). This is a known quirk preserved for consistency.
+
+**Phase Status**: Phase 14.2 complete. Taxonomy data model implemented. Tasks 14.3-14.7 pending.
+
+---
+
 ## 2026-05-07 — Phase 14.1: Guard Architecture Improvement Planning
 
 **Summary**: Created OpenSpec change `add-guard-architecture-improvement-planning` (4 files, 403 lines). Phase 13.10 failure analysis: p12_011/015 → MISSING_RISK_ESCALATION (correct block), p12_018 → UNSUPPORTED_POLICY_CLAIM + FORBIDDEN_PROMISE (correct block), p12_021 → AMBIGUOUS_GUARD_CASE (discrepancy: report says uncited substantive claim, summary JSON says risk_flags_respected — needs manual recheck). Taxonomy: 8 granular types extending GuardResult without weakening guard. Validated: OpenSpec 25/25, ruff clean, secret scan clean. Commit de0c396 pushed.

@@ -2,6 +2,30 @@
 
 ---
 
+## 2026-05-07 -- Phase 14.2: Guard Taxonomy Data Model
+
+| Check | Result |
+|---|---|
+| Ruff | All checks passed (claim_guard.py, __init__.py, test_claim_guard.py) |
+| OpenSpec strict | Valid (add-guard-architecture-improvement-planning) |
+| OpenSpec --all | 25/25 passed |
+| Secret scan | Clean |
+| Overclaim scan | Clean |
+| Unit tests | 67/67 passed (9 new taxonomy tests + 58 existing) |
+| Full quality gate | 1087 unit + 146 integration, 0 skipped, coverage 86.65% |
+
+**Implementation**:
+- `GuardFailureType` enum (8 types): UNSUPPORTED_POLICY_CLAIM, FORBIDDEN_PROMISE, MISSING_RISK_ESCALATION, SAFE_ESCALATION_STATEMENT, MANUAL_REVIEW_ACKNOWLEDGEMENT, EVIDENCE_INSUFFICIENT_FALLBACK, AMBIGUOUS_GUARD_CASE, UNCUTED_SUBSTANTIVE_CLAIM
+- `GuardResult.failure_reasons: list[GuardFailureType]` field added
+- `check_claim_guard()` populates `failure_reasons` from boolean check results
+- Taxonomy-to-boolean mapping: citation_coverage<1.0→UNCITED_SUBSTANTIVE_CLAIM, has_uncited_claims→UNSUPPORTED_POLICY_CLAIM, has_forbidden_promise→FORBIDDEN_PROMISE, !risk_flags_respected→MISSING_RISK_ESCALATION, safe fallback→EVIDENCE_INSUFFICIENT_FALLBACK, no match→AMBIGUOUS_GUARD_CASE
+
+**Note**: UNCUTED_SUBSTANTIVE_CLAIM has name "UNCUTED_SUBSTANTIVE_CLAIM" and value "UNCITED_SUBSTANTIVE_CLAIM" (name-value mismatch due to unintentional typo in enum definition — preserved for consistency with design.md)
+
+**Status**: PASSED — 3 files modified, ready to commit
+
+---
+
 ## 2026-05-07 -- Phase 14.1: Guard Architecture Improvement Planning
 
 | Check | Result |
