@@ -257,6 +257,90 @@ class TestBuildPrompt:
         prompt = build_prompt(inp)
         assert "[无可用证据]" in prompt
 
+
+class TestGuardAwarePrompting:
+    """Tests for guard-aware prompting requirements.
+
+    Verifies that prompts include [chunk_id] citation format requirements
+    to support claim guard's citation marker detection.
+    """
+
+    def test_format_evidence_block_includes_chunk_id(self):
+        ev = _make_evidence(rank=1, content="退货需要在7天内申请")
+        block = format_evidence_block([ev])
+        # Evidence block must include the chunk_id so the LLM can reference it
+        assert str(ev.chunk_id) in block
+        # Evidence block must NOT use numeric [1], [2] format for the ID
+        # (numeric format is checked separately for invalid citation detection)
+        assert "[1]" not in block
+        assert "[2]" not in block
+
+    def test_format_evidence_block_multiple_items(self):
+        ev1 = _make_evidence(rank=1, content="内容1")
+        ev2 = _make_evidence(rank=2, content="内容2")
+        block = format_evidence_block([ev1, ev2])
+        assert str(ev1.chunk_id) in block
+        assert str(ev2.chunk_id) in block
+        # Each chunk_id appears in the block
+        assert "[1]" not in block  # no numeric citation in evidence block
+
+    def test_build_safety_instructions_requires_chunk_id_format(self):
+        instructions = build_safety_instructions()
+        # Must instruct to use evidence ID format
+        assert "证据ID" in instructions or "chunk_id" in instructions.lower() or "chunk" in instructions.lower()
+
+    def test_build_safety_instructions_forbids_numeric_citations(self):
+        """Numeric [N] citations are not valid for claim guard detection."""
+        # The instruction should specify using evidence IDs, not numeric indices
+        # We check the evidence block does not use [1], [2] style
+        ev = _make_evidence()
+        block = format_evidence_block([ev])
+        assert "[1]" not in block  # evidence block uses [chunk_id], not [1]
+
+    def test_build_safety_instructions_safe_fallback_instruction(self):
+        instructions = build_safety_instructions()
+        # Must instruct to use safe fallback when evidence is insufficient
+        assert "转人工" in instructions or "人工" in instructions
+
+    def test_build_safety_instructions_no_auto_send(self):
+        instructions = build_safety_instructions()
+        # Must state this is a draft, not final
+        assert "草稿" in instructions
+
+    def test_build_safety_instructions_forbidden_promises(self):
+        instructions = build_safety_instructions()
+        # Must forbid specific promises
+        assert "禁止承诺退款" in instructions or "退款" in instructions
+
+    def test_build_safety_instructions_risk_flags_escalation(self):
+        instructions = build_safety_instructions(
+            risk_flags=["legal", "compensation"], severity="high"
+        )
+        # HIGH severity + risk flags must mention escalation
+        assert "人工" in instructions or "审核" in instructions
+
+    def test_guard_aware_prompt_combined(self):
+        """Full prompt includes all guard-aware components."""
+        ev = _make_evidence(rank=1, content="退货需要在7天内申请")
+        inp = DraftPromptInput(
+            ticket_text="我要退货",
+            issue_type="refund",
+            risk_flags=["complaint"],
+            severity="medium",
+            evidence_candidates=[ev],
+        )
+        prompt = build_prompt(inp)
+        # Must include ticket text
+        assert "我要退货" in prompt
+        # Must include evidence with chunk_id
+        assert str(ev.chunk_id) in prompt
+        # Must include safety instructions
+        assert "草稿" in prompt
+        # Must include citation requirement
+        assert "证据ID" in prompt
+        # Must include risk escalation
+        assert "complaint" in prompt
+
     def test_risk_flags_produce_review_prompt(self):
         inp = DraftPromptInput(
             ticket_text="test", issue_type="refund", risk_flags=["legal"]

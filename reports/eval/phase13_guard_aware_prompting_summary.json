@@ -1,0 +1,93 @@
+{
+  "phase": "13.10",
+  "experiment": "guard-aware-provider-prompting",
+  "timestamp": "2026-05-07T15:52:07Z",
+  "baseline": {
+    "phase": "13.9",
+    "report": "reports/eval/phase12_extended_eval_rows_20260507_150527.json",
+    "fake_guard_pass_rate": 0.68,
+    "real_guard_pass_rate": 0.04,
+    "real_citation_valid_rate": 0.12,
+    "real_unsupported_claim_rate": 0.88,
+    "real_human_review_rate": 1.0,
+    "real_reviewer_ready_rate": 0.04
+  },
+  "results": {
+    "fake": {
+      "provider": "fake",
+      "total_cases": 25,
+      "citation_validation_pass_rate": 1.0,
+      "claim_guard_pass_rate": 0.68,
+      "unsupported_claim_rate": 0.0,
+      "forbidden_promise_rate": 0.0,
+      "safe_fallback_rate": 0.0,
+      "human_review_trigger_rate": 0.32,
+      "reviewer_ready_rate": 0.68,
+      "average_confidence": 0.825,
+      "average_unsupported_claim_count": 0.0,
+      "average_cited_evidence": 2.0,
+      "average_valid_citation_count": 2.0
+    },
+    "real": {
+      "provider": "openai_compatible",
+      "total_cases": 25,
+      "citation_validation_pass_rate": 0.76,
+      "claim_guard_pass_rate": 0.84,
+      "unsupported_claim_rate": 0.24,
+      "forbidden_promise_rate": 0.04,
+      "safe_fallback_rate": 0.84,
+      "human_review_trigger_rate": 0.48,
+      "reviewer_ready_rate": 0.64,
+      "average_confidence": 0.644,
+      "average_unsupported_claim_count": 0.44,
+      "average_cited_evidence": 1.84,
+      "average_valid_citation_count": 1.84
+    }
+  },
+  "comparison": {
+    "real_guard_pass_rate_delta": 0.8,
+    "real_citation_valid_rate_delta": 0.64,
+    "real_unsupported_claim_rate_delta": -0.64,
+    "real_human_review_rate_delta": -0.52,
+    "real_reviewer_ready_rate_delta": 0.6
+  },
+  "guard_failures_real": {
+    "p12_011": {
+      "reason": "risk_flags_respected"
+    },
+    "p12_015": {
+      "reason": "risk_flags_respected"
+    },
+    "p12_018": {
+      "reason": "unsupported_or_forbidden"
+    },
+    "p12_021": {
+      "reason": "risk_flags_respected"
+    }
+  },
+  "safe_fallback_cases": [
+    "p12_001",
+    "p12_002",
+    "p12_003",
+    "p12_004",
+    "p12_005",
+    "p12_006",
+    "p12_007",
+    "p12_008",
+    "p12_009",
+    "p12_010",
+    "p12_012",
+    "p12_013",
+    "p12_014",
+    "p12_016",
+    "p12_017",
+    "p12_019",
+    "p12_020",
+    "p12_022",
+    "p12_023",
+    "p12_024",
+    "p12_025"
+  ],
+  "limitation": "offline fixture-based evaluation, not a benchmark, 25 synthetic cases, mock evidence",
+  "boundary": "no production benchmark, no real-world performance claim, human review mandatory, no auto-send"
+}

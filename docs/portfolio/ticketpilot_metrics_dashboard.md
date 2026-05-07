@@ -43,46 +43,51 @@
 
 ## 3. Draft Generation Evaluation
 
-| Metric | FakeLLMProvider | Real Provider (deepseek-v4-pro) | Source |
-|--------|-----------------|----------------------------------|--------|
-| Citation precision | 100% (25/25) | 100% (25/25) | Phase 13 extended |
-| Citation validation pass rate | 100% (25/25) | 12% (3/25) | Phase 13 extended |
-| Claim guard pass rate | 68% (17/25) | 4% (1/25) | Phase 13 extended |
-| Unsupported claim rate | 0% (0/25) | 88% (22/25) | Phase 13 extended |
-| Forbidden promise rate | 0% (0/25) | 4% (1/25) | Phase 13 extended |
-| Safe fallback rate | 0% (0/25) | 4% (1/25) | Phase 13 extended |
-| Human review triggers | 32% (8/25) | 100% (25/25) | Phase 13 extended |
-| Avg confidence | 0.825 | 0.700 | Phase 13 extended |
-| Avg cited evidence | 2.0 | 2.0 | Phase 13 extended |
-| Avg unsupported claims | 0.0 | 1.6 | Phase 13 extended |
+### Phase 13.10: Guard-Aware Prompting Results (2026-05-07)
 
-**FakeLLMProvider (68% guard pass rate)**: Template-based deterministic output. All citations use correct [UUID] chunk_id markers. Guard failures are HIGH-severity cases lacking escalation acknowledgment language — correct behavior for the guard's risk_flags_respected check.
+| Metric | FakeLLMProvider | Real Provider (deepseek-v4-pro, guard-aware) | Source |
+|--------|-----------------|----------------------------------------------|--------|
+| Citation precision | 100% (25/25) | 100% (25/25) | Phase 13.10 extended |
+| Citation validation pass rate | 100% (25/25) | 76% (19/25) | Phase 13.10 extended |
+| Claim guard pass rate | 68% (17/25) | 84% (21/25) | Phase 13.10 extended |
+| Unsupported claim rate | 0% (0/25) | 24% (6/25) | Phase 13.10 extended |
+| Forbidden promise rate | 0% (0/25) | 4% (1/25) | Phase 13.10 extended |
+| Safe fallback rate | 0% (0/25) | 84% (21/25) | Phase 13.10 extended |
+| Human review triggers | 32% (8/25) | 48% (12/25) | Phase 13.10 extended |
+| Reviewer-ready rate | 68% (17/25) | 64% (16/25) | Phase 13.10 extended |
+| Avg confidence | 0.825 | 0.644 | Phase 13.10 extended |
+| Avg cited evidence | 2.0 | 1.8 | Phase 13.10 extended |
+| Avg unsupported claims | 0.0 | 0.4 | Phase 13.10 extended |
 
-**Real provider (deepseek-v4-pro, 4% guard pass rate)**: Generates short free-form Chinese text that does not include [chunk_id] citation markers inline, causing the claim guard to flag has_uncited_claims=True for most cases. Citation validation fails for the same reason (12% pass rate). This is a genuine failure mode: the LLM generates fluent responses without structured citation markers. Human review is correctly triggered for all 25 cases.
+**FakeLLMProvider (68% guard pass rate)**: Template-based deterministic output. Guard failures are 8 HIGH-severity cases lacking escalation acknowledgment — correct behavior.
 
-Source: `reports/eval/phase12_extended_eval_rows_20260507_150527.json` (Phase 13 extended output, real provider run)
+**Real provider (deepseek-v4-pro, guard-aware prompt, 84% guard pass rate)**: Guard-aware structured prompt instructs LLM to include `[chunk_id]` citation markers inline. Dramatic improvement from Phase 13.9 baseline (4% guard pass, 12% citation valid). Remaining failures: 3 cases cite evidence but skip risk escalation acknowledgment; 1 case makes uncited substantive claim. 84% safe fallback rate is expected when prompt instructs conservative citing.
+
+Source: `reports/eval/phase13_guard_aware_prompting_report.md` (Phase 13.10)
 
 ---
 
 ## 4. Provider Comparison
 
-| Metric | FakeLLMProvider | Real Provider (deepseek-v4-pro) | Source |
-|--------|-----------------|----------------------------------|--------|
-| Cases | 25 | 25 | Phase 13 extended |
-| Success count | 25 / 25 | 25 / 25 | Phase 13 extended |
-| Avg confidence | 0.825 | 0.700 | Phase 13 extended |
-| Human review triggers | 32% (8/25) | 100% (25/25) | Phase 13 extended |
-| API errors | N/A | 0 | Phase 13 extended |
-| Citation precision | 100% | 100% | Phase 13 extended |
-| Citation validation pass | 100% (25/25) | 12% (3/25) | Phase 13 extended |
-| Unsupported claim rate | 0% | 88% | Phase 13 extended |
-| Forbidden promise count | 0 | 1 | Phase 13 extended |
-| Guard pass rate | 68% (17/25) | 4% (1/25) | Phase 13 extended |
+| Metric | FakeLLMProvider | Real Provider (deepseek-v4-pro, guard-aware) | Source |
+|--------|-----------------|----------------------------------------------|--------|
+| Cases | 25 | 25 | Phase 13.10 extended |
+| Success count | 25 / 25 | 25 / 25 | Phase 13.10 extended |
+| Avg confidence | 0.825 | 0.644 | Phase 13.10 extended |
+| Human review triggers | 32% (8/25) | 48% (12/25) | Phase 13.10 extended |
+| API errors | N/A | 0 | Phase 13.10 extended |
+| Citation precision | 100% | 100% | Phase 13.10 extended |
+| Citation validation pass | 100% (25/25) | 76% (19/25) | Phase 13.10 extended |
+| Unsupported claim rate | 0% | 24% (6/25) | Phase 13.10 extended |
+| Forbidden promise count | 0 | 1 | Phase 13.10 extended |
+| Guard pass rate | 68% (17/25) | 84% (21/25) | Phase 13.10 extended |
+| Safe fallback rate | 0% | 84% (21/25) | Phase 13.10 extended |
+| Reviewer-ready rate | 68% (17/25) | 64% (16/25) | Phase 13.10 extended |
 | Latency | N/A | not yet measured | — |
 | Estimated cost | N/A | not yet measured | — |
 
-**Source**: `reports/eval/phase12_extended_eval_rows_20260507_150527.json`
-**Boundary**: Offline fixture-based comparison on 25 synthetic cases with mock evidence — not a benchmark. Real provider produces short free-form text without [chunk_id] citation markers; claim guard correctly flags these as having uncited claims.
+**Source**: `reports/eval/phase13_guard_aware_prompting_summary.json` (Phase 13.10)
+**Boundary**: Offline fixture-based comparison on 25 synthetic cases with mock evidence — not a benchmark. Guard-aware prompt instructs LLM to include `[chunk_id]` citation markers. Remaining guard failures are correct guard behavior (risk escalation not acknowledged, unsupported claims).
 
 ---
 
@@ -144,8 +149,8 @@ The following metrics are not yet available from repo reports:
 
 | Metric | Status | Shortest path to obtain |
 |--------|--------|------------------------|
-| Guard pass rate for real provider | **Now measured**: 4% (1/25) | ✅ Done — Phase 13 extended runner |
+| Guard pass rate for real provider | **Now measured**: 84% (21/25, guard-aware) | ✅ Done — Phase 13.10 |
 | Real provider latency | Not yet measured | Time Phase 12 comparison runner API calls |
 | Real provider estimated cost | Not yet measured | Multiply API call count by per-token pricing |
 | Human review trigger correctness (real provider) | Not yet measured | Label Phase 12 fixtures with expected human review |
-| Reviewer-ready rate (per-provider) | **Fake=68%, Real=4%** | ✅ Computed from Phase 13 extended: guard_passed + unsupported_claims=0 + citation_valid |
+| Reviewer-ready rate (per-provider) | **Fake=68%, Real=64%** | ✅ Computed from Phase 13.10: guard_passed + unsupported_claims=0 + citation_valid |

@@ -246,19 +246,48 @@ class OpenAICompatibleProvider(LLMProvider):
                 cited_evidence_ids=[],
             )
 
-        # Build prompt from evidence
+        # Build guard-aware structured prompt
+        from ticketpilot.drafting.prompt_builder import format_evidence_block
+
         system_prompt = (
-            "你是一个客服工单处理助手。根据用户消息和检索到的证据，生成一个专业的回复草稿。"
+            "你是一名客服工单处理助手。请根据用户消息和检索到的证据，生成一个专业的回复草稿。"
             "回复必须基于提供的证据，不要编造信息。如果无法找到相关证据，说明无法确认并建议转人工。"
             "回复用中文。"
         )
 
-        evidence_text = ""
-        for i, ev in enumerate(evidence[:5], start=1):
-            title = getattr(ev, "title", "")
-            evidence_text += f"\n[{i}] {title}: {ev.content[:200]}"
+        # Format evidence using the same block format as prompt_builder
+        formatted_evidence = format_evidence_block(evidence[:5])
 
-        user_prompt = f"用户消息：{normalized_text}\n问题类型：{issue_type}\n风险标记：{flags}\n严重度：{severity}\n检索到的证据：{evidence_text}\n\n请生成回复草稿："
+        # Guard-aware safety rules
+        safety_rules = [
+            "## 安全与约束规则",
+            "1. 每一条事实性或政策性陈述，都必须在对应句子后加上方括号内的chunk_id标记，格式为 [chunk_id]。",
+            "   示例：根据退货政策[3fa2b8c1-...]，商品需在7天内保持原包装。",
+            "   不要使用 [1]、[2] 等数字格式——必须使用证据块中的 chunk_id。",
+            "2. 如果证据不足以回答客户问题，必须使用安全回复：「抱歉，基于目前的信息，无法为您提供准确的客服回复，建议您转人工客服获取详细帮助。」并注明需要人工审核。",
+            "3. 禁止承诺退款金额（如：退款100元）、赔偿金额、法律行动、账号变更。",
+            "4. 禁止承诺解决时间线（如：3天内解决）或保证特定结果。",
+            "5. 禁止承认法律责任或做出超出证据范围的保证。",
+            "6. 本回复是草稿，不是最终回复。人工审核前不得自动发送。",
+        ]
+        if severity in ("high", "critical"):
+            safety_rules.append(
+                f"7. 注意：本工单严重程度为「{severity}」，必须建议客户转人工处理。"
+            )
+        if flags:
+            safety_rules.append(
+                f"8. 本工单包含风险标记：{', '.join(flags)}，回复中必须说明已升级至人工审核。"
+            )
+
+        user_prompt = (
+            f"用户消息：{normalized_text}\n"
+            f"问题类型：{issue_type}\n"
+            f"风险标记：{flags}\n"
+            f"严重度：{severity}\n\n"
+            f"## 可用证据\n{formatted_evidence}\n\n"
+            + "\n".join(safety_rules)
+            + "\n\n请生成回复草稿（在回复中引用证据时，必须使用 [chunk_id] 格式）："
+        )
 
         payload = {
             "model": self._model,
