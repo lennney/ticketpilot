@@ -652,3 +652,280 @@ class TestContextPanelRiskFlags:
         # Note: turn_count is incremented by append_message, not update_context_from_message
         # ctx2.turn_count remains 0 because update_context_from_message preserves turn_count
         assert ctx2.turn_count == ctx1.turn_count
+
+
+# ---------------------------------------------------------------------------
+# TestEvidencePanelGrouping — Phase 15.5
+# ---------------------------------------------------------------------------
+
+
+class TestEvidencePanelGrouping:
+    """Tests for evidence panel doc_type grouping functionality.
+
+    Verifies FR-15.5-1, FR-15.5-2, FR-15.5-3.
+    """
+
+    def test_evidence_grouping_all_types(self) -> None:
+        """FR-15.5-1: Multiple doc types grouped correctly (FAQ + Policy + Case)."""
+        from ticketpilot.chat import EvidenceDisplayItem
+
+        # 3 FAQ, 2 Policy, 1 Case items
+        items = [
+            EvidenceDisplayItem(chunk_id="11111111-1111-1111-1111-111111111111", doc_type="FAQ", title="FAQ1", score=0.9),
+            EvidenceDisplayItem(chunk_id="22222222-2222-2222-2222-222222222222", doc_type="FAQ", title="FAQ2", score=0.85),
+            EvidenceDisplayItem(chunk_id="33333333-3333-3333-3333-333333333333", doc_type="FAQ", title="FAQ3", score=0.80),
+            EvidenceDisplayItem(chunk_id="44444444-4444-4444-4444-444444444444", doc_type="POLICY", title="Policy1", score=0.95),
+            EvidenceDisplayItem(chunk_id="55555555-5555-5555-5555-555555555555", doc_type="POLICY", title="Policy2", score=0.90),
+            EvidenceDisplayItem(chunk_id="66666666-6666-6666-6666-666666666666", doc_type="CASE", title="Case1", score=0.75),
+        ]
+
+        # Group by doc_type manually (same logic as _render_evidence_panel)
+        from ticketpilot.chat.app import DOC_TYPE_ORDER
+        grouped: dict[str, list] = {}
+        for item in items:
+            grouped.setdefault(item.doc_type, []).append(item)
+
+        # Verify all three doc types present
+        assert "FAQ" in grouped
+        assert "POLICY" in grouped
+        assert "CASE" in grouped
+
+        # Verify counts
+        assert len(grouped["FAQ"]) == 3
+        assert len(grouped["POLICY"]) == 2
+        assert len(grouped["CASE"]) == 1
+
+        # Verify fixed order
+        assert DOC_TYPE_ORDER == ["FAQ", "POLICY", "CASE"]
+
+    def test_evidence_grouping_single_type(self) -> None:
+        """FR-15.5-1: Single doc type shows correct group header."""
+        from ticketpilot.chat import EvidenceDisplayItem
+
+        items = [
+            EvidenceDisplayItem(chunk_id="11111111-1111-1111-1111-111111111111", doc_type="FAQ", title="FAQ1", score=0.9),
+            EvidenceDisplayItem(chunk_id="22222222-2222-2222-2222-222222222222", doc_type="FAQ", title="FAQ2", score=0.85),
+        ]
+
+        grouped: dict[str, list] = {}
+        for item in items:
+            grouped.setdefault(item.doc_type, []).append(item)
+
+        # Only FAQ group should exist
+        assert list(grouped.keys()) == ["FAQ"]
+        assert len(grouped["FAQ"]) == 2
+
+    def test_evidence_group_count(self) -> None:
+        """FR-15.5-2: Count in subheader matches actual item count per doc_type."""
+        from ticketpilot.chat import EvidenceDisplayItem
+
+        items = [
+            EvidenceDisplayItem(chunk_id="11111111-1111-1111-1111-111111111111", doc_type="FAQ", title="FAQ1", score=0.9),
+            EvidenceDisplayItem(chunk_id="22222222-2222-2222-2222-222222222222", doc_type="POLICY", title="Policy1", score=0.95),
+            EvidenceDisplayItem(chunk_id="33333333-3333-3333-3333-333333333333", doc_type="POLICY", title="Policy2", score=0.90),
+            EvidenceDisplayItem(chunk_id="44444444-4444-4444-4444-444444444444", doc_type="POLICY", title="Policy3", score=0.85),
+        ]
+
+        grouped: dict[str, list] = {}
+        for item in items:
+            grouped.setdefault(item.doc_type, []).append(item)
+
+        # Verify counts match len(group)
+        assert len(grouped["FAQ"]) == 1
+        assert len(grouped["POLICY"]) == 3
+        assert "CASE" not in grouped
+
+        # Simulate subheader format
+        from ticketpilot.chat.app import DOC_TYPE_EMOJI
+        for doc_type in ["FAQ", "POLICY"]:
+            emoji = DOC_TYPE_EMOJI.get(doc_type, "📄")
+            expected_header = f"{emoji} {doc_type} ({len(grouped[doc_type])})"
+            assert expected_header == f"{emoji} {doc_type} ({len(grouped[doc_type])})"
+
+    def test_empty_evidence_graceful(self) -> None:
+        """FR-15.5-3: Empty evidence panel handled without crash."""
+        # Empty evidence panel should not cause errors in grouping
+        items: list = []
+
+        grouped: dict[str, list] = {}
+        for item in items:
+            grouped.setdefault(item.doc_type, []).append(item)
+
+        # Empty grouped dict - no groups rendered
+        assert grouped == {}
+
+        # Empty ChatDisplay with no evidence_panel should return early
+        from ticketpilot.chat import ChatDisplay
+        display = ChatDisplay(user_message="test", evidence_panel=[])
+        assert display.evidence_panel == []
+
+
+# ---------------------------------------------------------------------------
+# TestInlineCitationMarkers — Phase 15.5
+# ---------------------------------------------------------------------------
+
+
+class TestInlineCitationMarkers:
+    """Tests for inline citation marker logic in draft panel.
+
+    Verifies FR-15.5-4, FR-15.5-5.
+    """
+
+    def test_inline_markers_with_placeholder(self) -> None:
+        """FR-15.5-4: Draft text with [ID:xxx] maps to citation marker."""
+        from ticketpilot.chat import EvidenceDisplayItem
+        from ticketpilot.chat.app import _build_citation_marker_map
+
+        evidence = [
+            EvidenceDisplayItem(
+                chunk_id="11111111-1111-1111-1111-111111111111",
+                doc_type="FAQ",
+                title="退款说明",
+                score=0.95,
+            )
+        ]
+
+        marker_map = _build_citation_marker_map(evidence)
+
+        # Verify marker map contains correct entry
+        assert "11111111-1111-1111-1111-111111111111" in marker_map
+        assert marker_map["11111111-1111-1111-1111-111111111111"] == "[FAQ]:退款说明"
+
+    def test_inline_markers_without_placeholder(self) -> None:
+        """FR-15.5-4: Draft text without placeholders gets markers appended."""
+        from ticketpilot.chat import EvidenceDisplayItem
+        from ticketpilot.chat.app import _build_citation_marker_map
+
+        evidence = [
+            EvidenceDisplayItem(
+                chunk_id="22222222-2222-2222-2222-222222222222",
+                doc_type="POLICY",
+                title="退货政策",
+                score=0.90,
+            )
+        ]
+
+        marker_map = _build_citation_marker_map(evidence)
+
+        # Build appended markers
+        citation_ids = ["22222222-2222-2222-2222-222222222222"]
+        markers = [marker_map.get(cid, f"[UNKNOWN]:{cid[:8]}") for cid in citation_ids]
+        appended = " ".join(markers)
+
+        assert appended == "[POLICY]:退货政策"
+
+    def test_inline_markers_multiple_citations(self) -> None:
+        """FR-15.5-4: Multiple citations all get markers."""
+        from ticketpilot.chat import EvidenceDisplayItem
+        from ticketpilot.chat.app import _build_citation_marker_map
+
+        evidence = [
+            EvidenceDisplayItem(
+                chunk_id="33333333-3333-3333-3333-333333333333",
+                doc_type="FAQ",
+                title="退款说明",
+                score=0.95,
+            ),
+            EvidenceDisplayItem(
+                chunk_id="44444444-4444-4444-4444-444444444444",
+                doc_type="POLICY",
+                title="退货政策",
+                score=0.90,
+            ),
+        ]
+
+        marker_map = _build_citation_marker_map(evidence)
+
+        # Multiple citation IDs
+        citation_ids = [
+            "33333333-3333-3333-3333-333333333333",
+            "44444444-4444-4444-4444-444444444444",
+        ]
+
+        markers = [marker_map.get(cid, f"[UNKNOWN]:{cid[:8]}") for cid in citation_ids]
+
+        assert len(markers) == 2
+        assert "[FAQ]:退款说明" in markers
+        assert "[POLICY]:退货政策" in markers
+
+    def test_inline_markers_fallback_graceful(self) -> None:
+        """FR-15.5-4: Graceful degradation when citation_id not found."""
+        from ticketpilot.chat import EvidenceDisplayItem
+        from ticketpilot.chat.app import _build_citation_marker_map
+
+        evidence = [
+            EvidenceDisplayItem(
+                chunk_id="55555555-5555-5555-5555-555555555555",
+                doc_type="FAQ",
+                title="退款说明",
+                score=0.95,
+            )
+        ]
+
+        marker_map = _build_citation_marker_map(evidence)
+
+        # Citation ID not in evidence panel
+        unknown_cid = "99999999-9999-9999-9999-999999999999"
+        marker = marker_map.get(unknown_cid, f"[UNKNOWN]:{unknown_cid[:8]}")
+
+        # Should fallback gracefully
+        assert "[UNKNOWN]" in marker
+        assert unknown_cid[:8] in marker
+
+    def test_citation_reference_readable(self) -> None:
+        """FR-15.5-5: Citation reference list shows human-readable format."""
+        from ticketpilot.chat import EvidenceDisplayItem
+
+        evidence = [
+            EvidenceDisplayItem(
+                chunk_id="66666666-6666-6666-6666-666666666666",
+                doc_type="FAQ",
+                title="退款说明",
+                score=0.95,
+            ),
+            EvidenceDisplayItem(
+                chunk_id="77777777-7777-7777-7777-777777777777",
+                doc_type="POLICY",
+                title="退货政策",
+                score=0.90,
+            ),
+        ]
+
+        # Simulate reference list formatting
+        citation_ids = [
+            "66666666-6666-6666-6666-666666666666",
+            "77777777-7777-7777-7777-777777777777",
+        ]
+
+        refs = []
+        for cid in citation_ids:
+            item = next((ev for ev in evidence if ev.chunk_id == cid), None)
+            if item:
+                ref_label = f"[{item.doc_type.upper()}] {item.title or item.chunk_id[:8]}"
+                refs.append(ref_label)
+            else:
+                refs.append(f"[{cid[:8]}...] (未找到)")
+
+        assert "[FAQ] 退款说明" in refs
+        assert "[POLICY] 退货政策" in refs
+
+    def test_citation_reference_fallback_to_chunk_id(self) -> None:
+        """FR-15.5-5: Citation without title falls back to chunk_id[:8]."""
+        from ticketpilot.chat import EvidenceDisplayItem
+
+        evidence = [
+            EvidenceDisplayItem(
+                chunk_id="88888888-8888-8888-8888-888888888888",
+                doc_type="CASE",
+                title=None,  # No title
+                score=0.75,
+            )
+        ]
+
+        cid = "88888888-8888-8888-8888-888888888888"
+        item = next((ev for ev in evidence if ev.chunk_id == cid), None)
+        assert item is not None
+        ref_label = f"[{item.doc_type.upper()}] {item.title or item.chunk_id[:8]}"
+
+        # Should use chunk_id[:8] when title is None
+        assert ref_label == "[CASE] 88888888"

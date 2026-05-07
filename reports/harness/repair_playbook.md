@@ -435,6 +435,76 @@ When encountering unknown error:
 
 ---
 
+## Evidence Panel Grouping
+
+### Symptoms
+- Evidence items displayed without structure
+- User cannot quickly scan items by doc_type
+
+### Likely Causes
+- Flat list rendering without grouping
+- Missing count display per group
+
+### Safe Repair Steps
+1. Group items by doc_type using dict: `grouped.setdefault(item.doc_type, []).append(item)`
+2. Iterate groups in fixed order: `DOC_TYPE_ORDER = ["FAQ", "POLICY", "CASE"]`
+3. Show count in subheader: `f"{emoji} {doc_type} ({len(items)})"`
+4. Handle empty groups gracefully (omit or show placeholder)
+
+### Code Pattern
+```python
+grouped = {}
+for item in evidence_items:
+    grouped.setdefault(item.doc_type, []).append(item)
+
+for doc_type in DOC_TYPE_ORDER:
+    if doc_type in grouped:
+        items = grouped[doc_type]
+        # render group with emoji and count
+```
+
+### Commands
+```bash
+uv run pytest tests/unit/test_chat_adapter.py::TestEvidencePanelGrouping -v
+```
+
+---
+
+## Citation Marker Mapping
+
+### Symptoms
+- Draft text contains raw placeholders like `[ID:xxx]`
+- Reference list not human-readable
+
+### Likely Causes
+- Placeholders not mapped to human-readable labels
+- Missing title fallback for references
+
+### Safe Repair Steps
+1. Build marker map from source data: `marker_map = {item.chunk_id: f"[{item.doc_type}] {item.title}"}`
+2. Apply regex replacement for placeholders
+3. Provide fallback: `item.title or item.chunk_id[:8]`
+4. Handle unknown citations gracefully
+
+### Code Pattern
+```python
+# Build marker map
+marker_map = {
+    item.chunk_id: f"[{item.doc_type.upper()}] {item.title or item.chunk_id[:8]}"
+    for item in source_items
+}
+
+# Replace placeholders
+draft = re.sub(r'\[ID:(\w+)\]|\[(\w+)\]', lambda m: marker_map.get(m.group(1) or m.group(2), m.group(0)), draft)
+```
+
+### Commands
+```bash
+uv run pytest tests/unit/test_chat_adapter.py::TestInlineCitationMarkers -v
+```
+
+---
+
 ## Prevention Rules Summary
 
 - Always use `uv run python` instead of bare `python3`
@@ -444,3 +514,5 @@ When encountering unknown error:
 - Always re-run export after label expansion
 - Always specify encoding='utf-8' for file I/O
 - Always use defensive CSV cell access: `(r.get('field') or '').strip()`
+- Always update tasks.md checkbox when phase completes
+- Always verify ARCHITECTURE.md phase descriptions match tasks.md

@@ -6,6 +6,7 @@ No real provider calls, no database, no auto-send.
 
 from __future__ import annotations
 
+import re
 import uuid
 from datetime import datetime, timezone
 
@@ -45,6 +46,34 @@ RISK_BADGE_COLORS: dict[str, tuple[str, str]] = {
     "MEDIUM": ("#d97706", "#fffbeb"),
     "LOW": ("#16a34a", "#f0fdf4"),
 }
+
+# ---------------------------------------------------------------------------
+# Evidence panel constants
+# ---------------------------------------------------------------------------
+
+DOC_TYPE_ORDER: list[str] = ["FAQ", "POLICY", "CASE"]
+DOC_TYPE_EMOJI: dict[str, str] = {
+    "FAQ": "📖",
+    "POLICY": "📋",
+    "CASE": "📁",
+}
+
+
+def _build_citation_marker_map(evidence_panel: list) -> dict[str, str]:
+    """Build a mapping from chunk_id to inline citation marker.
+
+    Args:
+        evidence_panel: List of EvidenceDisplayItem objects.
+
+    Returns:
+        Dict mapping chunk_id -> "[DOC_TYPE]:title or chunk_id[:8]"
+    """
+    marker_map: dict[str, str] = {}
+    for item in evidence_panel:
+        label = item.title or item.chunk_id[:8]
+        marker_map[item.chunk_id] = f"[{item.doc_type.upper()}]:{label}"
+    return marker_map
+
 
 # ---------------------------------------------------------------------------
 # Page config
@@ -204,25 +233,41 @@ def _render_risk_panel(display: ChatDisplay | None) -> None:
 
 
 def _render_evidence_panel(display: ChatDisplay | None) -> None:
-    """Render the evidence panel."""
+    """Render the evidence panel grouped by doc_type.
+
+    Items are grouped by doc_type (FAQ, POLICY, CASE) with subheaders
+    showing the emoji, doc type name, and count. Empty groups are omitted.
+    """
     st.subheader("📚 证据面板")
 
     if display is None or not display.evidence_panel:
         st.info("暂无证据 — 等待 Phase 15.3 pipeline 接入")
         return
 
+    # Group items by doc_type
+    grouped: dict[str, list] = {}
     for item in display.evidence_panel:
-        with st.expander(f"`{item.chunk_id[:8]}...` · {item.doc_type}"):
-            if item.title:
-                st.markdown(f"**{item.title}**")
-            if item.score is not None:
-                st.caption(f"相关度: {item.score:.3f}")
-            if item.content_preview:
-                st.markdown(item.content_preview)
+        grouped.setdefault(item.doc_type, []).append(item)
+
+    # Render each doc type in fixed order
+    for doc_type in DOC_TYPE_ORDER:
+        if doc_type not in grouped:
+            continue
+        items = grouped[doc_type]
+        emoji = DOC_TYPE_EMOJI.get(doc_type, "📄")
+        st.subheader(f"{emoji} {doc_type} ({len(items)})")
+        for item in items:
+            with st.expander(f"`{item.chunk_id[:8]}...` · {item.title or item.doc_type}"):
+                if item.title:
+                    st.markdown(f"**{item.title}**")
+                if item.score is not None:
+                    st.caption(f"相关度: {item.score:.3f}")
+                if item.content_preview:
+                    st.markdown(item.content_preview)
 
 
 def _render_draft_panel(display: ChatDisplay | None) -> None:
-    """Render the AI draft panel."""
+    """Render the AI draft panel with inline citation markers and human-readable references."""
     st.subheader("📝 AI 客服回复草稿")
 
     if display is None:
@@ -230,11 +275,32 @@ def _render_draft_panel(display: ChatDisplay | None) -> None:
         return
 
     if display.draft_text:
-        st.markdown(display.draft_text)
+        # Build citation marker map from evidence panel
+        marker_map = _build_citation_marker_map(display.evidence_panel)
+
+        # Prepare draft text with inline citation markers
+        draft_text = display.draft_text
+        replaced = False
+
+        if display.citation_ids:
+            for cid in display.citation_ids:
+                marker = marker_map.get(cid, f"[UNKNOWN]:{cid[:8]}")
+                # Replace [ID:xxx] or [xxx] patterns
+                draft_text = re.sub(r"\[ID:" + re.escape(cid) + r"\]", marker, draft_text)
+                draft_text = re.sub(r"\[" + re.escape(cid) + r"\]", marker, draft_text)
+                if f"[ID:{cid}]" in display.draft_text or f"[{cid}]" in display.draft_text:
+                    replaced = True
+
+            # If no placeholders found, append inline markers after draft paragraph
+            if not replaced:
+                markers = [marker_map.get(cid, f"[UNKNOWN]:{cid[:8]}") for cid in display.citation_ids]
+                draft_text += "\n\n" + " ".join(markers)
+
+        st.markdown(draft_text)
 
         st.divider()
 
-        # Guard status
+        # Guard status (unchanged)
         if display.guard_passed is True:
             st.success("✅ Guard Passed")
         elif display.guard_passed is False:
@@ -244,11 +310,18 @@ def _render_draft_panel(display: ChatDisplay | None) -> None:
                 for reason in display.failure_reasons:
                     st.markdown(f"- `{reason}`")
 
-        # Citation IDs
+        # Human-readable citation reference list
         if display.citation_ids:
             st.markdown("**引用证据**:")
             for cid in display.citation_ids:
-                st.markdown(f"- `[{cid[:8]}...]`")
+                item = next((ev for ev in display.evidence_panel if ev.chunk_id == cid), None)
+                if item:
+                    ref_label = f"[{item.doc_type.upper()}] {item.title or item.chunk_id[:8]}"
+                    with st.expander(ref_label):
+                        st.caption(f"完整 chunk_id: `{cid}`")
+                else:
+                    # Fallback: show truncated chunk_id
+                    st.markdown(f"- `[{cid[:8]}...]` (未找到对应证据项)")
     else:
         st.info("暂无草稿 — 等待 Phase 15.3 pipeline 接入")
 

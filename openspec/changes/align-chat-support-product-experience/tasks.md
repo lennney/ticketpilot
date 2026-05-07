@@ -31,7 +31,7 @@
   - Show human_review_required status
   - Connect to pipeline risk assessment output
 
-- [ ] 15.5: Evidence and Draft Panel
+- [x] 15.5: Evidence and Draft Panel
   - Show evidence panel grouped by type (FAQ/Policy/Case)
   - Show AI draft with inline citation markers
   - Show guard_passed status and failure_reasons
