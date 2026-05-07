@@ -74,6 +74,7 @@ class TestGuardFailureType:
     """GuardFailureType enum has all 8 taxonomy values."""
 
     def test_all_eight_types_exist(self) -> None:
+        """All 8 taxonomy types exist; canonical name is UNCITED_SUBSTANTIVE_CLAIM."""
         types = {m.name for m in GuardFailureType}
         assert "UNSUPPORTED_POLICY_CLAIM" in types
         assert "FORBIDDEN_PROMISE" in types
@@ -82,8 +83,9 @@ class TestGuardFailureType:
         assert "MANUAL_REVIEW_ACKNOWLEDGEMENT" in types
         assert "EVIDENCE_INSUFFICIENT_FALLBACK" in types
         assert "AMBIGUOUS_GUARD_CASE" in types
-        assert "UNCUTED_SUBSTANTIVE_CLAIM" in types
-        assert GuardFailureType("UNCITED_SUBSTANTIVE_CLAIM").name == "UNCUTED_SUBSTANTIVE_CLAIM"
+        assert "UNCITED_SUBSTANTIVE_CLAIM" in types
+        # Serialized value still "UNCITED_SUBSTANTIVE_CLAIM" (stable for persistence)
+        assert GuardFailureType("UNCITED_SUBSTANTIVE_CLAIM").name == "UNCITED_SUBSTANTIVE_CLAIM"
         assert GuardFailureType("UNCITED_SUBSTANTIVE_CLAIM").value == "UNCITED_SUBSTANTIVE_CLAIM"
 
 
@@ -166,13 +168,15 @@ class TestFailureReasonsTaxonomy:
         assert GuardFailureType.UNSUPPORTED_POLICY_CLAIM in result.failure_reasons
         assert GuardFailureType.MISSING_RISK_ESCALATION in result.failure_reasons
 
-    def test_safe_fallback_adds_evidence_insufficient_fallback_reason(self) -> None:
-        """Safe-fallback text: guard_passed=True, failure_reasons=[EVIDENCE_INSUFFICIENT_FALLBACK]."""
+    def test_safe_fallback_guard_passed_empty_failure_reasons(self) -> None:
+        """Safe-fallback: guard_passed=True, failure_reasons=[].
+        safe fallback signal is deferred to future phase
+        (guard_signals / reporting); failure_reasons is failure-only."""
         text = "根据现有信息，无法确认具体政策条款，建议转人工处理。"
         draft = _draft(text)
         result = check_claim_guard(draft, [])
         assert result.guard_passed is True
-        assert result.failure_reasons == [GuardFailureType.EVIDENCE_INSUFFICIENT_FALLBACK]
+        assert result.failure_reasons == []
 
     def test_greeting_only_empty_failure_reasons(self) -> None:
         """Greeting-only draft: guard_passed=True, failure_reasons=[]."""

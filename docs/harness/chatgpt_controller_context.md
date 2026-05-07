@@ -127,7 +127,8 @@ See `docs/harness/controller_decision_log.md` for full log.
 | Priority | Action | Phase | Type | Status |
 |---|---|---|---|---|
 | 1 | Phase 14.1 planning and spec (OpenSpec change created) | 14.1 | Spec | Done |
-| 2 | Phase 14.2 Guard Taxonomy Data Model | 14.2 | Runtime | Pending |
+| 2 | Phase 14.2 Guard Taxonomy Data Model | 14.2 | Runtime | Done |
+| — | Phase 14.2.1 Guard Taxonomy Cleanup | 14.2.1 | Runtime | Done |
 | — | Phase 14.3 Safe Language Classifier | 14.3 | Runtime | Pending |
 | — | Phase 14.4 Claim Guard Integration | 14.4 | Runtime | Pending |
 | — | Phase 14.5 Evaluation Runner Extension | 14.5 | Runtime | Pending |

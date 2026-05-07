@@ -7,11 +7,19 @@
   - Run OpenSpec strict and --all validation
   - No runtime code changes
 
-- [ ] 14.2: Guard Taxonomy Data Model
+- [x] 14.2: Guard Taxonomy Data Model
   - Add `GuardFailureType` enum to `drafting/schemas.py` or `drafting/claim_guard.py`
   - Extend `GuardResult` with `failure_reasons: list[GuardFailureType]`
   - Backward compatible: existing boolean fields unchanged
   - Add unit tests for new taxonomy
+
+- [x] 14.2.1: Guard Taxonomy Cleanup (Phase 14.2.1)
+  - Fix enum member canonical name to `UNCITED_SUBSTANTIVE_CLAIM` (was misspelled UNCUTED)
+  - Keep serialized value stable as "UNCITED_SUBSTANTIVE_CLAIM" (historical consistency)
+  - Change `failure_reasons` to failure-only (remove EVIDENCE_INSUFFICIENT_FALLBACK from guard_passed=True cases)
+  - safe fallback signal deferred to future guard_signals/reporting phase
+  - No guard weakening, no human review reduction
+  - Full quality gate: 1087 unit + 146 integration, 0 skipped, coverage >= 70%
 
 - [ ] 14.3: Safe Language Classifier
   - Implement `check_safe_escalation_language()` function

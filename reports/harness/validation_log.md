@@ -2,6 +2,28 @@
 
 ---
 
+## 2026-05-07 -- Phase 14.2.1: Guard Taxonomy Cleanup
+
+| Check | Result |
+|---|---|
+| Ruff | All checks passed |
+| OpenSpec strict | Valid (add-guard-architecture-improvement-planning) |
+| OpenSpec --all | 25/25 passed |
+| Secret scan | Clean |
+| Overclaim scan | Clean |
+| Unit tests | 67/67 passed |
+| Full quality gate | 1087 unit + 146 integration, 0 skipped, coverage 86.62% |
+
+**Implementation**:
+- Fixed enum canonical name from misspelled UNCUTED_SUBSTANTIVE_CLAIM to correct UNCITED_SUBSTANTIVE_CLAIM (canonical name now matches value)
+- Changed `failure_reasons` to failure-only semantics: only populated when guard_passed=False
+- Safe fallback signals deferred to future guard_signals/reporting phase
+- Updated test: `test_safe_fallback_guard_passed_empty_failure_reasons` now asserts failure_reasons==[]
+
+**Status**: PASSED — 3 files modified, committed and pushed
+
+---
+
 ## 2026-05-07 -- Phase 14.2: Guard Taxonomy Data Model
 
 | Check | Result |
@@ -15,14 +37,12 @@
 | Full quality gate | 1087 unit + 146 integration, 0 skipped, coverage 86.65% |
 
 **Implementation**:
-- `GuardFailureType` enum (8 types): UNSUPPORTED_POLICY_CLAIM, FORBIDDEN_PROMISE, MISSING_RISK_ESCALATION, SAFE_ESCALATION_STATEMENT, MANUAL_REVIEW_ACKNOWLEDGEMENT, EVIDENCE_INSUFFICIENT_FALLBACK, AMBIGUOUS_GUARD_CASE, UNCUTED_SUBSTANTIVE_CLAIM
+- `GuardFailureType` enum (8 types): UNSUPPORTED_POLICY_CLAIM, FORBIDDEN_PROMISE, MISSING_RISK_ESCALATION, SAFE_ESCALATION_STATEMENT, MANUAL_REVIEW_ACKNOWLEDGEMENT, EVIDENCE_INSUFFICIENT_FALLBACK, AMBIGUOUS_GUARD_CASE, UNCITED_SUBSTANTIVE_CLAIM
 - `GuardResult.failure_reasons: list[GuardFailureType]` field added
 - `check_claim_guard()` populates `failure_reasons` from boolean check results
 - Taxonomy-to-boolean mapping: citation_coverage<1.0→UNCITED_SUBSTANTIVE_CLAIM, has_uncited_claims→UNSUPPORTED_POLICY_CLAIM, has_forbidden_promise→FORBIDDEN_PROMISE, !risk_flags_respected→MISSING_RISK_ESCALATION, safe fallback→EVIDENCE_INSUFFICIENT_FALLBACK, no match→AMBIGUOUS_GUARD_CASE
 
-**Note**: UNCUTED_SUBSTANTIVE_CLAIM has name "UNCUTED_SUBSTANTIVE_CLAIM" and value "UNCITED_SUBSTANTIVE_CLAIM" (name-value mismatch due to unintentional typo in enum definition — preserved for consistency with design.md)
-
-**Status**: PASSED — 3 files modified, ready to commit
+**Status**: PASSED — 3 files modified, committed and pushed (737f4f6)
 
 ---
 

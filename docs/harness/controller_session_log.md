@@ -5,15 +5,23 @@
 
 ---
 
+## 2026-05-07 — Phase 14.2.1: Guard Taxonomy Cleanup
+
+**Summary**: Fixed enum canonical name from misspelled UNCUTED_SUBSTANTIVE_CLAIM to correct UNCITED_SUBSTANTIVE_CLAIM. Changed failure_reasons to failure-only semantics (only populated when guard_passed=False). Updated test to assert empty failure_reasons for safe fallback with guard_passed=True. Full quality gate: 1087 unit + 146 integration, 0 skipped, coverage 86.62%, OpenSpec 25/25. Diff scan: secret clean, overclaim clean.
+
+**Files Modified**: src/ticketpilot/drafting/claim_guard.py, tests/unit/test_claim_guard.py, openspec/changes/add-guard-architecture-improvement-planning/tasks.md
+
+**Phase Status**: Phase 14.2.1 complete. Tasks 14.3-14.7 pending.
+
+---
+
 ## 2026-05-07 — Phase 14.2: Guard Taxonomy Data Model
 
 **Summary**: Implemented GuardFailureType enum (8 types) and failure_reasons field in GuardResult. Added taxonomy-to-boolean mapping in check_claim_guard(). Added 9 new unit tests for taxonomy. Full quality gate: 1087 unit + 146 integration, 0 skipped, coverage 86.65%, OpenSpec 25/25.
 
 **Files Modified**: src/ticketpilot/drafting/claim_guard.py, src/ticketpilot/drafting/__init__.py, tests/unit/test_claim_guard.py
 
-**Note**: UNCUTED_SUBSTANTIVE_CLAIM enum has name "UNCUTED_SUBSTANTIVE_CLAIM" (correct) but value "UNCITED_SUBSTANTIVE_CLAIM" (typo matching design.md spec). This is a known quirk preserved for consistency.
-
-**Phase Status**: Phase 14.2 complete. Taxonomy data model implemented. Tasks 14.3-14.7 pending.
+**Phase Status**: Phase 14.2 complete (737f4f6). Taxonomy data model implemented. Tasks 14.3-14.7 pending.
 
 ---
 

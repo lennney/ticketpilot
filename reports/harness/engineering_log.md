@@ -2,6 +2,22 @@
 
 ---
 
+## 2026-05-07 — Phase 14.2.1: Guard Taxonomy Cleanup
+
+**Problem**: Phase 14.2 enum had a misspelled canonical name (UNCUTED vs UNCITED) and failure_reasons was populated for guard_passed=True safe fallback cases.
+
+**Fixes Applied**:
+- Enum canonical name fixed from `UNCUTED_SUBSTANTIVE_CLAIM` to `UNCITED_SUBSTANTIVE_CLAIM` (value unchanged for serialization stability)
+- `failure_reasons` changed to failure-only: only populated when guard_passed=False
+- Safe fallback signals deferred to future guard_signals/reporting phase
+- No guard_passed logic changes, no human review reduction
+
+**Files Modified**: claim_guard.py, test_claim_guard.py, tasks.md
+
+**Quality Gate**: 1087 unit + 146 integration tests (0 skipped), coverage 86.62%, OpenSpec 25/25
+
+---
+
 ## 2026-05-07 — Phase 14.2: Guard Taxonomy Data Model
 
 **Implementation Summary**:
@@ -10,7 +26,7 @@
 - Updated `check_claim_guard()` to build failure_reasons list from boolean check results
 
 **Taxonomy-to-Boolean Mapping**:
-- `citation_coverage < 1.0` → `UNCUTED_SUBSTANTIVE_CLAIM` (partial/invalid citations)
+- `citation_coverage < 1.0` → `UNCITED_SUBSTANTIVE_CLAIM` (partial/invalid citations)
 - `has_uncited_claims=True` → `UNSUPPORTED_POLICY_CLAIM` (substantive content without citations)
 - `has_forbidden_promise=True` → `FORBIDDEN_PROMISE` (forbidden promise patterns)
 - `risk_flags_respected=False` → `MISSING_RISK_ESCALATION` (high-risk without acknowledgment)
@@ -18,10 +34,6 @@
 - No match on guard failure → `AMBIGUOUS_GUARD_CASE`
 
 **Test Coverage**: 9 new tests in TestGuardFailureType + TestFailureReasonsTaxonomy, 58 existing tests pass
-
-**Note on UNCUTED vs INCITED**: The enum member has name `UNCUTED_SUBSTANTIVE_CLAIM` (correct spelling) but value `UNCITED_SUBSTANTIVE_CLAIM` (typo, matching design.md). This name-value mismatch is a quirk of how Python enums work with StrEnum — the value is what gets stored in serialized data. Tests use `.name` to check existence.
-
-**Key Design Decision**: Pre-create enum instances as local variables before the if/else block to avoid repeated constructor calls. This is equivalent to direct enum access but cleaner.
 
 **Quality Gate**: 1087 unit + 146 integration tests (0 skipped), coverage 86.65%, OpenSpec 25/25
 

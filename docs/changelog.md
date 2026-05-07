@@ -1,5 +1,27 @@
 # TicketPilot Changelog
 
+## 2026-05-07 -- Phase 14.2.1: Guard Taxonomy Cleanup
+
+### Fixed
+- Enum canonical name corrected from `UNCUTED_SUBSTANTIVE_CLAIM` to `UNCITED_SUBSTANTIVE_CLAIM` (value unchanged for serialization stability)
+- `failure_reasons` changed to failure-only semantics (only populated when guard_passed=False)
+- Safe fallback signals deferred to future guard_signals/reporting phase
+
+### Validation
+- 67 unit tests passed (UNCITED spelling corrected, empty failure_reasons for guard_passed=True)
+- Full quality gate: 1087 unit + 146 integration, 0 skipped, coverage 86.62%, OpenSpec 25/25
+
+## 2026-05-07 -- Phase 14.2: Guard Taxonomy Data Model
+
+### Added
+- `GuardFailureType` str-enum with 8 granular failure types in `claim_guard.py`
+- `GuardResult.failure_reasons: list[GuardFailureType]` field for per-failure-type classification
+- Taxonomy-to-boolean mapping in `check_claim_guard()`: citation coverage → UNCITED_SUBSTANTIVE_CLAIM, uncited claims → UNSUPPORTED_POLICY_CLAIM, forbidden promises → FORBIDDEN_PROMISE, missing escalation → MISSING_RISK_ESCALATION, safe fallback → EVIDENCE_INSUFFICIENT_FALLBACK, no match → AMBIGUOUS_GUARD_CASE
+
+### Validation
+- 9 new unit tests (TestGuardFailureType, TestFailureReasonsTaxonomy), 58 existing tests pass
+- Full quality gate: 1087 unit + 146 integration, 0 skipped, coverage 86.65%, OpenSpec 25/25
+
 ## 2026-05-07 -- Phase 13.10: Guard-Aware Provider Prompting Experiment
 
 ### Added

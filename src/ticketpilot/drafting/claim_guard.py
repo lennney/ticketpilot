@@ -34,7 +34,9 @@ class GuardFailureType(str, Enum):
     MANUAL_REVIEW_ACKNOWLEDGEMENT = "MANUAL_REVIEW_ACKNOWLEDGEMENT"
     EVIDENCE_INSUFFICIENT_FALLBACK = "EVIDENCE_INSUFFICIENT_FALLBACK"
     AMBIGUOUS_GUARD_CASE = "AMBIGUOUS_GUARD_CASE"
-    UNCUTED_SUBSTANTIVE_CLAIM = "UNCITED_SUBSTANTIVE_CLAIM"
+    # Canonical name is UNCITED_SUBSTANTIVE_CLAIM (correct spelling).
+    # Serialized value stays "UNCITED_SUBSTANTIVE_CLAIM" for persistence stability.
+    UNCITED_SUBSTANTIVE_CLAIM = "UNCITED_SUBSTANTIVE_CLAIM"
 
 
 class GuardResult(BaseModel):
@@ -53,7 +55,9 @@ class GuardResult(BaseModel):
             in the draft via escalation language.
         guard_passed: Overall guard result — True when all checks pass.
         failure_reasons: Granular list of GuardFailureType reasons for
-            guard failure. Empty when guard_passed is True.
+            guard failure. Empty when guard_passed is True. failure_reasons
+            is failure-only — safe fallback signals are deferred to future
+            guard_signals/reporting phases.
     """
 
     citation_coverage: float = Field(default=1.0, ge=0.0, le=1.0)
@@ -258,28 +262,21 @@ def check_claim_guard(
         and risk_respected
     )
 
-    # 7. Build failure_reasons taxonomy
+    # 7. Build failure_reasons taxonomy (failure-only)
+    # failure_reasons is empty when guard_passed=True.
+    # Safe fallback signals are deferred to future guard_signals/reporting phases.
     failure_reasons: list[GuardFailureType] = []
-    uncited = GuardFailureType("UNCITED_SUBSTANTIVE_CLAIM")
-    unsupported = GuardFailureType("UNSUPPORTED_POLICY_CLAIM")
-    forbidden = GuardFailureType("FORBIDDEN_PROMISE")
-    missing_escalation = GuardFailureType("MISSING_RISK_ESCALATION")
-    ambiguous = GuardFailureType("AMBIGUOUS_GUARD_CASE")
-    fallback = GuardFailureType("EVIDENCE_INSUFFICIENT_FALLBACK")
-    if guard_passed:
-        if _is_safe_fallback(draft_text):
-            failure_reasons.append(fallback)
-    else:
+    if not guard_passed:
         if citation_coverage < 1.0:
-            failure_reasons.append(uncited)
+            failure_reasons.append(GuardFailureType.UNCITED_SUBSTANTIVE_CLAIM)
         if has_uncited:
-            failure_reasons.append(unsupported)
+            failure_reasons.append(GuardFailureType.UNSUPPORTED_POLICY_CLAIM)
         if has_promise:
-            failure_reasons.append(forbidden)
+            failure_reasons.append(GuardFailureType.FORBIDDEN_PROMISE)
         if not risk_respected:
-            failure_reasons.append(missing_escalation)
+            failure_reasons.append(GuardFailureType.MISSING_RISK_ESCALATION)
         if not failure_reasons:
-            failure_reasons.append(ambiguous)
+            failure_reasons.append(GuardFailureType.AMBIGUOUS_GUARD_CASE)
 
     return GuardResult(
         citation_coverage=citation_coverage,
