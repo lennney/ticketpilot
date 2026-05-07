@@ -28,6 +28,8 @@ rm -f /tmp/.coverage* .coverage* 2>/dev/null || true
 # Resolve coverage directory to Windows-absolute path when Python runs on Windows
 COVERAGE_DIR="$(uv run python -c "import tempfile; print(tempfile.gettempdir())" 2>/dev/null || echo "/tmp")"
 export COVERAGE_FILE="${COVERAGE_FILE:-${COVERAGE_DIR}/.coverage_ticketpilot_gate}"
+# Isolate tests from real provider in .env.local — use fake provider for tests
+export TICKETPILOT_LLM_PROVIDER=fake
 uv run python -m pytest tests/unit/ -v --strict-markers --cov=src/ticketpilot --cov-fail-under=70 || {
     echo -e "${RED}FAIL: Unit tests failed${NC}"
     FAILED=1
@@ -37,6 +39,8 @@ uv run python -m pytest tests/unit/ -v --strict-markers --cov=src/ticketpilot --
 echo ""
 echo "== Integration Tests =="
 set +e
+# Isolate tests from real provider in .env.local — use fake provider for tests
+export TICKETPILOT_LLM_PROVIDER=fake
 INTEGRATION_OUTPUT=$(uv run python -m pytest tests/integration/ -v --strict-markers 2>&1)
 INTEGRATION_EXIT=$?
 set -e
