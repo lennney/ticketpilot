@@ -150,8 +150,8 @@ As Controller, default to **acting autonomously**. Only interrupt the human when
 
 | Category | What I Can Do | Constraints |
 |----------|--------------|-------------|
-| **Task execution** | Execute tasks from tasks.md | Use subagent, verify tests pass |
-| **Code changes** | Implement B/C-class tech debt fixes | Tests pass, ruff clean, no breaking changes |
+| **Task execution** | Execute tasks from tasks.md | Use subagent for code tasks; can do myself for doc-only tasks |
+| **Code changes** | Approve subagent implementation of B/C-class tech debt | NEVER implement code directly; always delegate to subagent |
 | **Documentation** | Update docs to reflect code changes | No overclaiming, accurate claims only |
 | **Error handling** | Apply fixes from repair_playbook.md | Follow documented procedures |
 | **OpenSpec updates** | Update tasks.md status, commit | Follow commit message conventions |
@@ -170,12 +170,14 @@ As Controller, default to **acting autonomously**. Only interrupt the human when
 ### Escalation Triggers (Ask Immediately)
 
 ```
-1. Quality gate fails after 2 retries
+1. Quality gate fails (fail fast, no retries — escalate immediately)
 2. Test coverage drops below 70%
 3. OpenSpec validation fails repeatedly
 4. Unexpected breaking changes discovered
 5. Security issue detected (secrets, keys)
-6. You are blocked for > 10 minutes trying to resolve an issue
+6. Subagent output contradicts task acceptance criteria
+7. Human overrides prior decision mid-batch
+8. You are blocked for > 10 minutes trying to resolve an issue
 ```
 
 ### How to Escalate
@@ -202,11 +204,12 @@ I do not implement code directly. I delegate and verify.
 Every harness batch must follow these rules:
 
 1. **Update `docs/harness/PROJECT_CONTEXT.md`** — update current phase and tasks when they change.
-2. **Commit after each completed task** — atomic commits, clear messages.
+2. **Commit trigger: subagent returns success + module tests green.** Never commit with failing tests. Never hold uncommitted work after subagent completion.
 3. **Controller context is NOT a chat transcript** — never store full conversation logs, API keys, secrets, or raw private communication.
 4. **Store only structured handoff summaries**: phase changes, key decisions, validation results, next actions.
 5. **Subagent results** go to `subagent_results/` — I read these, not the human.
 6. **Error memory** is written to `reports/harness/error_memory.jsonl` — I maintain this.
+7. **Subagent verification scope**: run tests for the modified module only (per CLAUDE.md test mapping), not full suite. Full quality gate only at pre-push / archive.
 
 ## 13. Portfolio Boundary Wording
 
@@ -241,19 +244,25 @@ Error memory entries record:
 
 Context compression is automatic (system-triggered at ~80% context limit). When triggered:
 
-1. **Write structured handoff** to `reports/harness/compression_handoff_<timestamp>.md`
+1. **Check subagent status before compression**:
+   - If subagent is in-flight: wait for completion OR commit partial state before compression
+   - Never compress with in-flight subagent tasks (results may be partial)
+
+2. **Write structured handoff** to `reports/harness/compression_handoff_<timestamp>.md`
    - Trigger reason: "context compression, system automatic"
    - Current state: phase, active tasks, completion status
+   - Subagent status: "completed" / "in-flight (committed)" / "in-flight (not committed)"
    - Next actions
    - Key files
 
-2. **Update PROJECT_CONTEXT.md** — sync current state before compression
+3. **Update PROJECT_CONTEXT.md** — sync current state before compression
 
-3. **NO automatic commit** — commit only when work is complete (atomic per task)
+4. **NO automatic commit** — commit only when work is complete (atomic per task)
 
-4. **On resume from compression**:
+5. **On resume from compression**:
    - Read the latest `compression_handoff_*.md` in `reports/harness/`
    - Read `PROJECT_CONTEXT.md` for full state
+   - If subagent was in-flight: check subagent_results/ for final output
    - Resume from where handoff says "待做" (todo)
 
 **Anti-pattern to avoid**: Treating compression as a handoff point. Compression is for state recovery only. Real handoffs happen at task boundaries with commits.
