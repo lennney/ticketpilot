@@ -1,5 +1,30 @@
 # Validation Log -- TicketPilot
 
+---
+
+## 2026-05-07 -- Phase 12D.1: Resolve Untracked OpenSpec Spec Directory
+
+| Check | Result |
+|---|---|
+| Ruff | All checks passed |
+| OpenSpec --all | 23/23 passed (22 before + 1 new spec added) |
+| Spec-only cleanup | Full quality gate not required |
+
+**Status**: PASSED
+
+---
+
+## 2026-05-07 -- Phase 13: Extended Draft Evaluation Metrics (Planning)
+
+| Check | Result |
+|---|---|
+| Ruff | All checks passed |
+| OpenSpec --strict (add-extended-draft-evaluation-metrics) | Valid |
+| OpenSpec --all | 23/23 passed |
+| Docs/spec-only batch | Full quality gate not required |
+
+**Status**: PASSED
+
 *Tracks validation runs, quality gate results, and test outcomes.*
 
 ---

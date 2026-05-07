@@ -5,6 +5,22 @@
 
 ---
 
+## 2026-05-07 — Phase 12D.1: Resolve Untracked OpenSpec Spec Directory
+
+**Summary**: Inspected untracked `openspec/specs/error-memory/`. Root cause: Phase 12B archive promoted spec but did not stage it. Resolution: added spec file, committed and pushed `df03c54`. Validation: 23/23 OpenSpec passed.
+
+---
+
+## 2026-05-07 — Phase 13: Extended Draft Evaluation Metrics (Planning)
+
+**Summary**: Created OpenSpec change `add-extended-draft-evaluation-metrics` with 7 files (proposal, design, tasks, 3 specs). Validated: 23/23 OpenSpec, ruff clean. Scope: extend Phase 12 comparison with citation validation + claim guard metrics from existing DraftGenerationResult. 7 sub-tasks planned (13.2–13.7). No runtime changes yet.
+
+**Files Created**: openspec/changes/add-extended-draft-evaluation-metrics/{proposal,design,tasks}.md, specs/{draft-evaluation-metrics,provider-comparison-metrics,reviewer-ready-metric}/spec.md
+
+**Key Insight**: DraftGenerationResult already has citation_validation and guard_result fields — Phase 13 just needs to extract them in the comparison runner.
+
+---
+
 ## 2026-05-07 — Phase 12D: Metrics Dashboard and Portfolio Evidence Pack
 
 **Summary**: Created 8 portfolio docs covering metrics dashboard, provider comparison analysis, case studies, error analysis, visual explanation pack, reviewer-ready metric proposal, risk distribution, and interview data story. Updated README.md/en.md and changelog. No runtime code changes.

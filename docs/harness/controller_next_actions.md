@@ -5,6 +5,32 @@
 
 ---
 
+## Completed Batch: Phase 12D.1 — Resolve Untracked OpenSpec Spec Directory
+
+### What Was Done
+
+- Inspected untracked `openspec/specs/error-memory/` directory
+- Root cause: Phase 12B archived change promoted spec but spec file was not included in archive commit
+- Resolution: added `openspec/specs/error-memory/spec.md` (valid OpenSpec spec, 126 lines, 9 requirements)
+- Validated: `openspec validate --all` 22/22 passed (before add), 23/23 passed (after add)
+- ruff clean, secret scan clean
+
+### Files Created
+
+- `openspec/specs/error-memory/spec.md`
+
+### Validation
+
+- `openspec validate --all`: ✅ 22/22 passed (pre-add), 23/23 passed (post-add)
+- ruff check: ✅ Clean
+- Secret scan: ✅ Clean
+
+### Commit
+
+`df03c54` pushed to `origin/master`
+
+---
+
 ## Completed Batch: Phase 12D — Metrics Dashboard and Portfolio Evidence Pack
 
 ### What Was Done
@@ -636,15 +662,19 @@
 
 ---
 
-## Next Batch: Phase 12 — Demo Readiness and Portfolio Delivery
+## Next Batch: Phase 13 — Extended Draft Evaluation Metrics
 
-Recommended scope:
-- local runbook
-- demo script
-- screenshot/video checklist
-- interview narrative
-- reviewer workflow walkthrough
-- no major new functionality unless explicitly planned by a new OpenSpec change
+**Phase 13 OpenSpec change created**: `add-extended-draft-evaluation-metrics`
+
+Recommended scope (7 sub-tasks):
+- 13.2: Create `draft_comparison_metrics.py` with pure metric functions
+- 13.3: Extend `run_phase12_llm_provider_comparison.py` to extract citation validation + guard results
+- 13.4: Add unit tests for new metric functions
+- 13.5: Regenerate fake baseline comparison with extended metrics
+- 13.6: Update portfolio docs with new metrics
+- 13.7: Final validation and archive
+
+Key goal: fill Phase 12 dashboard "not-yet-measured" gaps — citation precision, evidence coverage, unsupported claim rate, forbidden promise rate, guard pass rate, reviewer-ready rate.
 
 Alternative:
-- Phase 12 — Real Provider Optional Experiment (only if explicitly prioritized later)
+- Query Expansion Audit (Phase 10 found 9 genuine zero-hit cases)

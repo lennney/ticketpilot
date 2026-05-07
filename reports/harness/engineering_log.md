@@ -1,5 +1,25 @@
 # Engineering Log — TicketPilot
 
+---
+
+## 2026-05-07 — Phase 13: Extended Draft Evaluation Metrics (Planning)
+
+**Problem**: Phase 12 provider comparison established baseline (25 cases, fake+real, 25/25 success, 8 HR triggers each) but left several metrics as "not yet measured": citation precision, evidence coverage, unsupported claim rate, forbidden promise rate, guard pass rate, citation validation pass rate, reviewer-ready rate.
+
+**Key Insight**: DraftGenerationResult already contains all required data:
+- `citation_validation` (DraftCitationValidationResult): is_valid, valid/invalid cited IDs, available IDs
+- `guard_result` (GuardResult): guard_passed, has_forbidden_promise, has_uncited_claims, citation_coverage
+- `draft.unsupported_claims`: list of unsupported claim strings
+
+The Phase 12 runner only extracts `draft_text_length`, `confidence`, `must_human_review`, `has_citations` — it needs to extract the full DraftGenerationResult fields.
+
+**Design Decision D14**: Metric computation goes into a new `draft_comparison_metrics.py` module (pure functions, no network, deterministic). This keeps the evaluation layer separate from the drafting layer.
+
+**OpenSpec Change**: `add-extended-draft-evaluation-metrics` created with 3 specs:
+- draft-evaluation-metrics: citation precision, evidence coverage, unsupported claim rate, guard pass rate, citation validation pass rate, None handling
+- provider-comparison-metrics: extended row schema, same metrics for both providers, fake-first, real opt-in
+- reviewer-ready-metric: definition, does NOT override human review, does NOT mean auto-send, reported per provider
+
 *Tracks implementation decisions, design choices, and engineering trade-offs.*
 
 ---

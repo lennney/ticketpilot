@@ -42,7 +42,8 @@
 | Phase 12A | **Archived** | OpenAI-compatible LLM provider for offline comparison — OpenAICompatibleProvider, 25-case fixture set, comparison runner, mock tests, real provider pending local env configuration. |
 | Phase 12B | **Archived** | Agent Error Memory and Repair Learning System — harness/process improvement only, no product runtime changes. |
 | Phase 12C | **Archived** | Optional Real Provider Run — fake baseline validated, real provider (deepseek-v4-pro) run completed 2026-05-07. |
-| Phase 12D | **Completed** | Metrics Dashboard and Portfolio Evidence Pack — 8 portfolio docs created/updated, no runtime changes. |
+| Phase 12D.1 | **Completed** | Resolved untracked openspec/specs/error-memory directory — promoted spec was not committed in Phase 12B archive. |
+| Phase 13 | **Active** | Extended Draft Evaluation Metrics — plan phase to extend Phase 12 comparison with citation validation, claim guard, reviewer-ready metrics. OpenSpec change created. |
 
 ## 4. Current Working Context
 

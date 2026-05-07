@@ -1,6 +1,49 @@
 # TicketPilot Changelog
 # TicketPilot Changelog
 
+## 2026-05-07 -- Phase 12D.1: Resolve Untracked OpenSpec Spec Directory
+
+### Fixed
+- Added `openspec/specs/error-memory/spec.md` (126 lines, 9 requirements) — was promoted by Phase 12B archive but not committed
+- Root cause: archive process promoted spec but did not stage the new file
+
+### Validation
+- openspec validate --all: 23/23 passed (22 before add + 1 new spec)
+- ruff check: Clean
+- Full quality gate not run (spec-only cleanup)
+
+---
+
+## 2026-05-07 -- Phase 13: Extended Draft Evaluation Metrics (Planning)
+
+### OpenSpec Change Created
+- openspec/changes/add-extended-draft-evaluation-metrics/
+- proposal.md, design.md, tasks.md
+- specs/draft-evaluation-metrics/spec.md
+- specs/provider-comparison-metrics/spec.md
+- specs/reviewer-ready-metric/spec.md
+
+### Goal
+Fill Phase 12 "not-yet-measured" gaps:
+- Citation precision, evidence coverage, unsupported claim rate
+- Forbidden promise rate, guard pass rate, citation validation pass rate
+- Reviewer-ready rate, human review trigger correctness
+- Latency / cost if available
+
+### Metrics Source
+DraftGenerationResult already contains citation_validation (DraftCitationValidationResult) and guard_result (GuardResult) — Phase 13 extends the runner to extract them.
+
+### Out of Scope
+- Retrieval tuning, RRF changes, embedding changes, knowledge expansion
+- Production deployment, auto-send, real-world benchmarks
+
+### Validation
+- openspec validate --strict: 23/23 passed
+- openspec validate --all: 23/23 passed
+- ruff check: Clean
+
+---
+
 ## 2026-05-07 -- Phase 12D: Metrics Dashboard and Portfolio Evidence Pack
 
 ### Docs/Portfolio Only
