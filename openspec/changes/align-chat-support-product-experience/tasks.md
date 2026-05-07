@@ -37,7 +37,7 @@
   - Show guard_passed status and failure_reasons
   - Show citation_ids inline in draft
 
-- [ ] 15.6: Human Review Queue Link
+- [x] 15.6: Human Review Queue Link
   - Connect "进行人工审核" button to existing review console
   - Pass ChatSession context to review console
   - Show review decision in chat after reviewer acts

@@ -505,6 +505,123 @@ uv run pytest tests/unit/test_chat_adapter.py::TestInlineCitationMarkers -v
 
 ---
 
+## Human Review Decision Handoff
+
+### Symptoms
+- Human review flow broken — review console does not receive chat context
+- Review decision not returned to chat after reviewer acts
+- Chat session shows no decision after completing review
+
+### Likely Causes
+- Session state not deep-copied before storing
+- Callback not wired up in main rendering path
+- State transition to REVIEWED not applied
+- Review decision panel not rendered
+
+### First Checks
+1. Verify `pending_review_session` is deep-copied: `session.model_copy(deep=True)`
+2. Verify `last_review_decision` is read from `st.session_state` in callback
+3. Check `_handle_review_decision_callback` is called in main rendering path
+4. Verify `_render_review_decision_panel` is called after callback
+
+### Safe Repair Steps
+1. Deep copy ChatSession before storing in session state
+2. Wire up `_handle_review_decision_callback` in main() before rendering
+3. Transition `session.state` to `ChatState.REVIEWED` on callback
+4. Call `_render_review_decision_panel()` after callback handling
+
+### Commands
+```bash
+# Verify handoff by tracing session state
+uv run python -c "from ticketpilot.chat.app import _handle_review_decision_callback; print('callback exists')"
+uv run pytest tests/unit/test_chat_app.py -k "review" -v --tb=short
+```
+
+### Stop Conditions
+- Do NOT pass ChatSession directly (must deep copy to avoid mutation)
+- Do NOT skip state transition — decision won't persist
+
+---
+
+## tasks.md Checkbox Update (Persistent Pattern)
+
+### Symptoms
+- Phase tasks.md checkbox remains unchecked after implementation passes
+- Doc review catches this in phases 15.4, 15.5, 15.6
+
+### Likely Causes
+- Implementation subagent declares complete but does not update tasks.md
+- No checklist item for tasks.md update in implementation phase
+
+### First Checks
+1. Check tasks.md for phase checkbox status
+2. Verify implementation subagent completed checklist
+3. Confirm Controller coordination step verified checkbox
+
+### Safe Repair Steps
+1. Add tasks.md status check to implementation subagent completion checklist
+2. Implementation subagent must mark Phase checkbox as `[x]` before declaring complete
+3. Controller Step 7 (Controller Coordination) must verify checkbox is marked
+
+### New Implementation Checklist Item:
+```
+Before declaring implementation complete:
+[ ] tasks.md checkbox for this phase is marked [x]
+```
+
+### Commands
+```bash
+grep -n "15\.[0-9]" openspec/changes/align-chat-support-product-experience/tasks.md | grep "\[ \]"
+```
+
+### Stop Conditions
+- Do NOT skip tasks.md update — doc review will catch it anyway
+- Do NOT leave checkbox unchecked when phase is complete
+
+---
+
+## ARCHITECTURE.md Update (Persistent Pattern)
+
+### Symptoms
+- ARCHITECTURE.md not updated after phase adds new components
+- New schemas, pages, or fields not documented
+- Continuously caught by doc review
+
+### Likely Causes
+- Implementation subagent focuses on code, skips architecture docs
+- No explicit checklist item for ARCHITECTURE.md update
+
+### First Checks
+1. Check ARCHITECTURE.md Chat Components section
+2. Verify new schemas (ReviewDecisionDisplay, etc.) are listed
+3. Verify new pages (2_review_console.py) are documented
+4. Check human review handoff flow description
+
+### Safe Repair Steps
+1. Add ARCHITECTURE.md update to implementation checklist
+2. When phase adds new component: identify affected ARCHITECTURE.md section
+3. Add bullet entries for: schema names, field names, page names, data flow
+4. Verify updates match actual code structure
+
+### New Implementation Checklist Item:
+```
+[ ] ARCHITECTURE.md updated for new components (if applicable)
+```
+
+### Commands
+```bash
+# Compare ARCHITECTURE.md components against actual code
+grep "class.*Display" src/ticketpilot/chat/
+grep "def _render.*panel" src/ticketpilot/chat/app.py
+ls src/ticketpilot/chat/pages/
+```
+
+### Stop Conditions
+- Do NOT skip ARCHITECTURE.md update — doc review will catch it
+- Do NOT add misleading or inaccurate descriptions
+
+---
+
 ## Prevention Rules Summary
 
 - Always use `uv run python` instead of bare `python3`

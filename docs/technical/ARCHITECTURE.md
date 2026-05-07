@@ -193,8 +193,11 @@ Actions: APPROVE / EDIT / ESCALATE / REJECT. Each action appends `ReviewDecision
 - **ticket_output_to_chat_display()**: Adapter function wiring pipeline output to `ChatDisplay`
 - **ChatSession** / **ChatState**: Multi-turn session management with conversation history
 - **EvidenceDisplayItem**: Structured evidence display with chunk_id, content snippet, source type, and relevance score
+- **ReviewDecisionDisplay**: Lightweight schema for human review decision in chat sessions (action, reviewer_notes, timestamp)
 - Risk decision matrix: severity × evidence × guard → `human_review_required` in chat context
-- Phase 15.4+ connects risk escalation display, evidence/draft panels, and human review queue
+- **Phase 15.4**: Risk escalation display with color-coded badges (HIGH=red, MEDIUM=amber, LOW=green)
+- **Phase 15.5**: Evidence panel grouped by doc type (FAQ/Policy/Case), inline citation markers, human-readable references
+- **Phase 15.6**: Human review queue link — "进行人工审核" button navigates to review console, decision returns to chat with color-coded badges
 - **Boundary**: High-risk outputs require human review — TicketPilot never sends customer replies automatically
 
 ---

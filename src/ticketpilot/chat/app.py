@@ -19,6 +19,7 @@ from ticketpilot.chat import (
     ChatRole,
     ChatSession,
     ChatState,
+    ReviewDecisionDisplay,
     append_message,
 )
 
@@ -327,21 +328,165 @@ def _render_draft_panel(display: ChatDisplay | None) -> None:
 
 
 def _render_human_review_panel(session: ChatSession) -> None:
-    """Render the human review action panel."""
+    """Render the human review action panel.
+
+    When human_review_required is True:
+    - Show escalation reason if available
+    - Enable "进行人工审核" button
+    - On click: snapshot session and navigate to review page
+
+    When human_review_required is False:
+    - Show "无需人工审核" success message
+    """
     st.subheader("🛡️ 人工审核")
 
     if session.human_review_required or session.context.human_review_required:
-        st.warning(
-            "此工单需要人工审核。\n\n"
-            "Phase 15.6 将接入人工审核控制台。"
-        )
-        st.button(
-            "🔍 进行人工审核",
-            disabled=True,
-            help="Phase 15.6 接入后可用",
-        )
+        if session.display and session.display.escalation_reason:
+            st.warning(
+                f"此工单需要人工审核。\n\n"
+                f"原因: {session.display.escalation_reason}"
+            )
+        else:
+            st.warning("此工单需要人工审核。")
+
+        if st.button("🔍 进行人工审核", type="primary"):
+            # Snapshot session for the reviewer
+            st.session_state.pending_review_session = session.model_copy(
+                deep=True
+            )
+            # Navigate to review page
+            st.query_params["page"] = "review"
+            st.rerun()
     else:
-        st.success("无需人工审核")
+        st.success("✅ 无需人工审核")
+
+
+# ---------------------------------------------------------------------------
+# Review decision panel (Phase 15.6)
+# ---------------------------------------------------------------------------
+
+# Action label mapping for review decisions
+ACTION_LABELS: dict[str, str] = {
+    "approve": "审核通过",
+    "edit": "审核通过（已编辑）",
+    "escalate": "已升级",
+    "reject": "已拒绝",
+}
+
+# Color configuration for action badges (text_color, bg_color)
+ACTION_BADGE_COLORS: dict[str, tuple[str, str]] = {
+    "approve": ("#16a34a", "#f0fdf4"),  # green
+    "edit": ("#ca8a04", "#fefce8"),  # yellow
+    "escalate": ("#ea580c", "#fff7ed"),  # orange
+    "reject": ("#dc2626", "#fef2f2"),  # red
+}
+
+
+def _render_review_decision_panel(session: ChatSession) -> None:
+    """Render the review decision panel after returning from review console.
+
+    Args:
+        session: ChatSession with last_review_decision populated
+
+    Displays color-coded action badge:
+    - approved -> green
+    - edited -> yellow + edited text diff
+    - escalated -> orange
+    - rejected -> red
+    """
+    if not session.last_review_decision:
+        return
+
+    decision = session.last_review_decision
+    action = decision.action
+
+    st.subheader("📋 审核结果")
+
+    # Get color for action badge
+    text_color, bg_color = ACTION_BADGE_COLORS.get(
+        action, ("#666666", "#f5f5f5")
+    )
+    action_label = ACTION_LABELS.get(action, action)
+
+    # Render action badge
+    badge_html = (
+        f"<span style='background-color:{bg_color};color:{text_color};"
+        f"padding:4px 12px;border-radius:4px;font-weight:bold;'>"
+        f"{action_label}</span>"
+    )
+    st.markdown(f"**审核操作:** {badge_html}", unsafe_allow_html=True)
+
+    # Show review timestamp
+    reviewed_at = decision.reviewed_at.strftime("%Y-%m-%d %H:%M:%S UTC")
+    st.caption(f"审核时间: {reviewed_at}")
+
+    # Show decision reason if available
+    if decision.decision_reason:
+        st.markdown(f"**审核备注:** {decision.decision_reason}")
+
+    # Show edited text if action is "edit"
+    if action == "edit" and decision.edited_text:
+        st.markdown("**编辑后的草稿文本:**")
+        st.text_area(
+            "edited_draft",
+            decision.edited_text,
+            height=150,
+            disabled=True,
+            key="reviewed_edited_draft",
+        )
+
+    # Build system message for history
+    reason_text = f" — {decision.decision_reason}" if decision.decision_reason else ""
+    system_message = f"[审核结果] {action_label}{reason_text}"
+
+    return system_message  # type: ignore
+
+
+def _handle_review_decision_callback(session: ChatSession) -> None:
+    """Handle review decision callback from review console.
+
+    Called in main() after getting session.
+
+    Side effects:
+    - Transitions session.state to ChatState.REVIEWED
+    - Appends system message with action summary
+    - Sets session.last_review_decision
+    - Clears st.session_state.last_review_decision
+    - Calls st.rerun()
+    """
+    decision: ReviewDecisionDisplay | None = st.session_state.get(
+        "last_review_decision"
+    )
+
+    if not decision:
+        return
+
+    # Map action to label
+    action_label = ACTION_LABELS.get(decision.action, decision.action)
+
+    # Build system message
+    reason_text = f" — {decision.decision_reason}" if decision.decision_reason else ""
+    system_message = f"[审核结果] {action_label}{reason_text}"
+
+    # Append system message to session
+    system_msg = ChatMessage(
+        role=ChatRole.SYSTEM,
+        text=system_message,
+        timestamp=datetime.now(timezone.utc),
+    )
+
+    session.messages.append(system_msg)
+    session.state = ChatState.REVIEWED
+    session.last_review_decision = decision
+
+    # Clear the session state decision
+    st.session_state.last_review_decision = None
+
+    # Update session state
+    st.session_state.chat_session = session
+
+    # Return to chat view
+    st.rerun()
 
 
 def _render_chat_input(session: ChatSession) -> ChatMessage | None:
@@ -388,6 +533,9 @@ def main() -> None:
 
     session = st.session_state.chat_session
 
+    # Phase 15.6: Handle review decision callback from review console
+    _handle_review_decision_callback(session)
+
     # Two-column layout
     left_col, right_col = st.columns([3, 2])
 
@@ -418,6 +566,9 @@ def main() -> None:
 
         # Human review
         _render_human_review_panel(session)
+
+        # Phase 15.6: Review decision panel (after returning from review console)
+        _render_review_decision_panel(session)
 
     # Full-width panels below chat
     st.divider()

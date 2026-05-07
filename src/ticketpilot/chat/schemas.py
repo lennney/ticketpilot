@@ -9,6 +9,32 @@ from typing import Any
 from pydantic import BaseModel, Field, field_validator
 
 
+# ---------------------------------------------------------------------------
+# ReviewDecisionDisplay — lightweight review decision for chat session
+# ---------------------------------------------------------------------------
+
+
+class ReviewDecisionDisplay(BaseModel):
+    """Lightweight review decision for chat session display.
+
+    A simplified representation of ReviewDecision (review/schemas.py)
+    for passing between Streamlit pages via session state.
+    """
+
+    action: str  # approve, edit, escalate, reject
+    edited_text: str | None = None
+    decision_reason: str = ""
+    reviewed_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+    @field_validator("action")
+    @classmethod
+    def action_must_be_valid(cls, v: str) -> str:
+        valid_actions = {"approve", "edit", "escalate", "reject"}
+        if v not in valid_actions:
+            raise ValueError(f"action must be one of {valid_actions}")
+        return v
+
+
 class ChatState(str, Enum):
     """Chat session state machine states."""
 
@@ -167,6 +193,8 @@ class ChatSession(BaseModel):
         context: Lightweight context for follow-up question support.
         display: Cached display data for UI panels.
         human_review_required: Whether any turn has triggered human review.
+        pending_review_session: Snapshot sent to reviewer (not persisted).
+        last_review_decision: Most recent decision from reviewer.
     """
 
     session_id: str
@@ -175,6 +203,10 @@ class ChatSession(BaseModel):
     context: ChatContext = Field(default_factory=ChatContext)
     display: ChatDisplay | None = None
     human_review_required: bool = False
+
+    # --- Phase 15.6: Human review handoff ---
+    pending_review_session: "ChatSession | None" = None
+    last_review_decision: ReviewDecisionDisplay | None = None
 
     @field_validator("session_id")
     @classmethod

@@ -15,6 +15,7 @@ from ticketpilot.chat import (
     ChatSession,
     ChatState,
     EvidenceDisplayItem,
+    ReviewDecisionDisplay,
     append_message,
     update_context_from_message,
 )
@@ -487,3 +488,130 @@ class TestUpdateContextFromMessage:
     def test_whitespace_message_rejected(self) -> None:
         with pytest.raises(ValidationError):
             ChatMessage(role=ChatRole.USER, text="   ")
+
+
+# ---------------------------------------------------------------------------
+# ReviewDecisionDisplay — Phase 15.6
+# ---------------------------------------------------------------------------
+
+
+class TestReviewDecisionDisplay:
+    """Tests for ReviewDecisionDisplay schema."""
+
+    def test_approve_action_valid(self) -> None:
+        """TC-15.6-1: Valid action 'approve' creates instance."""
+        display = ReviewDecisionDisplay(action="approve")
+        assert display.action == "approve"
+        assert display.edited_text is None
+        assert display.decision_reason == ""
+        assert isinstance(display.reviewed_at, datetime)
+
+    def test_edit_action_with_text(self) -> None:
+        """TC-15.6-1: Valid action 'edit' with edited_text."""
+        display = ReviewDecisionDisplay(
+            action="edit",
+            edited_text="Updated draft text",
+        )
+        assert display.action == "edit"
+        assert display.edited_text == "Updated draft text"
+        assert display.decision_reason == ""
+
+    def test_escalate_action_with_reason(self) -> None:
+        """TC-15.6-1: Valid action 'escalate' with decision_reason."""
+        display = ReviewDecisionDisplay(
+            action="escalate",
+            decision_reason="Customer VIP",
+        )
+        assert display.action == "escalate"
+        assert display.decision_reason == "Customer VIP"
+        assert display.edited_text is None
+
+    def test_reject_action_with_reason(self) -> None:
+        """TC-15.6-1: Valid action 'reject' with decision_reason."""
+        display = ReviewDecisionDisplay(
+            action="reject",
+            decision_reason="Inappropriate content",
+        )
+        assert display.action == "reject"
+        assert display.decision_reason == "Inappropriate content"
+
+    def test_invalid_action_raises(self) -> None:
+        """TC-15.6-1: Invalid action raises ValidationError."""
+        with pytest.raises(ValidationError) as exc_info:
+            ReviewDecisionDisplay(action="invalid")
+        assert "action must be one of" in str(exc_info.value)
+
+    def test_reviewed_at_defaults_to_now(self) -> None:
+        """TC-15.6-1: reviewed_at defaults to current UTC time."""
+        before = datetime.now(timezone.utc)
+        display = ReviewDecisionDisplay(action="approve")
+        after = datetime.now(timezone.utc)
+        assert before <= display.reviewed_at <= after
+
+    def test_reviewed_at_can_be_set(self) -> None:
+        """reviewed_at can be explicitly set."""
+        ts = datetime(2026, 5, 7, 12, 0, 0, tzinfo=timezone.utc)
+        display = ReviewDecisionDisplay(action="approve", reviewed_at=ts)
+        assert display.reviewed_at == ts
+
+    def test_model_dump_includes_all_fields(self) -> None:
+        """model_dump includes all ReviewDecisionDisplay fields."""
+        display = ReviewDecisionDisplay(
+            action="edit",
+            edited_text="Fixed text",
+            decision_reason="Minor correction",
+        )
+        d = display.model_dump()
+        assert d["action"] == "edit"
+        assert d["edited_text"] == "Fixed text"
+        assert d["decision_reason"] == "Minor correction"
+        assert "reviewed_at" in d
+
+
+# ---------------------------------------------------------------------------
+# ChatSession review fields — Phase 15.6
+# ---------------------------------------------------------------------------
+
+
+class TestChatSessionReviewFields:
+    """Tests for ChatSession pending_review_session and last_review_decision."""
+
+    def test_default_review_fields_are_none(self) -> None:
+        """TC-15.6-2: New review fields default to None."""
+        session = ChatSession(session_id="test-123")
+        assert session.pending_review_session is None
+        assert session.last_review_decision is None
+
+    def test_can_set_last_review_decision(self) -> None:
+        """TC-15.6-2: last_review_decision can be set."""
+        session = ChatSession(session_id="test-123")
+        decision = ReviewDecisionDisplay(action="approve")
+        session.last_review_decision = decision
+        assert session.last_review_decision is not None
+        assert session.last_review_decision.action == "approve"
+
+    def test_can_set_pending_review_session(self) -> None:
+        """TC-15.6-2: pending_review_session can be set."""
+        session = ChatSession(session_id="test-123")
+        snapshot = ChatSession(session_id="test-123")
+        session.pending_review_session = snapshot
+        assert session.pending_review_session is not None
+        assert session.pending_review_session.session_id == "test-123"
+
+    def test_review_decision_in_model_dump(self) -> None:
+        """ReviewDecisionDisplay is included in model_dump."""
+        session = ChatSession(session_id="test-123")
+        decision = ReviewDecisionDisplay(action="reject", decision_reason="Bad content")
+        session.last_review_decision = decision
+        d = session.model_dump()
+        assert d["last_review_decision"] is not None
+        assert d["last_review_decision"]["action"] == "reject"
+
+    def test_pending_review_session_in_model_dump(self) -> None:
+        """pending_review_session is included in model_dump."""
+        session = ChatSession(session_id="test-123")
+        snapshot = ChatSession(session_id="snapshot-456")
+        session.pending_review_session = snapshot
+        d = session.model_dump()
+        assert d["pending_review_session"] is not None
+        assert d["pending_review_session"]["session_id"] == "snapshot-456"

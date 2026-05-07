@@ -13,6 +13,7 @@ from ticketpilot.chat.schemas import (
     ChatSession,
     ChatState,
     EvidenceDisplayItem,
+    ReviewDecisionDisplay,
     append_message,
     update_context_from_message,
 )
@@ -25,6 +26,7 @@ __all__ = [
     "ChatSession",
     "ChatState",
     "EvidenceDisplayItem",
+    "ReviewDecisionDisplay",
     "append_message",
     "update_context_from_message",
     "ticket_output_to_chat_display",
