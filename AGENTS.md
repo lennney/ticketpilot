@@ -1,5 +1,8 @@
 # TicketPilot — AI Agent Constitution
 
+> **Bootstrap**: This file is loaded by `.claude/CLAUDE.md`. On new clones, see `.claude/CLAUDE.md` for harness overview. For phase execution workflow, see `docs/harness/PHASE_LOOP.md`.
+
+
 ## 1. Project Identity
 
 TicketPilot is a **local, deterministic, no-LLM, no-auto-send** human review workflow

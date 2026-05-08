@@ -1,5 +1,43 @@
 # TicketPilot — CLAUDE.md
 
+## Controller Harness System
+
+This project uses a **Controller Harness** — an AI orchestration system for managing development phases. When Claude Code starts in this repo, it can operate in two modes:
+
+### Mode 1: Direct Development (Default)
+Standard code changes, tests, and documentation. Uses this CLAUDE.md validation rules.
+
+### Mode 2: Controller Mode (Long-running phases)
+For complex multi-step features. Follows `AGENTS.md` Controller rules.
+
+**How to enter Controller Mode:**
+- Human requests a phase implementation from `tasks.md`
+- Human says "start phase N" or "run controller harness"
+- Human hands off a task marked `[CODE]` or `[AUTO]`
+
+**Controller Mode reads these files (in order):**
+1. `AGENTS.md` — Core rules (Sections 11-16 operationalize the harness)
+2. `docs/harness/PHASE_LOOP.md` — 7-step phase execution workflow
+3. `docs/harness/PROJECT_CONTEXT.md` — Current phase and state
+4. `docs/harness/skills/` — Reusable patterns and error fixes
+
+**Controller Mode rules:**
+- Never implement code directly — always delegate to subagent
+- Use subagent types: `backend-engineer` (code), `code-reviewer` (review)
+- Commit after: subagent success + module tests green
+- Escalate immediately: quality gate fails, coverage drops, 3 retries exhausted
+
+**Quick reference for Controller Mode:**
+```
+Phase execution: docs/harness/PHASE_LOOP.md
+Current state: docs/harness/PROJECT_CONTEXT.md
+Error patterns: docs/harness/skills/
+Fix procedures: reports/harness/repair_playbook.md
+Handoff outputs: subagent_results/
+```
+
+---
+
 ## 验证策略选择
 
 变更范围决定验证级别。详细规则见 `docs/technical/validation_policy.md`，摘要如下：
