@@ -48,7 +48,7 @@
   - Update interview_talking_points.md
   - Update all portfolio docs to reflect chat support narrative
 
-- [ ] 15.8: Final Validation and Archive
+- [x] 15.8: Final Validation and Archive
   - Full quality gate: unit + integration, 0 skipped, coverage >= 70%
   - Ruff clean, OpenSpec --all pass, secret scan clean
   - Archive OpenSpec change
