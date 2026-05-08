@@ -42,7 +42,7 @@
   - Pass ChatSession context to review console
   - Show review decision in chat after reviewer acts
 
-- [ ] 15.7: Portfolio Story Update
+- [x] 15.7: Portfolio Story Update
   - Update README.md with chat demo description
   - Update product_portfolio_material_pack.md with new product direction
   - Update interview_talking_points.md

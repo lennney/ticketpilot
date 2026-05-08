@@ -1,7 +1,7 @@
 # TicketPilot Metrics Dashboard
 
 **Scope**: Local demo / portfolio prototype — NOT a production benchmark
-**Last updated**: 2026-05-07
+**Last updated**: 2026-05-08
 
 ---
 
@@ -37,7 +37,7 @@
 | Cases fully correct at top-10 | 47 / 86 (54.7%) | same |
 
 **Source**: `reports/retrieval/phase10_full_real_doc_level_eval_metrics.json`
-**Boundary**: Offline evaluation on 101 synthetic tickets — not a production benchmark.
+**Boundary**: Offline evaluation on 101 synthetic tickets — not a production benchmark. Pipeline verification only — no semantic retrieval quality.
 
 ---
 
@@ -100,7 +100,20 @@ Source: `reports/eval/phase13_guard_aware_prompting_report.md` (Phase 13.10)
 | Intent classes | 8 | `src/ticketpilot/classification/rules.py` |
 | Human review forced on | HIGH severity, unsupported claims, citation validation failure, guard failure | `src/ticketpilot/drafting/generator.py` |
 | Human review trigger (Phase 12) | 8 / 25 cases (both providers) | `phase12_llm_provider_comparison_rows.json` |
+| Human review trigger (Phase 13.10) | 48% (12/25 real provider) | `phase13_guard_aware_prompting_report.md` |
 | Human review correctness | not yet measured | — |
+
+### Phase 15 UI Feature
+
+| Feature | Description | Source |
+|---------|-------------|--------|
+| Chat-style AI Copilot | Multi-turn conversation UI | `src/ticketpilot/chat/app.py` |
+| Evidence Panel | Sidebar showing citation sources | `src/ticketpilot/chat/pages/evidence_panel.py` |
+| Risk Escalation Notification | Prominent warning for high-risk tickets | `src/ticketpilot/chat/pages/` |
+| Pipeline-to-Chat Adapter | Converts pipeline output to chat messages | `src/ticketpilot/chat/adapter.py` |
+| In-chat Human Review | Review operations embedded in chat UI | `src/ticketpilot/chat/` |
+
+**Note**: Phase 15 Chat UI is MVP-level. Feature completeness and UX polish are iterative.
 
 ---
 

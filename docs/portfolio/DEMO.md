@@ -1,6 +1,6 @@
 # TicketPilot Demo Guide
 
-> Local demo guide — three demo tracks covering the full ticket processing workflow.
+> Local demo guide — four demo tracks covering the full ticket processing workflow and chat UI.
 >
 > **This is a local portfolio demo, not a production system.**
 
@@ -190,25 +190,103 @@ uv run python scripts/run_eval.py \
 
 ## Quick Reference Table
 
-| # | Scenario | Intent | Severity | Risk Flags | Human Review |
-|---|----------|--------|----------|------------|--------------|
-| 1 | Refund - quality issue | `refund` | `low` | (none) | No |
-| 2 | Return/exchange - size | `return_exchange` | `low` | (none) | No |
-| 3 | Logistics query | `logistics` | `low` | (none) | No |
-| 4 | Account frozen | `account_issue` | `medium` | `account_security_risk` | Maybe |
-| 5 | Complaint + compensation + legal | `complaint` | `high` | 3 flags | **Yes** |
-| 6 | Privacy leak | `account_issue` | `high` | `privacy_risk` | **Yes** |
-| 7 | Just "refund" | `refund` | `low` | `insufficient_evidence` | Maybe |
+| # | Scenario | Intent | Severity | Risk Flags | Human Review | Chat UI Feature |
+|---|----------|--------|----------|------------|--------------|----------------|
+| 1 | Refund - quality issue | `refund` | `low` | (none) | No | Evidence citations |
+| 2 | Return/exchange - size | `return_exchange` | `low` | (none) | No | Multi-turn context |
+| 3 | Logistics query | `logistics` | `low` | (none) | No | Evidence panel |
+| 4 | Account frozen | `account_issue` | `medium` | `account_security_risk` | Maybe | Risk notification |
+| 5 | Complaint + compensation + legal | `complaint` | `high` | 3 flags | **Yes** | Risk escalation banner |
+| 6 | Privacy leak | `account_issue` | `high` | `privacy_risk` | **Yes** | In-chat review |
+| 7 | Just "refund" | `refund` | `low` | `insufficient_evidence` | Maybe | ClaimGuard status |
 
 ---
 
 ## What NOT to Claim
 
 - NOT a production-grade customer service system
-- NOT real semantic retrieval quality (fake embeddings)
+- NOT real semantic retrieval quality (fake embeddings, pipeline verification only)
 - NOT real enterprise data coverage (seed data only)
-- NOT LLM capability (template-based generation)
+- NOT LLM capability (template-based generation by default)
 - NOT auto-send (no-auto-send is architectural)
+- NOT Chat UI production-ready (MVP-level, UX iterative)
+
+---
+
+## Demo Track D: Chat-style AI Copilot (Phase 15)
+
+**Goal:** Show the chat-first AI copilot UI with multi-turn context, evidence panel, risk escalation, and embedded human review.
+
+### Step 1: Start the Chat UI
+
+```bash
+uv run streamlit run src/ticketpilot/chat/app.py
+```
+
+Open http://localhost:8501.
+
+### Step 2: Submit a Message Through Chat UI
+
+Type in the chat input: "我要退款，订单号：123456，收到的商品有质量问题。"
+
+**Key points to show:**
+- Chat interface accepts natural language input
+- Message appears in chat history
+- AI response renders with evidence citations
+
+### Step 3: Show AI Draft with Citations in Chat
+
+After submitting, observe the AI response showing:
+- Intent classification: `refund`
+- Risk assessment: `low` severity
+- Draft reply with `[chunk_id]` citations inline
+- Evidence panel sidebar showing citation sources
+
+**Key points to show:**
+- Evidence-grounded draft (citations like `[FAQ_001]`)
+- ClaimGuard status (passed/failed indicators)
+- Evidence panel shows source details
+
+### Step 4: Show Risk Escalation Notification (if triggered)
+
+Submit a high-risk message: "再不处理我就找律师起诉你们，还要3倍赔偿！"
+
+**Key points to show:**
+- Risk escalation banner appears prominently
+- Multiple risk flags: `complaint_risk`, `compensation_risk`, `legal_risk`
+- Severity upgrade to `HIGH`
+- Human review required notification
+
+### Step 5: Show Evidence Panel in Chat Sidebar
+
+Click on a citation in the AI draft.
+
+**Key points to show:**
+- Evidence panel highlights the referenced document
+- Shows document type (FAQ/Policy/Case)
+- Displays chunk content and relevance score
+
+### Step 6: Human Review Flow In-Chat
+
+When human review is triggered (high-risk or unsupported claims):
+
+**Key points to show:**
+- Review action buttons appear in chat (Approve / Edit / Escalate / Reject)
+- Review decision is recorded to ReviewDecision JSONL
+- Audit trail is preserved in session history
+
+### Troubleshooting Chat UI
+
+```bash
+# If chat UI won't start
+uv run streamlit run src/ticketpilot/chat/app.py --logger.level=debug
+
+# Check if all chat dependencies are installed
+uv sync
+
+# Verify chat module exists
+ls src/ticketpilot/chat/
+```
 
 ---
 

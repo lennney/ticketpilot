@@ -14,6 +14,9 @@
 | Phase 10 | Retrieval Diagnosis | Doc-ID Recall@10 = 91.9%, 78% wrong cases reclassified |
 | Phase 11 | LLM Draft Generation | Evidence-grounded draft, 8 safety layers |
 | Phase 12 | Provider Comparison | Fake vs Real (DeepSeek) comparison, identical safety patterns |
+| Phase 13 | Guard-Aware Prompting | 84% guard pass rate (vs 4% baseline), safe fallback 84% |
+| Phase 14 | Guard Taxonomy | Safety foundation established, 3-tier taxonomy |
+| Phase 15 | Chat Support Alignment | Chat-style AI Copilot, evidence panel, risk escalation |
 
 ---
 
@@ -135,6 +138,75 @@ Safety rules (CitationValidator, ClaimGuard) work identically under fake and rea
 
 ---
 
+## Phase 13: Guard-Aware Prompting
+
+**One-liner:** Enhanced LLM prompt with guard-aware structured instructions to include `[chunk_id]` citation markers inline. Real provider (deepseek-v4-pro) guard pass rate improved from 4% (baseline) to **84%**, citation validation from 12% to **76%**, and safe fallback rate reached **84%** — demonstrating that prompt engineering can significantly improve safety behavior without changing models.
+
+### Key Metrics
+
+| Metric | Baseline | Guard-Aware | Delta |
+|--------|----------|-------------|:-----:|
+| Guard pass rate | 4% | **84%** | +80pp |
+| Citation validation | 12% | **76%** | +64pp |
+| Safe fallback rate | — | **84%** | — |
+| Unsupported claim rate | — | 24% | — |
+| Forbidden promise rate | — | 4% | — |
+| Human review triggers | — | 48% | — |
+| Avg confidence | — | 0.644 | — |
+
+### Key Finding
+
+Guard-aware structured prompting dramatically improves safety behavior. Remaining failures: 3 cases cite evidence but skip risk escalation acknowledgment; 1 case makes uncited substantive claim. 84% safe fallback rate is expected when prompt instructs conservative citing.
+
+---
+
+## Phase 14: Guard Taxonomy
+
+**One-liner:** Established a 3-tier safety guard taxonomy (safety foundation, escalation acknowledgment, evidence grounding) to document guard responsibilities and boundaries. This phase consolidated the safety architecture from Phases 11-13.
+
+### Safety Taxonomy
+
+| Tier | Guard Type | Purpose |
+|------|------------|---------|
+| Tier 1 | Safety Foundation | CitationValidator, ClaimGuard basic checks |
+| Tier 2 | Escalation Acknowledgment | Risk escalation acknowledgment in drafts |
+| Tier 3 | Evidence Grounding | Full evidence constraint with conservative citing |
+
+### Key Finding
+
+The guard taxonomy clarifies guard responsibilities. Each tier has distinct failure modes and remediation strategies. This structured approach makes guard behavior predictable and debuggable.
+
+---
+
+## Phase 15: Chat Support Alignment
+
+**One-liner:** Re-aligned the product narrative from "guard architecture" to "chat-style AI customer service copilot" (e-commerce scenario). Built a Streamlit-based Chat UI with multi-turn context support, evidence panel sidebar, risk escalation notification, and human review flow embedded in chat.
+
+### Key Deliverables
+
+| Component | Description |
+|-----------|-------------|
+| **Chat UI** | Streamlit chat interface at `src/ticketpilot/chat/app.py` |
+| **Pipeline-to-Chat Adapter** | Converts pipeline output to chat message rendering |
+| **Evidence Panel** | Sidebar showing citation sources with chunk details |
+| **Risk Escalation** | Prominent notification for high-risk tickets |
+| **Human Review Flow** | In-chat review operations (Approve/Edit/Escalate/Reject) |
+
+### Product Narrative Shift
+
+| Before | After |
+|--------|-------|
+| "Guard Architecture" | "Chat-style AI Copilot" |
+| Backend pipeline focus | Frontend conversation focus |
+| Technical safety layers | User-visible risk indicators |
+| Console-based review | Chat-embedded review |
+
+### Key Finding
+
+The narrative shift from "guard architecture" to "chat-style AI copilot" makes the product more accessible. Users understand "AI assistant" better than "safety guard system". The chat UI makes safety features visible (risk escalation, human review triggers) rather than hidden technical constraints.
+
+---
+
 ## Iteration Logic
 
 ```
@@ -144,6 +216,9 @@ Phase 7: Build data foundation + evaluation pipeline
             → Phase 10: Diagnose metrics, discover 78% wrong cases are metric issues
                 → Phase 11: Build LLM draft generation with safety layers
                     → Phase 12: Compare providers, confirm safety rules are provider-agnostic
+                        → Phase 13: Guard-aware prompting, improve pass rate to 84%
+                            → Phase 14: Consolidate safety with guard taxonomy
+                                → Phase 15: Realign narrative to chat-style AI copilot
 ```
 
 ---
@@ -152,11 +227,13 @@ Phase 7: Build data foundation + evaluation pipeline
 
 - **101** synthetic eval tickets
 - **106** knowledge records (FAQ=41, Policy=34, Case=31)
-- **642+** unit tests, **119+** integration tests
+- **1069+** unit tests, **146+** integration tests
 - **87%** code coverage
 - **Doc-ID Recall@10 = 91.9%**
+- **Guard pass rate = 84%** (deepseek-v4-pro, guard-aware prompt)
 - **No-auto-send compliance = 100%** (architecture constraint)
-- **Phase 12** (current): Provider comparison complete, Phase 13 planned
+- **Chat-style AI Copilot** (Phase 15): Streamlit chat UI, evidence panel, risk escalation, embedded human review
+- **Phase 15** (current): Chat support alignment complete, next iteration planned
 
 ---
 
