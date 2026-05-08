@@ -126,14 +126,14 @@ class TestFailureReasonsTaxonomy:
         assert result.guard_passed is True
         assert result.failure_reasons == []
 
-    def test_uncited_claim_maps_to_unsupported_policy(self) -> None:
-        """has_uncited_claims=True → UNSUPPORTED_POLICY_CLAIM."""
+    def test_uncited_claim_maps_to_uncited_substantive_claim(self) -> None:
+        """has_uncited_claims=True → UNCITED_SUBSTANTIVE_CLAIM."""
         text = "尊敬的客户，关于您反馈的退货问题，根据平台政策可以为您办理。"
         draft = _draft(text)
         result = check_claim_guard(draft, [_ev()])
         assert result.guard_passed is False
         assert result.has_uncited_claims is True
-        assert GuardFailureType.UNSUPPORTED_POLICY_CLAIM in result.failure_reasons
+        assert GuardFailureType.UNCITED_SUBSTANTIVE_CLAIM in result.failure_reasons
 
     def test_forbidden_promise_maps_to_forbidden_promise(self) -> None:
         """has_forbidden_promise=True → FORBIDDEN_PROMISE."""
@@ -165,7 +165,7 @@ class TestFailureReasonsTaxonomy:
         assert result.has_uncited_claims is True
         assert result.risk_flags_respected is False
         assert GuardFailureType.FORBIDDEN_PROMISE in result.failure_reasons
-        assert GuardFailureType.UNSUPPORTED_POLICY_CLAIM in result.failure_reasons
+        assert GuardFailureType.UNCITED_SUBSTANTIVE_CLAIM in result.failure_reasons
         assert GuardFailureType.MISSING_RISK_ESCALATION in result.failure_reasons
 
     def test_safe_fallback_guard_passed_empty_failure_reasons(self) -> None:
@@ -185,21 +185,18 @@ class TestFailureReasonsTaxonomy:
         assert result.guard_passed is True
         assert result.failure_reasons == []
 
-    def test_ambiguous_guard_case_catchall(self) -> None:
-        """When guard fails but no explicit check maps, AMBIGUOUS_GUARD_CASE."""
-        # Edge case: partial citation coverage < 1.0 fails guard, but no
-        # uncited claim, no forbidden promise, no risk escalation
+    def test_partial_citation_maps_to_unsupported_policy(self) -> None:
+        """citation_coverage < 1.0 (partial citation missing) → UNSUPPORTED_POLICY_CLAIM."""
         ev = _ev(chunk_id=_CHUNK_A)
         text = f"政策A[{str(_CHUNK_A)}]和政策B[{str(_CHUNK_B)}]。"
         draft = _draft(text)
         result = check_claim_guard(draft, [ev])
         assert result.guard_passed is False
         assert result.citation_coverage == 0.5
-        # Should surface as AMBIGUOUS_GUARD_CASE since citation_coverage
-        # is the only failure mode
-        assert len(result.failure_reasons) > 0
-        # Verify it's not one of the named check failures
-        assert GuardFailureType.UNSUPPORTED_POLICY_CLAIM not in result.failure_reasons
+        # Partial citation coverage maps to UNSUPPORTED_POLICY_CLAIM
+        assert GuardFailureType.UNSUPPORTED_POLICY_CLAIM in result.failure_reasons
+        # Not the other named check failures
+        assert GuardFailureType.UNCITED_SUBSTANTIVE_CLAIM not in result.failure_reasons
         assert GuardFailureType.FORBIDDEN_PROMISE not in result.failure_reasons
         assert GuardFailureType.MISSING_RISK_ESCALATION not in result.failure_reasons
 
