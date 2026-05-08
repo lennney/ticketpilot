@@ -410,4 +410,35 @@ print(f'严重程度: {output.risk_assessment.severity.value}')
 
 ---
 
-*TicketPilot — 本地演示 / 作品集项目*
+## 12. Controller Harness System
+
+This project uses a **Controller Harness** — an AI orchestration system for managing development phases. See `harness-plugin/` for the reusable plugin package.
+
+### Quick Start
+
+For new developers joining this project:
+
+1. **Read the bootstrap** in `.claude/CLAUDE.md` for harness overview
+2. **Follow the 7-step phase loop** in `docs/harness/PHASE_LOOP.md`
+3. **Track state** in `docs/harness/PROJECT_CONTEXT.md`
+
+### Entering Controller Mode
+
+- Human says "start phase N" or "run controller harness"
+- Controller Mode delegates code tasks to `backend-engineer` subagent
+- Controller NEVER implements code directly for `[CODE]` tasks
+
+### Reusable Plugin
+
+The Controller Harness is packaged as a reusable OpenSpec plugin at `harness-plugin/`:
+
+```bash
+# Install globally
+./harness-plugin/scripts/install.sh --global
+
+# Install in project
+./harness-plugin/scripts/install.sh --local
+```
+
+See `harness-plugin/README.md` for installation instructions and component documentation.
+

@@ -1,0 +1,82 @@
+# {Project Name} — AI Agent Constitution
+
+> **Bootstrap**: This file is loaded by `.claude/CLAUDE.md`. On new clones, see `.claude/CLAUDE.md` for harness overview. For phase execution workflow, see `docs/harness/PHASE_LOOP.md`.
+
+## 1. Project Identity
+
+Describe your project here. Include:
+- What it does
+- Tech stack
+- Key constraints
+
+**It is NOT:**
+- List common misconceptions
+
+## 2. Non-Negotiable Boundaries
+
+| Rule | Enforcement |
+|---|---|
+| No auto-send | Architectural invariant |
+| No LLM calls in pipeline | (if applicable) |
+| No real customer data | All data is synthetic |
+| No API keys in repo | gitignored configs |
+
+## 3. Tech Stack
+
+```
+- Runtime: Python 3.11+
+- Package: uv
+- Database: PostgreSQL + pgvector
+- Testing: pytest + ruff
+- Spec: OpenSpec
+```
+
+## 4. OpenSpec Workflow
+
+```
+1. Create: openspec new change <name>
+2. Validate: openspec validate <change-id> --strict
+3. Implement: follow tasks.md phase order
+4. Validate: openspec validate <change-id> --all
+5. Archive: openspec archive <change-id>
+```
+
+## 5. Validation Levels
+
+| Scope | OpenSpec | Tests | Quality Gate |
+|---|---|---|---|
+| Docs only | Not required | Not required | Not required |
+| Single change | `--strict` | Module-level | Not required |
+| Core pipeline | `--all` | Full | Required |
+| Pre-push/archive | `--all` | Full | Required (0 skip) |
+
+## 6. Quality Gate
+
+```bash
+# Full gate (~7 minutes)
+bash scripts/run_quality_gate.sh
+
+# Skip integration tests
+TICKETPILOT_SKIP_DB_TESTS=1 bash scripts/run_quality_gate.sh
+```
+
+Checks: ruff, unit tests, integration tests, OpenSpec validation, secret scan.
+
+## 7. Controller Mode
+
+See `docs/harness/PHASE_LOOP.md` for the 7-step phase loop.
+
+**Key rules**:
+- Controller NEVER implements code directly for [CODE] tasks
+- Always delegate to `backend-engineer` subagent
+- Max 3 retries per phase before escalation
+
+## 8. Error Memory
+
+- Log errors to `reports/harness/error_memory.jsonl`
+- Update `reports/harness/repair_playbook.md` for fix patterns
+- Codify new patterns into `docs/harness/skills/`
+
+---
+
+*Customize this template for your project.*

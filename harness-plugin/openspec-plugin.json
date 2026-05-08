@@ -1,0 +1,64 @@
+{
+  "name": "controller-harness",
+  "version": "1.0.0",
+  "description": "AI Controller Harness System - 7-step phase execution workflow with subagent delegation and skill codification",
+  "author": "TicketPilot",
+  "license": "MIT",
+  "compatibility": {
+    "openspec": ">=1.0.0"
+  },
+  "type": "harness-extension",
+  "keywords": ["controller", "harness", "workflow", "subagent", "phase-loop"],
+  "homepage": "https://github.com/len/ticketpilot",
+  "files": {
+    "skills": "skills/*.md",
+    "docs": "docs/*.md",
+    "templates": "templates/*",
+    "scripts": "scripts/*"
+  },
+  "metadata": {
+    "generatedBy": "openspec",
+    "createdDate": "2026-05-08"
+  },
+  "dependencies": {},
+  "entryPoints": {
+    "bootstrap": "scripts/install.sh",
+    "readme": "README.md"
+  },
+  "installInstructions": {
+    "global": "Copy harness-plugin/ to ~/.claude/skills/ or install via openspec plugin install",
+    "project": "Add to project .claude/skills/ directory"
+  },
+  "components": [
+    {
+      "id": "phase-loop",
+      "name": "7-Step Phase Loop",
+      "description": "Core workflow: Planner -> Requirements -> Implementation -> Review -> Doc Review -> Experience -> Coordination",
+      "files": ["docs/PHASE_LOOP.md", "skills/skill_workflow_phase_loop.md"]
+    },
+    {
+      "id": "subagent-delegation",
+      "name": "Subagent Delegation System",
+      "description": "Role-based task delegation: backend-engineer for code, code-reviewer for review, etc.",
+      "files": ["skills/skill_workflow_subagent_delegation.md"]
+    },
+    {
+      "id": "fix-phase",
+      "name": "Fix Phase Workflow",
+      "description": "Systematic failure handling: F1-Issue -> F2-Root Cause -> F3-Skill Codify -> F4-Fix Plan -> F5-Retry",
+      "files": ["docs/PHASE_LOOP.md"]
+    },
+    {
+      "id": "skill-system",
+      "name": "Skill Codification System",
+      "description": "Pattern-based learning: error -> skill entry -> reusable asset",
+      "files": ["skills/skill_*.md", "skills/TEMPLATE.md"]
+    },
+    {
+      "id": "controller-context",
+      "name": "Controller Context Management",
+      "description": "Project state tracking, handoff protocols, compression recovery",
+      "files": ["docs/PROJECT_CONTEXT.md", "docs/CONTROLLER_HARNESS_PRACTICE.md"]
+    }
+  ]
+}
