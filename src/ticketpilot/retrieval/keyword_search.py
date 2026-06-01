@@ -8,14 +8,25 @@ from ticketpilot.retrieval.traces import KeywordResult
 # Strong Chinese business terms that benefit from LIKE search
 # These are terms where FTS with simple config may not capture exact matches
 BUSINESS_TERMS_LIKE = [
-    "退款",
-    "投诉",
-    "赔偿",
-    "7天",
-    "3个工作日",
-    "订单号",
-    "违约",
-    "账号异常",
+    # 通用客服
+    "退款", "投诉", "赔偿", "7天", "3个工作日", "订单号", "违约", "账号异常",
+    # 跨境电商
+    "关税", "清关", "海关", "保税", "直邮", "跨境", "海淘", "全球购",
+    "退货", "换货", "物流", "丢件", "理赔", "签收", "快递",
+    "税费", "增值税", "消费税", "限值", "额度",
+    "假货", "正品", "质量", "食品安全", "过敏", "过期",
+    "保修", "售后", "维修", "质保",
+    "12315", "消费者", "维权", "投诉",
+    # 账号安全
+    "账号", "被盗", "盗号", "密码", "冻结", "异常登录", "异地",
+    # 支付
+    "支付", "汇率", "扣款", "退款中",
+    # 禁运合规
+    "禁运", "违禁", "检疫", "备案", "中文标签", "成分",
+    # 食品安全
+    "食品", "虫子", "过期", "过敏", "医院", "异物", "变质",
+    # 通用
+    "怎么办", "如何", "可以吗", "需要", "多久", "费用",
 ]
 
 # Minimum FTS score threshold for considering results good

@@ -251,7 +251,9 @@ class OpenAICompatibleProvider(LLMProvider):
 
         system_prompt = (
             "你是一名客服工单处理助手。请根据用户消息和检索到的证据，生成一个专业的回复草稿。"
-            "回复必须基于提供的证据，不要编造信息。如果无法找到相关证据，说明无法确认并建议转人工。"
+            "回复必须基于提供的证据内容来组织回答，不要编造证据中没有的信息。"
+            "即使证据相关度评分较低，只要内容与用户问题相关，就应当基于这些证据给出回复。"
+            "只有当完全没有可用证据时，才建议转人工。"
             "回复用中文。"
         )
 
@@ -259,16 +261,25 @@ class OpenAICompatibleProvider(LLMProvider):
         formatted_evidence = format_evidence_block(evidence[:5])
 
         # Guard-aware safety rules
+        # Build a mapping: chunk_id -> [N] for numbered citations
+        sorted_evidence_for_prompt = sorted(evidence, key=lambda e: e.rank)[:5]
+        id_to_num: dict[str, int] = {}
+        for idx, ev in enumerate(sorted_evidence_for_prompt, start=1):
+            id_to_num[str(ev.chunk_id)] = idx
+
         safety_rules = [
             "## 安全与约束规则",
-            "1. 每一条事实性或政策性陈述，都必须在对应句子后加上方括号内的chunk_id标记，格式为 [chunk_id]。",
-            "   示例：根据退货政策[3fa2b8c1-...]，商品需在7天内保持原包装。",
-            "   不要使用 [1]、[2] 等数字格式——必须使用证据块中的 chunk_id。",
-            "2. 如果证据不足以回答客户问题，必须使用安全回复：「抱歉，基于目前的信息，无法为您提供准确的客服回复，建议您转人工客服获取详细帮助。」并注明需要人工审核。",
+            "1. 引用格式：在回复中引用证据时，使用数字编号 [1]、[2]、[3] 格式，对应下方证据列表的编号。",
+            "   示例：根据退货政策 [1]，商品需在7天内保持原包装。",
+            "2. 只有当提供的证据列表为空（没有任何证据条目）时，才说明无法确认并建议转人工。",
             "3. 禁止承诺退款金额（如：退款100元）、赔偿金额、法律行动、账号变更。",
             "4. 禁止承诺解决时间线（如：3天内解决）或保证特定结果。",
             "5. 禁止承认法律责任或做出超出证据范围的保证。",
-            "6. 本回复是草稿，不是最终回复。人工审核前不得自动发送。",
+            "6. 严格保持证据原文的主语和措辞。不要替换主语，不要夸大程度，不要添加原文没有的时间承诺。",
+            "7. 独立信息必须用分号或换行分隔，绝对不能合并成一句。",
+            "8. 回复结构：第一步共情（用一句话理解用户感受），第二步方案（具体可执行的步骤），第三步时间（如有明确时间才写）。",
+            "9. 只回应用户的核心问题。不要添加与当前问题无直接关系的承诺。回复聚焦在解决用户当前的具体诉求上。",
+            "10. 不要在回复中提及「草稿」「审核」「人工复核」等内部流程词。回复语气应专业、自然，像正式客服回复。",
         ]
         if severity in ("high", "critical"):
             safety_rules.append(
@@ -279,14 +290,23 @@ class OpenAICompatibleProvider(LLMProvider):
                 f"8. 本工单包含风险标记：{', '.join(flags)}，回复中必须说明已升级至人工审核。"
             )
 
+        # Format evidence with numbered labels instead of raw chunk_ids
+        evidence_lines: list[str] = []
+        for idx, ev in enumerate(sorted_evidence_for_prompt, start=1):
+            doc_type = ev.doc_type.value if hasattr(ev.doc_type, 'value') else str(ev.doc_type)
+            evidence_lines.append(
+                f"[{idx}] ({doc_type}) {ev.content[:200]}"
+            )
+        numbered_evidence = "\n".join(evidence_lines)
+
         user_prompt = (
             f"用户消息：{normalized_text}\n"
             f"问题类型：{issue_type}\n"
             f"风险标记：{flags}\n"
             f"严重度：{severity}\n\n"
-            f"## 可用证据\n{formatted_evidence}\n\n"
+            f"## 可用证据\n{numbered_evidence}\n\n"
             + "\n".join(safety_rules)
-            + "\n\n请生成回复草稿（在回复中引用证据时，必须使用 [chunk_id] 格式）："
+            + "\n\n请生成回复（引用证据时使用 [1]、[2] 等编号格式）："
         )
 
         payload = {

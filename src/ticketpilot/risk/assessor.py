@@ -70,12 +70,18 @@ class RiskAssessor:
         substantive_count = len(substantive_flags)
 
         # Per spec: 0-1 flags = LOW, 2 flags = MEDIUM, 3+ flags = HIGH
-        # Special case: LEGAL_RISK always implies HIGH severity
+        # Special cases: LEGAL_RISK always implies HIGH severity
+        # Single COMPENSATION_RISK or ACCOUNT_SECURITY_RISK implies MEDIUM
         if RiskFlag.LEGAL_RISK in substantive_flags:
             severity = RiskSeverity.HIGH
         elif substantive_count >= 3:
             severity = RiskSeverity.HIGH
         elif substantive_count == 2:
+            severity = RiskSeverity.MEDIUM
+        elif substantive_count == 1 and (
+            RiskFlag.COMPENSATION_RISK in substantive_flags
+            or RiskFlag.ACCOUNT_SECURITY_RISK in substantive_flags
+        ):
             severity = RiskSeverity.MEDIUM
         else:
             severity = RiskSeverity.LOW

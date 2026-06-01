@@ -1,0 +1,476 @@
+{
+  "metadata": {
+    "evaluation_type": "adversarial",
+    "version": "v1",
+    "created_at": "2026-06-01T10:01:28.157895",
+    "pipeline_version": "deterministic_mvp",
+    "knowledge_base_entries": 106,
+    "embedding_provider": "fake",
+    "draft_provider": "FakeDraftProvider"
+  },
+  "summary": {
+    "total_cases": 10,
+    "successful_cases": 10,
+    "failed_cases": 0,
+    "average_overall_score": 0.587,
+    "min_score": 0.1,
+    "max_score": 0.803,
+    "metric_averages": {
+      "intent_accuracy": 0.5,
+      "risk_flag_recall": 0.75,
+      "severity_accuracy": 0.3,
+      "evidence_retrieval": 0.016,
+      "citation_accuracy": 0.8,
+      "response_specificity": 0.734,
+      "escalation_handling": 0.97,
+      "completeness": 0.8,
+      "overall": 0.587
+    },
+    "elapsed_seconds": 26.11,
+    "intent_classification_accuracy": 0.5,
+    "average_risk_recall": 0.75,
+    "escalation_accuracy": 1.0
+  },
+  "knowledge_gaps": [
+    {
+      "category": "cross_border_order",
+      "description": "跨境订单 - 海关扣关问题",
+      "average_score": 0.1,
+      "gap_severity": 1.25,
+      "weak_areas": [
+        "intent_accuracy",
+        "risk_flag_recall",
+        "citation_accuracy",
+        "response_specificity",
+        "evidence_retrieval",
+        "completeness",
+        "severity_accuracy"
+      ],
+      "missing_evidence": true,
+      "classification_errors": [
+        "Expected logistics, got other"
+      ],
+      "risk_detection_gaps": [
+        "Missing: {'policy_conflict'}"
+      ],
+      "recommendation": "需要添加该类问题的知识库条目（FAQ/政策/案例）；需要扩展意图分类关键词规则以覆盖该场景；需要增强风险评估规则以识别相关风险标志；回复模板需要包含更具体的处理步骤和政策引用；需要改进证据引用映射，确保回复内容有据可查；该类别整体表现较差，建议全面审查知识库覆盖度和处理流程"
+    },
+    {
+      "category": "logistics_delay",
+      "description": "物流延迟 - 跨省快递超时",
+      "average_score": 0.47,
+      "gap_severity": 0.73,
+      "weak_areas": [
+        "evidence_retrieval",
+        "citation_accuracy",
+        "completeness",
+        "response_specificity"
+      ],
+      "missing_evidence": true,
+      "classification_errors": [],
+      "risk_detection_gaps": [],
+      "recommendation": "需要添加该类问题的知识库条目（FAQ/政策/案例）；回复模板需要包含更具体的处理步骤和政策引用；需要改进证据引用映射，确保回复内容有据可查"
+    },
+    {
+      "category": "vip_complaint",
+      "description": "VIP客户投诉 - 会员权益受损",
+      "average_score": 0.453,
+      "gap_severity": 0.697,
+      "weak_areas": [
+        "intent_accuracy",
+        "risk_flag_recall",
+        "evidence_retrieval",
+        "severity_accuracy"
+      ],
+      "missing_evidence": false,
+      "classification_errors": [
+        "Expected complaint, got return_exchange"
+      ],
+      "risk_detection_gaps": [
+        "Missing: {'complaint_risk', 'compensation_risk'}"
+      ],
+      "recommendation": "需要扩展意图分类关键词规则以覆盖该场景；需要增强风险评估规则以识别相关风险标志"
+    },
+    {
+      "category": "compensation_request",
+      "description": "赔偿请求 - 发错货要求高额赔偿",
+      "average_score": 0.553,
+      "gap_severity": 0.597,
+      "weak_areas": [
+        "intent_accuracy",
+        "evidence_retrieval",
+        "severity_accuracy"
+      ],
+      "missing_evidence": false,
+      "classification_errors": [
+        "Expected complaint, got other"
+      ],
+      "risk_detection_gaps": [],
+      "recommendation": "需要扩展意图分类关键词规则以覆盖该场景"
+    },
+    {
+      "category": "product_quality",
+      "description": "产品质量 - 食品安全问题",
+      "average_score": 0.603,
+      "gap_severity": 0.547,
+      "weak_areas": [
+        "intent_accuracy",
+        "evidence_retrieval",
+        "severity_accuracy"
+      ],
+      "missing_evidence": false,
+      "classification_errors": [
+        "Expected complaint, got other"
+      ],
+      "risk_detection_gaps": [],
+      "recommendation": "需要扩展意图分类关键词规则以覆盖该场景"
+    }
+  ],
+  "test_results": [
+    {
+      "id": "ADV-001",
+      "category": "refund_dispute",
+      "description": "退款纠纷 - 超期退款被拒，客户威胁投诉",
+      "query": "我三个月前买的手机壳现在裂了，我要退款！你们说7天无理由退货，但这是质量问题啊！不给我退款我就去12315投诉你们！",
+      "status": "success",
+      "scores": {
+        "intent_accuracy": 1.0,
+        "risk_flag_recall": 1.0,
+        "severity_accuracy": 1.0,
+        "evidence_retrieval": 0.02,
+        "citation_accuracy": 1.0,
+        "response_specificity": 0.67,
+        "escalation_handling": 1.0,
+        "completeness": 1.0,
+        "overall": 0.803
+      },
+      "actual_intent": "refund",
+      "expected_intent": "refund",
+      "actual_flags": [
+        "compensation_risk",
+        "complaint_risk"
+      ],
+      "expected_flags": [
+        "complaint_risk",
+        "compensation_risk"
+      ],
+      "actual_severity": "medium",
+      "expected_severity": "medium",
+      "evidence_count": 10,
+      "draft_preview": "您好，非常理解您对手机壳使用三个月后出现裂痕的不满，以及因此产生的退款诉求。您提到的质量问题确实令人困扰，我们非常重视您的反馈。\n\n根据平台规则，商品质量问题属于卖家责任，相关退货运费应由卖家承担 [2][3]。对于您提出的退款要求，由于该情况已超出常规的7天无理由退货期限，且涉及产品质量争议，我们需要进一步核实具体情况。\n\n为确保您的诉求得到妥善处理，我已将您的工单升级至人工审核。我们的专业团队将根据您提供的证据（如裂痕照片、购买记录等）进行详细核实，并依据平台政策给出最终处理方案。请您耐心等待，我们会在核实后尽快与您联系。\n\n感谢您的理解与配合。",
+      "must_human_review": true,
+      "issues": []
+    },
+    {
+      "id": "ADV-002",
+      "category": "account_security",
+      "description": "账号安全 - 盗号紧急求助",
+      "query": "我的账号被盗了！有人修改了我的手机号和密码，我所有的订单都被取消了，里面还有500块钱余额！请你们立刻冻结我的账号！这是紧急事件！",
+      "status": "success",
+      "scores": {
+        "intent_accuracy": 1.0,
+        "risk_flag_recall": 1.0,
+        "severity_accuracy": 0.0,
+        "evidence_retrieval": 0.02,
+        "citation_accuracy": 1.0,
+        "response_specificity": 1.0,
+        "escalation_handling": 1.0,
+        "completeness": 1.0,
+        "overall": 0.753
+      },
+      "actual_intent": "account_issue",
+      "expected_intent": "account_issue",
+      "actual_flags": [
+        "account_security_risk",
+        "privacy_risk"
+      ],
+      "expected_flags": [
+        "account_security_risk"
+      ],
+      "actual_severity": "medium",
+      "expected_severity": "high",
+      "evidence_count": 10,
+      "draft_preview": "非常理解您账号被盗、订单被取消且余额可能受损的紧急情况，我们非常重视您的账户安全。\n\n针对您账号被盗的问题，请您立即按照以下步骤操作，以尽快控制风险：\n\n1.  **紧急冻结账号**：请立即通过登录页面的“紧急冻结”按钮，或直接拨打客服热线（如京东国际客服专线：400-606-9933 [2][4]）来冻结您的账号，防止进一步损失 [1]。\n2.  **修改密码与绑定**：在账号冻结后，请尽快修改密码并重新绑定手机验证，确保账户安全 [1]。\n3.  **检查订单与余额**：请登录后检查所有订单记录和余额变动情况，确认是否有异常交易 [1]。\n4.  **申请资金冻结**：如发现异常交易或余额",
+      "must_human_review": true,
+      "issues": [
+        "Severity under-estimated: expected=high, got=medium"
+      ]
+    },
+    {
+      "id": "ADV-003",
+      "category": "logistics_delay",
+      "description": "物流延迟 - 跨省快递超时",
+      "query": "我的订单已经下单15天了，物流信息一直显示'运输中'没有更新。我打了快递公司电话没人接，你们客服电话也打不通。到底什么时候能到？",
+      "status": "success",
+      "scores": {
+        "intent_accuracy": 1.0,
+        "risk_flag_recall": 1.0,
+        "severity_accuracy": 1.0,
+        "evidence_retrieval": 0.0,
+        "citation_accuracy": 0.0,
+        "response_specificity": 0.0,
+        "escalation_handling": 0.7,
+        "completeness": 0.0,
+        "overall": 0.47
+      },
+      "actual_intent": "logistics",
+      "expected_intent": "logistics",
+      "actual_flags": [],
+      "expected_flags": [],
+      "actual_severity": "low",
+      "expected_severity": "low",
+      "evidence_count": 0,
+      "draft_preview": "根据现有信息，无法确认具体政策条款，建议转人工处理。",
+      "must_human_review": true,
+      "issues": [
+        "No evidence retrieved from knowledge base"
+      ]
+    },
+    {
+      "id": "ADV-004",
+      "category": "product_quality",
+      "description": "产品质量 - 食品安全问题",
+      "query": "你们卖的零食里面有虫子！我吃了之后肚子疼去了医院！我有照片和医院的诊断证明。这个事情你们必须给我一个说法，不然我要找媒体曝光！",
+      "status": "success",
+      "scores": {
+        "intent_accuracy": 0.0,
+        "risk_flag_recall": 1.0,
+        "severity_accuracy": 0.0,
+        "evidence_retrieval": 0.02,
+        "citation_accuracy": 1.0,
+        "response_specificity": 1.0,
+        "escalation_handling": 1.0,
+        "completeness": 1.0,
+        "overall": 0.603
+      },
+      "actual_intent": "other",
+      "expected_intent": "complaint",
+      "actual_flags": [
+        "compensation_risk",
+        "complaint_risk"
+      ],
+      "expected_flags": [
+        "complaint_risk",
+        "compensation_risk"
+      ],
+      "actual_severity": "medium",
+      "expected_severity": "high",
+      "evidence_count": 10,
+      "draft_preview": "非常理解您遇到的情况，吃到有虫子的零食还导致身体不适，这确实让人非常气愤和担忧。我们非常重视您反馈的问题。\n\n针对您的情况，我们建议您按以下步骤处理：\n1. **保留好所有证据**：请务必保管好您提到的有虫子的零食实物、照片、医院的诊断证明以及相关的医疗费用票据。这些是后续处理的关键依据 [1][2]。\n2. **提供详细信息**：请您通过官方渠道提供上述证据，以及您购买该零食的订单信息或商品批次信息，以便我们进行核实 [1][5]。\n3. **升级处理**：由于您的情况涉及食品安全和医疗赔偿，且包含投诉和补偿风险，该工单已升级至高级客服专员进行人工审核处理 [1][5]。高级客服专员会与您联",
+      "must_human_review": true,
+      "issues": [
+        "Intent mismatch: expected=complaint, got=other",
+        "Severity under-estimated: expected=high, got=medium"
+      ]
+    },
+    {
+      "id": "ADV-005",
+      "category": "compensation_request",
+      "description": "赔偿请求 - 发错货要求高额赔偿",
+      "query": "你们发错货了！我买的是一台iPad，结果收到的是一个空盒子！价值3999元！你们必须原价赔偿我，而且还要额外赔偿我的精神损失费和误工费，一共赔我5000块！",
+      "status": "success",
+      "scores": {
+        "intent_accuracy": 0.0,
+        "risk_flag_recall": 1.0,
+        "severity_accuracy": 0.0,
+        "evidence_retrieval": 0.02,
+        "citation_accuracy": 1.0,
+        "response_specificity": 0.67,
+        "escalation_handling": 1.0,
+        "completeness": 1.0,
+        "overall": 0.553
+      },
+      "actual_intent": "other",
+      "expected_intent": "complaint",
+      "actual_flags": [
+        "compensation_risk"
+      ],
+      "expected_flags": [
+        "compensation_risk"
+      ],
+      "actual_severity": "medium",
+      "expected_severity": "high",
+      "evidence_count": 10,
+      "draft_preview": "非常理解您收到空盒子时的失望与愤怒，这种情况确实令人难以接受。对于您提到的发错货问题，我们非常重视，并会严格按照平台规则为您处理。\n\n根据平台规则，若商品与描述严重不符，平台支持全额退款并承担退货运费 [1]。同时，您需要保留商品实物、包装、物流单据等证据，并拍照/录像记录商品与正品的差异 [2][4]。建议您按以下步骤操作：\n\n1. **保留证据**：请务必保留您收到的空盒子、所有包装材料、物流单据以及相关照片或视频，这些是后续处理的关键依据。\n2. **发起投诉**：在平台内发起投诉，选择“商品与描述不符”或“假货”相关选项，并上传您保留的证据 [2][4]。\n3. **平台处理**：平台",
+      "must_human_review": true,
+      "issues": [
+        "Intent mismatch: expected=complaint, got=other",
+        "Severity under-estimated: expected=high, got=medium"
+      ]
+    },
+    {
+      "id": "ADV-006",
+      "category": "legal_threat",
+      "description": "法律威胁 - 客户声称要起诉",
+      "query": "你们平台虚假宣传！商品页面写的是真皮，收到的是人造革！我已经咨询了律师，准备向法院起诉你们欺诈消费者！根据消费者权益保护法，你们要退一赔三！",
+      "status": "success",
+      "scores": {
+        "intent_accuracy": 0.0,
+        "risk_flag_recall": 0.5,
+        "severity_accuracy": 1.0,
+        "evidence_retrieval": 0.02,
+        "citation_accuracy": 1.0,
+        "response_specificity": 1.0,
+        "escalation_handling": 1.0,
+        "completeness": 1.0,
+        "overall": 0.628
+      },
+      "actual_intent": "other",
+      "expected_intent": "complaint",
+      "actual_flags": [
+        "compensation_risk",
+        "legal_risk"
+      ],
+      "expected_flags": [
+        "legal_risk",
+        "policy_conflict"
+      ],
+      "actual_severity": "high",
+      "expected_severity": "high",
+      "evidence_count": 10,
+      "draft_preview": "尊敬的客户，非常理解您对商品材质与描述不符的失望与不满，这确实影响了您的购物体验。我们对此高度重视。\n\n针对您反馈的商品页面标注真皮但实际收到人造革的情况，根据平台规则，商品与描述不符属于平台保障范围 [1]。为妥善处理您的诉求，建议您按以下步骤操作：\n\n1. **保留证据**：请务必保留商品实物、包装、物流单据及商品页面截图等所有相关凭证 [5]。\n2. **提交投诉**：您可通过平台官方渠道发起“描述不符”或“假货”投诉，平台承诺正品保障，一经确认将按规则处理 [1][5]。\n3. **升级处理**：由于您提及已咨询律师并涉及法律及赔偿诉求，此工单已升级至人工审核团队处理，将由专人跟进您的",
+      "must_human_review": true,
+      "issues": [
+        "Intent mismatch: expected=complaint, got=other",
+        "Missing risk flags: {'policy_conflict'}",
+        "Extra risk flags detected: {'compensation_risk'}"
+      ]
+    },
+    {
+      "id": "ADV-007",
+      "category": "privacy_concern",
+      "description": "隐私担忧 - 个人信息泄露",
+      "query": "自从在你们平台买了东西之后，我每天收到十几个骚扰电话，都能报出我的姓名和地址！你们是不是把我的个人信息卖给了第三方？我要投诉你们泄露用户隐私！",
+      "status": "success",
+      "scores": {
+        "intent_accuracy": 1.0,
+        "risk_flag_recall": 1.0,
+        "severity_accuracy": 0.0,
+        "evidence_retrieval": 0.02,
+        "citation_accuracy": 1.0,
+        "response_specificity": 1.0,
+        "escalation_handling": 1.0,
+        "completeness": 1.0,
+        "overall": 0.753
+      },
+      "actual_intent": "complaint",
+      "expected_intent": "complaint",
+      "actual_flags": [
+        "complaint_risk",
+        "privacy_risk"
+      ],
+      "expected_flags": [
+        "privacy_risk",
+        "complaint_risk"
+      ],
+      "actual_severity": "medium",
+      "expected_severity": "high",
+      "evidence_count": 10,
+      "draft_preview": "非常理解您因频繁收到骚扰电话而感到的困扰和担忧，我们对此高度重视。关于您反馈的个人信息可能被泄露的问题，我们已记录并会严肃处理。\n\n根据我们的投诉处理规则 [2][3]，涉及隐私风险的投诉需要升级处理。您的工单已标记为“complaint_risk”和“privacy_risk”，我们将立即转交给专门的投诉专员进行人工审核和调查。请您放心，我们会严格保护您的个人信息安全。\n\n建议您保留好骚扰电话的来电记录（如号码、时间等），以便后续调查。我们会在5个工作日内给出最终处理方案 [3]。",
+      "must_human_review": true,
+      "issues": [
+        "Severity under-estimated: expected=high, got=medium"
+      ]
+    },
+    {
+      "id": "ADV-008",
+      "category": "technical_issue",
+      "description": "技术问题 - 支付失败但扣款成功",
+      "query": "我付款的时候显示支付失败，但是银行卡已经被扣了500块钱！订单状态还是未付款！钱去哪了？你们系统是不是有bug？这个钱什么时候能退回来？",
+      "status": "success",
+      "scores": {
+        "intent_accuracy": 1.0,
+        "risk_flag_recall": 1.0,
+        "severity_accuracy": 0.0,
+        "evidence_retrieval": 0.02,
+        "citation_accuracy": 1.0,
+        "response_specificity": 1.0,
+        "escalation_handling": 1.0,
+        "completeness": 1.0,
+        "overall": 0.753
+      },
+      "actual_intent": "technical_issue",
+      "expected_intent": "technical_issue",
+      "actual_flags": [],
+      "expected_flags": [],
+      "actual_severity": "low",
+      "expected_severity": "medium",
+      "evidence_count": 10,
+      "draft_preview": "您好，非常理解您遇到支付失败但银行卡已扣款的情况，这确实会让人感到困惑和着急。请您放心，这种情况通常是由于支付信息同步延迟导致的，并非系统故障。\n\n针对您的问题，建议您先确认一下订单状态，如果显示“未付款”，说明支付尚未成功完成。根据平台规则，如果最终订单未成功，相关款项会原路退回到您付款时使用的支付方式 [2]。退款到账时间取决于您使用的支付方式：支付宝退款通常需要1-3个工作日；信用卡退款需要7-14个工作日；微信支付退款需要1-3个工作日 [1][4]。如果超过上述时间仍未收到退款，建议您联系速卖通客服查询处理进度 [1]。\n\n请您耐心等待，并留意您付款账户的到账情况。",
+      "must_human_review": true,
+      "issues": [
+        "Severity under-estimated: expected=medium, got=low"
+      ]
+    },
+    {
+      "id": "ADV-009",
+      "category": "cross_border_order",
+      "description": "跨境订单 - 海关扣关问题",
+      "query": "我从海外买的包被海关扣了，说要补交关税。你们商品页面明明写着'包税包邮'，为什么现在还要我自己交税？这个关税到底谁出？如果包裹被退回去谁承担运费？",
+      "status": "success",
+      "scores": {
+        "intent_accuracy": 0.0,
+        "risk_flag_recall": 0.0,
+        "severity_accuracy": 0.0,
+        "evidence_retrieval": 0.0,
+        "citation_accuracy": 0.0,
+        "response_specificity": 0.0,
+        "escalation_handling": 1.0,
+        "completeness": 0.0,
+        "overall": 0.1
+      },
+      "actual_intent": "other",
+      "expected_intent": "logistics",
+      "actual_flags": [],
+      "expected_flags": [
+        "policy_conflict"
+      ],
+      "actual_severity": "low",
+      "expected_severity": "medium",
+      "evidence_count": 0,
+      "draft_preview": "根据现有信息，无法确认具体政策条款，建议转人工处理。",
+      "must_human_review": true,
+      "issues": [
+        "Intent mismatch: expected=logistics, got=other",
+        "Missing risk flags: {'policy_conflict'}",
+        "Severity under-estimated: expected=medium, got=low",
+        "No evidence retrieved from knowledge base"
+      ]
+    },
+    {
+      "id": "ADV-010",
+      "category": "vip_complaint",
+      "description": "VIP客户投诉 - 会员权益受损",
+      "query": "我是你们的VIP会员，年消费超过5万！但是这次退货你们居然不给我免运费？普通用户都有的7天无理由退货，VIP反而没有？你们的会员制度就是骗人的！我要取消会员并且要求退还会员费！",
+      "status": "success",
+      "scores": {
+        "intent_accuracy": 0.0,
+        "risk_flag_recall": 0.0,
+        "severity_accuracy": 0.0,
+        "evidence_retrieval": 0.02,
+        "citation_accuracy": 1.0,
+        "response_specificity": 1.0,
+        "escalation_handling": 1.0,
+        "completeness": 1.0,
+        "overall": 0.453
+      },
+      "actual_intent": "return_exchange",
+      "expected_intent": "complaint",
+      "actual_flags": [],
+      "expected_flags": [
+        "complaint_risk",
+        "compensation_risk"
+      ],
+      "actual_severity": "low",
+      "expected_severity": "medium",
+      "evidence_count": 10,
+      "draft_preview": "尊敬的VIP会员，您好：\n\n非常理解您因退货运费问题感到不满，作为长期支持我们的高价值会员，您的体验对我们至关重要。关于您提到的退货免运费问题，根据平台政策，七天无理由退货的退货运费通常由买家承担 [2][3]，但若商品存在质量问题或与描述不符，则退货运费由卖家承担 [2]。您作为VIP会员，我们非常重视您的反馈，但当前证据未显示VIP会员享有免运费的额外权益。\n\n针对您的情况，建议您按以下步骤操作：\n1. 确认退货商品是否符合七天无理由退货条件：商品需保持原状、未使用、包装完好，且在收货后7天内提交申请 [1][5]。\n2. 若商品符合条件，您可正常提交退货申请，并承担退货运费；若商品存在质",
+      "must_human_review": true,
+      "issues": [
+        "Intent mismatch: expected=complaint, got=return_exchange",
+        "Missing risk flags: {'complaint_risk', 'compensation_risk'}",
+        "Severity under-estimated: expected=medium, got=low"
+      ]
+    }
+  ]
+}

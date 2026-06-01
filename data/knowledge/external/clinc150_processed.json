@@ -1,0 +1,5348 @@
+[
+  {
+    "instruction": "what is my gymboree card's rewards balance",
+    "response": "",
+    "intent": "rewards_balance",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "please tell my what insurance plan i registered for",
+    "response": "",
+    "intent": "insurance",
+    "mapped_intent": "product_consulting",
+    "risk_flags": [],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "how did my bank account is frozen",
+    "response": "",
+    "intent": "account_blocked",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "is new this a good insurance plan for me",
+    "response": "",
+    "intent": "insurance_change",
+    "mapped_intent": "product_consulting",
+    "risk_flags": [],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "put on my shopping list i need carots",
+    "response": "",
+    "intent": "shopping_list_update",
+    "mapped_intent": "product_consulting",
+    "risk_flags": [],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "stop payments from my bank",
+    "response": "",
+    "intent": "freeze_account",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "how much do you charge if i use my card in japan",
+    "response": "",
+    "intent": "international_fees",
+    "mapped_intent": "complaint",
+    "risk_flags": [
+      "complaint_risk",
+      "legal_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "how much money have i recently spent on entertainment",
+    "response": "",
+    "intent": "spending_history",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "use my savings account to pay xfinity",
+    "response": "",
+    "intent": "pay_bill",
+    "mapped_intent": "refund",
+    "risk_flags": [
+      "compensation_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "what's the least amount i need to pay on the electric bill",
+    "response": "",
+    "intent": "min_payment",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "how do i change my pin for number for my abc bank account",
+    "response": "",
+    "intent": "pin_change",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "let me know what my interest rate is",
+    "response": "",
+    "intent": "interest_rate",
+    "mapped_intent": "product_consulting",
+    "risk_flags": [],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "i enrolled in an insurance plan, what one was it",
+    "response": "",
+    "intent": "insurance",
+    "mapped_intent": "product_consulting",
+    "risk_flags": [],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "my credit score is what",
+    "response": "",
+    "intent": "credit_score",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "i need to get on a new united healthcare insurance plan",
+    "response": "",
+    "intent": "insurance_change",
+    "mapped_intent": "product_consulting",
+    "risk_flags": [],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "check how much pto i have left",
+    "response": "",
+    "intent": "pto_balance",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "please put a stop on my back account",
+    "response": "",
+    "intent": "freeze_account",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "what do i do to change my credit limit",
+    "response": "",
+    "intent": "credit_limit_change",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "put a hold on my bank of america account right away please",
+    "response": "",
+    "intent": "freeze_account",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "transfer 200 dollars from paypal to savings",
+    "response": "",
+    "intent": "transfer",
+    "mapped_intent": "refund",
+    "risk_flags": [
+      "compensation_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "how much money have i spent on groceries recently",
+    "response": "",
+    "intent": "spending_history",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "how many vacation days do i have to spend",
+    "response": "",
+    "intent": "pto_balance",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "how many vacation days do i have saved up, please",
+    "response": "",
+    "intent": "pto_balance",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "could you help me find the interest on my chase account",
+    "response": "",
+    "intent": "interest_rate",
+    "mapped_intent": "product_consulting",
+    "risk_flags": [],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "let's send some money to another account",
+    "response": "",
+    "intent": "transfer",
+    "mapped_intent": "refund",
+    "risk_flags": [
+      "compensation_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "how long do i have left to pay for my chase credit card",
+    "response": "",
+    "intent": "bill_due",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "what's the credit limit on my visa card",
+    "response": "",
+    "intent": "credit_limit",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "will i be charged if i use my card in mexico",
+    "response": "",
+    "intent": "international_fees",
+    "mapped_intent": "complaint",
+    "risk_flags": [
+      "complaint_risk",
+      "legal_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "please put a block on my capital one account immediately",
+    "response": "",
+    "intent": "freeze_account",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "i am not sure how to pay my phone bill and need assistance",
+    "response": "",
+    "intent": "pay_bill",
+    "mapped_intent": "refund",
+    "risk_flags": [
+      "compensation_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "can you report my td bank card as lost",
+    "response": "",
+    "intent": "report_lost_card",
+    "mapped_intent": "complaint",
+    "risk_flags": [
+      "complaint_risk",
+      "legal_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "help me check my visa rewards card",
+    "response": "",
+    "intent": "rewards_balance",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "i wish to know my credit score",
+    "response": "",
+    "intent": "credit_score",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "what date is my at&t bill due",
+    "response": "",
+    "intent": "bill_due",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "what is my interest rate for my scotiabank account",
+    "response": "",
+    "intent": "interest_rate",
+    "mapped_intent": "product_consulting",
+    "risk_flags": [],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "will i be charged if i use my card in dublin",
+    "response": "",
+    "intent": "international_fees",
+    "mapped_intent": "complaint",
+    "risk_flags": [
+      "complaint_risk",
+      "legal_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "show me the transaction on the food",
+    "response": "",
+    "intent": "transactions",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "is there a surcharge for using my card in mexico",
+    "response": "",
+    "intent": "international_fees",
+    "mapped_intent": "complaint",
+    "risk_flags": [
+      "complaint_risk",
+      "legal_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "can i increase the credit limit on my old navy card",
+    "response": "",
+    "intent": "credit_limit_change",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "what's the credit limit on my visa",
+    "response": "",
+    "intent": "credit_limit",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "can you change my 1st national account pin to 4892",
+    "response": "",
+    "intent": "pin_change",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "what's the reward point count on my discover card",
+    "response": "",
+    "intent": "rewards_balance",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "take one hundred and fifty bucks from my wells fargo checking account and put it in my wells fargo savings account",
+    "response": "",
+    "intent": "transfer",
+    "mapped_intent": "refund",
+    "risk_flags": [
+      "compensation_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "tell me all the ways my credit score can get hurt",
+    "response": "",
+    "intent": "improve_credit_score",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "have i been spending more money at restaurants",
+    "response": "",
+    "intent": "spending_history",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "how much is the minimum payment for power bill",
+    "response": "",
+    "intent": "min_payment",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "how much is the minimum payment on my chase card",
+    "response": "",
+    "intent": "min_payment",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "i am enrolled in what insurance plan",
+    "response": "",
+    "intent": "insurance",
+    "mapped_intent": "product_consulting",
+    "risk_flags": [],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "there seems to be fraudulent activity",
+    "response": "",
+    "intent": "report_fraud",
+    "mapped_intent": "complaint",
+    "risk_flags": [
+      "complaint_risk",
+      "legal_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "how much money did i spend on tent equipment four hours ago",
+    "response": "",
+    "intent": "spending_history",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "what is the total amount that i have spent on the cash app for this month so far",
+    "response": "",
+    "intent": "spending_history",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "could you let me know how many pto days do i have left",
+    "response": "",
+    "intent": "pto_balance",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "set up a new pin number on my college fund account and make it be 1234",
+    "response": "",
+    "intent": "pin_change",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "i'd like my account frozen",
+    "response": "",
+    "intent": "freeze_account",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "tell me if opening a new account will decrease my credit score",
+    "response": "",
+    "intent": "improve_credit_score",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "what is the route to take to report a lost card",
+    "response": "",
+    "intent": "report_lost_card",
+    "mapped_intent": "complaint",
+    "risk_flags": [
+      "complaint_risk",
+      "legal_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "tell me my credit score",
+    "response": "",
+    "intent": "credit_score",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "move three hundred and fifty dollars from my citibank savings account to my chase savings account",
+    "response": "",
+    "intent": "transfer",
+    "mapped_intent": "refund",
+    "risk_flags": [
+      "compensation_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "i lost my card, how should i report that",
+    "response": "",
+    "intent": "report_lost_card",
+    "mapped_intent": "complaint",
+    "risk_flags": [
+      "complaint_risk",
+      "legal_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "stop all payments to my bank account",
+    "response": "",
+    "intent": "freeze_account",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "will i be charged extra for using my card in spain",
+    "response": "",
+    "intent": "international_fees",
+    "mapped_intent": "complaint",
+    "risk_flags": [
+      "complaint_risk",
+      "legal_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "what is my current interest rate",
+    "response": "",
+    "intent": "interest_rate",
+    "mapped_intent": "product_consulting",
+    "risk_flags": [],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "you need to change the pin on my bank of america account to be 1234",
+    "response": "",
+    "intent": "pin_change",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "please tell me how to pay my gas bill",
+    "response": "",
+    "intent": "pay_bill",
+    "mapped_intent": "refund",
+    "risk_flags": [
+      "compensation_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "whats the reward balance for my visa",
+    "response": "",
+    "intent": "rewards_balance",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "i really want my account frozen",
+    "response": "",
+    "intent": "freeze_account",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "transfer sixty dollars to dad from my biggest accnt",
+    "response": "",
+    "intent": "transfer",
+    "mapped_intent": "refund",
+    "risk_flags": [
+      "compensation_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "can you tell me my credit limit",
+    "response": "",
+    "intent": "credit_limit",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "what steps should i take to improve my credit score",
+    "response": "",
+    "intent": "improve_credit_score",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "what's the point balance on my marriot rewards card",
+    "response": "",
+    "intent": "rewards_balance",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "can i harm my credit if i miss a car payment",
+    "response": "",
+    "intent": "improve_credit_score",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "add up my reward points for master card",
+    "response": "",
+    "intent": "rewards_balance",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "tell me my shopping list",
+    "response": "",
+    "intent": "shopping_list",
+    "mapped_intent": "product_consulting",
+    "risk_flags": [],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "what's my interest rate from january",
+    "response": "",
+    "intent": "interest_rate",
+    "mapped_intent": "product_consulting",
+    "risk_flags": [],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "update my shopping list, delete canned olives",
+    "response": "",
+    "intent": "shopping_list_update",
+    "mapped_intent": "product_consulting",
+    "risk_flags": [],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "what is my spending limit on my mastercard",
+    "response": "",
+    "intent": "credit_limit",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "can you give me a hand paying my water bill",
+    "response": "",
+    "intent": "pay_bill",
+    "mapped_intent": "refund",
+    "risk_flags": [
+      "compensation_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "remove chips from my shopping list",
+    "response": "",
+    "intent": "shopping_list_update",
+    "mapped_intent": "product_consulting",
+    "risk_flags": [],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "i'd like to report my card as stolen, please",
+    "response": "",
+    "intent": "report_lost_card",
+    "mapped_intent": "complaint",
+    "risk_flags": [
+      "complaint_risk",
+      "legal_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "pull up my recent transactions on my mastercard",
+    "response": "",
+    "intent": "transactions",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "in regards to my wells fargo account, why is there a hold",
+    "response": "",
+    "intent": "account_blocked",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "i need to know how much money i have in all of my bank accounts",
+    "response": "",
+    "intent": "balance",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "i need to know the bill's minimum payment",
+    "response": "",
+    "intent": "min_payment",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "what kind of international transaction fees are related to my amex",
+    "response": "",
+    "intent": "international_fees",
+    "mapped_intent": "complaint",
+    "risk_flags": [
+      "complaint_risk",
+      "legal_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "what's the balance of my bank accounts",
+    "response": "",
+    "intent": "balance",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "read off to me the last five transactions i've made",
+    "response": "",
+    "intent": "transactions",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "i want to transfer funds between accounts",
+    "response": "",
+    "intent": "transfer",
+    "mapped_intent": "refund",
+    "risk_flags": [
+      "compensation_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "please put a block on my wells fargo account",
+    "response": "",
+    "intent": "freeze_account",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "how high is my credit limit for my navy federal card",
+    "response": "",
+    "intent": "credit_limit",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "for my visa what's my reward balance",
+    "response": "",
+    "intent": "rewards_balance",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "savings account balance at chase bank please",
+    "response": "",
+    "intent": "balance",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "what credit limit do i have",
+    "response": "",
+    "intent": "credit_limit",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "how much is my xfinity bill this month",
+    "response": "",
+    "intent": "bill_balance",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "how much in total do i need to pay cox and at&t",
+    "response": "",
+    "intent": "bill_balance",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "what's my limit on my amex card",
+    "response": "",
+    "intent": "credit_limit",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "what's the name of my medical coverage",
+    "response": "",
+    "intent": "insurance",
+    "mapped_intent": "product_consulting",
+    "risk_flags": [],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "please freeze my account",
+    "response": "",
+    "intent": "freeze_account",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "how much was my last transaction for",
+    "response": "",
+    "intent": "transactions",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "list my insurance benefits",
+    "response": "",
+    "intent": "insurance",
+    "mapped_intent": "product_consulting",
+    "risk_flags": [],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "i need to block all transactions from going through on my citi checking account straight away",
+    "response": "",
+    "intent": "freeze_account",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "how much money do i have in checking",
+    "response": "",
+    "intent": "balance",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "i want to know td banks interest rates",
+    "response": "",
+    "intent": "interest_rate",
+    "mapped_intent": "product_consulting",
+    "risk_flags": [],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "transfer $500 from my checking to my savings",
+    "response": "",
+    "intent": "transfer",
+    "mapped_intent": "refund",
+    "risk_flags": [
+      "compensation_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "walk me through the process of reporting a lost card",
+    "response": "",
+    "intent": "report_lost_card",
+    "mapped_intent": "complaint",
+    "risk_flags": [
+      "complaint_risk",
+      "legal_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "move my money to the other account",
+    "response": "",
+    "intent": "transfer",
+    "mapped_intent": "refund",
+    "risk_flags": [
+      "compensation_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "i would like to switch my insurance plan",
+    "response": "",
+    "intent": "insurance_change",
+    "mapped_intent": "product_consulting",
+    "risk_flags": [],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "there's something fishy on my card, report it",
+    "response": "",
+    "intent": "report_fraud",
+    "mapped_intent": "complaint",
+    "risk_flags": [
+      "complaint_risk",
+      "legal_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "i am out of trash bags and need them to be added to my shopping list",
+    "response": "",
+    "intent": "shopping_list_update",
+    "mapped_intent": "product_consulting",
+    "risk_flags": [],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "what's the balance on my bank account",
+    "response": "",
+    "intent": "balance",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "let me know the lowest amount i can pay for my cable bill",
+    "response": "",
+    "intent": "min_payment",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "i need to increase my credit limit for my visa credit card, can you assist me",
+    "response": "",
+    "intent": "credit_limit_change",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "would you let me know what is on my shopping list",
+    "response": "",
+    "intent": "shopping_list",
+    "mapped_intent": "product_consulting",
+    "risk_flags": [],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "i need $20000 transferred from my savings to my checking",
+    "response": "",
+    "intent": "transfer",
+    "mapped_intent": "refund",
+    "risk_flags": [
+      "compensation_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "i want to pay my car payment",
+    "response": "",
+    "intent": "pay_bill",
+    "mapped_intent": "refund",
+    "risk_flags": [
+      "compensation_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "is there a way to get my pin number",
+    "response": "",
+    "intent": "pin_change",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "could you tell me the minimum payment on my mortgage",
+    "response": "",
+    "intent": "min_payment",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "i have to report my card as stolen",
+    "response": "",
+    "intent": "report_lost_card",
+    "mapped_intent": "complaint",
+    "risk_flags": [
+      "complaint_risk",
+      "legal_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "what do i owe on the car this month",
+    "response": "",
+    "intent": "bill_balance",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "how many more vacation days can i use this year",
+    "response": "",
+    "intent": "pto_balance",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "how much are utilities",
+    "response": "",
+    "intent": "bill_balance",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "what does my shopping list consist of",
+    "response": "",
+    "intent": "shopping_list",
+    "mapped_intent": "product_consulting",
+    "risk_flags": [],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "what healthcare plan do you have me on",
+    "response": "",
+    "intent": "insurance",
+    "mapped_intent": "product_consulting",
+    "risk_flags": [],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "i am not sure if i have enough money in my chase account to buy a new dress",
+    "response": "",
+    "intent": "balance",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "do i have pepper my shopping list, if not add it",
+    "response": "",
+    "intent": "shopping_list_update",
+    "mapped_intent": "product_consulting",
+    "risk_flags": [],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "websites that share credit ratings",
+    "response": "",
+    "intent": "credit_score",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "i would like to transfer $5 from savings to checking",
+    "response": "",
+    "intent": "transfer",
+    "mapped_intent": "refund",
+    "risk_flags": [
+      "compensation_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "can you help me find my credit score",
+    "response": "",
+    "intent": "credit_score",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "switch the pin on my visa account",
+    "response": "",
+    "intent": "pin_change",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "i have no idea what the pin is for my checking account",
+    "response": "",
+    "intent": "pin_change",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "is my savings interest rate too high",
+    "response": "",
+    "intent": "interest_rate",
+    "mapped_intent": "product_consulting",
+    "risk_flags": [],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "hoe many vacation days are left for me",
+    "response": "",
+    "intent": "pto_balance",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "i'd like to improve my credit score",
+    "response": "",
+    "intent": "improve_credit_score",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "how much am i allowed to spend on my discover card",
+    "response": "",
+    "intent": "credit_limit",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "tell me the least i can pay",
+    "response": "",
+    "intent": "min_payment",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "how high is my balance on my discovery card",
+    "response": "",
+    "intent": "credit_limit",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "i think a thief used my card",
+    "response": "",
+    "intent": "report_fraud",
+    "mapped_intent": "complaint",
+    "risk_flags": [
+      "complaint_risk",
+      "legal_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "do i have a big shopping list",
+    "response": "",
+    "intent": "shopping_list",
+    "mapped_intent": "product_consulting",
+    "risk_flags": [],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "what number of vacation days do i have",
+    "response": "",
+    "intent": "pto_balance",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "does my american express card have any international transaction fees",
+    "response": "",
+    "intent": "international_fees",
+    "mapped_intent": "complaint",
+    "risk_flags": [
+      "complaint_risk",
+      "legal_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "do you prefer peanut butter or cheese for your celery",
+    "response": "",
+    "intent": "shopping_list",
+    "mapped_intent": "product_consulting",
+    "risk_flags": [],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "does my capital one credit card have international transaction fees",
+    "response": "",
+    "intent": "international_fees",
+    "mapped_intent": "complaint",
+    "risk_flags": [
+      "complaint_risk",
+      "legal_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "my visa card got stolen",
+    "response": "",
+    "intent": "report_lost_card",
+    "mapped_intent": "complaint",
+    "risk_flags": [
+      "complaint_risk",
+      "legal_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "how much pto do i have left",
+    "response": "",
+    "intent": "pto_balance",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "give me the date my bill is due",
+    "response": "",
+    "intent": "bill_due",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "what is my email subscriction services bill",
+    "response": "",
+    "intent": "bill_balance",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "lets look up my credit score",
+    "response": "",
+    "intent": "credit_score",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "can you explain why there is a hold on my savings account",
+    "response": "",
+    "intent": "account_blocked",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "i need to report a fraudulent transaction from postmates on my account",
+    "response": "",
+    "intent": "report_fraud",
+    "mapped_intent": "complaint",
+    "risk_flags": [
+      "complaint_risk",
+      "legal_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "can i raise the credit limit for my discover card",
+    "response": "",
+    "intent": "credit_limit_change",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "how many vacation days are available to me",
+    "response": "",
+    "intent": "pto_balance",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "please get milk removed from my shopping list and add bread",
+    "response": "",
+    "intent": "shopping_list_update",
+    "mapped_intent": "product_consulting",
+    "risk_flags": [],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "when do i need to pay my at&t bill",
+    "response": "",
+    "intent": "bill_due",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "whats the number of pto days i have to my availability",
+    "response": "",
+    "intent": "pto_balance",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "i would like to report a fraud on my wells fargo card, please",
+    "response": "",
+    "intent": "report_fraud",
+    "mapped_intent": "complaint",
+    "risk_flags": [
+      "complaint_risk",
+      "legal_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "tell me what my health plan is called",
+    "response": "",
+    "intent": "insurance",
+    "mapped_intent": "product_consulting",
+    "risk_flags": [],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "i need new insurance but dont know how to get it",
+    "response": "",
+    "intent": "insurance_change",
+    "mapped_intent": "product_consulting",
+    "risk_flags": [],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "i need my account frozen",
+    "response": "",
+    "intent": "freeze_account",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "can i increase the credit limit for my navy federal card",
+    "response": "",
+    "intent": "credit_limit_change",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "what transactions have i made in the last few weeks",
+    "response": "",
+    "intent": "transactions",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "what is the interest rate on my barclay card arrival credit card",
+    "response": "",
+    "intent": "interest_rate",
+    "mapped_intent": "product_consulting",
+    "risk_flags": [],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "show me the transaction on my car",
+    "response": "",
+    "intent": "transactions",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "someone stole my discover credit card",
+    "response": "",
+    "intent": "report_lost_card",
+    "mapped_intent": "complaint",
+    "risk_flags": [
+      "complaint_risk",
+      "legal_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "i need a block placed right away on my joint checking account",
+    "response": "",
+    "intent": "freeze_account",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "please tell me all the purchases on my hy-vee card for this statement period",
+    "response": "",
+    "intent": "transactions",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "i'd really like to pay this bill",
+    "response": "",
+    "intent": "pay_bill",
+    "mapped_intent": "refund",
+    "risk_flags": [
+      "compensation_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "what is my fica score",
+    "response": "",
+    "intent": "credit_score",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "help me find new insurance providers",
+    "response": "",
+    "intent": "insurance_change",
+    "mapped_intent": "product_consulting",
+    "risk_flags": [],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "how much vacation time have i accrued",
+    "response": "",
+    "intent": "pto_balance",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "i cannot remember what my pin is for my bank of america checking account",
+    "response": "",
+    "intent": "pin_change",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "can you help me pay my phone bill",
+    "response": "",
+    "intent": "pay_bill",
+    "mapped_intent": "refund",
+    "risk_flags": [
+      "compensation_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "are there any transaction fee if i use my boston private card in scotland",
+    "response": "",
+    "intent": "international_fees",
+    "mapped_intent": "complaint",
+    "risk_flags": [
+      "complaint_risk",
+      "legal_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "do i have peanuts on my shopping list if not please add it",
+    "response": "",
+    "intent": "shopping_list_update",
+    "mapped_intent": "product_consulting",
+    "risk_flags": [],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "what is the name of my health insurance",
+    "response": "",
+    "intent": "insurance",
+    "mapped_intent": "product_consulting",
+    "risk_flags": [],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "what is my bank of america card's rewards balance",
+    "response": "",
+    "intent": "rewards_balance",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "how much money is in my bank accounts",
+    "response": "",
+    "intent": "balance",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "can i up my credit limit to $1000",
+    "response": "",
+    "intent": "credit_limit_change",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "what is the limit on my victoria's secret card",
+    "response": "",
+    "intent": "credit_limit",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "did i remember to add milk to my shopping list",
+    "response": "",
+    "intent": "shopping_list",
+    "mapped_intent": "product_consulting",
+    "risk_flags": [],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "i need to transfer ten dollars from my bank of america account to my capital one account",
+    "response": "",
+    "intent": "transfer",
+    "mapped_intent": "refund",
+    "risk_flags": [
+      "compensation_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "i have how many tier credits on my caesar's card",
+    "response": "",
+    "intent": "rewards_balance",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "what is walker bank paying me in interest on my account",
+    "response": "",
+    "intent": "interest_rate",
+    "mapped_intent": "product_consulting",
+    "risk_flags": [],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "where is the list of my insurance benefits",
+    "response": "",
+    "intent": "insurance",
+    "mapped_intent": "product_consulting",
+    "risk_flags": [],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "could you tell me what my checking account balance is",
+    "response": "",
+    "intent": "balance",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "what amount did i spend last week",
+    "response": "",
+    "intent": "spending_history",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "what is the aid i get from these health benefits",
+    "response": "",
+    "intent": "insurance",
+    "mapped_intent": "product_consulting",
+    "risk_flags": [],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "i'd like to know about my health plan",
+    "response": "",
+    "intent": "insurance",
+    "mapped_intent": "product_consulting",
+    "risk_flags": [],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "pay my gas bill from my saving account",
+    "response": "",
+    "intent": "pay_bill",
+    "mapped_intent": "refund",
+    "risk_flags": [
+      "compensation_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "tell me the credit limit on my mastercard",
+    "response": "",
+    "intent": "credit_limit",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "how much pto have i accrued",
+    "response": "",
+    "intent": "pto_balance",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "i would love to know my credit score",
+    "response": "",
+    "intent": "credit_score",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "help me transfer $x from credit to debit",
+    "response": "",
+    "intent": "transfer",
+    "mapped_intent": "refund",
+    "risk_flags": [
+      "compensation_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "take 100 dollars from checking and send it to savings",
+    "response": "",
+    "intent": "transfer",
+    "mapped_intent": "refund",
+    "risk_flags": [
+      "compensation_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "is it possible to increase my credit limit to 1000 dollars",
+    "response": "",
+    "intent": "credit_limit_change",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "how much money did i spent on grocery recently",
+    "response": "",
+    "intent": "spending_history",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "what are the contents of my shopping list",
+    "response": "",
+    "intent": "shopping_list",
+    "mapped_intent": "product_consulting",
+    "risk_flags": [],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "can you share my credit score with me",
+    "response": "",
+    "intent": "credit_score",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "is it possible to increase the credit limit for my discover card",
+    "response": "",
+    "intent": "credit_limit_change",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "please tell me how many vacation days i currently have",
+    "response": "",
+    "intent": "pto_balance",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "what is my intetest rate",
+    "response": "",
+    "intent": "interest_rate",
+    "mapped_intent": "product_consulting",
+    "risk_flags": [],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "why in the world am i locked out of my bank account",
+    "response": "",
+    "intent": "account_blocked",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "do you know what my precise credit score is",
+    "response": "",
+    "intent": "credit_score",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "how much do i have to pay on my amazon card this month",
+    "response": "",
+    "intent": "bill_balance",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "add coke to my shopping cart",
+    "response": "",
+    "intent": "shopping_list_update",
+    "mapped_intent": "product_consulting",
+    "risk_flags": [],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "submit payment to duke energy for my electric bill",
+    "response": "",
+    "intent": "pay_bill",
+    "mapped_intent": "refund",
+    "risk_flags": [
+      "compensation_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "how much is my electric bill for this month",
+    "response": "",
+    "intent": "bill_balance",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "if i use my card in denver will i get charged extra",
+    "response": "",
+    "intent": "international_fees",
+    "mapped_intent": "complaint",
+    "risk_flags": [
+      "complaint_risk",
+      "legal_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "how tiny a payment can i make on electric bill",
+    "response": "",
+    "intent": "min_payment",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "pay my dte bill from my checking account please",
+    "response": "",
+    "intent": "pay_bill",
+    "mapped_intent": "refund",
+    "risk_flags": [
+      "compensation_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "do i have any remaining pto days",
+    "response": "",
+    "intent": "pto_balance",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "i need to know what is on my shopping list",
+    "response": "",
+    "intent": "shopping_list",
+    "mapped_intent": "product_consulting",
+    "risk_flags": [],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "i need you to change the pin on my bank of america account to be 1234",
+    "response": "",
+    "intent": "pin_change",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "would you be willing to add bread to my shopping list if i haven't already",
+    "response": "",
+    "intent": "shopping_list_update",
+    "mapped_intent": "product_consulting",
+    "risk_flags": [],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "send 20 dollars from savings to checking",
+    "response": "",
+    "intent": "transfer",
+    "mapped_intent": "refund",
+    "risk_flags": [
+      "compensation_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "can you take frozen food of my shopping list",
+    "response": "",
+    "intent": "shopping_list_update",
+    "mapped_intent": "product_consulting",
+    "risk_flags": [],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "change the pin on my redwood credit union account to be 1234",
+    "response": "",
+    "intent": "pin_change",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "how much do my bills cost this month",
+    "response": "",
+    "intent": "bill_balance",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "what's the balance on my sprint account",
+    "response": "",
+    "intent": "bill_balance",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "could you tell me how to make changes to my insurance policy",
+    "response": "",
+    "intent": "insurance_change",
+    "mapped_intent": "product_consulting",
+    "risk_flags": [],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "how many pto days do i have left",
+    "response": "",
+    "intent": "pto_balance",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "is there any info on my savings interest rate online",
+    "response": "",
+    "intent": "interest_rate",
+    "mapped_intent": "product_consulting",
+    "risk_flags": [],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "i need to transfer from one account to my second one",
+    "response": "",
+    "intent": "transfer",
+    "mapped_intent": "refund",
+    "risk_flags": [
+      "compensation_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "what benefits are associated with my insurance",
+    "response": "",
+    "intent": "insurance",
+    "mapped_intent": "product_consulting",
+    "risk_flags": [],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "i'd like to change my pin number for my wells fargo account",
+    "response": "",
+    "intent": "pin_change",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "i would like to change my credit limit",
+    "response": "",
+    "intent": "credit_limit_change",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "how much can i charge on my visa",
+    "response": "",
+    "intent": "credit_limit",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "change pin to 1234 on account banner",
+    "response": "",
+    "intent": "pin_change",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "do a car payment from my savings account",
+    "response": "",
+    "intent": "pay_bill",
+    "mapped_intent": "refund",
+    "risk_flags": [
+      "compensation_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "can you confirm my account's blocked and tell me why",
+    "response": "",
+    "intent": "account_blocked",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "what did car insurance run me this year",
+    "response": "",
+    "intent": "spending_history",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "send fraudulent activity information",
+    "response": "",
+    "intent": "report_fraud",
+    "mapped_intent": "complaint",
+    "risk_flags": [
+      "complaint_risk",
+      "legal_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "i need help investigating a suspicious transaction",
+    "response": "",
+    "intent": "report_fraud",
+    "mapped_intent": "complaint",
+    "risk_flags": [
+      "complaint_risk",
+      "legal_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "i need my credit score",
+    "response": "",
+    "intent": "credit_score",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "can you tell me my current bank accounts balance",
+    "response": "",
+    "intent": "balance",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "if i am in tulsa, will i get charged extra if i use my card",
+    "response": "",
+    "intent": "international_fees",
+    "mapped_intent": "complaint",
+    "risk_flags": [
+      "complaint_risk",
+      "legal_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "what's my health plan",
+    "response": "",
+    "intent": "insurance",
+    "mapped_intent": "product_consulting",
+    "risk_flags": [],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "remove corn from my shopping list",
+    "response": "",
+    "intent": "shopping_list_update",
+    "mapped_intent": "product_consulting",
+    "risk_flags": [],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "i would like to put carrots on my list for shopping",
+    "response": "",
+    "intent": "shopping_list_update",
+    "mapped_intent": "product_consulting",
+    "risk_flags": [],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "send fifty dollars from me to carrie",
+    "response": "",
+    "intent": "transfer",
+    "mapped_intent": "refund",
+    "risk_flags": [
+      "compensation_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "i'd like you to add oranges to my shopping list",
+    "response": "",
+    "intent": "shopping_list_update",
+    "mapped_intent": "product_consulting",
+    "risk_flags": [],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "what is the minimum payment",
+    "response": "",
+    "intent": "min_payment",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "please tell me my in-person transactions for the last three days using my debit card",
+    "response": "",
+    "intent": "transactions",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "i have a fraudulent transaction from wal mart on my account right now",
+    "response": "",
+    "intent": "report_fraud",
+    "mapped_intent": "complaint",
+    "risk_flags": [
+      "complaint_risk",
+      "legal_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "would you tell me my spending limit",
+    "response": "",
+    "intent": "credit_limit",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "what is the minimum payment on my chase mastercard",
+    "response": "",
+    "intent": "min_payment",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "what withdrawals were there on my account yesterday",
+    "response": "",
+    "intent": "transactions",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "i want help adjusting my insurance policy",
+    "response": "",
+    "intent": "insurance_change",
+    "mapped_intent": "product_consulting",
+    "risk_flags": [],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "can you help me increase my credit limit",
+    "response": "",
+    "intent": "credit_limit_change",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "what transactions have i accrued buying dog food",
+    "response": "",
+    "intent": "transactions",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "i must know the interest rate on my bank of america cd account",
+    "response": "",
+    "intent": "interest_rate",
+    "mapped_intent": "product_consulting",
+    "risk_flags": [],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "do i owe any bills",
+    "response": "",
+    "intent": "bill_balance",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "on account ending in 3838 change my pin to 1234",
+    "response": "",
+    "intent": "pin_change",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "i keep trying to figure out if i have enough money in my chase account to purchase a new set of tires",
+    "response": "",
+    "intent": "balance",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "what's the least amount i can pay on this bill",
+    "response": "",
+    "intent": "min_payment",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "i have how many vacation days saved up",
+    "response": "",
+    "intent": "pto_balance",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "tell me the limit for credit on my mastercard",
+    "response": "",
+    "intent": "credit_limit",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "what number of vacation days remain for me",
+    "response": "",
+    "intent": "pto_balance",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "could you list my health benefits",
+    "response": "",
+    "intent": "insurance",
+    "mapped_intent": "product_consulting",
+    "risk_flags": [],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "i need 200 dollars transferred from my long island savings account to my chase checking",
+    "response": "",
+    "intent": "transfer",
+    "mapped_intent": "refund",
+    "risk_flags": [
+      "compensation_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "let me know how much money i will need to spend on paying bills",
+    "response": "",
+    "intent": "bill_balance",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "am i able to increase the limit on my visa card",
+    "response": "",
+    "intent": "credit_limit_change",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "can you tell me my current interest rate",
+    "response": "",
+    "intent": "interest_rate",
+    "mapped_intent": "product_consulting",
+    "risk_flags": [],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "add sprite to my shopping list",
+    "response": "",
+    "intent": "shopping_list_update",
+    "mapped_intent": "product_consulting",
+    "risk_flags": [],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "pay my internet bill with my discover account",
+    "response": "",
+    "intent": "pay_bill",
+    "mapped_intent": "refund",
+    "risk_flags": [
+      "compensation_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "what's my current credit rating",
+    "response": "",
+    "intent": "credit_score",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "tell me the most recent charges on my chase credit card before i pay the bill",
+    "response": "",
+    "intent": "transactions",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "how much is my gas bill",
+    "response": "",
+    "intent": "bill_balance",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "what was my health plan again",
+    "response": "",
+    "intent": "insurance",
+    "mapped_intent": "product_consulting",
+    "risk_flags": [],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "i need to report a stolen card",
+    "response": "",
+    "intent": "report_lost_card",
+    "mapped_intent": "complaint",
+    "risk_flags": [
+      "complaint_risk",
+      "legal_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "pay my monthy mortgage payment",
+    "response": "",
+    "intent": "pay_bill",
+    "mapped_intent": "refund",
+    "risk_flags": [
+      "compensation_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "how many vacation days do i have saved up",
+    "response": "",
+    "intent": "pto_balance",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "how many rewards points do i have for my chase card",
+    "response": "",
+    "intent": "rewards_balance",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "what's the due date for the renting bill",
+    "response": "",
+    "intent": "bill_due",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "can you tell me how many points i have to date with my capital one miles card",
+    "response": "",
+    "intent": "rewards_balance",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "tell me how i can get a new pin number",
+    "response": "",
+    "intent": "pin_change",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "turn off my bank account",
+    "response": "",
+    "intent": "freeze_account",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "the bill's minimum payment, what is it",
+    "response": "",
+    "intent": "min_payment",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "i need to report a stolen card, please",
+    "response": "",
+    "intent": "report_lost_card",
+    "mapped_intent": "complaint",
+    "risk_flags": [
+      "complaint_risk",
+      "legal_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "i'd like to know how changes are made to my insurance policy",
+    "response": "",
+    "intent": "insurance_change",
+    "mapped_intent": "product_consulting",
+    "risk_flags": [],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "can you tell me about my credit rating",
+    "response": "",
+    "intent": "credit_score",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "please tell me the minimum i can pay on my electric bill",
+    "response": "",
+    "intent": "min_payment",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "i need some information on a recent transaction",
+    "response": "",
+    "intent": "transactions",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "i would like to see the transactions i made last week",
+    "response": "",
+    "intent": "transactions",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "what does my shopping list entail",
+    "response": "",
+    "intent": "shopping_list",
+    "mapped_intent": "product_consulting",
+    "risk_flags": [],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "why is there a hold on my capital one checking account",
+    "response": "",
+    "intent": "account_blocked",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "find my interest rate",
+    "response": "",
+    "intent": "interest_rate",
+    "mapped_intent": "product_consulting",
+    "risk_flags": [],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "could you help me out with a new renters' insurance plan",
+    "response": "",
+    "intent": "insurance_change",
+    "mapped_intent": "product_consulting",
+    "risk_flags": [],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "can you tell me my checking account balance",
+    "response": "",
+    "intent": "balance",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "when's the gas bill due",
+    "response": "",
+    "intent": "bill_due",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "how much did i spend on food",
+    "response": "",
+    "intent": "spending_history",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "how many vacation days do i have left",
+    "response": "",
+    "intent": "pto_balance",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "when i am in spain using my cmaden card, is there any transaction fee",
+    "response": "",
+    "intent": "international_fees",
+    "mapped_intent": "complaint",
+    "risk_flags": [
+      "complaint_risk",
+      "legal_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "i would like a new insurance plan",
+    "response": "",
+    "intent": "insurance_change",
+    "mapped_intent": "product_consulting",
+    "risk_flags": [],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "how can i build credit",
+    "response": "",
+    "intent": "improve_credit_score",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "can you find out why is my bank account frozen",
+    "response": "",
+    "intent": "account_blocked",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "can you tell me what the amount on my directv bill is",
+    "response": "",
+    "intent": "bill_balance",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "what would the interest rate at wells fargo be",
+    "response": "",
+    "intent": "interest_rate",
+    "mapped_intent": "product_consulting",
+    "risk_flags": [],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "can you tell me my shopping list items, please",
+    "response": "",
+    "intent": "shopping_list",
+    "mapped_intent": "product_consulting",
+    "risk_flags": [],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "on the shopping list did i put tomato",
+    "response": "",
+    "intent": "shopping_list",
+    "mapped_intent": "product_consulting",
+    "risk_flags": [],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "how much do i have to pay for my shell gas card bill",
+    "response": "",
+    "intent": "bill_balance",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "can i afford a new tv from my savings account",
+    "response": "",
+    "intent": "balance",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "make a transfer of $200 from my savings account to my checking account",
+    "response": "",
+    "intent": "transfer",
+    "mapped_intent": "refund",
+    "risk_flags": [
+      "compensation_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "what are the benefits i get for my health",
+    "response": "",
+    "intent": "insurance",
+    "mapped_intent": "product_consulting",
+    "risk_flags": [],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "what rental insurance policy do you recommend",
+    "response": "",
+    "intent": "insurance_change",
+    "mapped_intent": "product_consulting",
+    "risk_flags": [],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "what is my american express card's rewards balance",
+    "response": "",
+    "intent": "rewards_balance",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "how can i keep my credit score from going down",
+    "response": "",
+    "intent": "improve_credit_score",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "how much is my internet bill",
+    "response": "",
+    "intent": "bill_balance",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "i need to report my stolen card",
+    "response": "",
+    "intent": "report_lost_card",
+    "mapped_intent": "complaint",
+    "risk_flags": [
+      "complaint_risk",
+      "legal_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "tell me how to change my insurance policy",
+    "response": "",
+    "intent": "insurance_change",
+    "mapped_intent": "product_consulting",
+    "risk_flags": [],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "what should i do when my visa card is stolen",
+    "response": "",
+    "intent": "report_lost_card",
+    "mapped_intent": "complaint",
+    "risk_flags": [
+      "complaint_risk",
+      "legal_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "pay a bill!",
+    "response": "",
+    "intent": "pay_bill",
+    "mapped_intent": "refund",
+    "risk_flags": [
+      "compensation_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "help, my account is blocked",
+    "response": "",
+    "intent": "account_blocked",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "what is the credit limit for my bank of america card",
+    "response": "",
+    "intent": "credit_limit",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "do i have enough money in my chime bank account to take ashley to the movies tuesday",
+    "response": "",
+    "intent": "balance",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "i'm out of laundry detergent so will you put that on my shopping list",
+    "response": "",
+    "intent": "shopping_list_update",
+    "mapped_intent": "product_consulting",
+    "risk_flags": [],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "it looks like my account is blocked but i have no clue why",
+    "response": "",
+    "intent": "account_blocked",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "how can i stop my credit score from dropping",
+    "response": "",
+    "intent": "improve_credit_score",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "how to improve my credit score",
+    "response": "",
+    "intent": "improve_credit_score",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "freeze my account immediately",
+    "response": "",
+    "intent": "freeze_account",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "my new debit card is lost and i need to report it",
+    "response": "",
+    "intent": "report_lost_card",
+    "mapped_intent": "complaint",
+    "risk_flags": [
+      "complaint_risk",
+      "legal_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "show me the last five transactions",
+    "response": "",
+    "intent": "transactions",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "what insurance benefits am i getting",
+    "response": "",
+    "intent": "insurance",
+    "mapped_intent": "product_consulting",
+    "risk_flags": [],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "let me check my transaction for first bank card",
+    "response": "",
+    "intent": "transactions",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "i need to talk to someone about a transaction that was not made by me on my chase account",
+    "response": "",
+    "intent": "report_fraud",
+    "mapped_intent": "complaint",
+    "risk_flags": [
+      "complaint_risk",
+      "legal_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "transfer $5 from savings to checking",
+    "response": "",
+    "intent": "transfer",
+    "mapped_intent": "refund",
+    "risk_flags": [
+      "compensation_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "please put milk on my list i just used the last of it",
+    "response": "",
+    "intent": "shopping_list_update",
+    "mapped_intent": "product_consulting",
+    "risk_flags": [],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "are you able to help me pay my mortgage",
+    "response": "",
+    "intent": "pay_bill",
+    "mapped_intent": "refund",
+    "risk_flags": [
+      "compensation_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "was my last transaction at walmart",
+    "response": "",
+    "intent": "transactions",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "is it too much trouble to put a stop on my bank account",
+    "response": "",
+    "intent": "freeze_account",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "how much in total will i be paying for bills",
+    "response": "",
+    "intent": "bill_balance",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "help me determine my interest rate",
+    "response": "",
+    "intent": "interest_rate",
+    "mapped_intent": "product_consulting",
+    "risk_flags": [],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "i don't have any more steak, please put that on my grocery list",
+    "response": "",
+    "intent": "shopping_list_update",
+    "mapped_intent": "product_consulting",
+    "risk_flags": [],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "how do i find out my credit rating",
+    "response": "",
+    "intent": "credit_score",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "is my credit good enough to get a new card",
+    "response": "",
+    "intent": "credit_score",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "how do i report fraud on my chase bank card",
+    "response": "",
+    "intent": "report_fraud",
+    "mapped_intent": "complaint",
+    "risk_flags": [
+      "complaint_risk",
+      "legal_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "i need to report that my card is lost",
+    "response": "",
+    "intent": "report_lost_card",
+    "mapped_intent": "complaint",
+    "risk_flags": [
+      "complaint_risk",
+      "legal_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "can you pay the bill now",
+    "response": "",
+    "intent": "pay_bill",
+    "mapped_intent": "refund",
+    "risk_flags": [
+      "compensation_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "can you tell me my credit rating",
+    "response": "",
+    "intent": "credit_score",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "i want to report fraudulent activity on my quicksilver card",
+    "response": "",
+    "intent": "report_fraud",
+    "mapped_intent": "complaint",
+    "risk_flags": [
+      "complaint_risk",
+      "legal_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "pay my cell bill from my deposit account",
+    "response": "",
+    "intent": "pay_bill",
+    "mapped_intent": "refund",
+    "risk_flags": [
+      "compensation_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "please help with paying my cell phone bill",
+    "response": "",
+    "intent": "pay_bill",
+    "mapped_intent": "refund",
+    "risk_flags": [
+      "compensation_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "what's the amount of points i have earned with my discover card",
+    "response": "",
+    "intent": "rewards_balance",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "please switch $s checking to mortage",
+    "response": "",
+    "intent": "transfer",
+    "mapped_intent": "refund",
+    "risk_flags": [
+      "compensation_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "is there a better way to check my visa rewards card balance",
+    "response": "",
+    "intent": "rewards_balance",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "how do i build my credit score",
+    "response": "",
+    "intent": "improve_credit_score",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "let me know the amount i spent on food last month",
+    "response": "",
+    "intent": "spending_history",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "due to fraudulent activity on my card i need to make a report",
+    "response": "",
+    "intent": "report_fraud",
+    "mapped_intent": "complaint",
+    "risk_flags": [
+      "complaint_risk",
+      "legal_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "i want a block placed on my college fund account immediately",
+    "response": "",
+    "intent": "freeze_account",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "when is my kaiser bill due",
+    "response": "",
+    "intent": "bill_due",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "how many pto days do i have for the year",
+    "response": "",
+    "intent": "pto_balance",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "i am very confused about the block that seems to have been placed on my account why is it there",
+    "response": "",
+    "intent": "account_blocked",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "when is too late to pay my cable bill",
+    "response": "",
+    "intent": "bill_due",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "i cannot remember what my pin is for my bank of america checking account this moment",
+    "response": "",
+    "intent": "pin_change",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "can you tell me how changes on my insurance policy can be made",
+    "response": "",
+    "intent": "insurance_change",
+    "mapped_intent": "product_consulting",
+    "risk_flags": [],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "i have detected fraudulent activity on my account",
+    "response": "",
+    "intent": "report_fraud",
+    "mapped_intent": "complaint",
+    "risk_flags": [
+      "complaint_risk",
+      "legal_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "what is my cable bill minimum payment",
+    "response": "",
+    "intent": "min_payment",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "what is the insurance plan that i'm signed up for",
+    "response": "",
+    "intent": "insurance",
+    "mapped_intent": "product_consulting",
+    "risk_flags": [],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "is a toothbrush on my shopping list",
+    "response": "",
+    "intent": "shopping_list",
+    "mapped_intent": "product_consulting",
+    "risk_flags": [],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "please put a block on my us bank account immediately",
+    "response": "",
+    "intent": "freeze_account",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "i am nost sure why my account is blocked",
+    "response": "",
+    "intent": "account_blocked",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "what is the interest rate on my chase slate credit card",
+    "response": "",
+    "intent": "interest_rate",
+    "mapped_intent": "product_consulting",
+    "risk_flags": [],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "transfer $40 from account a to b",
+    "response": "",
+    "intent": "transfer",
+    "mapped_intent": "refund",
+    "risk_flags": [
+      "compensation_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "how much is available in my savings account",
+    "response": "",
+    "intent": "balance",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "i want to know how much vacation time i can use",
+    "response": "",
+    "intent": "pto_balance",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "what methods can i use to improve my credit score",
+    "response": "",
+    "intent": "improve_credit_score",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "credit limit",
+    "response": "",
+    "intent": "credit_limit",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "can i pay a bill",
+    "response": "",
+    "intent": "pay_bill",
+    "mapped_intent": "refund",
+    "risk_flags": [
+      "compensation_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "what is my current balance on my home equity line of credit",
+    "response": "",
+    "intent": "balance",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "tell me the highest amount i can spend on my discover card",
+    "response": "",
+    "intent": "credit_limit",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "i have how many vacation days left this year",
+    "response": "",
+    "intent": "pto_balance",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "put a block on my amalgamated bank account right now",
+    "response": "",
+    "intent": "freeze_account",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "can you let me know what my credit limit is for my visa card",
+    "response": "",
+    "intent": "credit_limit",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "what is the minimum i can pay for my telephone bill",
+    "response": "",
+    "intent": "min_payment",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "are transaction fees charged for my aaa card in canada",
+    "response": "",
+    "intent": "international_fees",
+    "mapped_intent": "complaint",
+    "risk_flags": [
+      "complaint_risk",
+      "legal_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "i no longer need milk, so forget that",
+    "response": "",
+    "intent": "shopping_list_update",
+    "mapped_intent": "product_consulting",
+    "risk_flags": [],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "oh no, report my card, it's stolen",
+    "response": "",
+    "intent": "report_lost_card",
+    "mapped_intent": "complaint",
+    "risk_flags": [
+      "complaint_risk",
+      "legal_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "how can i see my rewards for my visa card",
+    "response": "",
+    "intent": "rewards_balance",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "what do i have on my list for shopping",
+    "response": "",
+    "intent": "shopping_list",
+    "mapped_intent": "product_consulting",
+    "risk_flags": [],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "how many points do i have on my mlife card",
+    "response": "",
+    "intent": "rewards_balance",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "can i see my credit score",
+    "response": "",
+    "intent": "credit_score",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "what do i need to do to change my abc bank account pin number",
+    "response": "",
+    "intent": "pin_change",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "i wanna know my bank balance",
+    "response": "",
+    "intent": "balance",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "what can i put on my bank of america card",
+    "response": "",
+    "intent": "credit_limit",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "what are ways to build credit",
+    "response": "",
+    "intent": "improve_credit_score",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "i need to reset my pin number",
+    "response": "",
+    "intent": "pin_change",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "what all do i have on my shopping list",
+    "response": "",
+    "intent": "shopping_list",
+    "mapped_intent": "product_consulting",
+    "risk_flags": [],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "i need help since someone stole my card",
+    "response": "",
+    "intent": "report_lost_card",
+    "mapped_intent": "complaint",
+    "risk_flags": [
+      "complaint_risk",
+      "legal_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "how much did i spend the past 3 days",
+    "response": "",
+    "intent": "spending_history",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "ways to build credit",
+    "response": "",
+    "intent": "improve_credit_score",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "where is my credit score located",
+    "response": "",
+    "intent": "credit_score",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "what is the interest rate on my bank of america cd account",
+    "response": "",
+    "intent": "interest_rate",
+    "mapped_intent": "product_consulting",
+    "risk_flags": [],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "how many vacation days do i have remaining",
+    "response": "",
+    "intent": "pto_balance",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "i want to pay my amazon credit card but i need to know the last few transactions",
+    "response": "",
+    "intent": "transactions",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "my account is showing a charge to venmo that i did not make",
+    "response": "",
+    "intent": "report_fraud",
+    "mapped_intent": "complaint",
+    "risk_flags": [
+      "complaint_risk",
+      "legal_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "what is my savings balance",
+    "response": "",
+    "intent": "balance",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "read me my shopping list",
+    "response": "",
+    "intent": "shopping_list",
+    "mapped_intent": "product_consulting",
+    "risk_flags": [],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "help me get access to my recent transaction history",
+    "response": "",
+    "intent": "transactions",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "how high is my spending limit on my wells fargo card",
+    "response": "",
+    "intent": "credit_limit",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "can you help me deal with this fraudulent transaction from verizon on my account",
+    "response": "",
+    "intent": "report_fraud",
+    "mapped_intent": "complaint",
+    "risk_flags": [
+      "complaint_risk",
+      "legal_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "pay my water bill with my charles schwab account",
+    "response": "",
+    "intent": "pay_bill",
+    "mapped_intent": "refund",
+    "risk_flags": [
+      "compensation_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "give me my credit score",
+    "response": "",
+    "intent": "credit_score",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "i think my account is block but i am not sure why",
+    "response": "",
+    "intent": "account_blocked",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "what stuff did i put on my shopping list",
+    "response": "",
+    "intent": "shopping_list",
+    "mapped_intent": "product_consulting",
+    "risk_flags": [],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "i want to change the pin number on my credit union account",
+    "response": "",
+    "intent": "pin_change",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "can you tell me how much i spent on grocery shopping recently",
+    "response": "",
+    "intent": "spending_history",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "i'm out of cleaning supplies, remind me on my list",
+    "response": "",
+    "intent": "shopping_list_update",
+    "mapped_intent": "product_consulting",
+    "risk_flags": [],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "pay my cable bill directly from my checking account",
+    "response": "",
+    "intent": "pay_bill",
+    "mapped_intent": "refund",
+    "risk_flags": [
+      "compensation_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "what pto time to i have remaining",
+    "response": "",
+    "intent": "pto_balance",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "i need to put a freeze on my banking account",
+    "response": "",
+    "intent": "freeze_account",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "can i increase my credit limit to 1200 dollars",
+    "response": "",
+    "intent": "credit_limit_change",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "tell me ways to improve my credit score",
+    "response": "",
+    "intent": "improve_credit_score",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "please block my chase account right away",
+    "response": "",
+    "intent": "freeze_account",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "have i been spending a lot on roast beef lately",
+    "response": "",
+    "intent": "spending_history",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "i want to pay off my student loan",
+    "response": "",
+    "intent": "pay_bill",
+    "mapped_intent": "refund",
+    "risk_flags": [
+      "compensation_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "i'd like to find the date that my gas bill is due",
+    "response": "",
+    "intent": "bill_due",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "what can you see on my shopping list",
+    "response": "",
+    "intent": "shopping_list",
+    "mapped_intent": "product_consulting",
+    "risk_flags": [],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "tell me my minimum citicard payment",
+    "response": "",
+    "intent": "min_payment",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "pay my mortgage from my checkings accounts",
+    "response": "",
+    "intent": "pay_bill",
+    "mapped_intent": "refund",
+    "risk_flags": [
+      "compensation_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "i can't find my mastercard and i want to report it as lost, please",
+    "response": "",
+    "intent": "report_lost_card",
+    "mapped_intent": "complaint",
+    "risk_flags": [
+      "complaint_risk",
+      "legal_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "i think my account is blocked but i do not know the reason",
+    "response": "",
+    "intent": "account_blocked",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "what benefits does my insurance have",
+    "response": "",
+    "intent": "insurance",
+    "mapped_intent": "product_consulting",
+    "risk_flags": [],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "what's my visa cards balance for rewards",
+    "response": "",
+    "intent": "rewards_balance",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "can you put a block on my chase account right away",
+    "response": "",
+    "intent": "freeze_account",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "does my bank of america card have international transaction fees",
+    "response": "",
+    "intent": "international_fees",
+    "mapped_intent": "complaint",
+    "risk_flags": [
+      "complaint_risk",
+      "legal_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "how can i make changes for my insurance policy",
+    "response": "",
+    "intent": "insurance_change",
+    "mapped_intent": "product_consulting",
+    "risk_flags": [],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "please add sugar to my shopping list if it's not on it",
+    "response": "",
+    "intent": "shopping_list_update",
+    "mapped_intent": "product_consulting",
+    "risk_flags": [],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "i want a new policy with long-term care insurance",
+    "response": "",
+    "intent": "insurance_change",
+    "mapped_intent": "product_consulting",
+    "risk_flags": [],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "are there transaction fees charged to my discover card in japan",
+    "response": "",
+    "intent": "international_fees",
+    "mapped_intent": "complaint",
+    "risk_flags": [
+      "complaint_risk",
+      "legal_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "can you tell me my minimum due for citicard",
+    "response": "",
+    "intent": "min_payment",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "how much money do i have in my account",
+    "response": "",
+    "intent": "balance",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "i need you to freeze my account",
+    "response": "",
+    "intent": "freeze_account",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "for my water and electricity, how much is the bill",
+    "response": "",
+    "intent": "bill_balance",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "can you add cherrios to my shopping list",
+    "response": "",
+    "intent": "shopping_list_update",
+    "mapped_intent": "product_consulting",
+    "risk_flags": [],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "tell me how many vacation days i have",
+    "response": "",
+    "intent": "pto_balance",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "what would cause my bank account to be frozen",
+    "response": "",
+    "intent": "account_blocked",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "i forgot the pin number for my college fund account",
+    "response": "",
+    "intent": "pin_change",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "send 100 dollars from my vanguard money market to my wells fargo savings",
+    "response": "",
+    "intent": "transfer",
+    "mapped_intent": "refund",
+    "risk_flags": [
+      "compensation_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "transfer 100 dollars between checking and savings",
+    "response": "",
+    "intent": "transfer",
+    "mapped_intent": "refund",
+    "risk_flags": [
+      "compensation_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "verify with me my credit score",
+    "response": "",
+    "intent": "credit_score",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "i really want to pay my cable bill from my checking account",
+    "response": "",
+    "intent": "pay_bill",
+    "mapped_intent": "refund",
+    "risk_flags": [
+      "compensation_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "do i incur extra fees if i use my card in london",
+    "response": "",
+    "intent": "international_fees",
+    "mapped_intent": "complaint",
+    "risk_flags": [
+      "complaint_risk",
+      "legal_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "i need to know my credit's limit",
+    "response": "",
+    "intent": "credit_limit",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "i am trying to find my credit score",
+    "response": "",
+    "intent": "credit_score",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "is it possible to increase my visa card limit",
+    "response": "",
+    "intent": "credit_limit_change",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "i'm pretty sure this charge is fraudulent",
+    "response": "",
+    "intent": "report_fraud",
+    "mapped_intent": "complaint",
+    "risk_flags": [
+      "complaint_risk",
+      "legal_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "help me report a lost card",
+    "response": "",
+    "intent": "report_lost_card",
+    "mapped_intent": "complaint",
+    "risk_flags": [
+      "complaint_risk",
+      "legal_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "write apples on my shopping list",
+    "response": "",
+    "intent": "shopping_list_update",
+    "mapped_intent": "product_consulting",
+    "risk_flags": [],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "what day is the cable bill owed on",
+    "response": "",
+    "intent": "bill_due",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "can you put a block on my visa account right away",
+    "response": "",
+    "intent": "freeze_account",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "i wish to know my credit limit for my credit card",
+    "response": "",
+    "intent": "credit_limit",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "i'm out of paper towels so will you put that on my shopping list",
+    "response": "",
+    "intent": "shopping_list_update",
+    "mapped_intent": "product_consulting",
+    "risk_flags": [],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "list everything on my shopping list",
+    "response": "",
+    "intent": "shopping_list",
+    "mapped_intent": "product_consulting",
+    "risk_flags": [],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "i'd like to know how many vacation days i have",
+    "response": "",
+    "intent": "pto_balance",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "i would like to pay my cell phone bill",
+    "response": "",
+    "intent": "pay_bill",
+    "mapped_intent": "refund",
+    "risk_flags": [
+      "compensation_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "i am hoping to switch insurance plans",
+    "response": "",
+    "intent": "insurance_change",
+    "mapped_intent": "product_consulting",
+    "risk_flags": [],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "i need a stop placed on my bank account please",
+    "response": "",
+    "intent": "freeze_account",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "what can i do to keep my credit in good standing",
+    "response": "",
+    "intent": "improve_credit_score",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "i think my chase account has been compromised and fraud committed",
+    "response": "",
+    "intent": "report_fraud",
+    "mapped_intent": "complaint",
+    "risk_flags": [
+      "complaint_risk",
+      "legal_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "what would cause me to be locked out of my bank account",
+    "response": "",
+    "intent": "account_blocked",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "please pay my utility bill from my wells fargo checking account",
+    "response": "",
+    "intent": "pay_bill",
+    "mapped_intent": "refund",
+    "risk_flags": [
+      "compensation_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "does american express charge transaction fees for iceland",
+    "response": "",
+    "intent": "international_fees",
+    "mapped_intent": "complaint",
+    "risk_flags": [
+      "complaint_risk",
+      "legal_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "i need help to pay my electric bill",
+    "response": "",
+    "intent": "pay_bill",
+    "mapped_intent": "refund",
+    "risk_flags": [
+      "compensation_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "could you tell me what kind of money i've recently spent",
+    "response": "",
+    "intent": "spending_history",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "can you tell me what my interest rate from first federal is",
+    "response": "",
+    "intent": "interest_rate",
+    "mapped_intent": "product_consulting",
+    "risk_flags": [],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "could you transfer $x from saving to checking",
+    "response": "",
+    "intent": "transfer",
+    "mapped_intent": "refund",
+    "risk_flags": [
+      "compensation_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "i need to know how to report fraud on my discover card",
+    "response": "",
+    "intent": "report_fraud",
+    "mapped_intent": "complaint",
+    "risk_flags": [
+      "complaint_risk",
+      "legal_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "what is the process to move money from one account to another",
+    "response": "",
+    "intent": "transfer",
+    "mapped_intent": "refund",
+    "risk_flags": [
+      "compensation_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "on my shopping list, remove bread and add milk",
+    "response": "",
+    "intent": "shopping_list_update",
+    "mapped_intent": "product_consulting",
+    "risk_flags": [],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "i need to know what my health benefits cover, please",
+    "response": "",
+    "intent": "insurance",
+    "mapped_intent": "product_consulting",
+    "risk_flags": [],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "how do i tell mastercard about a fraudulent charge",
+    "response": "",
+    "intent": "report_fraud",
+    "mapped_intent": "complaint",
+    "risk_flags": [
+      "complaint_risk",
+      "legal_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "how is my credit limit",
+    "response": "",
+    "intent": "credit_limit",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "how much have i spent lately",
+    "response": "",
+    "intent": "spending_history",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "someone misused my card and put fraudulent transactions on it",
+    "response": "",
+    "intent": "report_fraud",
+    "mapped_intent": "complaint",
+    "risk_flags": [
+      "complaint_risk",
+      "legal_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "would you please put a block on my chase account right away",
+    "response": "",
+    "intent": "freeze_account",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "tell me what the interest rate is on my personal loan through chase",
+    "response": "",
+    "intent": "interest_rate",
+    "mapped_intent": "product_consulting",
+    "risk_flags": [],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "what interest rate am i getting currently from oak bank",
+    "response": "",
+    "intent": "interest_rate",
+    "mapped_intent": "product_consulting",
+    "risk_flags": [],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "have i been spending a lot on shoes lately",
+    "response": "",
+    "intent": "spending_history",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "did i put milk on the shopping list",
+    "response": "",
+    "intent": "shopping_list",
+    "mapped_intent": "product_consulting",
+    "risk_flags": [],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "i may have a fraudulent transaction",
+    "response": "",
+    "intent": "report_fraud",
+    "mapped_intent": "complaint",
+    "risk_flags": [
+      "complaint_risk",
+      "legal_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "tell me what's on my shopping list",
+    "response": "",
+    "intent": "shopping_list",
+    "mapped_intent": "product_consulting",
+    "risk_flags": [],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "show me the minimum payment for my boat bill",
+    "response": "",
+    "intent": "min_payment",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "put spaghetti on my shopping list cause i'm out of it please",
+    "response": "",
+    "intent": "shopping_list_update",
+    "mapped_intent": "product_consulting",
+    "risk_flags": [],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "was i spending too much money on doughnuts last week",
+    "response": "",
+    "intent": "spending_history",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "what is the amount i owe on my phone",
+    "response": "",
+    "intent": "bill_balance",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "could you check my account and let me know how much i spent on food in january",
+    "response": "",
+    "intent": "spending_history",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "i need you to block my mutualone account now",
+    "response": "",
+    "intent": "freeze_account",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "i need to pay my water bill",
+    "response": "",
+    "intent": "pay_bill",
+    "mapped_intent": "refund",
+    "risk_flags": [
+      "compensation_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "do i need to pay my credit card bill already",
+    "response": "",
+    "intent": "bill_due",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "send 2000 dollars between chase and rabobank accounts",
+    "response": "",
+    "intent": "transfer",
+    "mapped_intent": "refund",
+    "risk_flags": [
+      "compensation_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "i need to pay my electric bill now",
+    "response": "",
+    "intent": "pay_bill",
+    "mapped_intent": "refund",
+    "risk_flags": [
+      "compensation_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "take frozen food off my shopping list",
+    "response": "",
+    "intent": "shopping_list_update",
+    "mapped_intent": "product_consulting",
+    "risk_flags": [],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "have i been spending a lot on groceries lately",
+    "response": "",
+    "intent": "spending_history",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "i would like to increase my bank of america credit limit, can you help me",
+    "response": "",
+    "intent": "credit_limit_change",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "i need to change my pin number for my savings account",
+    "response": "",
+    "intent": "pin_change",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "what were my purchases on visa card last month",
+    "response": "",
+    "intent": "transactions",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "i need to pay my bill",
+    "response": "",
+    "intent": "pay_bill",
+    "mapped_intent": "refund",
+    "risk_flags": [
+      "compensation_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "what do i need to buy at the store",
+    "response": "",
+    "intent": "shopping_list",
+    "mapped_intent": "product_consulting",
+    "risk_flags": [],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "insurance benefit details",
+    "response": "",
+    "intent": "insurance",
+    "mapped_intent": "product_consulting",
+    "risk_flags": [],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "how much money is left in my bank accounts",
+    "response": "",
+    "intent": "balance",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "i want seventy bucks transferred from b of a to chase",
+    "response": "",
+    "intent": "transfer",
+    "mapped_intent": "refund",
+    "risk_flags": [
+      "compensation_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  },
+  {
+    "instruction": "i need to know what my limit is on my american express card",
+    "response": "",
+    "intent": "credit_limit",
+    "mapped_intent": "account_issue",
+    "risk_flags": [
+      "account_security_risk"
+    ],
+    "severity": "LOW",
+    "source": "clinc150"
+  }
+]

@@ -18,11 +18,11 @@ class RiskRule:
 RISK_RULES: list[RiskRule] = [
     RiskRule(
         flag=RiskFlag.COMPLAINT_RISK,
-        keywords=["投诉", "差评", "曝光", "媒体"],
+        keywords=["投诉", "差评", "曝光", "媒体", "媒体曝光"],
     ),
     RiskRule(
         flag=RiskFlag.COMPENSATION_RISK,
-        keywords=["赔偿", "补偿", "3倍", "5倍", "惩罚性"],
+        keywords=["赔偿", "补偿", "3倍", "5倍", "惩罚性", "12315", "消费者协会", "消费者权益", "食品安全", "虫子", "医院", "过敏"],
     ),
     RiskRule(
         flag=RiskFlag.LEGAL_RISK,

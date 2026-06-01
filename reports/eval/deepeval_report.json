@@ -1,0 +1,15 @@
+{
+  "total_test_cases": 30,
+  "metrics": {
+    "Faithfulness": {
+      "average_score": 0.9528,
+      "pass_rate": "90.0%",
+      "total": 30
+    },
+    "Answer Relevancy": {
+      "average_score": 0.9522,
+      "pass_rate": "96.7%",
+      "total": 30
+    }
+  }
+}

@@ -13,12 +13,12 @@ from ticketpilot.schema.evidence import EvidenceCandidate
 # When a sentence contains one of these keywords and lacks a [N] citation marker,
 # it is flagged as potentially unsupported.
 _CLAIM_KEYWORDS: list[str] = [
-    "根据",
-    "按照",
-    "可以",
-    "承诺",
-    "退款",
-    "赔偿",
+    "承诺退款金额",
+    "赔偿金额为",
+    "根据法律规定",
+    "按照政策规定",
+    "保证退款",
+    "保证赔偿",
 ]
 
 _SENTENCE_SPLIT = re.compile(r"[。！？!?]")

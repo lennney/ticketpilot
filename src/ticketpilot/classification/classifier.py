@@ -52,6 +52,9 @@ class IntentClassifier:
                     # Strong match if keyword is 2+ characters
                     if len(keyword) >= 2:
                         has_strong_match = True
+                    break  # First-match-wins: exit inner loop on first keyword hit
+            if match_count > 0:
+                break  # First-match-wins: exit outer loop once a rule matches
 
         if matched_intent == IntentClass.OTHER or match_count == 0:
             # For OTHER intent, confidence depends on whether strong indicator was found
