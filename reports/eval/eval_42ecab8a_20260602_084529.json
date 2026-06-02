@@ -1,0 +1,105 @@
+{
+  "report_id": "42ecab8a-0c77-4219-aa8e-cf5bbfa97228",
+  "timestamp": "2026-06-02T08:45:29.653536",
+  "total_cases": 10,
+  "passed_cases": 0,
+  "failed_cases": 10,
+  "pass_rate": 0.0,
+  "intent_accuracy": 1.0,
+  "avg_faithfulness": 0.506,
+  "avg_relevancy": 0.5,
+  "avg_duration_ms": 8050.61,
+  "results": [
+    {
+      "case_id": "ADV-001",
+      "intent_correct": true,
+      "faithfulness": 0.557,
+      "relevancy": 0.5,
+      "has_citations": true,
+      "duration_ms": 12359.09,
+      "error": null
+    },
+    {
+      "case_id": "ADV-002",
+      "intent_correct": true,
+      "faithfulness": 0.5,
+      "relevancy": 0.5,
+      "has_citations": true,
+      "duration_ms": 10643.7,
+      "error": null
+    },
+    {
+      "case_id": "ADV-003",
+      "intent_correct": true,
+      "faithfulness": 0.5,
+      "relevancy": 0.5,
+      "has_citations": true,
+      "duration_ms": 14650.1,
+      "error": null
+    },
+    {
+      "case_id": "ADV-004",
+      "intent_correct": true,
+      "faithfulness": 0.5,
+      "relevancy": 0.5,
+      "has_citations": true,
+      "duration_ms": 10428.87,
+      "error": null
+    },
+    {
+      "case_id": "ADV-005",
+      "intent_correct": true,
+      "faithfulness": 0.5,
+      "relevancy": 0.5,
+      "has_citations": true,
+      "duration_ms": 9062.79,
+      "error": null
+    },
+    {
+      "case_id": "ADV-006",
+      "intent_correct": true,
+      "faithfulness": 0.5,
+      "relevancy": 0.5,
+      "has_citations": true,
+      "duration_ms": 3890.97,
+      "error": null
+    },
+    {
+      "case_id": "ADV-007",
+      "intent_correct": true,
+      "faithfulness": 0.5,
+      "relevancy": 0.5,
+      "has_citations": true,
+      "duration_ms": 4074.96,
+      "error": null
+    },
+    {
+      "case_id": "ADV-008",
+      "intent_correct": true,
+      "faithfulness": 0.5,
+      "relevancy": 0.5,
+      "has_citations": true,
+      "duration_ms": 7115.37,
+      "error": null
+    },
+    {
+      "case_id": "ADV-009",
+      "intent_correct": true,
+      "faithfulness": 0.5,
+      "relevancy": 0.5,
+      "has_citations": true,
+      "duration_ms": 4461.8,
+      "error": null
+    },
+    {
+      "case_id": "ADV-010",
+      "intent_correct": true,
+      "faithfulness": 0.5,
+      "relevancy": 0.5,
+      "has_citations": true,
+      "duration_ms": 3818.43,
+      "error": null
+    }
+  ],
+  "metadata": {}
+}

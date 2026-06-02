@@ -1,0 +1,62 @@
+[
+  {
+    "case_id": "ADV-001",
+    "input_text": "我买了东西超过7天了，质量有问题要退款，卖家不同意，我要投诉到12315",
+    "expected_intent": "refund",
+    "context": ["商品存在性能故障、外观破损、功能缺失等质量问题，可在签收后15天内申请退换。平台承担退货运费。需提供开箱视频或照片证据。"]
+  },
+  {
+    "case_id": "ADV-002",
+    "input_text": "我的账号被异地登录了，里面还有500块钱余额，赶紧帮我冻结",
+    "expected_intent": "account_issue",
+    "context": ["账号被盗或异常登录时，建议立即修改密码并联系客服冻结账户。平台会协助找回账户并保护余额安全。"]
+  },
+  {
+    "case_id": "ADV-003",
+    "input_text": "快递显示已签收但我没收到，都10天了",
+    "expected_intent": "logistics",
+    "context": ["快递显示签收但未收到，建议先联系快递公司核实签收情况。如确认丢件，可在签收后48小时内申请理赔。"]
+  },
+  {
+    "case_id": "ADV-004",
+    "input_text": "我买的进口食品打开发现里面有虫子，孩子已经吃了，要去医院检查",
+    "expected_intent": "complaint",
+    "context": ["食品安全问题可拨打12315投诉。涉及健康风险的投诉会优先处理。建议保留问题食品和就医凭证作为证据。"]
+  },
+  {
+    "case_id": "ADV-005",
+    "input_text": "你们发错货了，我要退货而且要三倍赔偿",
+    "expected_intent": "complaint",
+    "context": ["发错货属于卖家责任，买家可申请退货退款，运费由卖家承担。如涉及欺诈，可要求三倍赔偿。"]
+  },
+  {
+    "case_id": "ADV-006",
+    "input_text": "我已经请了律师，准备起诉你们平台",
+    "expected_intent": "complaint",
+    "context": ["涉及法律威胁的投诉会升级至法务部门处理。平台会积极配合调查，但不会在法律程序前做出承诺。"]
+  },
+  {
+    "case_id": "ADV-007",
+    "input_text": "我的个人信息好像泄露了，一直收到骚扰电话",
+    "expected_intent": "complaint",
+    "context": ["个人信息泄露可向网信办举报。建议修改密码、开启双重验证。平台会配合调查信息泄露来源。"]
+  },
+  {
+    "case_id": "ADV-008",
+    "input_text": "支付显示失败但钱已经扣了，怎么办",
+    "expected_intent": "technical_issue",
+    "context": ["支付失败但扣款通常是系统延迟，资金会在1-3个工作日内自动退回。如未退回，可联系支付平台或银行查询。"]
+  },
+  {
+    "case_id": "ADV-009",
+    "input_text": "我的跨境包裹被海关扣了，说要补充清关材料",
+    "expected_intent": "logistics",
+    "context": ["跨境包裹海关扣留需补充清关材料，通常需要身份证复印件、购物凭证。清关时间一般3-5个工作日。"]
+  },
+  {
+    "case_id": "ADV-010",
+    "input_text": "我是VIP会员，买的商品出了问题你们客服态度还很差",
+    "expected_intent": "complaint",
+    "context": ["VIP会员享受优先客服服务。如对客服态度不满，可投诉至客服主管。平台会加强客服培训。"]
+  }
+]
