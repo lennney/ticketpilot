@@ -18,7 +18,7 @@ def hybrid_retrieval(
     doc_types: Optional[list[DocType]] = None,
     embedding_provider: Optional[FakeEmbeddingProvider] = None,
     rrf_k: int = DEFAULT_RRF_K,
-    enable_reranking: bool = False,  # Disabled - causing citation issues
+    enable_reranking: bool = True,  # Enabled with improved strategy
 ) -> RetrievalTrace:
     """
     Perform hybrid retrieval combining keyword and vector search.

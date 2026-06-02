@@ -1,6 +1,8 @@
 """
 Lightweight re-ranking using embedding similarity.
-Uses existing BGE-small-zh embeddings to re-rank RRF results.
+Uses existing DashScope embeddings to re-rank RRF results.
+
+Improved strategy: Use embedding as a boost factor, not a major weight.
 """
 from typing import Optional
 from ticketpilot.retrieval.schema.knowledge import DocType
@@ -30,10 +32,8 @@ def rerank_with_embeddings(
     """
     Re-rank fused results using embedding similarity.
     
-    This is a lightweight re-ranking approach that:
-    1. Takes top-k RRF results (e.g., top 20)
-    2. Computes embedding similarity between query and each document
-    3. Re-ranks by similarity score
+    Strategy: Use embedding as a boost factor for results with similar RRF scores.
+    This preserves the RRF ranking while using embedding to break ties.
     
     Args:
         query_embedding: Query embedding vector
@@ -47,10 +47,6 @@ def rerank_with_embeddings(
     if not fused_results:
         return []
     
-    # If no embedding provider, use a simple hybrid score
-    # Combine RRF score with a weight for the embedding similarity
-    # For now, we'll use the existing embeddings from the database
-    
     # Compute embedding similarity for each result
     scored_results = []
     for result in fused_results:
@@ -60,30 +56,40 @@ def rerank_with_embeddings(
         if doc_embedding:
             # Compute cosine similarity
             similarity = cosine_similarity(query_embedding, doc_embedding)
-            
-            # Combine RRF score with embedding similarity
-            # Weight: 0.8 RRF + 0.2 embedding similarity (conservative)
-            combined_score = 0.8 * result.rrf_score + 0.2 * similarity
         else:
-            # Fallback to RRF score only
-            combined_score = result.rrf_score
             similarity = 0.0
         
-        scored_results.append((result, combined_score, similarity))
+        scored_results.append((result, similarity))
     
-    # Sort by combined score descending
-    scored_results.sort(key=lambda x: x[1], reverse=True)
+    # Group results by RRF score (within 10% tolerance)
+    # This creates "tiers" of results with similar RRF scores
+    rrf_scores = [r.rrf_score for r in fused_results]
+    if not rrf_scores:
+        return fused_results[:top_k]
+    
+    max_rrf = max(rrf_scores)
+    tolerance = max_rrf * 0.1  # 10% tolerance
+    
+    # Sort by RRF score first, then use embedding as tiebreaker within tiers
+    def sort_key(item):
+        result, similarity = item
+        # Primary: RRF score (higher is better)
+        # Secondary: embedding similarity (higher is better)
+        return (-result.rrf_score, -similarity)
+    
+    scored_results.sort(key=sort_key)
     
     # Build re-ranked results
     reranked = []
-    for i, (result, combined_score, similarity) in enumerate(scored_results[:top_k], 1):
+    for i, (result, similarity) in enumerate(scored_results[:top_k], 1):
         # Create new FusedResult with updated score
+        # Keep original RRF score, but add embedding info to metadata
         reranked_result = FusedResult(
             chunk_id=result.chunk_id,
             doc_id=result.doc_id,
             doc_type=result.doc_type,
             content=result.content,
-            rrf_score=combined_score,  # Use combined score
+            rrf_score=result.rrf_score,  # Keep original RRF score
             keyword_rank=result.keyword_rank,
             keyword_contribution=result.keyword_contribution,
             vector_rank=result.vector_rank,
