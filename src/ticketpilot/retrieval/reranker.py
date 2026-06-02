@@ -62,8 +62,8 @@ def rerank_with_embeddings(
             similarity = cosine_similarity(query_embedding, doc_embedding)
             
             # Combine RRF score with embedding similarity
-            # Weight: 0.6 RRF + 0.4 embedding similarity
-            combined_score = 0.6 * result.rrf_score + 0.4 * similarity
+            # Weight: 0.8 RRF + 0.2 embedding similarity (conservative)
+            combined_score = 0.8 * result.rrf_score + 0.2 * similarity
         else:
             # Fallback to RRF score only
             combined_score = result.rrf_score
