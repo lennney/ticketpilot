@@ -30,6 +30,7 @@ from ticketpilot.retrieval.pipeline import hybrid_retrieval
 from ticketpilot.retrieval.schema.knowledge import DocType
 from ticketpilot.schema.evidence import EvidenceCandidate
 from ticketpilot.tracing import create_trace, AgentTrace
+from ticketpilot.guardrails import run_guardrails, GuardrailResult
 
 logger = logging.getLogger(__name__)
 
@@ -358,6 +359,29 @@ class DraftAgent:
                 state=state,
                 trace=trace,
             )
+            
+            # Run guardrails
+            with trace.step("guardrails") if trace else contextlib.nullcontext() as step:
+                guardrail_results = run_guardrails(
+                    input_text=normalized_text,
+                    output_text=result.draft_text,
+                    confidence=result.confidence,
+                )
+                
+                # Check if any guardrail failed
+                failed_guardrails = [g for g in guardrail_results if not g.passed and g.severity == "error"]
+                if failed_guardrails:
+                    logger.warning("DraftAgent: guardrails failed: %s", [g.check_name for g in failed_guardrails])
+                    # Mark for human review
+                    result.must_human_review = True
+                    result.safety_notes.extend([g.message for g in failed_guardrails])
+                
+                if step:
+                    step.finish({
+                        "passed": len([g for g in guardrail_results if g.passed]),
+                        "failed": len([g for g in guardrail_results if not g.passed]),
+                        "checks": [g.check_name for g in guardrail_results],
+                    })
             
             # Finish trace
             trace.finish(output_data={
