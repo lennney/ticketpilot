@@ -63,6 +63,16 @@ class DraftReply(BaseModel):
             self.must_human_review = True
         if self.escalation_reason:
             self.must_human_review = True
+        
+        # Confidence-based routing
+        # > 0.8: autonomous (no human review)
+        # 0.6-0.8: suggest human review
+        # < 0.6: must human review
+        if self.confidence < 0.6:
+            self.must_human_review = True
+            if not self.escalation_reason:
+                self.escalation_reason = f"low_confidence ({self.confidence:.2f})"
+        
         return self
 
     @model_validator(mode="after")
@@ -73,6 +83,39 @@ class DraftReply(BaseModel):
                 msg = "cited_evidence_ids must not contain empty strings"
                 raise ValueError(msg)
         return self
+
+    @property
+    def confidence_level(self) -> str:
+        """Get confidence level category.
+        
+        Returns:
+            'high' if confidence > 0.8 (autonomous)
+            'medium' if 0.6 <= confidence <= 0.8 (suggest review)
+            'low' if confidence < 0.6 (must review)
+        """
+        if self.confidence > 0.8:
+            return "high"
+        elif self.confidence >= 0.6:
+            return "medium"
+        else:
+            return "low"
+
+    @property
+    def routing_decision(self) -> str:
+        """Get routing decision based on confidence.
+        
+        Returns:
+            'autonomous' if high confidence
+            'suggest_review' if medium confidence
+            'human_review' if low confidence
+        """
+        level = self.confidence_level
+        if level == "high":
+            return "autonomous"
+        elif level == "medium":
+            return "suggest_review"
+        else:
+            return "human_review"
 
 
 class DraftedTicketResult(BaseModel):
