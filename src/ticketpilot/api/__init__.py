@@ -22,6 +22,7 @@ from ticketpilot.schema.ticket import RawTicket, TicketOutput
 from ticketpilot.drafting.generate import generate_draft
 from ticketpilot.drafting.schemas import DraftReply
 from ticketpilot.api.streaming import register_streaming_routes
+from ticketpilot.multi_agent import generate_draft_with_orchestrator
 
 # Initialize FastAPI app
 app = FastAPI(
@@ -156,8 +157,15 @@ async def chat(request: ChatRequest):
     try:
         ticket_output = intake_risk_pipeline(raw_ticket)
         
-        # Generate draft reply
-        draft_result = generate_draft(ticket_output)
+        # Generate draft using multi-agent orchestrator
+        draft_result = generate_draft_with_orchestrator(
+            normalized_text=ticket_output.normalized_ticket.text,
+            issue_type=ticket_output.classification.intent.value,
+            risk_flags=[f.value for f in ticket_output.risk_assessment.flags],
+            severity=ticket_output.risk_assessment.severity.value,
+            must_human_review=ticket_output.risk_assessment.must_human_review,
+            evidence_candidates=ticket_output.evidence_candidates,
+        )
         
         processing_time = (datetime.utcnow() - start_time).total_seconds() * 1000
         
