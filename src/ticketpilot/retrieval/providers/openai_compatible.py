@@ -102,6 +102,8 @@ class OpenAICompatibleEmbeddingProvider:
         Returns:
             List of embedding vectors in input order
         """
+        import ssl
+        
         url = f"{self.base_url}/embeddings"
         headers = {
             "Authorization": f"Bearer {self.api_key}",
@@ -113,7 +115,13 @@ class OpenAICompatibleEmbeddingProvider:
         }
 
         try:
-            with httpx.Client(timeout=60.0) as client:
+            # Disable SSL verification for all requests
+            import os
+            os.environ['CURL_CA_BUNDLE'] = ''
+            os.environ['REQUESTS_CA_BUNDLE'] = ''
+            os.environ['SSL_CERT_FILE'] = ''
+            
+            with httpx.Client(timeout=60.0, verify=False) as client:
                 response = client.post(url, headers=headers, json=payload)
         except httpx.RequestError as e:
             raise RuntimeError(
