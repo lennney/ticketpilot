@@ -179,6 +179,17 @@ class RetrievalTrace(BaseModel):
         default=10,
         description="Requested top-k",
     )
+    
+    # Re-ranking metadata
+    rerank_latency_ms: int = Field(
+        default=0,
+        ge=0,
+        description="Re-ranking latency in milliseconds",
+    )
+    reranking_enabled: bool = Field(
+        default=False,
+        description="Whether re-ranking was enabled",
+    )
 
     def get_result_by_chunk_id(self, chunk_id: UUID) -> Optional[FusedResult]:
         """Get fused result by chunk ID."""

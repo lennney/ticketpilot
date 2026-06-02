@@ -5,6 +5,7 @@ from typing import Optional
 
 from ticketpilot.retrieval.keyword_search import keyword_search
 from ticketpilot.retrieval.providers.fake_embedding import FakeEmbeddingProvider, get_fake_embedding_provider
+from ticketpilot.retrieval.reranker import rerank_with_embeddings
 from ticketpilot.retrieval.rrf import DEFAULT_RRF_K, rrf_fusion
 from ticketpilot.retrieval.schema.knowledge import DocType
 from ticketpilot.retrieval.traces import RetrievalTrace
@@ -17,6 +18,7 @@ def hybrid_retrieval(
     doc_types: Optional[list[DocType]] = None,
     embedding_provider: Optional[FakeEmbeddingProvider] = None,
     rrf_k: int = DEFAULT_RRF_K,
+    enable_reranking: bool = False,  # Disabled by default - requires real embeddings
 ) -> RetrievalTrace:
     """
     Perform hybrid retrieval combining keyword and vector search.
@@ -26,7 +28,8 @@ def hybrid_retrieval(
     2. Run keyword search (FTS + LIKE fallback)
     3. Run vector search (HNSW)
     4. Fuse results using RRF
-    5. Return complete trace for debugging and audit
+    5. Re-rank top results using embedding similarity (optional)
+    6. Return complete trace for debugging and audit
 
     Args:
         query: Search query string
@@ -34,6 +37,7 @@ def hybrid_retrieval(
         doc_types: Optional filter by document types
         embedding_provider: Embedding provider (default: FakeEmbeddingProvider)
         rrf_k: RRF k parameter (default: 60)
+        enable_reranking: Enable re-ranking step (default: True)
 
     Returns:
         RetrievalTrace with complete pipeline information
@@ -80,8 +84,26 @@ def hybrid_retrieval(
     )
     fusion_latency_ms = int((time.perf_counter() - fusion_start) * 1000)
 
-    # Limit to top_k
-    fused_results = fused_results[:top_k]
+    # Re-ranking (optional)
+    rerank_latency_ms = 0
+    if enable_reranking and fused_results:
+        rerank_start = time.perf_counter()
+        
+        # Take top 20 for re-ranking (more than final top_k)
+        candidates = fused_results[:20]
+        
+        # Re-rank using embedding similarity
+        fused_results = rerank_with_embeddings(
+            query_embedding=query_embedding,
+            fused_results=candidates,
+            top_k=top_k,
+            embedding_provider=embedding_provider,
+        )
+        rerank_latency_ms = int((time.perf_counter() - rerank_start) * 1000)
+    else:
+        # Limit to top_k without re-ranking
+        fused_results = fused_results[:top_k]
+
     final_evidence_ids = [r.chunk_id for r in fused_results]
 
     # Total latency
@@ -104,6 +126,8 @@ def hybrid_retrieval(
         embedding_provider=provider_name,
         hnsw_params=get_hnsw_params(),
         top_k=top_k,
+        rerank_latency_ms=rerank_latency_ms,
+        reranking_enabled=enable_reranking,
     )
 
     return trace
