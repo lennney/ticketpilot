@@ -341,7 +341,94 @@
 
 ---
 
-## 十三、评测历史汇总
+## 十四、Re-ranking 优化
+
+### 改进前
+- Re-ranking 导致引用丢失 (0.900 分)
+- 权重 0.8*RRF + 0.2*embedding 改变排序过大
+
+### 改进内容
+1. **新策略**: RRF 为主，embedding 作为 tiebreaker
+   - 按 RRF 分数分层 (10% 容差)
+   - 同层内用 embedding 相似度排序
+   - 保留原始 RRF 分数，不覆盖
+
+2. **实现**: `retrieval/reranker.py`
+   - `rerank_with_embeddings`: 新的 re-ranking 函数
+   - 分层排序逻辑
+
+### 效果
+| 指标 | 改进前 | 改进后 | 提升 |
+|------|--------|--------|------|
+| Re-ranking | 禁用 | 启用 | 新增 |
+| 评测分数 | 0.900 | 1.000 | +11% |
+
+**关键发现**: Re-ranking 不应大幅改变 RRF 排序，应作为 tiebreaker 而非主要权重。
+
+---
+
+## 十五、Docker 部署
+
+### 改进前
+- 手动启动 uvicorn
+- 无容器化部署
+
+### 改进内容
+1. **Dockerfile**: 后端 + 前端构建
+2. **docker-compose.yml**: 完整栈部署 (DB + API)
+3. **.env.example**: 环境变量模板
+4. **README.md**: 项目文档
+
+### 部署方式
+```bash
+# 本地开发
+uv run uvicorn ticketpilot.api:app --host 0.0.0.0 --port 8000
+
+# Docker 部署
+docker compose up -d
+```
+
+---
+
+## 十六、Multi-Agent 架构
+
+### 改进前
+- 单一 DraftAgent 处理所有意图
+
+### 改进内容
+1. **专用 Agent**:
+   - RefundAgent: 退款专用
+   - ComplaintAgent: 投诉专用 (强制人工审核)
+   - LogisticsAgent: 物流专用
+   - TechnicalAgent: 技术问题
+   - DefaultAgent: 默认
+
+2. **Orchestrator**: 路由编排器
+   - 根据 intent 路由到专用 Agent
+   - 全局单例模式
+
+### 路由规则
+| Intent | Agent | 特殊处理 |
+|--------|-------|----------|
+| refund | RefundAgent | - |
+| return_exchange | RefundAgent | - |
+| complaint | ComplaintAgent | 强制人工审核 |
+| logistics | LogisticsAgent | - |
+| technical_issue | TechnicalAgent | - |
+| account_issue | TechnicalAgent | - |
+| 其他 | DefaultAgent | - |
+
+### 效果
+| 指标 | 改进前 | 改进后 | 提升 |
+|------|--------|--------|------|
+| Agent 架构 | 单一 | 多 Agent | 新增 |
+| 评测分数 | 1.000 | 1.000 | - |
+
+**关键发现**: Multi-Agent 架构提供了专业化处理能力，投诉类自动强制人工审核。
+
+---
+
+## 十七、评测历史汇总
 
 | 时间 | 改进 | 分数 | 意图 | 证据 | 说明 |
 |------|------|------|------|------|------|
@@ -355,6 +442,9 @@
 | 06-02 05:00 | Agent Harness P1 | 0.975 | 100% | 100% | 可观测性追踪 |
 | 06-02 05:30 | Agent Harness P2 | 0.975 | 100% | 100% | 评估框架 |
 | 06-02 06:00 | Agent Harness P3 | 1.000 | 100% | 100% | 护栏系统 |
+| 06-02 06:30 | Re-ranking 优化 | 1.000 | 100% | 100% | RRF tiebreaker |
+| 06-02 07:00 | Docker 部署 | 1.000 | 100% | 100% | 容器化部署 |
+| 06-02 07:30 | Multi-Agent | 1.000 | 100% | 100% | 专用 Agent 架构 |
 
 **总提升**: 0.850 → 1.000 (+17.6%)
 ---
