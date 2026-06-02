@@ -21,6 +21,7 @@ from ticketpilot.pipeline import intake_risk_pipeline
 from ticketpilot.schema.ticket import RawTicket, TicketOutput
 from ticketpilot.drafting.generate import generate_draft
 from ticketpilot.drafting.schemas import DraftReply
+from ticketpilot.api.streaming import register_streaming_routes
 
 # Initialize FastAPI app
 app = FastAPI(
@@ -37,6 +38,9 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Register streaming routes
+register_streaming_routes(app)
 
 
 # ---------------------------------------------------------------------------
