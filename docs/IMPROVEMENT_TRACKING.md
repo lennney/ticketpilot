@@ -170,7 +170,42 @@
 
 ---
 
-## 六、置信度路由 (P1-3)
+## 六、接入真实 Embedding API (P1-1)
+
+### 改进前
+- Embedding: FakeEmbeddingProvider (512 维)
+- 检索: 基于 fake embedding 的相似度
+
+### 改进内容
+1. **配置 DashScope API**
+   - Provider: openai_compatible
+   - Model: text-embedding-v3
+   - Dimension: 1024 (从 512 升级)
+   - API: https://dashscope.aliyuncs.com/compatible-mode/v1
+
+2. **SSL 问题修复**
+   - 服务器 SSL 证书验证问题
+   - 使用 curl 绕过 SSL 问题
+   - 禁用 httpx SSL 验证 (测试环境)
+
+3. **重建 Embedding**
+   - 清除旧的 512 维 embedding
+   - 重建 340 个 chunks 的 1024 维 embedding
+   - 重建 HNSW 索引
+
+### 效果
+| 指标 | 改进前 | 改进后 | 变化 |
+|------|--------|--------|------|
+| Embedding 维度 | 512 (fake) | 1024 (真实) | +100% |
+| 评测分数 | 1.000 | 0.950 | -5% |
+| 意图分类 | 100% | 100% | - |
+| 证据命中 | 100% | 100% | - |
+
+**关键发现**: 真实 embedding 检索更精确，但 ADV-008 (支付问题) 缺少引用，说明知识库覆盖不全。需要扩展知识库以匹配真实 embedding 的精确检索。
+
+---
+
+## 七、置信度路由 (P1-3)
 
 ### 改进前
 - `must_human_review`: boolean 标记
@@ -200,7 +235,7 @@
 
 ---
 
-## 七、评测历史汇总
+## 八、评测历史汇总
 
 | 时间 | 改进 | 分数 | 意图 | 证据 | 说明 |
 |------|------|------|------|------|------|
@@ -210,8 +245,9 @@
 | 06-02 03:30 | BM25 | 1.000 | 100% | 100% | 物化 tsvector |
 | 06-02 03:45 | Self-reflection | 1.000 | 100% | 100% | Critique → Revise |
 | 06-02 04:00 | 置信度路由 | 1.000 | 100% | 100% | 分级审核机制 |
+| 06-02 04:30 | 真实 Embedding | 0.950 | 100% | 100% | DashScope 1024 维 |
 
-**总提升**: 0.850 → 1.000 (+17.6%)
+**总提升**: 0.850 → 0.950 (+11.8%)
 
 ---
 
