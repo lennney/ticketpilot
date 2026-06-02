@@ -407,8 +407,19 @@ class DraftAgent:
             logger.info("DraftAgent: no evidence after all attempts, using fallback")
             draft_result = None
 
-        # Step 5: Verify
+        # Step 5: Self-reflection and revision
         if draft_result is not None:
+            # Reflect on the draft quality
+            draft_result = self._reflect_and_revise(
+                draft_result=draft_result,
+                normalized_text=normalized_text,
+                issue_type=issue_type,
+                evidence=state.evidence,
+                flags=flags,
+                must_human_review=must_human_review,
+            )
+
+            # Step 6: Final verification
             verified = self._verify_reply(
                 draft_result=draft_result,
                 evidence=state.evidence,
@@ -422,6 +433,172 @@ class DraftAgent:
             flags=flags,
             must_human_review=True,
         )
+
+    def _reflect_and_revise(
+        self,
+        draft_result: dict[str, Any],
+        normalized_text: str,
+        issue_type: str,
+        evidence: list[EvidenceCandidate],
+        flags: list[str],
+        must_human_review: bool,
+        max_revisions: int = 1,
+    ) -> dict[str, Any]:
+        """
+        Self-reflection loop: critique the draft and revise if needed.
+        
+        Implements the Critique → Revise pattern from industry best practices.
+        Reduces hallucination by checking if the draft is grounded in evidence.
+        
+        Args:
+            draft_result: Initial draft from LLM
+            normalized_text: Customer's normalized message
+            issue_type: Classified intent
+            evidence: Retrieved evidence
+            flags: Risk flags
+            must_human_review: Whether human review is required
+            max_revisions: Maximum number of revision attempts
+        
+        Returns:
+            Revised draft_result (or original if critique passes)
+        """
+        draft_text = draft_result.get("draft_text", "")
+        
+        if not draft_text or not evidence:
+            return draft_result
+        
+        # Build evidence summary for critique
+        evidence_summary = "\n".join(
+            f"[{i+1}] {e.content[:200]}"
+            for i, e in enumerate(evidence[:5])
+        )
+        
+        for revision in range(max_revisions):
+            # Ask LLM to critique the draft
+            critique_prompt = f"""你是一名质量审核专家。请审核以下客服回复草稿。
+
+客户问题：{normalized_text}
+问题类型：{issue_type}
+
+检索到的证据：
+{evidence_summary}
+
+回复草稿：
+{draft_text}
+
+请从以下维度审核：
+1. 回复是否基于证据？（有无编造信息）
+2. 回复是否回答了客户问题？
+3. 引用是否准确？
+4. 有无遗漏重要信息？
+
+审核结果格式（JSON）：
+{{
+  "pass": true/false,
+  "issues": ["问题1", "问题2"],
+  "suggestions": ["建议1", "建议2"]
+}}"""
+
+            try:
+                messages = [
+                    {"role": "system", "content": "你是质量审核专家，负责审核客服回复质量。"},
+                    {"role": "user", "content": critique_prompt},
+                ]
+                
+                response = _call_llm(
+                    messages=messages,
+                    base_url=self._base_url,
+                    api_key=self._api_key,
+                    model=self._model,
+                    timeout=self._timeout,
+                    max_tokens=512,
+                    temperature=0.3,  # Low temperature for consistent critique
+                )
+                
+                critique = _extract_json(response)
+                
+                if not critique:
+                    logger.warning("DraftAgent: failed to parse critique response")
+                    break
+                
+                # If critique passes, return original draft
+                if critique.get("pass", False):
+                    logger.info("DraftAgent: self-reflection passed (revision %d)", revision)
+                    return draft_result
+                
+                # If critique fails, revise the draft
+                issues = critique.get("issues", [])
+                suggestions = critique.get("suggestions", [])
+                
+                logger.info(
+                    "DraftAgent: self-reflection found issues (revision %d): %s",
+                    revision,
+                    issues,
+                )
+                
+                # Ask LLM to revise based on critique
+                revise_prompt = f"""你是一名客服专家。请根据审核意见修改回复草稿。
+
+客户问题：{normalized_text}
+问题类型：{issue_type}
+
+检索到的证据：
+{evidence_summary}
+
+原回复草稿：
+{draft_text}
+
+审核发现的问题：
+{chr(10).join(f"- {issue}" for issue in issues)}
+
+修改建议：
+{chr(10).join(f"- {suggestion}" for suggestion in suggestions)}
+
+请修改回复，确保：
+1. 基于证据，不编造信息
+2. 回答客户问题
+3. 引用准确
+
+修改后的回复格式（JSON）：
+{{
+  "draft_text": "修改后的回复内容",
+  "cited_evidence_ids": ["证据ID1", "证据ID2"],
+  "confidence": 0.8,
+  "unsupported_claims": [],
+  "missing_information": [],
+  "safety_notes": []
+}}"""
+
+                messages = [
+                    {"role": "system", "content": _SYSTEM_PROMPT},
+                    {"role": "user", "content": revise_prompt},
+                ]
+                
+                response = _call_llm(
+                    messages=messages,
+                    base_url=self._base_url,
+                    api_key=self._api_key,
+                    model=self._model,
+                    timeout=self._timeout,
+                    max_tokens=1024,
+                    temperature=self._temperature,
+                )
+                
+                revised = _extract_json(response)
+                
+                if revised and revised.get("draft_text"):
+                    draft_result = revised
+                    draft_text = revised["draft_text"]
+                    logger.info("DraftAgent: draft revised (revision %d)", revision)
+                else:
+                    logger.warning("DraftAgent: revision failed, keeping original")
+                    break
+                    
+            except Exception as e:
+                logger.error("DraftAgent: self-reflection failed: %s", e)
+                break
+        
+        return draft_result
 
     def _reformulate_search(
         self,
