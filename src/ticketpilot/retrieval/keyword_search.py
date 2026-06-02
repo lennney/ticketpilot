@@ -73,7 +73,10 @@ def _fts_search(
     doc_types: Optional[list[DocType]] = None,
 ) -> list[KeywordResult]:
     """
-    Perform full-text search using PostgreSQL FTS with simple config.
+    Perform full-text search using PostgreSQL FTS with materialized tsvector.
+
+    Uses pre-computed content_tsv column for faster search.
+    Uses ts_rank_cd (cover density) for better scoring on short documents.
 
     Args:
         query: Search query
@@ -107,23 +110,28 @@ def _fts_search(
         doc_types_filter = f"AND k.doc_type IN ({placeholders})"
         params = [dt.value for dt in doc_types]
 
+    # Use materialized content_tsv column for faster search
+    # Use ts_rank_cd (cover density) which is better for short documents
+    # Normalization: 32 = divide by (rank * number of unique words in document)
     sql = f"""
         SELECT
             k.id as chunk_id,
             k.doc_id,
             k.doc_type,
             k.content,
-            -- FTS rank using simple config
-            ts_rank(
-                to_tsvector('simple', k.content),
-                {tsquery}
+            -- BM25-style scoring: ts_rank_cd with normalization
+            ts_rank_cd(
+                k.content_tsv,
+                {tsquery},
+                32  -- Normalize by document length
             ) as score,
-            ROW_NUMBER() OVER (ORDER BY ts_rank(
-                to_tsvector('simple', k.content),
-                {tsquery}
+            ROW_NUMBER() OVER (ORDER BY ts_rank_cd(
+                k.content_tsv,
+                {tsquery},
+                32
             ) DESC, k.id) as rank
         FROM knowledge_chunks k
-        WHERE to_tsvector('simple', k.content) @@ {tsquery}
+        WHERE k.content_tsv @@ {tsquery}
         {doc_types_filter}
         ORDER BY score DESC, k.id
         LIMIT ${{param_count}}
