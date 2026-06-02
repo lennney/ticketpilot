@@ -13,6 +13,7 @@ Tools are prompt-based (structured JSON output), not function-calling API.
 
 from __future__ import annotations
 
+import contextlib
 import json
 import logging
 import os
@@ -28,6 +29,7 @@ from ticketpilot.retrieval.evidence_mapper import map_fused_to_evidence
 from ticketpilot.retrieval.pipeline import hybrid_retrieval
 from ticketpilot.retrieval.schema.knowledge import DocType
 from ticketpilot.schema.evidence import EvidenceCandidate
+from ticketpilot.tracing import create_trace, AgentTrace
 
 logger = logging.getLogger(__name__)
 
@@ -328,22 +330,56 @@ class DraftAgent:
         """
         flags = risk_flags or []
         state = _AgentState()
+        
+        # Create trace
+        trace = create_trace(
+            agent_name="DraftAgent",
+            input_data={
+                "normalized_text": normalized_text,
+                "issue_type": issue_type,
+                "risk_flags": flags,
+                "severity": severity,
+                "must_human_review": must_human_review,
+                "evidence_count": len(evidence_candidates) if evidence_candidates else 0,
+            }
+        )
 
         # Seed state with any pre-retrieved evidence
         if evidence_candidates:
             state.evidence = list(evidence_candidates)
 
         try:
-            return self._run_agent_loop(
+            result = self._run_agent_loop(
                 normalized_text=normalized_text,
                 issue_type=issue_type,
                 flags=flags,
                 severity=severity,
                 must_human_review=must_human_review,
                 state=state,
+                trace=trace,
             )
+            
+            # Finish trace
+            trace.finish(output_data={
+                "draft_text": result.draft_text[:200],
+                "confidence": result.confidence,
+                "must_human_review": result.must_human_review,
+                "citations_count": len(result.citations),
+            })
+            
+            # Save trace
+            from ticketpilot.tracing import get_trace_collector
+            get_trace_collector().save_trace(trace)
+            
+            return result
         except Exception as e:
             logger.error("DraftAgent failed: %s", e, exc_info=True)
+            
+            # Finish trace with error
+            trace.finish(error=str(e))
+            from ticketpilot.tracing import get_trace_collector
+            get_trace_collector().save_trace(trace)
+            
             return self._build_fallback(
                 reason="agent_error",
                 flags=flags,
@@ -363,70 +399,93 @@ class DraftAgent:
         severity: str,
         must_human_review: bool,
         state: _AgentState,
+        trace: AgentTrace | None = None,
     ) -> DraftReply:
         """Core agent loop: retrieve → evaluate → decide → generate → verify."""
 
         # Step 1: Initial retrieval if no evidence pre-seeded
         if not state.evidence:
-            initial_query = f"{normalized_text} {issue_type}"
-            state.search_queries_used.append(initial_query)
-            raw_results = _search_knowledge(initial_query)
-            state.evidence = self._raw_results_to_candidates(raw_results)
-            logger.info(
-                "DraftAgent: initial search returned %d results", len(state.evidence)
-            )
+            with trace.step("retrieve", {"query": f"{normalized_text} {issue_type}"}) if trace else contextlib.nullcontext() as step:
+                initial_query = f"{normalized_text} {issue_type}"
+                state.search_queries_used.append(initial_query)
+                raw_results = _search_knowledge(initial_query)
+                state.evidence = self._raw_results_to_candidates(raw_results)
+                if step:
+                    step.finish({"evidence_count": len(state.evidence)})
+                logger.info(
+                    "DraftAgent: initial search returned %d results", len(state.evidence)
+                )
 
         # Step 2-3: Evaluate evidence and optionally reformulate
         if state.evidence:
             avg_score = sum(e.score for e in state.evidence) / len(state.evidence)
             if avg_score < _EVIDENCE_SCORE_THRESHOLD or len(state.evidence) < 2:
-                logger.info(
-                    "DraftAgent: evidence quality low (avg=%.4f, n=%d), reformulating",
-                    avg_score,
-                    len(state.evidence),
-                )
-                self._reformulate_search(normalized_text, issue_type, state)
+                with trace.step("reformulate", {"avg_score": avg_score, "evidence_count": len(state.evidence)}) if trace else contextlib.nullcontext() as step:
+                    logger.info(
+                        "DraftAgent: evidence quality low (avg=%.4f, n=%d), reformulating",
+                        avg_score,
+                        len(state.evidence),
+                    )
+                    self._reformulate_search(normalized_text, issue_type, state)
+                    if step:
+                        step.finish({"new_evidence_count": len(state.evidence)})
 
         # If still no evidence, use LLM to try one more search
         if not state.evidence:
-            logger.info("DraftAgent: no evidence found, asking LLM for search query")
-            self._llm_guided_search(normalized_text, issue_type, state)
+            with trace.step("llm_guided_search") if trace else contextlib.nullcontext() as step:
+                logger.info("DraftAgent: no evidence found, asking LLM for search query")
+                self._llm_guided_search(normalized_text, issue_type, state)
+                if step:
+                    step.finish({"evidence_count": len(state.evidence)})
 
         # Step 4: Generate reply
         # If we have evidence, use LLM to generate; otherwise use fallback
         if state.evidence:
-            draft_result = self._generate_reply(
-                normalized_text=normalized_text,
-                issue_type=issue_type,
-                flags=flags,
-                severity=severity,
-                must_human_review=must_human_review,
-                evidence=state.evidence,
-            )
+            with trace.step("generate", {"evidence_count": len(state.evidence)}) if trace else contextlib.nullcontext() as step:
+                draft_result = self._generate_reply(
+                    normalized_text=normalized_text,
+                    issue_type=issue_type,
+                    flags=flags,
+                    severity=severity,
+                    must_human_review=must_human_review,
+                    evidence=state.evidence,
+                )
+                if step:
+                    step.finish({"has_draft": draft_result is not None})
         else:
             logger.info("DraftAgent: no evidence after all attempts, using fallback")
             draft_result = None
 
         # Step 5: Self-reflection and revision
         if draft_result is not None:
-            # Reflect on the draft quality
-            draft_result = self._reflect_and_revise(
-                draft_result=draft_result,
-                normalized_text=normalized_text,
-                issue_type=issue_type,
-                evidence=state.evidence,
-                flags=flags,
-                must_human_review=must_human_review,
-            )
+            with trace.step("reflect_and_revise") if trace else contextlib.nullcontext() as step:
+                # Reflect on the draft quality
+                draft_result = self._reflect_and_revise(
+                    draft_result=draft_result,
+                    normalized_text=normalized_text,
+                    issue_type=issue_type,
+                    evidence=state.evidence,
+                    flags=flags,
+                    must_human_review=must_human_review,
+                )
+                if step:
+                    step.finish({"confidence": draft_result.get("confidence", 0)})
 
             # Step 6: Final verification
-            verified = self._verify_reply(
-                draft_result=draft_result,
-                evidence=state.evidence,
-                flags=flags,
-                must_human_review=must_human_review,
-            )
-            return verified
+            with trace.step("verify") if trace else contextlib.nullcontext() as step:
+                verified = self._verify_reply(
+                    draft_result=draft_result,
+                    evidence=state.evidence,
+                    flags=flags,
+                    must_human_review=must_human_review,
+                )
+                if step:
+                    step.finish({
+                        "confidence": verified.confidence,
+                        "must_human_review": verified.must_human_review,
+                        "citations_count": len(verified.citations),
+                    })
+                return verified
 
         return self._build_fallback(
             reason="insufficient_evidence",
