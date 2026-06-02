@@ -35,6 +35,20 @@ class IntentClassifier:
                 classified_at=datetime.utcnow(),
             )
 
+        # Phase 1: Check for strong indicators (complaint escalation, etc.)
+        import re
+        for rule in self.rules:
+            if rule.intent == IntentClass.OTHER:
+                continue
+            if rule.strong_indicator:
+                if re.search(rule.strong_indicator, text):
+                    return ClassificationResult(
+                        intent=rule.intent,
+                        confidence=STRONG_CONFIDENCE,
+                        classified_at=datetime.utcnow(),
+                    )
+
+        # Phase 2: First-match-wins keyword matching
         matched_intent = IntentClass.OTHER
         match_count = 0
         has_strong_match = False

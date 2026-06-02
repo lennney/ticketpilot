@@ -35,7 +35,8 @@ INTENT_RULES: list[IntentRule] = [
     IntentRule(
         intent=IntentClass.TECHNICAL_ISSUE,
         keywords=["打不开", "系统错误", "bug", "故障", "无法使用", "支付失败",
-                  "扣款", "页面崩溃", "加载失败", "闪退", "卡住"],
+                  "扣款", "页面崩溃", "加载失败", "闪退", "卡住",
+                  "已扣款", "钱已扣", "支付显示失败", "付款失败", "重复扣款"],
     ),
     IntentRule(
         intent=IntentClass.PRODUCT_CONSULTING,
@@ -53,7 +54,8 @@ INTENT_RULES: list[IntentRule] = [
         keywords=["投诉", "差评", "不满", "态度", "律师", "起诉", "12315",
                   "消费者协会", "媒体曝光", "食品安全", "虫子", "过敏", "医院",
                   "过期", "变质", "异物", "假货", "假冒", "泄露", "骚扰",
-                  "隐私", "赔偿", "三倍赔偿", "维权", "举报"],
+                  "隐私", "赔偿", "三倍赔偿", "三倍", "维权", "举报"],
+        strong_indicator="律师函|准备起诉|已请律师|三倍赔偿|要求赔偿|12315投诉",
     ),
     IntentRule(
         intent=IntentClass.OTHER,
