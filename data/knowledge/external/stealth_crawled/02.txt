@@ -1,0 +1,10 @@
+# Source: https://world.taobao.com/helper/knowledge.htm?kid=6534402
+# Query: 天猫国际 售后 退货 退款 流程
+
+Engine: curl
+Status: 200
+Title:  申请【退款/售后】流程汇总|天猫淘宝海外|2026年6月
+URL:    https://consumerservice.world.taobao.com/s/help/search?keyword=%E7%94%B3%E8%AF%B7%E3%80%90%E9%80%80%E6%AC%BE%2F%E5%94%AE%E5%90%8E%E3%80%91%E6%B5%81%E7%A8%8B%E6%B1%87%E6%80%BB&wh_seo=oversea_seo_301
+Text:   28 chars
+---
+申请【退款/售后】流程汇总|天猫淘宝海外|2026年6月

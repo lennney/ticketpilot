@@ -6,12 +6,14 @@ FakeEmbeddingProvider is the default; real providers are opt-in.
 
 from ticketpilot.retrieval.embedding_config import EmbeddingConfig
 from ticketpilot.retrieval.providers.fake_embedding import FakeEmbeddingProvider
+from ticketpilot.retrieval.providers.local_embedding import LocalEmbeddingProvider
 from ticketpilot.retrieval.providers.openai_compatible import (
     OpenAICompatibleEmbeddingProvider,
 )
 
 __all__ = [
     "FakeEmbeddingProvider",
+    "LocalEmbeddingProvider",
     "OpenAICompatibleEmbeddingProvider",
     "create_embedding_provider",
     "get_embedding_provider",
@@ -40,6 +42,11 @@ def create_embedding_provider(config: EmbeddingConfig):
 
     if provider_name == "fake":
         provider = FakeEmbeddingProvider()
+    elif provider_name == "local":
+        provider = LocalEmbeddingProvider(
+            model_name=config.model or "BAAI/bge-small-zh-v1.5",
+            dimension=config.dimension,
+        )
     elif provider_name == "openai_compatible":
         if not config.api_key:
             raise ValueError(
@@ -56,7 +63,7 @@ def create_embedding_provider(config: EmbeddingConfig):
     else:
         raise ValueError(
             f"Unknown embedding provider: '{provider_name}'. "
-            f"Supported values: 'fake', 'openai_compatible'."
+            f"Supported values: 'fake', 'local', 'openai_compatible'."
         )
 
     # Validate dimension: fail loudly on mismatch

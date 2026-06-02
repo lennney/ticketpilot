@@ -57,6 +57,11 @@ class EmbeddingConfig:
         """Whether the configured provider is OpenAI-compatible."""
         return self.provider == "openai_compatible"
 
+    @property
+    def is_local(self) -> bool:
+        """Whether the configured provider is local (sentence-transformers)."""
+        return self.provider == "local"
+
     def __repr__(self) -> str:
         """Safe repr — redacts api_key."""
         key_display = "****" if self.api_key else None

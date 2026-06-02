@@ -1,0 +1,35 @@
+# Source: https://www.12315.cn/
+# Query: 跨境电商 消费者权益 投诉 12315
+
+Traceback (most recent call last):
+  File "/home/hermes/.local/lib/python3.12/site-packages/curl_cffi/requests/session.py", line 652, in request
+    c.perform()
+  File "/home/hermes/.local/lib/python3.12/site-packages/curl_cffi/curl.py", line 422, in perform
+    self._check_error(ret, "perform")
+  File "/home/hermes/.local/lib/python3.12/site-packages/curl_cffi/curl.py", line 199, in _check_error
+    raise error
+curl_cffi.curl.CurlError: Failed to perform, curl: (56) Connection closed abruptly. See https://curl.se/libcurl/c/libcurl-errors.html first for more details.
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/hermes/scripts/stealth_fetch.py", line 497, in <module>
+    main()
+  File "/home/hermes/scripts/stealth_fetch.py", line 474, in main
+    resp = sf.fetch(args.url, engine=args.engine, wait_seconds=args.wait,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hermes/scripts/stealth_fetch.py", line 94, in fetch
+    return self._fetch_curl(url, timeout=timeout, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hermes/scripts/stealth_fetch.py", line 304, in _fetch_curl
+    resp = cr.get(url, impersonate="chrome", timeout=timeout,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hermes/.local/lib/python3.12/site-packages/curl_cffi/requests/__init__.py", line 143, in get
+    return request(method="GET", url=url, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hermes/.local/lib/python3.12/site-packages/curl_cffi/requests/__init__.py", line 135, in request
+    return s.request(method=method, url=url, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hermes/.local/lib/python3.12/site-packages/curl_cffi/requests/session.py", line 659, in request
+    raise error(str(e), e.code, rsp) from e
+curl_cffi.requests.exceptions.ConnectionError: Failed to perform, curl: (56) Connection closed abruptly. See https://curl.se/libcurl/c/libcurl-errors.html first for more details.
