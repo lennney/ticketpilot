@@ -8,9 +8,12 @@ import json
 
 import streamlit as st
 
+from ticketpilot.confidence.scorer import ConfidenceBreakdown, ConfidenceLevel
+from ticketpilot.degradation.router import DegradedResponse, ResponseStrategy
 from ticketpilot.drafting.generator import DraftGenerationResult
 from ticketpilot.drafting.pipeline import run_pipeline_with_draft
 from ticketpilot.drafting.schemas import DraftedTicketResult
+from ticketpilot.pipeline import post_process
 from ticketpilot.review.schemas import ReviewAction, ReviewDecision
 from ticketpilot.review.store import ReviewStore
 from ticketpilot.schema.ticket import RawTicket, RiskSeverity
@@ -145,6 +148,8 @@ def build_review_decision(
     edited_text: str | None = None,
     decision_reason: str = "",
     gen_result: DraftGenerationResult | None = None,
+    confidence: ConfidenceBreakdown | None = None,
+    degraded: DegradedResponse | None = None,
 ) -> ReviewDecision:
     """Build a ReviewDecision from a DraftedTicketResult and review action.
 
@@ -205,6 +210,13 @@ def build_review_decision(
         human_review_forced=audit.get("human_review_forced"),
         human_review_reasons=audit.get("human_review_reasons", []),
         escalation_reason=audit.get("escalation_reason"),
+        # Confidence breakdown
+        confidence_level=confidence.level.value if confidence else None,
+        confidence_retrieval=confidence.retrieval_confidence if confidence else None,
+        confidence_classification=confidence.classification_confidence if confidence else None,
+        confidence_citation=confidence.citation_confidence if confidence else None,
+        confidence_evidence_density=confidence.evidence_density if confidence else None,
+        response_strategy=degraded.strategy.value if degraded else None,
     )
 
 
@@ -358,11 +370,81 @@ def _render_draft_and_actions(result: DraftedTicketResult) -> None:
         if draft.escalation_reason:
             st.write(f"**升级原因:** {draft.escalation_reason}")
 
-        # Confidence
-        st.write(f"**置信度:** {draft.confidence:.2f}")
+    # --- Confidence Breakdown & Degradation Strategy (new) ---
+    confidence: ConfidenceBreakdown | None = getattr(
+        st.session_state, "confidence", None
+    )
+    degraded: DegradedResponse | None = getattr(
+        st.session_state, "degraded", None
+    )
 
-        # No auto-send notice
-        st.info("此为草稿回复，不会自动发送")
+    if confidence and degraded:
+        st.subheader("置信度分析")
+
+        # Overall score with color
+        level_colors = {
+            ConfidenceLevel.HIGH: "green",
+            ConfidenceLevel.MEDIUM: "orange",
+            ConfidenceLevel.LOW: "red",
+            ConfidenceLevel.CRITICAL: "red",
+        }
+        level_labels = {
+            ConfidenceLevel.HIGH: "高置信",
+            ConfidenceLevel.MEDIUM: "中置信",
+            ConfidenceLevel.LOW: "低置信",
+            ConfidenceLevel.CRITICAL: "极低置信",
+        }
+        color = level_colors.get(confidence.level, "grey")
+        label = level_labels.get(confidence.level, "未知")
+
+        st.markdown(
+            f"**综合置信度:** {confidence.overall:.2f} "
+            f"<span style='color:{color};font-weight:bold'>({label})</span>",
+            unsafe_allow_html=True,
+        )
+
+        # 4-dimension breakdown
+        col_r, col_c = st.columns(2)
+        with col_r:
+            st.write(f"🔍 检索置信度: {confidence.retrieval_confidence:.2f}")
+            st.write(f"📊 分类置信度: {confidence.classification_confidence:.2f}")
+        with col_c:
+            st.write(f"📎 引用覆盖度: {confidence.citation_confidence:.2f}")
+            st.write(f"📦 证据密度: {confidence.evidence_density:.2f}")
+
+        # Strategy display
+        st.subheader("回复策略")
+        strategy_labels = {
+            ResponseStrategy.AUTO_SEND: ("✅ 自动发送", "green"),
+            ResponseStrategy.AUTO_SEND_CAUTIOUS: ("⚠️ 自动发送（含免责声明）", "orange"),
+            ResponseStrategy.HUMAN_REVIEW: ("👤 需人工审核", "orange"),
+            ResponseStrategy.HUMAN_ESCALATION: ("🚨 直接转人工", "red"),
+        }
+        strat_label, strat_color = strategy_labels.get(
+            degraded.strategy, ("未知", "grey")
+        )
+        st.markdown(
+            f"**策略:** <span style='color:{strat_color};font-weight:bold'>"
+            f"{strat_label}</span>",
+            unsafe_allow_html=True,
+        )
+
+        if degraded.disclaimer:
+            st.warning(f"免责声明: {degraded.disclaimer}")
+        if degraded.escalation_reason:
+            st.error(f"升级原因: {degraded.escalation_reason}")
+
+    # --- Provenance display (if available) ---
+    provenance = getattr(draft, "provenance", None)
+    if provenance and provenance.claims:
+        st.subheader("溯源链")
+        for claim in provenance.claims:
+            st.write(
+                f"[{claim.citation_index}] \"{claim.claim_text[:50]}\" "
+                f"← chunk `{str(claim.source_chunk_id)[:8]}...` "
+                f"({claim.source_doc_type}, {claim.retrieval_method}, "
+                f"score={claim.retrieval_score:.2f})"
+            )
 
     st.subheader("审核操作")
 
@@ -421,7 +503,12 @@ def _save_and_display(
     decision_reason: str = "",
 ) -> None:
     """Build a ReviewDecision, persist it, and show a success message."""
-    decision = build_review_decision(result, action, edited_text, decision_reason)
+    confidence = getattr(st.session_state, "confidence", None)
+    degraded = getattr(st.session_state, "degraded", None)
+    decision = build_review_decision(
+        result, action, edited_text, decision_reason,
+        confidence=confidence, degraded=degraded,
+    )
     store = ReviewStore(DEFAULT_STORE_PATH)
     store.save(decision)
     total = store.count()
@@ -434,7 +521,7 @@ def main() -> None:
     st.set_page_config(page_title="TicketPilot 审核控制台", layout="wide")
 
     st.title("TicketPilot 审核控制台")
-    st.caption("审核控制台 — 不自动发送回复")
+    st.caption("分级策略: 高/中置信自动发送 | 低置信人工审核 | 极低置信转人工")
 
     # Initialize session state flags
     if "result" not in st.session_state:
@@ -460,6 +547,12 @@ def main() -> None:
             with st.spinner("正在处理工单..."):
                 result = run_pipeline_with_draft(raw_ticket)
             st.session_state.result = result
+            # Compute confidence breakdown and degradation strategy
+            confidence, degraded = post_process(
+                result.ticket_output, result.draft_reply
+            )
+            st.session_state.confidence = confidence
+            st.session_state.degraded = degraded
             st.success("工单处理完成")
         except ValueError as e:
             st.error(str(e))

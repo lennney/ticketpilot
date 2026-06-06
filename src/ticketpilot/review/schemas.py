@@ -103,3 +103,29 @@ class ReviewDecision(BaseModel):
         default=None,
         description="Why human review was triggered (e.g. 'guard: forbidden_promise')"
     )
+
+    # --- Confidence & Degradation (new) ---
+    confidence_level: str | None = Field(
+        default=None,
+        description="Confidence tier: high/medium/low/critical"
+    )
+    confidence_retrieval: float | None = Field(
+        default=None, ge=0, le=1,
+        description="Retrieval confidence dimension"
+    )
+    confidence_classification: float | None = Field(
+        default=None, ge=0, le=1,
+        description="Classification confidence dimension"
+    )
+    confidence_citation: float | None = Field(
+        default=None, ge=0, le=1,
+        description="Citation coverage confidence dimension"
+    )
+    confidence_evidence_density: float | None = Field(
+        default=None, ge=0, le=1,
+        description="Evidence density confidence dimension"
+    )
+    response_strategy: str | None = Field(
+        default=None,
+        description="Degradation strategy: auto_send/auto_send_cautious/human_review/human_escalation"
+    )

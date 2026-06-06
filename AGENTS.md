@@ -17,7 +17,6 @@ for customer service ticket triage. It is a **portfolio / demo** project that de
 **It is NOT:**
 - A production customer service system
 - A replacement for human agents
-- An auto-send / auto-reply system
 - A generic RAG or chatbot
 
 All knowledge data and eval tickets are synthetic. All embeddings use deterministic
@@ -27,7 +26,7 @@ providers (FakeEmbeddingProvider by default; real provider opt-in via `.env.loca
 
 | Rule | Enforcement |
 |---|---|
-| No auto-send | Architectural invariant — pipeline never sends replies automatically |
+| Tiered auto-send | HIGH/MEDIUM confidence → auto-send; LOW → human review; CRITICAL → escalate to human |
 | No LLM calls in pipeline | Classification, risk, retrieval, drafting are all deterministic |
 | No real customer data | All seed data and eval tickets are synthetic |
 | No API keys in repo | `.env` and `.env.local` are gitignored; `.env.example` has placeholders |

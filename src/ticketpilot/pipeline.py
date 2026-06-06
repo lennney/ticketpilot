@@ -19,6 +19,8 @@ from ticketpilot.classification.classifier import IntentClassifier
 from ticketpilot.risk.assessor import RiskAssessor
 from ticketpilot.retrieval.providers.fake_embedding import FakeEmbeddingProvider
 from ticketpilot.retrieval.retrieve_evidence import retrieve_evidence
+from ticketpilot.confidence.scorer import ConfidenceBreakdown, ConfidenceScorer
+from ticketpilot.degradation.router import DegradationRouter, DegradedResponse
 
 
 class PipelineError(Exception):
@@ -119,3 +121,30 @@ def intake_risk_pipeline(raw_ticket: RawTicket, embedding_provider: Optional[Fak
         evidence_candidates=candidates,
         retrieval_trace=trace,
     )
+
+
+def post_process(
+    ticket_output: TicketOutput,
+    draft=None,
+) -> tuple[ConfidenceBreakdown, DegradedResponse]:
+    """Post-process pipeline output with confidence scoring and degradation routing.
+
+    This is an optional step after the core pipeline and draft generation.
+    It computes multi-dimensional confidence and routes to the appropriate
+    response strategy (auto-send, human review, or escalation).
+
+    Args:
+        ticket_output: Output from intake_risk_pipeline().
+        draft: Optional DraftReply from generate_draft().
+
+    Returns:
+        (ConfidenceBreakdown, DegradedResponse) tuple.
+    """
+    scorer = ConfidenceScorer()
+    confidence = scorer.score(ticket_output, draft)
+
+    router = DegradationRouter()
+    draft_text = draft.draft_text if draft else None
+    degraded = router.route(confidence, draft_text)
+
+    return confidence, degraded

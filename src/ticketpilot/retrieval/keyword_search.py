@@ -71,6 +71,7 @@ def _fts_search(
     query: str,
     top_k: int,
     doc_types: Optional[list[DocType]] = None,
+    exclude_business_domains: Optional[list[str]] = None,
 ) -> list[KeywordResult]:
     """
     Perform full-text search using PostgreSQL FTS with materialized tsvector.
@@ -104,11 +105,16 @@ def _fts_search(
     # Build doc_types filter if provided
     # NOTE: psycopg3 uses %s placeholders (not $1) in this environment
     doc_types_filter = ""
+    domain_filter = ""
     params: list = []
     if doc_types:
         placeholders = ", ".join("%s" for _ in doc_types)
         doc_types_filter = f"AND k.doc_type IN ({placeholders})"
         params = [dt.value for dt in doc_types]
+    if exclude_business_domains:
+        placeholders = ", ".join("%s" for _ in exclude_business_domains)
+        domain_filter = f"AND k.business_domain NOT IN ({placeholders})"
+        params.extend(exclude_business_domains)
 
     # Use materialized content_tsv column for faster search
     # Use ts_rank_cd (cover density) which is better for short documents
@@ -133,6 +139,7 @@ def _fts_search(
         FROM knowledge_chunks k
         WHERE k.content_tsv @@ {tsquery}
         {doc_types_filter}
+        {domain_filter}
         ORDER BY score DESC, k.id
         LIMIT ${{param_count}}
     """
@@ -166,6 +173,7 @@ def _like_search(
     terms: list[str],
     top_k: int,
     doc_types: Optional[list[DocType]] = None,
+    exclude_business_domains: Optional[list[str]] = None,
 ) -> list[KeywordResult]:
     """
     Perform LIKE search for business terms.
@@ -190,11 +198,17 @@ def _like_search(
     # NOTE: psycopg3 uses %s placeholders (not $1) in this environment
     like_conditions = " OR ".join("k.content LIKE %s" for i in range(len(terms)))
     doc_types_filter = ""
+    domain_filter = ""
     doc_type_params: list = []
+    domain_params: list = []
     if doc_types:
         placeholders = ", ".join("%s" for _ in doc_types)
         doc_types_filter = f"AND k.doc_type IN ({placeholders})"
         doc_type_params = [dt.value for dt in doc_types]
+    if exclude_business_domains:
+        placeholders = ", ".join("%s" for _ in exclude_business_domains)
+        domain_filter = f"AND k.business_domain NOT IN ({placeholders})"
+        domain_params = list(exclude_business_domains)
 
     # Add LIKE wildcards to terms
     # Each term is used multiple times: WHERE, SELECT score, ORDER BY score
@@ -213,7 +227,7 @@ def _like_search(
     score_terms = " + ".join(score_terms_parts)
 
     # Combine params: like_term_params (duplicated) + doc_type_params
-    params = like_term_params + doc_type_params
+    params = like_term_params + doc_type_params + domain_params
 
     sql = f"""
         SELECT
@@ -228,6 +242,7 @@ def _like_search(
         FROM knowledge_chunks k
         WHERE {like_conditions}
         {doc_types_filter}
+        {domain_filter}
         ORDER BY rank
         LIMIT {top_k}
     """
@@ -258,6 +273,7 @@ def keyword_search(
     query: str,
     top_k: int = 10,
     doc_types: Optional[list[DocType]] = None,
+    exclude_business_domains: Optional[list[str]] = None,
 ) -> tuple[list[KeywordResult], str]:
     """
     Keyword search using FTS with LIKE fallback for business terms.
@@ -277,7 +293,7 @@ def keyword_search(
         Tuple of (list of KeywordResult, search_method used)
     """
     # First try FTS
-    fts_results = _fts_search(query, top_k, doc_types)
+    fts_results = _fts_search(query, top_k, doc_types, exclude_business_domains)
     search_method = "fts"
 
     # Check if FTS results are good enough or empty
@@ -287,7 +303,7 @@ def keyword_search(
         business_terms = _check_business_terms(query)
         if business_terms:
             # Supplement with LIKE search
-            like_results = _like_search(business_terms, top_k, doc_types)
+            like_results = _like_search(business_terms, top_k, doc_types, exclude_business_domains)
             if like_results:
                 search_method = "fts+like"
                 # Merge results, avoiding duplicates

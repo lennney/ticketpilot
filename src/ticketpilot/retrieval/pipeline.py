@@ -16,6 +16,7 @@ def hybrid_retrieval(
     query: str,
     top_k: int = 10,
     doc_types: Optional[list[DocType]] = None,
+    exclude_business_domains: Optional[list[str]] = None,
     embedding_provider: Optional[FakeEmbeddingProvider] = None,
     rrf_k: int = DEFAULT_RRF_K,
     enable_reranking: bool = True,  # Enabled with improved strategy
@@ -59,6 +60,7 @@ def hybrid_retrieval(
         query=query,
         top_k=top_k * 2,  # Fetch more to account for fusion
         doc_types=doc_types,
+        exclude_business_domains=exclude_business_domains,
     )
     keyword_latency_ms = int((time.perf_counter() - keyword_start) * 1000)
 
@@ -71,6 +73,7 @@ def hybrid_retrieval(
         query_embedding=query_embedding,
         top_k=top_k * 2,  # Fetch more to account for fusion
         doc_types=doc_types,
+        exclude_business_domains=exclude_business_domains,
         embedding_provider_name=provider_name,
     )
     vector_latency_ms = int((time.perf_counter() - vector_start) * 1000)

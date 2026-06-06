@@ -7,6 +7,7 @@ from pydantic import BaseModel, Field, model_validator
 
 from ticketpilot.retrieval.schema.knowledge import DocType
 from ticketpilot.schema.ticket import TicketOutput
+from ticketpilot.tracing.provenance import ResponseProvenance
 
 
 class Citation(BaseModel):
@@ -55,6 +56,10 @@ class DraftReply(BaseModel):
     escalation_reason: str | None = None
     safety_notes: list[str] = Field(default_factory=list)
     cited_evidence_ids: list[str] = Field(default_factory=list)
+    provenance: ResponseProvenance | None = Field(
+        default=None,
+        description="Full-chain provenance linking claims to source chunks",
+    )
 
     @model_validator(mode="after")
     def _enforce_human_review_triggers(self) -> "DraftReply":
@@ -64,11 +69,16 @@ class DraftReply(BaseModel):
         if self.escalation_reason:
             self.must_human_review = True
         
-        # Confidence-based routing
-        # > 0.8: autonomous (no human review)
-        # 0.6-0.8: suggest human review
-        # < 0.6: must human review
-        if self.confidence < 0.6:
+        # Confidence-based routing (tiered strategy)
+        # > 0.8: auto-send (HIGH)
+        # 0.6-0.8: auto-send with disclaimer (MEDIUM)
+        # 0.4-0.6: must human review (LOW)
+        # < 0.4: escalate to human (CRITICAL)
+        if self.confidence < 0.4:
+            self.must_human_review = True
+            if not self.escalation_reason:
+                self.escalation_reason = f"critical_confidence ({self.confidence:.2f})"
+        elif self.confidence < 0.6:
             self.must_human_review = True
             if not self.escalation_reason:
                 self.escalation_reason = f"low_confidence ({self.confidence:.2f})"
@@ -90,15 +100,18 @@ class DraftReply(BaseModel):
         
         Returns:
             'high' if confidence > 0.8 (autonomous)
-            'medium' if 0.6 <= confidence <= 0.8 (suggest review)
-            'low' if confidence < 0.6 (must review)
+            'medium' if 0.6 <= confidence <= 0.8 (auto-send with disclaimer)
+            'low' if 0.4 <= confidence < 0.6 (human review)
+            'critical' if confidence < 0.4 (escalate to human)
         """
         if self.confidence > 0.8:
             return "high"
         elif self.confidence >= 0.6:
             return "medium"
-        else:
+        elif self.confidence >= 0.4:
             return "low"
+        else:
+            return "critical"
 
     @property
     def routing_decision(self) -> str:
@@ -106,16 +119,19 @@ class DraftReply(BaseModel):
         
         Returns:
             'autonomous' if high confidence
-            'suggest_review' if medium confidence
+            'auto_send_cautious' if medium confidence
             'human_review' if low confidence
+            'human_escalation' if critical confidence
         """
         level = self.confidence_level
         if level == "high":
             return "autonomous"
         elif level == "medium":
-            return "suggest_review"
-        else:
+            return "auto_send_cautious"
+        elif level == "low":
             return "human_review"
+        else:
+            return "human_escalation"
 
 
 class DraftedTicketResult(BaseModel):

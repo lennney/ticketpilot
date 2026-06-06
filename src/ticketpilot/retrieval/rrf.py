@@ -93,8 +93,9 @@ def rrf_fusion(
     # Sort by RRF score descending
     fused_scores.sort(key=lambda x: x[1], reverse=True)
 
-    # Build FusedResult list with full information
+    # Build FusedResult list with full information, deduplicating by content
     results = []
+    seen_content: set[str] = set()
     for (chunk_id, rrf_score, keyword_rank, kw_contrib, vector_rank, vec_contrib, sources) in fused_scores:
         # Get content and doc info from either result
         if chunk_id in keyword_map:
@@ -107,6 +108,11 @@ def rrf_fusion(
             doc_type = vec.doc_type
             content = vec.content
             doc_id = vec.doc_id
+
+        # Deduplicate by content (keep highest-scored)
+        if content in seen_content:
+            continue
+        seen_content.add(content)
 
         results.append(
             FusedResult(

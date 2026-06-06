@@ -16,6 +16,7 @@ def vector_search(
     query_embedding: list[float],
     top_k: int = 10,
     doc_types: Optional[list[DocType]] = None,
+    exclude_business_domains: Optional[list[str]] = None,
     ef_search: int = HNSW_EF_SEARCH,
     embedding_dim: Optional[int] = None,
     embedding_provider_name: str = "fake",
@@ -54,11 +55,16 @@ def vector_search(
 
     # Build doc_types filter if provided
     doc_types_filter = ""
+    domain_filter = ""
     params: list = []
     if doc_types:
         placeholders = ", ".join("%s" for _ in doc_types)
         doc_types_filter = f"AND doc_type IN ({placeholders})"
         params = [dt.value for dt in doc_types]
+    if exclude_business_domains:
+        placeholders = ", ".join("%s" for _ in exclude_business_domains)
+        domain_filter = f"AND business_domain NOT IN ({placeholders})"
+        params.extend(exclude_business_domains)
 
     # Convert embedding to PostgreSQL array format
     embedding_str = "[" + ",".join(str(x) for x in query_embedding) + "]"
@@ -75,6 +81,7 @@ def vector_search(
         FROM knowledge_chunks
         WHERE embedding IS NOT NULL
         {doc_types_filter}
+        {domain_filter}
         ORDER BY embedding <=> '{embedding_str}'::vector
         LIMIT %s
     """
