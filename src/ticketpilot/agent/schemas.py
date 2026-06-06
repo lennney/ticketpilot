@@ -33,6 +33,7 @@ class AgentRunStatus(str, Enum):
 
     CREATED = "created"
     RUNNING = "running"
+    PAUSED = "paused"
     COMPLETED = "completed"
     FAILED = "failed"
     HUMAN_REVIEW_REQUIRED = "human_review_required"

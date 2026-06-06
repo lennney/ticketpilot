@@ -151,6 +151,33 @@ def generate_draft_tool(input_data: dict[str, Any]) -> dict[str, Any]:
     return result.model_dump(mode="json")
 
 
+def request_human_input_tool(input_data: dict[str, Any]) -> dict[str, Any]:
+    """Request human input for a decision. Pauses the agent run.
+
+    Factor 7: Contact Humans with Tool Calls
+
+    Input:
+        question: str — what to ask the human
+        context: dict — relevant context for the human
+        options: list[str] — optional predefined choices
+        urgency: str — "low" | "medium" | "high"
+
+    Output:
+        status: "pause_requested"
+        question: str
+        context: dict
+        options: list[str]
+        urgency: str
+    """
+    return {
+        "status": "pause_requested",
+        "question": input_data["question"],
+        "context": input_data.get("context", {}),
+        "options": input_data.get("options", []),
+        "urgency": input_data.get("urgency", "medium"),
+    }
+
+
 _DEFAULT_TOOL_DEFS: list[dict[str, Any]] = [
     {
         "name": "normalize_ticket",
@@ -233,6 +260,31 @@ _DEFAULT_TOOL_DEFS: list[dict[str, Any]] = [
         "output_schema": {"type": "object"},
         "risk_level": "high",
         "handler": generate_draft_tool,
+    },
+    {
+        "name": "request_human_input",
+        "description": "Request human input for a decision. Pauses the agent run until human responds.",
+        "input_schema": {
+            "type": "object",
+            "properties": {
+                "question": {"type": "string", "description": "What to ask the human"},
+                "context": {"type": "object", "description": "Relevant context for the human"},
+                "options": {
+                    "type": "array",
+                    "items": {"type": "string"},
+                    "description": "Predefined choices (optional)",
+                },
+                "urgency": {
+                    "type": "string",
+                    "enum": ["low", "medium", "high"],
+                    "default": "medium",
+                },
+            },
+            "required": ["question"],
+        },
+        "output_schema": {"type": "object"},
+        "risk_level": "low",
+        "handler": request_human_input_tool,
     },
 ]
 
