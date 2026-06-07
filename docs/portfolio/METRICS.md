@@ -192,7 +192,7 @@ The following metrics are not yet available from repo reports:
 | Metric | Status | Shortest path to obtain |
 |--------|--------|------------------------|
 | Guard pass rate for real provider | **Now measured**: 84% (21/25, guard-aware) | Done — Phase 13.10 |
-| Real provider latency | Not yet measured | Time Phase 12 comparison runner API calls |
-| Real provider estimated cost | Not yet measured | Multiply API call count by per-token pricing |
-| Human review trigger correctness (real provider) | Not yet measured | Label Phase 12 fixtures with expected human review |
+| Real provider latency | **SKIPPED: no API key** | `scripts/measure_provider_latency.py` (Sprint 3) |
+| Real provider estimated cost | **SKIPPED: no API key** | Same script, requires DEEPSEEK_API_KEY |
+| Human review trigger correctness | **Precision=0.60, Recall=1.00, F1=0.75** | `tests/unit/test_human_review_accuracy.py` (Sprint 3) |
 | Reviewer-ready rate (per-provider) | **Fake=68%, Real=64%** | Computed from Phase 13.10: guard_passed + unsupported_claims=0 + citation_valid |
