@@ -1,6 +1,6 @@
 """Unit tests for Agent Kernel schemas (Batch 1)."""
 
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 import pytest
 from pydantic import ValidationError
@@ -29,7 +29,7 @@ class TestAgentEventType:
 
 class TestAgentRunStatus:
     def test_has_five_values(self):
-        assert len(AgentRunStatus) == 5
+        assert len(AgentRunStatus) == 6
 
     def test_created_default(self):
         assert AgentRunStatus.CREATED.value == "created"
@@ -68,7 +68,7 @@ class TestAgentEvent:
         event = AgentEvent(event_type=AgentEventType.RUN_STARTED)
         assert event.timestamp is not None
         # Should be close to now
-        now = datetime.utcnow()
+        now = datetime.now(timezone.utc)
         diff = abs((now - event.timestamp).total_seconds())
         assert diff < 5
 
@@ -246,7 +246,7 @@ class TestAgentRun:
             step_id="s1", description="d", tool_name="t", expected_output="o"
         )
         plan = AgentPlan(goal="goal", steps=[step])
-        now = datetime.utcnow()
+        now = datetime.now(timezone.utc)
         run = AgentRun(
             run_id="run_002",
             raw_ticket_text="投诉",
@@ -285,7 +285,7 @@ class TestAgentRun:
         assert loaded.final_status == run.final_status
 
     def test_rejects_completed_at_before_started_at(self):
-        now = datetime.utcnow()
+        now = datetime.now(timezone.utc)
         earlier = now - timedelta(hours=1)
         with pytest.raises(ValidationError):
             AgentRun(
@@ -296,7 +296,7 @@ class TestAgentRun:
             )
 
     def test_allows_completed_at_after_started_at(self):
-        now = datetime.utcnow()
+        now = datetime.now(timezone.utc)
         later = now + timedelta(seconds=5)
         run = AgentRun(
             run_id="r1",

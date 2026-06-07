@@ -1,6 +1,6 @@
 """Pydantic models for human review decisions."""
 
-from datetime import datetime
+from datetime import datetime, timezone, timezone
 from enum import Enum
 from uuid import uuid4
 
@@ -43,7 +43,7 @@ class ReviewDecision(BaseModel):
     evidence_used_count: int = 0
     review_trigger_reasons: list[str] = Field(default_factory=list)
     reviewer_label: str = ""
-    reviewed_at: datetime = Field(default_factory=datetime.utcnow)
+    reviewed_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
     # --- Draft audit fields (Phase 11, optional for backward compat) ---
     # Provider identity

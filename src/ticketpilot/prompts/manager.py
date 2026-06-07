@@ -10,7 +10,7 @@ Centralizes prompts with version tracking, enabling:
 
 from __future__ import annotations
 
-from datetime import datetime
+from datetime import datetime, timezone, timezone
 from pathlib import Path
 from typing import Any
 
@@ -24,7 +24,7 @@ class PromptVersion(BaseModel):
     version: str = Field(description="Semver version (e.g., '1.0.0')")
     template: str = Field(description="Prompt template text (supports {variable} placeholders)")
     variables: list[str] = Field(default_factory=list, description="Required template variables")
-    created_at: datetime = Field(default_factory=datetime.utcnow)
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     changelog: str = Field(default="", description="What changed in this version")
 
 

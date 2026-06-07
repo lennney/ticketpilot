@@ -6,7 +6,7 @@ No runtime execution logic.
 
 from __future__ import annotations
 
-from datetime import datetime
+from datetime import datetime, timezone, timezone
 from enum import Enum
 from typing import Any
 
@@ -46,7 +46,7 @@ class AgentEvent(BaseModel):
     """A single event recorded during an agent run."""
 
     event_type: AgentEventType
-    timestamp: datetime = Field(default_factory=datetime.utcnow)
+    timestamp: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     step_number: int | None = None
     data: dict[str, Any] = Field(default_factory=dict)
 
@@ -161,7 +161,7 @@ class AgentRun(BaseModel):
     draft_reply: dict[str, Any] | None = None
     review_decision: dict[str, Any] | None = None
     final_status: AgentRunStatus = AgentRunStatus.CREATED
-    started_at: datetime = Field(default_factory=datetime.utcnow)
+    started_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     completed_at: datetime | None = None
 
     @field_validator("run_id", "raw_ticket_text")

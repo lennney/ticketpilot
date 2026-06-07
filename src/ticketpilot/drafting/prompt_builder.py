@@ -6,15 +6,22 @@ that constrains the LLM to evidence-grounded drafting only.
 
 from __future__ import annotations
 
+import logging
+from pathlib import Path
+
 from pydantic import BaseModel, Field
 
 from ticketpilot.schema.evidence import EvidenceCandidate
+
+logger = logging.getLogger(__name__)
 
 EVIDENCE_MAX_CHARS = 200
 DEFAULT_MAX_EVIDENCE = 5
 
 EVIDENCE_SEPARATOR = "\n---\n"
 SECTION_SEPARATOR = "\n\n"
+
+_TEMPLATES_DIR = Path(__file__).resolve().parent.parent / "prompts" / "templates"
 
 
 class DraftPromptInput(BaseModel):
@@ -27,6 +34,7 @@ class DraftPromptInput(BaseModel):
         severity: Risk severity level ("low", "medium", "high", "critical").
         must_human_review: Whether risk assessment already requires human review.
         evidence_candidates: Retrieved evidence candidates from the knowledge base.
+        template_id: Template identifier for specialized prompts (e.g., "complaint", "refund").
     """
 
     ticket_text: str
@@ -35,6 +43,23 @@ class DraftPromptInput(BaseModel):
     severity: str = "low"
     must_human_review: bool = False
     evidence_candidates: list[EvidenceCandidate] = Field(default_factory=list)
+    template_id: str = "default"
+
+
+def load_template(template_id: str) -> str | None:
+    """Load a prompt template from the templates directory.
+
+    Args:
+        template_id: Template identifier (filename without .md extension).
+
+    Returns:
+        Template content string, or None if not found.
+    """
+    template_path = _TEMPLATES_DIR / f"{template_id}.md"
+    if template_path.exists():
+        return template_path.read_text(encoding="utf-8")
+    logger.warning("Template '%s' not found at %s", template_id, template_path)
+    return None
 
 
 def format_evidence_block(
@@ -161,6 +186,7 @@ def build_prompt(
     input_data: DraftPromptInput,
     max_evidence: int = DEFAULT_MAX_EVIDENCE,
     evidence_max_chars: int = EVIDENCE_MAX_CHARS,
+    template_id: str | None = None,
 ) -> str:
     """Build a complete structured prompt for LLM draft generation.
 
@@ -171,6 +197,7 @@ def build_prompt(
         input_data: The prompt input with ticket and evidence context.
         max_evidence: Maximum evidence items to include.
         evidence_max_chars: Max characters per evidence snippet.
+        template_id: Override template ID. If None, uses input_data.template_id.
 
     Returns:
         A structured prompt string ready for LLM input.
@@ -182,12 +209,24 @@ def build_prompt(
         msg = "ticket_text must not be empty"
         raise ValueError(msg)
 
+    effective_template_id = template_id or input_data.template_id
+
     sections: list[str] = []
 
     # System role
     sections.append(
         "你是一名客服回复草稿助手。请根据以下信息和证据，生成专业的客服回复草稿。"
     )
+
+    # Load and insert specialized template if available
+    template_content = load_template(effective_template_id)
+    if template_content:
+        sections.append(f"## 专项处理指南（{effective_template_id}）\n\n{template_content}")
+    elif effective_template_id != "default":
+        # Try falling back to default template
+        default_content = load_template("default")
+        if default_content:
+            sections.append(f"## 专项处理指南（default）\n\n{default_content}")
 
     # Ticket context
     context_lines = [

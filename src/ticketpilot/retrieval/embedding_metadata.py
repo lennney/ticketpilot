@@ -3,9 +3,12 @@
 from __future__ import annotations
 
 import hashlib
+import logging
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from typing import Any
+
+logger = logging.getLogger(__name__)
 
 from ticketpilot.retrieval.db.connection import get_db_connection
 
@@ -204,7 +207,8 @@ def get_vector_dimension_from_db() -> int | None:
                 else:  # pgvector >= 0.7: raw dimension
                     dim = typmod
                 return dim if dim > 0 else None
-    except Exception:
+    except Exception as exc:
+        logger.error("Failed to detect vector dimension from DB", exc_info=exc)
         return None
 
 
@@ -226,5 +230,6 @@ def get_vector_dimension_from_data() -> int | None:
                 )
                 row = cur.fetchone()
                 return row[0] if row else None
-    except Exception:
+    except Exception as exc:
+        logger.error("Failed to detect vector dimension from data", exc_info=exc)
         return None

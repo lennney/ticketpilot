@@ -1,6 +1,6 @@
 """Risk assessor for ticket risk assessment."""
 
-from datetime import datetime
+from datetime import datetime, timezone, timezone
 
 from ticketpilot.schema.ticket import (
     ClassificationResult,
@@ -10,9 +10,7 @@ from ticketpilot.schema.ticket import (
     RiskSeverity,
 )
 from ticketpilot.risk.rules import RISK_RULES
-
-# Unified confidence threshold (per blocking issues)
-CONFIDENCE_THRESHOLD = 0.7
+from ticketpilot.config import CONFIDENCE_MEDIUM as CONFIDENCE_THRESHOLD
 
 
 class RiskAssessor:
@@ -90,5 +88,5 @@ class RiskAssessor:
             flags=flags,
             severity=severity,
             must_human_review=len(flags) > 0,
-            assessed_at=datetime.utcnow(),
+            assessed_at=datetime.now(timezone.utc),
         )

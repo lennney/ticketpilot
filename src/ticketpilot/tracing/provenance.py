@@ -11,7 +11,7 @@ Uses UUID for chunk_id/doc_id (consistent with FusedResult, Citation).
 
 from __future__ import annotations
 
-from datetime import datetime
+from datetime import datetime, timezone, timezone
 from typing import Optional
 from uuid import UUID
 
@@ -47,4 +47,4 @@ class ResponseProvenance(BaseModel):
     ticket_id: str = Field(description="Original ticket identifier")
     claims: list[ClaimProvenance] = Field(default_factory=list, description="Provenance for each cited claim")
     overall_confidence: float = Field(ge=0, le=1, description="Overall provenance confidence")
-    generated_at: datetime = Field(default_factory=datetime.utcnow, description="When provenance was generated")
+    generated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc), description="When provenance was generated")

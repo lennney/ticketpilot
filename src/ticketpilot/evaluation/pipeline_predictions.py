@@ -12,7 +12,7 @@ All functions operate deterministically on seed data.
 
 from __future__ import annotations
 
-from datetime import datetime
+from datetime import datetime, timezone, timezone
 
 from ticketpilot.drafting.pipeline import run_pipeline_with_draft
 from ticketpilot.evaluation.schemas import EvalPrediction, EvalTicket
@@ -58,7 +58,7 @@ def predict_from_pipeline(eval_ticket: EvalTicket) -> EvalPrediction:
     """
     raw_ticket = RawTicket(
         original_text=eval_ticket.original_text,
-        submitted_at=datetime.utcnow(),
+        submitted_at=datetime.now(timezone.utc),
         customer_id=eval_ticket.customer_id,
     )
 

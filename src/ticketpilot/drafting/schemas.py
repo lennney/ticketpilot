@@ -1,10 +1,11 @@
 """Pydantic models for evidence-grounded draft reply generation."""
 
-from datetime import datetime
+from datetime import datetime, timezone, timezone
 from uuid import UUID
 
 from pydantic import BaseModel, Field, model_validator
 
+from ticketpilot.config import CONFIDENCE_HIGH, CONFIDENCE_MEDIUM, CONFIDENCE_LOW
 from ticketpilot.retrieval.schema.knowledge import DocType
 from ticketpilot.schema.ticket import TicketOutput
 from ticketpilot.tracing.provenance import ResponseProvenance
@@ -70,15 +71,16 @@ class DraftReply(BaseModel):
             self.must_human_review = True
         
         # Confidence-based routing (tiered strategy)
-        # > 0.8: auto-send (HIGH)
-        # 0.6-0.8: auto-send with disclaimer (MEDIUM)
-        # 0.4-0.6: must human review (LOW)
-        # < 0.4: escalate to human (CRITICAL)
-        if self.confidence < 0.4:
+        # > CONFIDENCE_HIGH: auto-send (HIGH)
+        # CONFIDENCE_MEDIUM to CONFIDENCE_HIGH: auto-send with disclaimer (MEDIUM)
+        # CONFIDENCE_LOW to CONFIDENCE_MEDIUM: must human review (LOW)
+        # < CONFIDENCE_LOW: escalate to human (CRITICAL)
+        # Note: confidence == 0.0 means "not yet evaluated" (default), skip routing.
+        if 0 < self.confidence < CONFIDENCE_LOW:
             self.must_human_review = True
             if not self.escalation_reason:
                 self.escalation_reason = f"critical_confidence ({self.confidence:.2f})"
-        elif self.confidence < 0.6:
+        elif 0 < self.confidence < CONFIDENCE_MEDIUM:
             self.must_human_review = True
             if not self.escalation_reason:
                 self.escalation_reason = f"low_confidence ({self.confidence:.2f})"
@@ -99,16 +101,16 @@ class DraftReply(BaseModel):
         """Get confidence level category.
         
         Returns:
-            'high' if confidence > 0.8 (autonomous)
-            'medium' if 0.6 <= confidence <= 0.8 (auto-send with disclaimer)
-            'low' if 0.4 <= confidence < 0.6 (human review)
-            'critical' if confidence < 0.4 (escalate to human)
+            'high' if confidence > CONFIDENCE_HIGH (autonomous)
+            'medium' if CONFIDENCE_MEDIUM <= confidence <= CONFIDENCE_HIGH (auto-send with disclaimer)
+            'low' if CONFIDENCE_LOW <= confidence < CONFIDENCE_MEDIUM (human review)
+            'critical' if confidence < CONFIDENCE_LOW (escalate to human)
         """
-        if self.confidence > 0.8:
+        if self.confidence > CONFIDENCE_HIGH:
             return "high"
-        elif self.confidence >= 0.6:
+        elif self.confidence >= CONFIDENCE_MEDIUM:
             return "medium"
-        elif self.confidence >= 0.4:
+        elif self.confidence >= CONFIDENCE_LOW:
             return "low"
         else:
             return "critical"
@@ -152,4 +154,4 @@ class DraftGenerationTrace(BaseModel):
     unsupported_claims: list[str] = Field(default_factory=list)
     human_review_required: bool = False
     fallback_reason: str | None = None
-    created_at: datetime = Field(default_factory=datetime.utcnow)
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))

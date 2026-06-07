@@ -11,7 +11,7 @@ from __future__ import annotations
 
 import json
 import sqlite3
-from datetime import datetime
+from datetime import datetime, timezone, timezone
 from pathlib import Path
 from typing import Any
 
@@ -54,7 +54,7 @@ class AgentStateStore:
 
     def save_run(self, run: AgentRun) -> None:
         """Save or overwrite an AgentRun."""
-        now = datetime.utcnow().isoformat()
+        now = datetime.now(timezone.utc).isoformat()
         data = run.model_dump_json()
 
         with sqlite3.connect(self._db_path) as conn:
@@ -93,7 +93,7 @@ class AgentStateStore:
             run = AgentRun.model_validate_json(row[0])
             run.final_status = AgentRunStatus.PAUSED
 
-            now = datetime.utcnow().isoformat()
+            now = datetime.now(timezone.utc).isoformat()
             conn.execute(
                 """UPDATE agent_runs
                    SET status = ?, run_data = ?, updated_at = ?, pause_reason = ?
@@ -134,7 +134,7 @@ class AgentStateStore:
             run.final_status = AgentRunStatus.RUNNING
             run.review_decision = human_input
 
-            now = datetime.utcnow().isoformat()
+            now = datetime.now(timezone.utc).isoformat()
             conn.execute(
                 """UPDATE agent_runs
                    SET status = ?, run_data = ?, updated_at = ?, pause_reason = NULL

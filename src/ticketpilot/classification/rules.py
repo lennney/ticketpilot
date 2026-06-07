@@ -61,11 +61,11 @@ INTENT_RULES: list[IntentRule] = [
     ),
     IntentRule(
         intent=IntentClass.COMPLAINT,
-        keywords=["投诉", "差评", "不满", "态度", "律师", "起诉", "12315",
+        keywords=["投诉", "差评", "不满", "态度", "12315",
                   "消费者协会", "媒体曝光", "食品安全", "虫子", "过敏", "医院",
                   "过期", "变质", "异物", "假货", "假冒", "泄露", "骚扰",
-                  "隐私", "赔偿", "三倍赔偿", "三倍", "维权", "举报"],
-        strong_indicator="律师函|准备起诉|已请律师|三倍赔偿|要求赔偿|12315投诉",
+                  "隐私", "维权", "举报"],
+        strong_indicator="12315投诉",
     ),
     IntentRule(
         intent=IntentClass.OTHER,

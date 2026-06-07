@@ -1,6 +1,6 @@
 """Retrieval trace schema for debugging and explainability."""
 
-from datetime import datetime
+from datetime import datetime, timezone, timezone
 from typing import Any, Optional
 from uuid import UUID
 
@@ -162,7 +162,7 @@ class RetrievalTrace(BaseModel):
         description="Total retrieval latency in milliseconds",
     )
     created_at: datetime = Field(
-        default_factory=datetime.utcnow,
+        default_factory=lambda: datetime.now(timezone.utc),
         description="Trace creation timestamp",
     )
 

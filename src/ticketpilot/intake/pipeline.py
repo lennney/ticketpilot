@@ -1,6 +1,6 @@
 """Intake pipeline for ticket normalization and entity extraction."""
 
-from datetime import datetime
+from datetime import datetime, timezone, timezone
 
 from ticketpilot.schema.ticket import NormalizedTicket, RawTicket
 from ticketpilot.intake.normalizer import TextNormalizer
@@ -32,5 +32,5 @@ def pipeline(raw_ticket: RawTicket) -> NormalizedTicket:
         order_numbers=entities.order_numbers,
         product_info=entities.product_info,
         amount=entities.amount,
-        cleaned_at=datetime.utcnow(),
+        cleaned_at=datetime.now(timezone.utc),
     )

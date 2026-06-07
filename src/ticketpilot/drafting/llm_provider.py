@@ -3,7 +3,10 @@
 from __future__ import annotations
 
 import json
+import logging
 from abc import ABC, abstractmethod
+
+logger = logging.getLogger(__name__)
 
 import urllib.request
 import urllib.error
@@ -382,7 +385,8 @@ class OpenAICompatibleProvider(LLMProvider):
                 cited_evidence_ids=cited_ids,
             )
 
-        except Exception:  # noqa: BLE001
+        except Exception as exc:  # noqa: BLE001
+            logger.error("LLM provider failed: %s", exc, exc_info=True)
             # Safe fallback on any error
             return DraftReply(
                 ticket_id="",

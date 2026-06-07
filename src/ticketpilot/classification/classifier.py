@@ -1,14 +1,11 @@
 """Intent classifier for ticket text."""
 
-from datetime import datetime
+import re
+from datetime import datetime, timezone, timezone
 
 from ticketpilot.schema.ticket import ClassificationResult, IntentClass
 from ticketpilot.classification.rules import INTENT_RULES
-
-# Unified confidence threshold (per blocking issues)
-CONFIDENCE_THRESHOLD = 0.7
-STRONG_CONFIDENCE = 0.8
-WEAK_CONFIDENCE = 0.5
+from ticketpilot.config import CONFIDENCE_THRESHOLD, STRONG_CONFIDENCE, WEAK_CONFIDENCE
 
 
 class IntentClassifier:
@@ -32,11 +29,10 @@ class IntentClassifier:
             return ClassificationResult(
                 intent=IntentClass.OTHER,
                 confidence=WEAK_CONFIDENCE,
-                classified_at=datetime.utcnow(),
+                classified_at=datetime.now(timezone.utc),
             )
 
         # Phase 1: Check for strong indicators (complaint escalation, etc.)
-        import re
         for rule in self.rules:
             if rule.intent == IntentClass.OTHER:
                 continue
@@ -45,7 +41,7 @@ class IntentClassifier:
                     return ClassificationResult(
                         intent=rule.intent,
                         confidence=STRONG_CONFIDENCE,
-                        classified_at=datetime.utcnow(),
+                        classified_at=datetime.now(timezone.utc),
                     )
 
         # Phase 2: First-match-wins keyword matching
@@ -81,5 +77,5 @@ class IntentClassifier:
         return ClassificationResult(
             intent=matched_intent,
             confidence=confidence,
-            classified_at=datetime.utcnow(),
+            classified_at=datetime.now(timezone.utc),
         )

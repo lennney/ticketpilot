@@ -14,7 +14,7 @@ import time
 import uuid
 from contextlib import contextmanager
 from dataclasses import dataclass, field
-from datetime import datetime
+from datetime import datetime, timezone, timezone
 from pathlib import Path
 from typing import Any
 
@@ -133,7 +133,7 @@ class TraceCollector:
         """Create a new trace."""
         trace = AgentTrace(
             trace_id=str(uuid.uuid4()),
-            timestamp=datetime.utcnow(),
+            timestamp=datetime.now(timezone.utc),
             agent_name=agent_name,
             input_data=input_data,
         )

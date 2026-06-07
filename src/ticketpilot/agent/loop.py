@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import uuid
-from datetime import datetime
+from datetime import datetime, timezone, timezone
 from typing import Any
 
 from ticketpilot.agent.memory import WorkingMemory
@@ -44,7 +44,7 @@ def _construct_ticket_output(
         "normalized_ticket": normalized_ticket,
         "classification": classification,
         "risk_assessment": risk_assessment,
-        "output_at": datetime.utcnow().isoformat(),
+        "output_at": datetime.now(timezone.utc).isoformat(),
         "evidence_candidates": evidence_result.get("evidence_candidates", []),
         "retrieval_trace": evidence_result.get("retrieval_trace"),
     }
@@ -75,7 +75,7 @@ def run_agent_pipeline(
     reg = registry or create_default_tool_registry()
     plan_engine = planner or DeterministicTaskPlanner()
 
-    started_at = datetime.utcnow()
+    started_at = datetime.now(timezone.utc)
     trace.add_event(AgentEventType.RUN_STARTED)
 
     ticket_output: dict[str, Any] | None = None
@@ -163,12 +163,12 @@ def run_agent_pipeline(
             "final_status": final_status.value,
         })
         trace.add_event(AgentEventType.RUN_COMPLETED)
-        completed_at = datetime.utcnow()
+        completed_at = datetime.now(timezone.utc)
 
     except Exception as exc:
         trace.add_event(AgentEventType.RUN_FAILED, data={"error": str(exc)})
         final_status = AgentRunStatus.FAILED
-        completed_at = datetime.utcnow()
+        completed_at = datetime.now(timezone.utc)
 
     return AgentRun(
         run_id=run_id,

@@ -13,7 +13,7 @@ from __future__ import annotations
 import json
 import uuid
 from dataclasses import dataclass, field
-from datetime import datetime
+from datetime import datetime, timezone, timezone
 from pathlib import Path
 from typing import Any
 
@@ -283,7 +283,7 @@ def run_evaluation(
     
     return EvalReport(
         report_id=str(uuid.uuid4()),
-        timestamp=datetime.utcnow(),
+        timestamp=datetime.now(timezone.utc),
         total_cases=total,
         passed_cases=passed,
         failed_cases=failed,

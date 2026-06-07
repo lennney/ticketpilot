@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import json
 import uuid
-from datetime import datetime
+from datetime import datetime, timezone, timezone
 from typing import AsyncGenerator
 
 from fastapi import FastAPI, HTTPException
@@ -41,7 +41,7 @@ async def stream_chat_response(
     # Process through pipeline
     raw_ticket = RawTicket(
         original_text=message,
-        submitted_at=datetime.utcnow(),
+        submitted_at=datetime.now(timezone.utc),
     )
     
     try:

@@ -1,5 +1,4 @@
-"""
-Multi-Agent Orchestrator for TicketPilot.
+"""Multi-Agent Orchestrator for TicketPilot.
 
 Routes tickets to specialized agents based on intent:
 - RefundAgent: Handles refund-related tickets
@@ -7,12 +6,14 @@ Routes tickets to specialized agents based on intent:
 - LogisticsAgent: Handles shipping and delivery issues
 - TechnicalAgent: Handles technical issues
 - DefaultAgent: Handles other intents
+
+Re-exports key classes for cleaner imports:
+    from ticketpilot.multi_agent import BaseAgent, Orchestrator
 """
 from __future__ import annotations
 
 import logging
 from abc import ABC, abstractmethod
-from dataclasses import dataclass
 from typing import Any
 
 from ticketpilot.drafting.draft_agent import DraftAgent
@@ -24,10 +25,11 @@ logger = logging.getLogger(__name__)
 
 class BaseAgent(ABC):
     """Base class for specialized agents."""
-    
-    def __init__(self, name: str):
+
+    def __init__(self, name: str, template_id: str = "default"):
         self.name = name
-        self._draft_agent = DraftAgent()
+        self.template_id = template_id
+        self._draft_agent = DraftAgent(template_id=template_id)
     
     @abstractmethod
     def generate_draft(
@@ -45,9 +47,9 @@ class BaseAgent(ABC):
 
 class RefundAgent(BaseAgent):
     """Specialized agent for refund-related tickets."""
-    
+
     def __init__(self):
-        super().__init__("RefundAgent")
+        super().__init__("RefundAgent", template_id="refund")
     
     def generate_draft(
         self,
@@ -59,7 +61,6 @@ class RefundAgent(BaseAgent):
         evidence_candidates: list[EvidenceCandidate],
     ) -> DraftReply:
         """Generate refund-focused reply."""
-        # Use DraftAgent with refund-specific context
         return self._draft_agent.generate_draft(
             normalized_text=normalized_text,
             issue_type=issue_type,
@@ -72,9 +73,9 @@ class RefundAgent(BaseAgent):
 
 class ComplaintAgent(BaseAgent):
     """Specialized agent for complaints and escalations."""
-    
+
     def __init__(self):
-        super().__init__("ComplaintAgent")
+        super().__init__("ComplaintAgent", template_id="complaint")
     
     def generate_draft(
         self,
@@ -101,9 +102,9 @@ class ComplaintAgent(BaseAgent):
 
 class LogisticsAgent(BaseAgent):
     """Specialized agent for logistics issues."""
-    
+
     def __init__(self):
-        super().__init__("LogisticsAgent")
+        super().__init__("LogisticsAgent", template_id="logistics")
     
     def generate_draft(
         self,
@@ -127,9 +128,9 @@ class LogisticsAgent(BaseAgent):
 
 class TechnicalAgent(BaseAgent):
     """Specialized agent for technical issues."""
-    
+
     def __init__(self):
-        super().__init__("TechnicalAgent")
+        super().__init__("TechnicalAgent", template_id="technical")
     
     def generate_draft(
         self,
@@ -153,9 +154,9 @@ class TechnicalAgent(BaseAgent):
 
 class DefaultAgent(BaseAgent):
     """Default agent for other intents."""
-    
+
     def __init__(self):
-        super().__init__("DefaultAgent")
+        super().__init__("DefaultAgent", template_id="default")
     
     def generate_draft(
         self,
@@ -177,12 +178,10 @@ class DefaultAgent(BaseAgent):
         )
 
 
-@dataclass
-class AgentRoute:
-    """Route configuration for an agent."""
-    intent: str
-    agent: BaseAgent
-    priority: int = 0  # Higher priority = preferred agent
+# Alias for facade
+BaseSpecialist = BaseAgent
+BillingSpecialist = RefundAgent
+GeneralSpecialist = DefaultAgent
 
 
 class Orchestrator:
@@ -223,19 +222,7 @@ class Orchestrator:
     ) -> DraftReply:
         """
         Generate a draft reply using the appropriate specialized agent.
-        
-        Args:
-            normalized_text: Customer's normalized message text.
-            issue_type: Classified intent / issue type.
-            risk_flags: Detected risk flags.
-            severity: Risk severity level.
-            must_human_review: Whether risk assessment requires human review.
-            evidence_candidates: Pre-retrieved evidence.
-        
-        Returns:
-            DraftReply with citations, confidence, and guard flags.
         """
-        # Get the appropriate agent
         agent = self.get_agent(issue_type)
         
         logger.info(
@@ -244,7 +231,6 @@ class Orchestrator:
             issue_type,
         )
         
-        # Generate draft using the specialized agent
         return agent.generate_draft(
             normalized_text=normalized_text,
             issue_type=issue_type,
@@ -289,3 +275,19 @@ def generate_draft_with_orchestrator(
         must_human_review=must_human_review,
         evidence_candidates=evidence_candidates,
     )
+
+
+__all__ = [
+    "BaseAgent",
+    "BaseSpecialist",
+    "BillingSpecialist",
+    "ComplaintAgent",
+    "DefaultAgent",
+    "GeneralSpecialist",
+    "LogisticsAgent",
+    "Orchestrator",
+    "RefundAgent",
+    "TechnicalAgent",
+    "generate_draft_with_orchestrator",
+    "get_orchestrator",
+]

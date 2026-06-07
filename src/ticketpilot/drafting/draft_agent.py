@@ -281,7 +281,7 @@ class DraftAgent:
         TICKETPILOT_LLM_MAX_TOKENS, TICKETPILOT_LLM_TEMPERATURE
     """
 
-    def __init__(self) -> None:
+    def __init__(self, template_id: str = "default") -> None:
         self._base_url = os.environ.get(
             "TICKETPILOT_LLM_BASE_URL", "https://api.deepseek.com"
         ).rstrip("/")
@@ -296,11 +296,12 @@ class DraftAgent:
         self._temperature = float(
             os.environ.get("TICKETPILOT_LLM_TEMPERATURE", "0.3")
         )
+        self._template_id = template_id
 
     def __repr__(self) -> str:
         return (
             f"DraftAgent(base_url={self._base_url!r}, "
-            f"model={self._model!r})"
+            f"model={self._model!r}, template_id={self._template_id!r})"
         )
 
     # ------------------------------------------------------------------
@@ -793,6 +794,13 @@ class DraftAgent:
         for idx, ev in enumerate(sorted_ev, start=1):
             id_to_chunk[idx] = str(ev.chunk_id)
 
+        # Load specialized template if available
+        from ticketpilot.drafting.prompt_builder import load_template
+        template_content = load_template(self._template_id)
+        template_section = ""
+        if template_content:
+            template_section = f"\n\n## 专项处理指南\n\n{template_content}"
+
         # Build safety instructions
         safety_lines = [
             "## 安全规则",
@@ -815,6 +823,7 @@ class DraftAgent:
             f"严重度：{severity}\n\n"
             f"## 可用证据\n{numbered_evidence}\n\n"
             + "\n".join(safety_lines)
+            + template_section
             + "\n\n请生成回复。输出JSON格式：\n"
             '{"step": "reply", "draft_text": "回复内容", '
             '"cited_evidence_ids": ["1", "2"], "confidence": 0.8, '

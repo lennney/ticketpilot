@@ -1,7 +1,10 @@
 """Vector search using pgvector HNSW index."""
 
+import logging
 import time
 from typing import Optional
+
+logger = logging.getLogger(__name__)
 
 from ticketpilot.retrieval.schema.knowledge import DocType
 from ticketpilot.retrieval.traces import VectorResult
@@ -155,8 +158,8 @@ def _detect_embedding_dim() -> int:
         dim = get_vector_dimension_from_data()
         if dim is not None and dim > 0:
             return dim
-    except Exception:
-        pass
+    except Exception as exc:
+        logger.error("Failed to detect embedding dimension, falling back to 384", exc_info=exc)
     return 384
 
 

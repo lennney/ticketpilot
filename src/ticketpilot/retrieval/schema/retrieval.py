@@ -1,6 +1,6 @@
 """Retrieval schema models for queries, results, and traces."""
 
-from datetime import datetime
+from datetime import datetime, timezone, timezone
 from typing import Any, Optional
 from uuid import UUID
 
@@ -40,4 +40,4 @@ class RetrievalSchema(BaseModel):
     final_evidence: Optional[dict[str, Any]] = None
     retrieved_doc_ids: Optional[list[UUID]] = None
     retrieval_latency_ms: Optional[int] = None
-    created_at: datetime = Field(default_factory=datetime.utcnow)
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))

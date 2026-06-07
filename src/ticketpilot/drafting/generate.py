@@ -199,7 +199,8 @@ def generate_draft(ticket_output: TicketOutput) -> DraftReply:
 
         return reply
 
-    except Exception:
+    except Exception as exc:
+        logger.error("Draft generation failed: %s", exc, exc_info=True)
         return DraftReply(
             ticket_id=ticket_output.ticket_id,
             draft_text=NO_EVIDENCE_FALLBACK_TEXT,

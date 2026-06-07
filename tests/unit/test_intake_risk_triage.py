@@ -63,7 +63,7 @@ class TestGoldenCases:
                 "账号被盗了，有人盗刷了我的订单",
                 IntentClass.ACCOUNT_ISSUE,
                 {RiskFlag.ACCOUNT_SECURITY_RISK},
-                RiskSeverity.LOW,
+                RiskSeverity.MEDIUM,
             ),
             (
                 "请联系我律师，准备起诉你们",
@@ -80,7 +80,7 @@ class TestGoldenCases:
             (
                 "我要求3倍赔偿，你们违约了",
                 IntentClass.OTHER,
-                {RiskFlag.COMPENSATION_RISK, RiskFlag.POLICY_CONFLICT},
+                {RiskFlag.COMPENSATION_RISK, RiskFlag.POLICY_CONFLICT, RiskFlag.LOW_CONFIDENCE},
                 RiskSeverity.MEDIUM,
             ),
             (

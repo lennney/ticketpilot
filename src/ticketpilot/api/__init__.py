@@ -10,7 +10,7 @@ Provides REST API endpoints for:
 from __future__ import annotations
 
 import uuid
-from datetime import datetime
+from datetime import datetime, timezone, timezone
 from typing import List, Optional
 
 from fastapi import FastAPI, HTTPException
@@ -123,7 +123,7 @@ async def root():
         "status": "healthy",
         "service": "TicketPilot API",
         "version": "1.0.0",
-        "timestamp": datetime.utcnow().isoformat(),
+        "timestamp": datetime.now(timezone.utc).isoformat(),
     }
 
 
@@ -147,11 +147,11 @@ async def chat(request: ChatRequest):
     session_id = request.session_id or str(uuid.uuid4())
     
     # Process through pipeline
-    start_time = datetime.utcnow()
+    start_time = datetime.now(timezone.utc)
     
     raw_ticket = RawTicket(
         original_text=user_message.content,
-        submitted_at=datetime.utcnow(),
+        submitted_at=datetime.now(timezone.utc),
     )
     
     try:
@@ -167,7 +167,7 @@ async def chat(request: ChatRequest):
             evidence_candidates=ticket_output.evidence_candidates,
         )
         
-        processing_time = (datetime.utcnow() - start_time).total_seconds() * 1000
+        processing_time = (datetime.now(timezone.utc) - start_time).total_seconds() * 1000
         
         # Extract evidence for response
         evidence_list = []
@@ -188,7 +188,7 @@ async def chat(request: ChatRequest):
         assistant_message = ChatMessage(
             role="assistant",
             content=draft_result.draft_text if hasattr(draft_result, 'draft_text') else "感谢您的咨询，我正在为您处理...",
-            timestamp=datetime.utcnow(),
+            timestamp=datetime.now(timezone.utc),
         )
         
         return ChatResponse(
@@ -206,7 +206,7 @@ async def chat(request: ChatRequest):
         assistant_message = ChatMessage(
             role="assistant",
             content="抱歉，处理您的请求时出现了问题。请稍后重试或联系人工客服。",
-            timestamp=datetime.utcnow(),
+            timestamp=datetime.now(timezone.utc),
         )
         
         return ChatResponse(
@@ -231,12 +231,12 @@ async def process_ticket(request: TicketRequest):
     4. Evidence retrieval - search knowledge base
     5. Draft generation - create response draft
     """
-    start_time = datetime.utcnow()
+    start_time = datetime.now(timezone.utc)
     ticket_id = str(uuid.uuid4())
     
     raw_ticket = RawTicket(
         original_text=request.text,
-        submitted_at=datetime.utcnow(),
+        submitted_at=datetime.now(timezone.utc),
     )
     
     try:
@@ -246,7 +246,7 @@ async def process_ticket(request: TicketRequest):
         # Generate draft
         draft_result = generate_draft(ticket_output)
         
-        processing_time = (datetime.utcnow() - start_time).total_seconds() * 1000
+        processing_time = (datetime.now(timezone.utc) - start_time).total_seconds() * 1000
         
         # Extract evidence
         evidence_list = []
@@ -287,7 +287,7 @@ async def submit_review(decision: ReviewDecision):
         "status": "accepted",
         "ticket_id": decision.ticket_id,
         "decision": decision.decision,
-        "timestamp": datetime.utcnow().isoformat(),
+        "timestamp": datetime.now(timezone.utc).isoformat(),
         "message": f"Review decision '{decision.decision}' recorded for ticket {decision.ticket_id}",
     }
 
@@ -324,7 +324,7 @@ async def health_check():
             "embedding": "local_bge_small_zh",
             "llm": "deepseek_chat",
         },
-        "timestamp": datetime.utcnow().isoformat(),
+        "timestamp": datetime.now(timezone.utc).isoformat(),
     }
 
 

@@ -1,8 +1,11 @@
 """End-to-end intake-risk pipeline for ticket processing."""
 
+import logging
 import uuid
-from datetime import datetime
+from datetime import datetime, timezone, timezone
 from typing import Optional
+
+logger = logging.getLogger(__name__)
 
 from ticketpilot.schema.ticket import (
     ClassificationResult,
@@ -58,7 +61,8 @@ def intake_risk_pipeline(raw_ticket: RawTicket, embedding_provider: Optional[Fak
     try:
         # Stage 1: Intake - normalize and extract entities
         normalized_ticket = intake_pipeline(raw_ticket)
-    except Exception:
+    except Exception as exc:
+        logger.error("Intake stage failed, using degraded output", exc_info=exc)
         # Graceful degradation for intake errors
         normalized_ticket = NormalizedTicket(
             text="",
@@ -66,32 +70,34 @@ def intake_risk_pipeline(raw_ticket: RawTicket, embedding_provider: Optional[Fak
             order_numbers=[],
             product_info=None,
             amount=None,
-            cleaned_at=datetime.utcnow(),
+            cleaned_at=datetime.now(timezone.utc),
         )
 
     try:
         # Stage 2: Classification - determine intent
         classifier = IntentClassifier()
         classification = classifier.classify(normalized_ticket.text)
-    except Exception:
+    except Exception as exc:
+        logger.error("Classification stage failed, using degraded output", exc_info=exc)
         # Graceful degradation for classification errors
         classification = ClassificationResult(
             intent=IntentClass.OTHER,
             confidence=0.5,
-            classified_at=datetime.utcnow(),
+            classified_at=datetime.now(timezone.utc),
         )
 
     try:
         # Stage 3: Risk assessment - evaluate risk flags and severity
         assessor = RiskAssessor()
         risk_assessment = assessor.assess(normalized_ticket, classification)
-    except Exception:
+    except Exception as exc:
+        logger.error("Risk assessment stage failed, using degraded output", exc_info=exc)
         # Graceful degradation for risk assessment errors
         risk_assessment = RiskAssessment(
             flags={RiskFlag.LOW_CONFIDENCE},
             severity=RiskSeverity.LOW,
             must_human_review=True,
-            assessed_at=datetime.utcnow(),
+            assessed_at=datetime.now(timezone.utc),
         )
 
     # Stage 4: Evidence retrieval
@@ -102,7 +108,8 @@ def intake_risk_pipeline(raw_ticket: RawTicket, embedding_provider: Optional[Fak
             risk_flags=risk_assessment.flags,
             embedding_provider=embedding_provider,
         )
-    except Exception:
+    except Exception as exc:
+        logger.error("Evidence retrieval stage failed, using empty results", exc_info=exc)
         candidates = []
         trace = None
 
@@ -117,7 +124,7 @@ def intake_risk_pipeline(raw_ticket: RawTicket, embedding_provider: Optional[Fak
         normalized_ticket=normalized_ticket,
         classification=classification,
         risk_assessment=risk_assessment,
-        output_at=datetime.utcnow(),
+        output_at=datetime.now(timezone.utc),
         evidence_candidates=candidates,
         retrieval_trace=trace,
     )

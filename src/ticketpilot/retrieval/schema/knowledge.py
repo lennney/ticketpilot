@@ -1,6 +1,6 @@
 """Knowledge schema models for FAQ, Policy, and Case documents."""
 
-from datetime import date, datetime
+from datetime import date, datetime, timezone
 from enum import Enum
 from typing import Optional
 from uuid import UUID, uuid4
@@ -53,8 +53,8 @@ class FAQDocument(BaseModel):
     title: str
     content: str
     intent_tags: list[str] = Field(default_factory=list)
-    created_at: datetime = Field(default_factory=datetime.utcnow)
-    updated_at: datetime = Field(default_factory=datetime.utcnow)
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
     @field_validator("doc_type", mode="before")
     @classmethod
@@ -77,8 +77,8 @@ class PolicyDocument(BaseModel):
     title: str
     content: str
     effective_date: date
-    created_at: datetime = Field(default_factory=datetime.utcnow)
-    updated_at: datetime = Field(default_factory=datetime.utcnow)
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
     @field_validator("doc_type", mode="before")
     @classmethod
@@ -114,8 +114,8 @@ class CaseDocument(BaseModel):
     resolution: str
     risk_level: RiskLevel
     compensation_amount: Optional[float] = None
-    created_at: datetime = Field(default_factory=datetime.utcnow)
-    updated_at: datetime = Field(default_factory=datetime.utcnow)
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
     @field_validator("doc_type", mode="before")
     @classmethod
@@ -147,7 +147,7 @@ class KnowledgeChunk(BaseModel):
     risk_level: Optional[RiskLevel] = None
     content: str
     content_hash: str = Field(..., min_length=64, max_length=64)
-    created_at: datetime = Field(default_factory=datetime.utcnow)
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
     @field_validator("chunk_level", mode="before")
     @classmethod

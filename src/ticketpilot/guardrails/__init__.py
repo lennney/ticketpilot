@@ -24,6 +24,25 @@ class GuardrailResult:
     metadata: dict[str, Any] | None = None
 
 
+def luhn_check(card_number: str) -> bool:
+    """Validate a card number using the Luhn algorithm to reduce false positives."""
+    try:
+        digits = [int(d) for d in card_number if d.isdigit()]
+        if len(digits) < 13:
+            return False
+        checksum = 0
+        reverse = digits[::-1]
+        for i, d in enumerate(reverse):
+            if i % 2 == 1:
+                d *= 2
+                if d > 9:
+                    d -= 9
+            checksum += d
+        return checksum % 10 == 0
+    except (ValueError, IndexError):
+        return False
+
+
 class PII:
     """PII detection patterns."""
     
@@ -87,7 +106,18 @@ class PII:
                     "start": match.start(),
                     "end": match.end(),
                 })
-        
+
+        for pattern in cls.BANK_CARD_PATTERNS:
+            for match in re.finditer(pattern, text):
+                value = match.group()
+                if luhn_check(value):
+                    findings.append({
+                        "type": "bank_card",
+                        "value": value,
+                        "start": match.start(),
+                        "end": match.end(),
+                    })
+
         return findings
     
     @classmethod
@@ -176,10 +206,11 @@ class HallucinationDetector:
 class ConfidenceGuard:
     """Confidence-based guardrail."""
     
-    # Thresholds
-    HIGH_CONFIDENCE = 0.8
-    MEDIUM_CONFIDENCE = 0.6
-    LOW_CONFIDENCE = 0.4
+    # Thresholds — sourced from central config
+    from ticketpilot.config import CONFIDENCE_HIGH, CONFIDENCE_MEDIUM, CONFIDENCE_LOW
+    HIGH_CONFIDENCE = CONFIDENCE_HIGH
+    MEDIUM_CONFIDENCE = CONFIDENCE_MEDIUM
+    LOW_CONFIDENCE = CONFIDENCE_LOW
     
     @classmethod
     def check(cls, confidence: float) -> GuardrailResult:
