@@ -149,63 +149,84 @@ class EvalDataset:
             json.dump(data, f, ensure_ascii=False, indent=2)
 
 
-def compute_faithfulness(actual_output: str, context: list[str]) -> float:
+def compute_faithfulness(
+    actual_output: str,
+    context: list[str],
+    scorer_type: str = "keyword",
+) -> float:
     """
     Compute faithfulness score.
-    
+
     Checks if the actual output is grounded in the context.
-    Uses keyword overlap as a proxy for faithfulness.
-    
+
+    Args:
+        actual_output: The generated answer text
+        context: List of context passages used to generate the answer
+        scorer_type: "keyword" (default, backward compatible) or "nli"
+
     Returns: 0.0 to 1.0
     """
+    if scorer_type == "nli":
+        from ticketpilot.evaluation.nli_scorer import NLIScorer
+
+        return NLIScorer().score_faithfulness(actual_output, context)
+
+    # Keyword overlap (original behavior)
     if not context or not actual_output:
         return 0.5  # Default score when no context
-    
-    # Combine all context
+
     all_context = " ".join(context)
-    
-    # Extract key terms from output (remove common words)
+
     output_words = set(actual_output.replace("。", " ").replace("，", " ").replace("、", " ").split())
     context_words = set(all_context.replace("。", " ").replace("，", " ").replace("、", " ").split())
-    
+
     if not output_words:
         return 0.5
-    
-    # Calculate overlap
+
     overlap = output_words & context_words
     score = len(overlap) / len(output_words) if output_words else 0
-    
-    # Normalize to 0.5-1.0 range (assume minimum 0.5 faithfulness)
+
     return 0.5 + (score * 0.5)
 
 
-def compute_relevancy(input_text: str, actual_output: str) -> float:
+def compute_relevancy(
+    input_text: str,
+    actual_output: str,
+    scorer_type: str = "keyword",
+) -> float:
     """
     Compute answer relevancy score.
-    
+
     Checks if the output addresses the input question.
-    Uses keyword overlap as a proxy for relevancy.
-    
+
+    Args:
+        input_text: The original question/ticket text
+        actual_output: The generated answer text
+        scorer_type: "keyword" (default, backward compatible) or "nli"
+
     Returns: 0.0 to 1.0
     """
+    if scorer_type == "nli":
+        from ticketpilot.evaluation.nli_scorer import NLIScorer
+
+        return NLIScorer().score_relevancy(input_text, actual_output)
+
+    # Keyword overlap (original behavior)
     if not input_text or not actual_output:
         return 0.5  # Default score
-    
-    # Extract keywords from input (remove punctuation and common words)
+
     input_clean = input_text.replace("？", "").replace("。", "").replace("，", " ").replace("、", " ")
     output_clean = actual_output.replace("？", "").replace("。", "").replace("，", " ").replace("、", " ")
-    
+
     input_words = set(input_clean.split())
     output_words = set(output_clean.split())
-    
+
     if not input_words:
         return 0.5
-    
-    # Calculate overlap
+
     overlap = input_words & output_words
     score = len(overlap) / len(input_words)
-    
-    # Normalize to 0.5-1.0 range (assume minimum 0.5 relevancy)
+
     return 0.5 + (score * 0.5)
 
 
@@ -213,6 +234,7 @@ def run_evaluation(
     dataset: EvalDataset,
     agent_fn,
     pass_threshold: float = 0.7,
+    scorer_type: str = "keyword",
 ) -> EvalReport:
     """
     Run evaluation on a dataset.
@@ -241,8 +263,8 @@ def run_evaluation(
             intent_correct = intent == case.expected_intent
             
             # Compute scores
-            faithfulness = compute_faithfulness(output, case.context or [])
-            relevancy = compute_relevancy(case.input_text, output)
+            faithfulness = compute_faithfulness(output, case.context or [], scorer_type=scorer_type)
+            relevancy = compute_relevancy(case.input_text, output, scorer_type=scorer_type)
             has_citations = "[" in output and "]" in output
             
             # Determine pass/fail
