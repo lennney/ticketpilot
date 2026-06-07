@@ -16,6 +16,7 @@ from ticketpilot.drafting.schemas import DraftedTicketResult
 from ticketpilot.pipeline import post_process
 from ticketpilot.review.schemas import ReviewAction, ReviewDecision
 from ticketpilot.review.store import ReviewStore
+from ticketpilot.review.retrieval_viz import render_retrieval_trace
 from ticketpilot.schema.ticket import RawTicket, RiskSeverity
 
 DEMO_TICKET_JSON = json.dumps(
@@ -570,6 +571,12 @@ def main() -> None:
 
         with col_right:
             _render_draft_and_actions(result)
+
+        # Retrieval trace visualization (when available)
+        retrieval_trace = getattr(result.ticket_output, "retrieval_trace", None)
+        if retrieval_trace is not None:
+            with st.expander("Retrieval Trace", expanded=False):
+                render_retrieval_trace(retrieval_trace)
     else:
         st.info("请粘贴工单 JSON 并点击「处理工单」")
 
