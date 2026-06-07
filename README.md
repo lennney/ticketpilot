@@ -2,6 +2,8 @@
 
 AI Customer Service Copilot for cross-border e-commerce — **deterministic, no-LLM-in-pipeline, full-chain traceability**.
 
+> TicketPilot chains intent classification, risk assessment, evidence retrieval, draft generation, and human review into a single pipeline. Human agents only need to judge the ~20% of tickets that actually require judgment.
+
 ## What Makes TicketPilot Different
 
 | Feature | Typical Approach | TicketPilot |
@@ -11,55 +13,46 @@ AI Customer Service Copilot for cross-border e-commerce — **deterministic, no-
 | Hallucination guard | None or simple keyword filter | 8-category forbidden promise detection (refund amounts, legal threats, etc.) |
 | Retrieval | Simple vector search | Keyword FTS + Vector HNSW → RRF fusion with per-ranker contribution tracing |
 | Traceability | None | Full chain: answer → citation → chunk → document (ClaimProvenance + RetrievalTrace) |
-| Agent architecture | Single agent | Multi-agent orchestrator with intent-based routing to specialized agents |
+| Agent architecture | Single agent | Multi-agent orchestrator with intent-based routing to 5 specialized agents |
 | Pipeline determinism | LLM-dependent | Rule-driven, zero LLM calls in pipeline |
 | Calibration | Static thresholds | Feedback loop with isotonic regression calibration + reliability diagrams |
 | Experimentation | Manual A/B | Built-in A/B experiment framework with comparison reports |
+| Self-reflection | None | Skill seed learning from successful draft patterns |
 
 ## Architecture
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│                     TicketPilot Pipeline                      │
-│                                                               │
-│  RawTicket ──→ Intake ──→ Classify ──→ Risk ──→ Retrieve     │
-│                 │           │          │         │             │
-│                 ▼           ▼          ▼         ▼             │
-│            Normalize    Intent     RiskFlag   Evidence         │
-│            Extract      Class      Severity   (FTS+Vector     │
-│            Entities     Confidence            → RRF Fusion)    │
-│                                                  │             │
-│                          ┌───────────────────────┘             │
-│                          ▼                                     │
-│                    Multi-Agent Orchestrator                     │
-│                    ┌─────┼─────┬─────┬─────┐                  │
-│                    ▼     ▼     ▼     ▼     ▼                  │
-│                 Refund Complaint Logis Tech Default             │
-│                    │                                            │
-│                    ▼                                            │
-│              Generate Draft                                     │
-│              (prompt template per agent)                        │
-│                    │                                            │
-│              ┌─────┴─────┐                                     │
-│              ▼           ▼                                     │
-│         Claim Guard   Citation Validator                       │
-│         (forbidden    (Luhn check,                             │
-│          promises)     unsupported claims)                     │
-│              │           │                                     │
-│              ▼           ▼                                     │
-│         Confidence Scorer (4 dimensions)                        │
-│              │                                                 │
-│              ▼                                                 │
-│         Degradation Router                                     │
-│         ┌────┬────┬────┬────┐                                 │
-│         ▼    ▼    ▼    ▼    ▼                                 │
-│       HIGH  MED  LOW  CRIT  → Human Review Console             │
-│                                                               │
-│  ┌──────────────────────────────────────────────────────────┐ │
-│  │  Feedback Loop: accept/reject → CalibrationCurve →       │ │
-│  │  IsotonicCalibrator → ThresholdAdvisor                   │ │
-│  └──────────────────────────────────────────────────────────┘ │
-└─────────────────────────────────────────────────────────────┘
+```mermaid
+graph TD
+    A[Ticket Input] --> B[Intent Classifier]
+    B --> C[Risk Assessor]
+    C --> D[Hybrid Retrieval<br/>FTS + pgvector → RRF]
+    D --> E[Multi-Agent Router]
+    E --> F[Refund Agent]
+    E --> G[Complaint Agent]
+    E --> H[Logistics Agent]
+    E --> I[Technical Agent]
+    E --> J[Default Agent]
+    F --> K[Draft Generator]
+    G --> K
+    H --> K
+    I --> K
+    J --> K
+    K --> L[Claim Guard]
+    K --> M[Citation Validator]
+    L --> N[Confidence Scorer<br/>4 dimensions]
+    M --> N
+    N --> O{Confidence Tier}
+    O -->|HIGH| P[Auto-Send]
+    O -->|MEDIUM| P
+    O -->|LOW| Q[Human Review]
+    O -->|CRITICAL| R[Force Escalation]
+    Q --> S{Decision}
+    S -->|Approve| P
+    S -->|Edit| T[Revise]
+    T --> P
+    P --> U[Feedback Loop]
+    U --> V[Isotonic Calibrator]
+    V --> B
 ```
 
 ## Key Modules
@@ -74,6 +67,7 @@ AI Customer Service Copilot for cross-border e-commerce — **deterministic, no-
 - **Orchestrator** — Intent-based routing to specialized agents
 - **5 Specialists** — RefundAgent, ComplaintAgent, LogisticsAgent, TechnicalAgent, DefaultAgent
 - **Per-agent prompt templates** — Each specialist uses domain-specific prompts
+- **Self-Reflection Skills** — Agents learn from successful draft patterns via skill seed
 
 ### Retrieval
 - **Hybrid search** — PostgreSQL FTS + pgvector HNSW → RRF fusion
@@ -87,24 +81,33 @@ AI Customer Service Copilot for cross-border e-commerce — **deterministic, no-
 - **ThresholdAdvisor** — Suggests optimal thresholds based on calibration data
 - **ReliabilityDiagram** — ASCII art visualization for terminal
 
-### Evaluation
+### Evaluation & Experimentation
 - **NLI Scorer** — Sentence decomposition, synonym expansion, negation detection
 - **Retrieval Metrics** — Precision@K, Recall@K, MRR, NDCG
 - **A/B Experiment Framework** — Same tickets, two configs, comparison report
+- **Human Review Accuracy** — Precision/recall/F1 for review trigger correctness
+
+### Dashboard & Visualization
+- **Confidence Dashboard** — Streamlit visualization of confidence distribution and tier routing
+- **Retrieval Visualization** — Streamlit table + contribution chart for retrieval traces
+- **Human Review Console** — Review interface with approve/edit/escalate/reject actions
+- **Chat UI** — Multi-turn conversation interface with evidence panel and risk escalation
 
 ### Observability
 - **AgentTrace** — Append-only event stream per run
 - **ClaimProvenance** — Answer → citation → chunk → document traceability
-- **Retrieval Visualization** — Streamlit table + contribution chart
+- **Provider Latency Measurement** — Benchmark script for LLM provider comparison
 
 ## Quick Start
 
-### Prerequisites
+### One-Click Demo
 
-- Python 3.11+
-- PostgreSQL 16+ with pgvector
+```bash
+# Check Docker, start DB, seed data, run demo, optionally launch dashboard
+bash scripts/demo.sh
+```
 
-### Installation
+### Manual Setup
 
 ```bash
 git clone https://github.com/yourusername/ticketpilot.git
@@ -118,7 +121,7 @@ cp .env.example .env.local
 
 docker compose up -d db
 
-uv run python -c "from ticketpilot.retrieval.db.seeding import seed_knowledge_chunks; seed_knowledge_chunks(clear_existing=True)"
+uv run python scripts/ingest_knowledge.py
 
 uv run uvicorn ticketpilot.api:app --host 0.0.0.0 --port 8000
 ```
@@ -136,7 +139,23 @@ bash scripts/run_quality_gate.sh
 ### Review Console
 
 ```bash
-uv run streamlit run src/ticketpilot/chat/app.py --server.port 8501
+uv run streamlit run src/ticketpilot/review/console.py --server.port 8501
+```
+
+### Dashboard
+
+```bash
+uv run python scripts/run_dashboard.py
+```
+
+### Calibration & Feedback
+
+```bash
+# Run calibration with reflection data
+uv run python scripts/calibrate_with_reflection.py
+
+# Run A/B threshold experiment
+uv run python scripts/run_threshold_ab.py
 ```
 
 ## API Endpoints
@@ -155,13 +174,13 @@ uv run streamlit run src/ticketpilot/chat/app.py --server.port 8501
 ```
 src/ticketpilot/
 ├── api/                # FastAPI endpoints + SSE streaming
-├── classification/     # Intent classifier (deterministic)
+├── classification/     # Intent classifier (deterministic, 8 classes)
 ├── config/             # Central confidence thresholds
 ├── confidence/         # 4-dimensional confidence scorer
 ├── degradation/        # 4-tier response router
 ├── drafting/           # DraftAgent, prompt builder, claim guard, citation validator
 ├── evaluation/         # RAGAS-style metrics, NLI scorer, retrieval metrics, A/B experiments
-├── experiment/         # A/B experiment framework
+├── experiment/         # A/B experiment framework (Config + Runner + Reporter)
 ├── feedback/           # Feedback collector, calibrator, threshold advisor
 ├── guardrails/         # PII detection, security scanning
 ├── intake/             # Ticket normalization, entity extraction
@@ -169,7 +188,7 @@ src/ticketpilot/
 ├── prompts/            # Per-agent prompt templates
 ├── retrieval/          # Hybrid retrieval (FTS + HNSW → RRF)
 ├── review/             # Streamlit review console, retrieval visualization
-├── risk/               # Risk assessor + rules
+├── risk/               # Risk assessor + rules (8 flag types, 3 severity)
 ├── schema/             # Pydantic data models
 ├── tracing/            # Provenance tracking
 └── triggers/           # CLI + webhook entry points
@@ -177,12 +196,16 @@ src/ticketpilot/
 
 ## Test Coverage
 
-```bash
-1,498 tests passing
-├── Unit tests (no DB): 1,498
-├── Integration tests (DB required): separate
-└── Coverage: >70% enforced
 ```
+1,662 tests passing
+├── Unit tests (no DB): 1,662
+├── Integration tests (DB required): separate
+└── Coverage: 87% (>= 70% enforced)
+```
+
+## Portfolio
+
+See [docs/portfolio/index.md](docs/portfolio/index.md) for the project elevator pitch, architecture diagram, and key metrics.
 
 ## License
 
