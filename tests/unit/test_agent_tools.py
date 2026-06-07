@@ -317,9 +317,9 @@ class MagicTicketOutput:
 # ---------------------------------------------------------------------------
 
 class TestDefaultToolRegistry:
-    def test_contains_exactly_five_tools(self):
+    def test_contains_exactly_six_tools(self):
         registry = create_default_tool_registry()
-        assert len(registry.list_names()) == 5
+        assert len(registry.list_names()) == 6
 
     def test_expected_names(self):
         registry = create_default_tool_registry()
@@ -329,6 +329,7 @@ class TestDefaultToolRegistry:
             "assess_risk",
             "retrieve_evidence",
             "generate_draft",
+            "request_human_input",
         ]
 
     def test_each_tool_has_valid_spec(self):
@@ -351,6 +352,7 @@ class TestDefaultToolRegistry:
             "assess_risk": "medium",
             "retrieve_evidence": "medium",
             "generate_draft": "high",
+            "request_human_input": "low",
         }
         for spec in registry.list_specs():
             assert spec.risk_level == expected[spec.name], spec.name
@@ -379,7 +381,7 @@ class TestDefaultToolRegistry:
         """Verification: default tools only wrap local deterministic logic."""
         registry = create_default_tool_registry()
         names = registry.list_names()
-        assert len(names) == 5
+        assert len(names) == 6
         # All handlers must be local functions (no requests/openai/etc.)
         import inspect
         for name in names:
