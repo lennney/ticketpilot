@@ -110,7 +110,7 @@ bash scripts/demo.sh
 ### Manual Setup
 
 ```bash
-git clone https://github.com/yourusername/ticketpilot.git
+git clone https://github.com/lennney/ticketpilot.git
 cd ticketpilot
 
 pip install uv
