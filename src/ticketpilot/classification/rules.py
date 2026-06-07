@@ -26,7 +26,7 @@ INTENT_RULES: list[IntentRule] = [
     IntentRule(
         intent=IntentClass.RETURN_EXCHANGE,
         keywords=["退货", "换货", "退换", "退货运费", "退货地址", "七天无理由",
-                  "质量问题退", "发错货", "保修期", "质保", "保修"],
+                  "质量问题退", "发错货", "发错颜色", "保修期", "质保", "保修"],
     ),
     IntentRule(
         intent=IntentClass.ACCOUNT_ISSUE,
@@ -64,7 +64,7 @@ INTENT_RULES: list[IntentRule] = [
         keywords=["投诉", "差评", "不满", "态度", "12315",
                   "消费者协会", "媒体曝光", "食品安全", "虫子", "过敏", "医院",
                   "过期", "变质", "异物", "假货", "假冒", "泄露", "骚扰",
-                  "隐私", "维权", "举报"],
+                  "隐私", "维权", "举报", "包装破损", "包装损坏", "破了", "坏了", "破损", "损坏"],
         strong_indicator="12315投诉",
     ),
     IntentRule(

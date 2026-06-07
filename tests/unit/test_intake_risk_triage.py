@@ -85,8 +85,8 @@ class TestGoldenCases:
             ),
             (
                 "东西坏了",
-                IntentClass.OTHER,
-                {RiskFlag.INSUFFICIENT_EVIDENCE, RiskFlag.LOW_CONFIDENCE},
+                IntentClass.COMPLAINT,
+                {RiskFlag.INSUFFICIENT_EVIDENCE},
                 RiskSeverity.LOW,
             ),
             (

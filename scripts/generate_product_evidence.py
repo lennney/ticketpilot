@@ -117,8 +117,8 @@ def run_pipeline_evidence(ticket_data: dict) -> dict:
     # Stage 6: Generate draft (deterministic)
     try:
         draft_result = generate_draft(output)
-        draft_text = draft_result.get("draft_text", "")
-        must_human_review = draft_result.get("must_human_review", False)
+        draft_text = draft_result.draft_text
+        must_human_review = draft_result.must_human_review
     except Exception as e:
         draft_text = ""
         must_human_review = True

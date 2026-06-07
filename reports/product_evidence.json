@@ -1,22 +1,23 @@
 {
-  "generated_at": "2026-06-07T12:29:34.293500+00:00",
+  "generated_at": "2026-06-07T12:47:56.972181+00:00",
   "summary": {
     "total_tickets": 10,
     "intent_distribution": {
       "refund": 2,
       "logistics": 1,
-      "complaint": 1,
+      "complaint": 2,
       "technical_issue": 1,
-      "other": 2,
-      "product_consulting": 2,
-      "account_issue": 1
+      "other": 1,
+      "product_consulting": 1,
+      "account_issue": 1,
+      "return_exchange": 1
     },
     "agent_routing_distribution": {
-      "RefundAgent": 2,
+      "RefundAgent": 3,
       "LogisticsAgent": 1,
-      "ComplaintAgent": 1,
+      "ComplaintAgent": 2,
       "TechnicalAgent": 2,
-      "DefaultAgent": 4
+      "DefaultAgent": 2
     },
     "risk_severity_distribution": {
       "low": 7,
@@ -25,15 +26,15 @@
     },
     "confidence_distribution": {
       "high (>0.8)": 0,
-      "medium (0.6-0.8)": 8,
-      "low (0.4-0.6)": 2,
+      "medium (0.6-0.8)": 9,
+      "low (0.4-0.6)": 1,
       "critical (<0.4)": 0
     },
-    "drafts_generated": 0,
-    "draft_generation_rate": "0/10",
-    "human_review_needed": 4,
-    "human_review_rate": "4/10",
-    "avg_evidence_per_ticket": 9.8
+    "drafts_generated": 10,
+    "draft_generation_rate": "10/10",
+    "human_review_needed": 3,
+    "human_review_rate": "3/10",
+    "avg_evidence_per_ticket": 10.0
   },
   "tickets": [
     {
@@ -53,10 +54,10 @@
         "FAQ",
         "CASE"
       ],
-      "draft_text": "",
-      "draft_generated": false,
+      "draft_text": "您好，非常理解您收到有质量问题的商品后感到失望和不便。我们很重视您的反馈，会尽快为您处理退款事宜。\n\n根据平台规则，商品存在性能故障、外观破损等质量问题，可在签收后15天内申请退换，平台将承担退货运费 [2]。您已拍照留存证据，这非常关键。请您按以下步骤操作：\n\n1.  **提交申请**：在订单详情页点击“申请售后”，选择“退货”类型，并上传至少3张照片（包括商品整体、问题细节及包装）作为凭证 [...",
+      "draft_generated": true,
       "routed_to_agent": "RefundAgent",
-      "processed_at": "2026-06-07T12:29:10.977754+00:00"
+      "processed_at": "2026-06-07T12:47:33.543467+00:00"
     },
     {
       "ticket_id": "DEMO-002",
@@ -75,10 +76,10 @@
         "FAQ",
         "CASE"
       ],
-      "draft_text": "",
-      "draft_generated": false,
+      "draft_text": "您好，非常理解您对包裹长时间未到的担忧。根据您提供的物流单号SF1234567890，我来为您分析一下情况。\n\n根据物流配送指南，商家通常会在下单后48-72小时内发货 [1]。如果您的包裹已超过预计送达时间仍未收到，建议您先联系平台客服进行催单或查询物流是否存在异常 [2]。同时，不同物流公司的服务时效可能有所差异，您也可以直接联系顺丰客服核实具体配送进度 [1]。\n\n如果经查询确认包裹已丢失，...",
+      "draft_generated": true,
       "routed_to_agent": "LogisticsAgent",
-      "processed_at": "2026-06-07T12:29:13.445358+00:00"
+      "processed_at": "2026-06-07T12:47:35.962082+00:00"
     },
     {
       "ticket_id": "DEMO-003",
@@ -89,21 +90,21 @@
       "classification_confidence": 0.8,
       "intent_correct": true,
       "risk_flags": [
-        "complaint_risk",
-        "compensation_risk"
+        "compensation_risk",
+        "complaint_risk"
       ],
       "risk_severity": "medium",
       "must_human_review": true,
       "evidence_count": 10,
       "evidence_types": [
-        "POLICY",
         "FAQ",
-        "CASE"
+        "CASE",
+        "POLICY"
       ],
-      "draft_text": "",
-      "draft_generated": false,
+      "draft_text": "尊敬的客户，非常理解您因产品使用一天即出现故障而感到失望和不满，我们对此深表歉意。\n\n关于您提出的3倍赔偿诉求，根据跨境电商相关法规及平台政策 [1]，此类问题需结合具体情况进行核实。为尽快解决您的问题，建议您按以下步骤操作：\n1. 整理相关信息：请记录您的订单号、商品名称、购买日期以及故障的具体表现（如无法开机、屏幕异常等）。\n2. 联系客服团队：通过客服热线或在线聊天联系我们的专属客服团队，提...",
+      "draft_generated": true,
       "routed_to_agent": "ComplaintAgent",
-      "processed_at": "2026-06-07T12:29:16.318796+00:00"
+      "processed_at": "2026-06-07T12:47:39.406329+00:00"
     },
     {
       "ticket_id": "DEMO-004",
@@ -121,10 +122,10 @@
         "FAQ",
         "CASE"
       ],
-      "draft_text": "",
-      "draft_generated": false,
+      "draft_text": "您好，非常理解您遇到APP登录问题，反复尝试却一直显示网络错误，这确实会影响使用体验。\n\n针对您提到的“网络错误”问题，建议您先尝试以下步骤：\n1. 检查您的手机网络连接是否正常，可以尝试切换Wi-Fi和移动数据网络。\n2. 重启APP或清理APP缓存后再次尝试登录。\n3. 如果问题持续，可能是由于网络波动或服务器临时异常导致，建议稍后再试。\n\n若以上方法仍无法解决，由于当前证据中未包含针对APP...",
+      "draft_generated": true,
       "routed_to_agent": "TechnicalAgent",
-      "processed_at": "2026-06-07T12:29:18.949608+00:00"
+      "processed_at": "2026-06-07T12:47:41.772734+00:00"
     },
     {
       "ticket_id": "DEMO-005",
@@ -135,8 +136,8 @@
       "classification_confidence": 0.5,
       "intent_correct": true,
       "risk_flags": [
-        "legal_risk",
-        "low_confidence"
+        "low_confidence",
+        "legal_risk"
       ],
       "risk_severity": "high",
       "must_human_review": true,
@@ -146,10 +147,10 @@
         "FAQ",
         "CASE"
       ],
-      "draft_text": "",
-      "draft_generated": false,
+      "draft_text": "您好，非常理解您此刻的焦急与不满，我们对此给您带来的困扰深表歉意。关于您提到的订单号 789012 及法律行动诉求，我们已高度重视。\n\n根据我们的记录，该问题已涉及法律风险，且当前信息不足以直接处理。为确保您的权益得到最妥善的保障，我们已将您的工单升级至人工审核团队进行专项处理 [8]。我们的专业客服人员会尽快与您联系，并协助您对接法律事务。\n\n请您保持联系方式畅通。同时，您也可以随时通过平台客服...",
+      "draft_generated": true,
       "routed_to_agent": "DefaultAgent",
-      "processed_at": "2026-06-07T12:29:21.630136+00:00"
+      "processed_at": "2026-06-07T12:47:44.351510+00:00"
     },
     {
       "ticket_id": "DEMO-006",
@@ -164,14 +165,14 @@
       "must_human_review": false,
       "evidence_count": 10,
       "evidence_types": [
-        "POLICY",
         "FAQ",
-        "CASE"
+        "CASE",
+        "POLICY"
       ],
-      "draft_text": "",
-      "draft_generated": false,
+      "draft_text": "您好，非常理解您想为女朋友挑选到心仪颜色的心情。关于您询问的产品是否有红色款，建议您直接查看商品详情页的完整参数信息，包括颜色、尺寸、规格等 [5]。如果页面信息没有明确标注，您可以通过点击页面上的“在线咨询”联系商家客服，或查看商品评价中其他用户的分享来进一步确认 [5]。这样能确保您获得最准确的颜色信息，方便您做出选择。",
+      "draft_generated": true,
       "routed_to_agent": "DefaultAgent",
-      "processed_at": "2026-06-07T12:29:23.621480+00:00"
+      "processed_at": "2026-06-07T12:47:46.287955+00:00"
     },
     {
       "ticket_id": "DEMO-007",
@@ -186,14 +187,14 @@
       "must_human_review": false,
       "evidence_count": 10,
       "evidence_types": [
-        "POLICY",
         "FAQ",
-        "CASE"
+        "CASE",
+        "POLICY"
       ],
-      "draft_text": "",
-      "draft_generated": false,
+      "draft_text": "亲爱的用户，非常理解您因商品与描述不符而感到失望，我们很重视您的反馈，会尽力协助您解决问题。\n\n根据平台规则，商品存在性能故障、外观破损、功能缺失等质量问题，可在签收后15天内申请退换，平台承担退货运费 [2]。您需要提供开箱视频或照片作为凭证 [2]。具体操作步骤如下：\n1. 请登录订单详情页，点击“申请售后”，选择“退货”类型 [5]。\n2. 上传至少3张照片（包括商品整体、问题细节、包装）作...",
+      "draft_generated": true,
       "routed_to_agent": "RefundAgent",
-      "processed_at": "2026-06-07T12:29:26.496498+00:00"
+      "processed_at": "2026-06-07T12:47:49.113477+00:00"
     },
     {
       "ticket_id": "DEMO-008",
@@ -214,17 +215,38 @@
         "FAQ",
         "CASE"
       ],
-      "draft_text": "",
-      "draft_generated": false,
+      "draft_text": "非常理解您账号被盗并产生异常订单的紧急情况，我们对此高度重视。\n\n针对您账号被盗刷的问题，建议您立即采取以下措施：\n1. **立即修改密码**：请尽快设置一个强密码（8-20位，含字母数字），并开启双重验证（短信+密码）以增强账户安全性 [2]。\n2. **检查账户状态**：请登录后查看是否有未完成的订单或未处理的售后，并确认账户余额是否异常 [2]。\n3. **联系客服处理**：由于此问题涉及账...",
+      "draft_generated": true,
       "routed_to_agent": "TechnicalAgent",
-      "processed_at": "2026-06-07T12:29:29.525986+00:00"
+      "processed_at": "2026-06-07T12:47:51.896929+00:00"
     },
     {
       "ticket_id": "DEMO-009",
       "input_text": "发货发错颜色了，我买的蓝色收到的是绿色。",
       "expected_category": "logistics",
       "description": "发错货，物流问题",
-      "classified_intent": "product_consulting",
+      "classified_intent": "return_exchange",
+      "classification_confidence": 0.8,
+      "intent_correct": true,
+      "risk_flags": [],
+      "risk_severity": "low",
+      "must_human_review": false,
+      "evidence_count": 10,
+      "evidence_types": [
+        "FAQ",
+        "CASE"
+      ],
+      "draft_text": "非常理解您收到错误颜色商品的困扰，我们马上为您处理。\n\n针对您收到的商品颜色与订单不符（蓝色变绿色）的情况，这属于商品发错问题。根据我们的售后政策，您可以在签收后15天内申请因质量问题的退换货 [2][4]。换货仅限同款商品的不同规格（如颜色、尺码）[4]。\n\n请您按以下步骤操作：\n1. 在订单详情页点击「申请售后」，选择「换货」类型 [2]。\n2. 上传至少3张凭证照片，包括商品整体、问题细节（...",
+      "draft_generated": true,
+      "routed_to_agent": "RefundAgent",
+      "processed_at": "2026-06-07T12:47:54.785840+00:00"
+    },
+    {
+      "ticket_id": "DEMO-010",
+      "input_text": "东西还行吧，就是包装有点破损，不影响使用。",
+      "expected_category": "minor_complaint",
+      "description": "轻微投诉，低风险",
+      "classified_intent": "complaint",
       "classification_confidence": 0.8,
       "intent_correct": true,
       "risk_flags": [],
@@ -233,37 +255,12 @@
       "evidence_count": 10,
       "evidence_types": [
         "POLICY",
-        "FAQ",
         "CASE"
       ],
-      "draft_text": "",
-      "draft_generated": false,
-      "routed_to_agent": "DefaultAgent",
-      "processed_at": "2026-06-07T12:29:31.742737+00:00"
-    },
-    {
-      "ticket_id": "DEMO-010",
-      "input_text": "东西还行吧，就是包装有点破损，不影响使用。",
-      "expected_category": "minor_complaint",
-      "description": "轻微投诉，低风险",
-      "classified_intent": "other",
-      "classification_confidence": 0.5,
-      "intent_correct": true,
-      "risk_flags": [
-        "low_confidence"
-      ],
-      "risk_severity": "low",
-      "must_human_review": true,
-      "evidence_count": 8,
-      "evidence_types": [
-        "POLICY",
-        "FAQ",
-        "CASE"
-      ],
-      "draft_text": "",
-      "draft_generated": false,
-      "routed_to_agent": "DefaultAgent",
-      "processed_at": "2026-06-07T12:29:34.292942+00:00"
+      "draft_text": "感谢您的反馈。我们理解包装破损可能会让您感到不满意，很高兴商品本身不影响使用。\n\n关于包装破损问题，建议您先检查商品是否完好。如果后续发现商品因包装问题导致质量受损，您可以在签收后15天内联系客服申请退换货，运费由商家承担 [5]。同时，请注意保留好商品和包装的照片作为凭证，以便我们为您进一步处理。\n\n如果您需要其他帮助，请随时联系客服。",
+      "draft_generated": true,
+      "routed_to_agent": "ComplaintAgent",
+      "processed_at": "2026-06-07T12:47:56.971684+00:00"
     }
   ]
 }
