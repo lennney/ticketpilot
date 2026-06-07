@@ -31,6 +31,8 @@ from ticketpilot.retrieval.schema.knowledge import DocType
 from ticketpilot.schema.evidence import EvidenceCandidate
 from ticketpilot.tracing import create_trace, AgentTrace
 from ticketpilot.guardrails import run_guardrails, GuardrailResult
+from ticketpilot.skills.loader import load_skill_library, select_relevant_skills
+from ticketpilot.skills.reflector import reflect_on_draft
 
 logger = logging.getLogger(__name__)
 
@@ -360,7 +362,17 @@ class DraftAgent:
                 state=state,
                 trace=trace,
             )
-            
+
+            # Skill-based self-reflection (optional, graceful fallback)
+            with trace.step("skill_reflect") if trace else contextlib.nullcontext() as step:
+                result = self._skill_reflect(
+                    result=result,
+                    issue_type=issue_type,
+                    flags=flags,
+                )
+                if step:
+                    step.finish({"applied": True})
+
             # Run guardrails
             with trace.step("guardrails") if trace else contextlib.nullcontext() as step:
                 guardrail_results = run_guardrails(
@@ -683,6 +695,47 @@ class DraftAgent:
                 break
         
         return draft_result
+
+    def _skill_reflect(
+        self,
+        result: DraftReply,
+        issue_type: str,
+        flags: list[str],
+    ) -> DraftReply:
+        """Apply skill-based reflection to the draft.
+
+        Loads relevant skills, checks the draft against best practices,
+        and appends suggestions to safety_notes if issues are found.
+        This is optional — failures are silently absorbed.
+        """
+        try:
+            library = load_skill_library()
+            skills = select_relevant_skills(library, issue_type, flags)
+            if not skills:
+                return result
+
+            skill = skills[0]
+            reflection = reflect_on_draft(result.draft_text, skill, flags)
+
+            if not reflection.passed:
+                logger.info(
+                    "DraftAgent: skill reflection found issues with %s: %s",
+                    skill.skill_id,
+                    reflection.issues,
+                )
+                # Append suggestions to safety notes for human reviewers
+                result.safety_notes.extend(
+                    f"[Skill:{skill.skill_id}] {s}" for s in reflection.suggestions
+                )
+                # Lower confidence slightly when skill reflection fails
+                result.confidence = max(0.0, result.confidence - 0.1)
+
+            # Increment success count for the matched skill
+            skill.success_count += 1
+            return result
+        except Exception as e:
+            logger.debug("Skill reflection skipped: %s", e)
+            return result
 
     def _reformulate_search(
         self,

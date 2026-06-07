@@ -1,0 +1,118 @@
+{
+  "version": "1.0",
+  "skills": {
+    "refund_v1": {
+      "skill_id": "refund_v1",
+      "intent": "refund",
+      "name": "标准退款处理",
+      "description": "处理退款请求的标准流程",
+      "keywords": [
+        "退款",
+        "退钱",
+        "退费"
+      ],
+      "resolution_steps": [
+        "确认订单号",
+        "检查退款政策",
+        "生成退款方案",
+        "告知退款时间"
+      ],
+      "risk_flags_to_acknowledge": [],
+      "tone": "professional",
+      "success_count": 0,
+      "last_used": null,
+      "created_at": "2026-06-07T16:55:04.471630+00:00"
+    },
+    "complaint_v1": {
+      "skill_id": "complaint_v1",
+      "intent": "complaint",
+      "name": "投诉处理",
+      "description": "处理客户投诉的标准流程",
+      "keywords": [
+        "投诉",
+        "差评",
+        "不满"
+      ],
+      "resolution_steps": [
+        "表达歉意",
+        "了解问题",
+        "提供解决方案",
+        "跟进处理"
+      ],
+      "risk_flags_to_acknowledge": [
+        "complaint_risk"
+      ],
+      "tone": "empathetic",
+      "success_count": 0,
+      "last_used": null,
+      "created_at": "2026-06-07T16:55:04.471666+00:00"
+    },
+    "logistics_v1": {
+      "skill_id": "logistics_v1",
+      "intent": "logistics",
+      "name": "物流问题处理",
+      "description": "处理物流延迟、丢件等问题",
+      "keywords": [
+        "物流",
+        "快递",
+        "发货",
+        "丢件"
+      ],
+      "resolution_steps": [
+        "查询物流状态",
+        "联系物流公司",
+        "提供解决方案"
+      ],
+      "risk_flags_to_acknowledge": [],
+      "tone": "professional",
+      "success_count": 0,
+      "last_used": null,
+      "created_at": "2026-06-07T16:55:04.471673+00:00"
+    },
+    "technical_v1": {
+      "skill_id": "technical_v1",
+      "intent": "technical_issue",
+      "name": "技术问题处理",
+      "description": "处理 APP 故障、支付问题等技术问题",
+      "keywords": [
+        "打不开",
+        "闪退",
+        "支付失败"
+      ],
+      "resolution_steps": [
+        "确认问题现象",
+        "提供临时解决方案",
+        "转交技术团队"
+      ],
+      "risk_flags_to_acknowledge": [],
+      "tone": "professional",
+      "success_count": 0,
+      "last_used": null,
+      "created_at": "2026-06-07T16:55:04.471678+00:00"
+    },
+    "legal_v1": {
+      "skill_id": "legal_v1",
+      "intent": "complaint",
+      "name": "法律威胁处理",
+      "description": "处理法律威胁、律师函等高风险投诉",
+      "keywords": [
+        "律师",
+        "起诉",
+        "法院"
+      ],
+      "resolution_steps": [
+        "表达重视",
+        "转交法务",
+        "不承诺具体结果"
+      ],
+      "risk_flags_to_acknowledge": [
+        "legal_risk"
+      ],
+      "tone": "formal",
+      "success_count": 0,
+      "last_used": null,
+      "created_at": "2026-06-07T16:55:04.471683+00:00"
+    }
+  },
+  "updated_at": "2026-06-07T16:55:04.471941+00:00"
+}

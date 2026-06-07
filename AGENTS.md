@@ -2,6 +2,26 @@
 
 > **Bootstrap**: This file is loaded by `.claude/CLAUDE.md`. On new clones, see `.claude/CLAUDE.md` for harness overview. For phase execution workflow, see `docs/harness/PHASE_LOOP.md`.
 
+## 0. Workflow Skills (必须加载)
+
+**每次开始工作前，检查以下 skill 是否需要加载：**
+
+| 场景 | 触发词 | 加载 Skill |
+|------|--------|-----------|
+| 写 PRD / 需求 / 验收标准 | "写PRD"、"写需求"、"验收钩子" | `pm-tech-verification-hooks` |
+| 用 Claude Code 做编码任务 | "用Claude Code"、"claude -p" | `hermes-claude-code-workflow` |
+| 委托子 agent 做审查/研究 | "delegate_task"、"委托任务" | `hermes-workflow-patterns` |
+| 实现功能 / 修 bug | "实现"、"开发"、"写代码" | `code-with-review-hook` |
+| PM 给 Tech 派任务 | "给Claude Code写任务" | `pm-tech-verification-hooks` + `hermes-claude-code-workflow` |
+
+**核心工作流:**
+```
+PM 写 PRD + 验收钩子 (pm-tech-verification-hooks)
+    ↓
+Claude Code 实现 (hermes-claude-code-workflow)
+    ↓
+PM 只看钩子输出 (不看代码)
+```
 
 ## 1. Project Identity
 
