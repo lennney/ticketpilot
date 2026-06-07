@@ -195,7 +195,7 @@ class Orchestrator:
         # Initialize specialized agents
         self._agents = {
             "refund": RefundAgent(),
-            "return_exchange": RefundAgent(),  # Same agent for returns
+            "return_exchange": LogisticsAgent(),  # Returns are logistics (wrong/damaged items)
             "complaint": ComplaintAgent(),
             "logistics": LogisticsAgent(),
             "technical_issue": TechnicalAgent(),
@@ -222,15 +222,24 @@ class Orchestrator:
     ) -> DraftReply:
         """
         Generate a draft reply using the appropriate specialized agent.
+
+        Legal risk tickets are always routed to ComplaintAgent regardless
+        of intent classification.
         """
-        agent = self.get_agent(issue_type)
-        
-        logger.info(
-            "Orchestrator: routing to %s for intent=%s",
-            agent.name,
-            issue_type,
-        )
-        
+        # Legal risk overrides intent-based routing
+        if "legal_risk" in risk_flags:
+            agent = ComplaintAgent()
+            logger.info(
+                "Orchestrator: legal_risk detected, routing to ComplaintAgent",
+            )
+        else:
+            agent = self.get_agent(issue_type)
+            logger.info(
+                "Orchestrator: routing to %s for intent=%s",
+                agent.name,
+                issue_type,
+            )
+
         return agent.generate_draft(
             normalized_text=normalized_text,
             issue_type=issue_type,

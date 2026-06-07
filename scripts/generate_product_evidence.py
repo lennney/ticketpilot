@@ -123,10 +123,15 @@ def run_pipeline_evidence(ticket_data: dict) -> dict:
         draft_text = ""
         must_human_review = True
 
-    # Stage 7: Multi-agent routing
+    # Stage 7: Multi-agent routing (with risk flag override)
     orchestrator = get_orchestrator()
     intent = output.classification.intent.value
+    risk_flags_list = [f.value for f in output.risk_assessment.flags]
     agent = orchestrator.get_agent(intent)
+    # Legal risk overrides intent-based routing
+    if "legal_risk" in risk_flags_list:
+        from ticketpilot.multi_agent import ComplaintAgent
+        agent = ComplaintAgent()
 
     # Stage 8: Degradation routing
     router = DegradationRouter()

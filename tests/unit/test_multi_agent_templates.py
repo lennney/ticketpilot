@@ -155,9 +155,9 @@ class TestOrchestratorRouting:
         assert isinstance(agent, RefundAgent)
         assert agent.template_id == "refund"
 
-    def test_return_exchange_routes_to_refund_agent(self):
+    def test_return_exchange_routes_to_logistics_agent(self):
         agent = self.orchestrator.get_agent("return_exchange")
-        assert isinstance(agent, RefundAgent)
+        assert isinstance(agent, LogisticsAgent)
 
     def test_complaint_routes_to_complaint_agent(self):
         agent = self.orchestrator.get_agent("complaint")

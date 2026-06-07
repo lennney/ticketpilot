@@ -5,7 +5,13 @@ from datetime import datetime, timezone, timezone
 
 from ticketpilot.schema.ticket import ClassificationResult, IntentClass
 from ticketpilot.classification.rules import INTENT_RULES
-from ticketpilot.config import CONFIDENCE_THRESHOLD, STRONG_CONFIDENCE, WEAK_CONFIDENCE
+from ticketpilot.config import (
+    CONFIDENCE_HIGH,
+    CONFIDENCE_KEYWORD_1CHAR,
+    CONFIDENCE_MEDIUM,
+    CONFIDENCE_STRONG_INDICATOR,
+    WEAK_CONFIDENCE,
+)
 
 
 class IntentClassifier:
@@ -40,39 +46,43 @@ class IntentClassifier:
                 if re.search(rule.strong_indicator, text):
                     return ClassificationResult(
                         intent=rule.intent,
-                        confidence=STRONG_CONFIDENCE,
+                        confidence=CONFIDENCE_STRONG_INDICATOR,
                         classified_at=datetime.now(timezone.utc),
                     )
 
         # Phase 2: First-match-wins keyword matching
         matched_intent = IntentClass.OTHER
         match_count = 0
-        has_strong_match = False
+        found_keyword_in_other = False
+        matched_keyword_len = 0
 
         for rule in self.rules:
             if rule.intent == IntentClass.OTHER:
                 # Check if text contains strong indicator for OTHER class
                 if rule.strong_indicator and rule.strong_indicator in text:
-                    has_strong_match = True
+                    found_keyword_in_other = True
                 continue
             for keyword in rule.keywords:
                 if keyword in text:
                     match_count += 1
                     matched_intent = rule.intent
-                    # Strong match if keyword is 2+ characters
-                    if len(keyword) >= 2:
-                        has_strong_match = True
+                    matched_keyword_len = len(keyword)
                     break  # First-match-wins: exit inner loop on first keyword hit
             if match_count > 0:
                 break  # First-match-wins: exit outer loop once a rule matches
 
         if matched_intent == IntentClass.OTHER or match_count == 0:
-            # For OTHER intent, confidence depends on whether strong indicator was found
-            confidence = STRONG_CONFIDENCE if has_strong_match else WEAK_CONFIDENCE
-        elif has_strong_match:
-            confidence = STRONG_CONFIDENCE
+            if found_keyword_in_other:
+                # Partial match: keyword found but in OTHER context
+                confidence = CONFIDENCE_MEDIUM
+            else:
+                confidence = WEAK_CONFIDENCE
+        elif matched_keyword_len >= 2:
+            # Strong keyword match (2+ characters)
+            confidence = CONFIDENCE_HIGH
         else:
-            confidence = WEAK_CONFIDENCE
+            # Weak keyword match (1 character)
+            confidence = CONFIDENCE_KEYWORD_1CHAR
 
         return ClassificationResult(
             intent=matched_intent,
