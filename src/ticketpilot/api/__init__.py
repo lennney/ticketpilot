@@ -10,7 +10,7 @@ Provides REST API endpoints for:
 from __future__ import annotations
 
 import uuid
-from datetime import datetime, timezone, timezone
+from datetime import datetime, timezone
 from typing import List, Optional
 
 from fastapi import FastAPI, HTTPException
