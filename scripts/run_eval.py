@@ -1,94 +1,128 @@
-"""TicketPilot evaluation using DeepEval."""
-import json
-import os
+"""CLI entry-point for offline evaluation.
+
+Provides parse_args() for argument parsing and run_eval() for executing
+the full evaluation pipeline: load tickets, golden expectations, and
+predictions from CSV, compute metrics, and write JSON + Markdown reports.
+"""
+from __future__ import annotations
+
+import argparse
 import sys
 from pathlib import Path
 
-project_root = Path(__file__).resolve().parent.parent
-sys.path.insert(0, str(project_root / "src"))
+# Ensure project src is on the path
+_project_root = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(_project_root / "src"))
 
 
-def _read_env():
-    env_path = project_root / ".env.local"
-    key, base = "", "https://api.deepseek.com"
-    if env_path.exists():
-        with open(env_path) as f:
-            for line in f:
-                s = line.strip()
-                if s.startswith("TICKETPILOT_LLM_API_KEY="):
-                    key = s.split("=", 1)[1]
-                elif s.startswith("TICKETPILOT_LLM_BASE_URL="):
-                    base = s.split("=", 1)[1]
-    return key, base
+def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
+    """Parse CLI arguments for the evaluation runner.
+
+    Args:
+        argv: List of argument strings. Defaults to sys.argv[1:].
+
+    Returns:
+        Parsed argparse.Namespace with attributes: tickets, golden,
+        predictions, out_json, out_md.
+    """
+    parser = argparse.ArgumentParser(
+        description="Run offline evaluation: compare predictions against golden expectations.",
+    )
+    parser.add_argument(
+        "--tickets",
+        required=True,
+        help="Path to tickets_eval.csv",
+    )
+    parser.add_argument(
+        "--golden",
+        required=True,
+        help="Path to golden_expectations.csv",
+    )
+    parser.add_argument(
+        "--predictions",
+        required=True,
+        help="Path to predictions CSV",
+    )
+    parser.add_argument(
+        "--out-json",
+        required=True,
+        help="Path to write the JSON report",
+    )
+    parser.add_argument(
+        "--out-md",
+        required=True,
+        help="Path to write the Markdown report",
+    )
+    return parser.parse_args(argv)
 
 
-_api_key, _api_base = _read_env()
-os.environ["OPENAI_API_KEY"] = _api_key
+def run_eval(args: argparse.Namespace) -> None:
+    """Execute the evaluation pipeline with the given parsed arguments.
 
+    Validates inputs, loads data, computes metrics, writes reports.
+    Exits with code != 0 on validation failure.
 
-def run_evaluation():
-    from deepeval import evaluate
-    from deepeval.metrics import AnswerRelevancyMetric, FaithfulnessMetric
-    from deepeval.models.llms.openai_model import GPTModel
-    from deepeval.test_case import LLMTestCase
+    Args:
+        args: Parsed namespace from parse_args().
+    """
+    from ticketpilot.evaluation import loaders, metrics, predictions, reporting
 
-    eval_path = project_root / "data/knowledge/external/deepeval_generated.json"
-    with open(eval_path, encoding="utf-8") as f:
-        data = json.load(f)
-    print(f"Loaded {len(data)} items", flush=True)
+    # Validate input files exist
+    for label, path in [
+        ("tickets", args.tickets),
+        ("golden", args.golden),
+        ("predictions", args.predictions),
+    ]:
+        if not Path(path).exists():
+            print(f"Error: {label} file not found: {path}", file=sys.stderr)
+            sys.exit(1)
 
-    import random
-    random.seed(42)
-    sample = random.sample(data, min(30, len(data)))
+    # Load dataset
+    load_result = loaders.load_eval_dataset(args.tickets, args.golden)
+    if not load_result.is_valid:
+        for err in load_result.errors:
+            print(f"Error: {err}", file=sys.stderr)
+        sys.exit(1)
 
-    test_cases = []
-    for item in sample:
-        tc = LLMTestCase(
-            input=item["instruction"],
-            actual_output=item["response"],
-            expected_output=item["response"],
-            retrieval_context=[item["response"]],
+    # Load predictions
+    try:
+        preds = predictions.load_predictions(args.predictions)
+    except (FileNotFoundError, ValueError) as exc:
+        print(f"Error loading predictions: {exc}", file=sys.stderr)
+        sys.exit(1)
+
+    # Validate predictions against golden
+    try:
+        summary = metrics.compute_evaluation_summary(
+            preds, load_result.dataset.golden
         )
-        test_cases.append(tc)
-    print(f"Created {len(test_cases)} test cases", flush=True)
+    except ValueError as exc:
+        print(f"Validation failed: {exc}", file=sys.stderr)
+        sys.exit(1)
 
-    judge = GPTModel(model="deepseek-chat", base_url=_api_base, api_key=_api_key)
-    metrics = [
-        FaithfulnessMetric(threshold=0.7, model=judge),
-        AnswerRelevancyMetric(threshold=0.7, model=judge),
-    ]
+    # Write reports
+    reporting.write_json_report(
+        summary,
+        args.out_json,
+        tickets_path=args.tickets,
+        golden_path=args.golden,
+        predictions_path=args.predictions,
+    )
+    reporting.write_markdown_report(
+        summary,
+        args.out_md,
+        tickets_path=args.tickets,
+        golden_path=args.golden,
+        predictions_path=args.predictions,
+    )
+    print(f"Reports written: {args.out_json}, {args.out_md}")
 
-    print("Running DeepEval...", flush=True)
-    result = evaluate(test_cases=test_cases, metrics=metrics)
 
-    os.makedirs(str(project_root / "reports/eval"), exist_ok=True)
-    report_path = project_root / "reports/eval/deepeval_report.json"
-
-    metric_scores = {}
-    for tr in result.test_results:
-        for mr in tr.metrics_data:
-            name = mr.name
-            if name not in metric_scores:
-                metric_scores[name] = {"scores": [], "passed": 0, "total": 0}
-            metric_scores[name]["scores"].append(mr.score)
-            metric_scores[name]["total"] += 1
-            if mr.success:
-                metric_scores[name]["passed"] += 1
-
-    report = {"total_test_cases": len(test_cases), "metrics": {}}
-    for name, info in metric_scores.items():
-        avg = sum(info["scores"]) / len(info["scores"])
-        report["metrics"][name] = {
-            "average_score": round(avg, 4),
-            "pass_rate": f"{info['passed'] / info['total'] * 100:.1f}%",
-            "total": info["total"],
-        }
-
-    with open(str(report_path), "w", encoding="utf-8") as f:
-        json.dump(report, f, ensure_ascii=False, indent=2)
-    print(f"Report -> {report_path}", flush=True)
-    print("Done!", flush=True)
+def main() -> None:
+    """CLI entry-point."""
+    args = parse_args()
+    run_eval(args)
 
 
 if __name__ == "__main__":
-    run_evaluation()
+    main()
