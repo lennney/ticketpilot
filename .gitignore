@@ -1,57 +1,54 @@
 # Python
 __pycache__/
 *.py[cod]
-.pytest_cache/
-.ruff_cache/
-.venv/
+*$py.class
+*.so
+*.egg-info/
 dist/
 build/
-*.egg-info/
+eggs/
+*.egg
 
-# Environment
-.env
-.env.*
-!.env.example
+# Virtual environments
+.venv/
+venv/
+ENV/
 
-# OS / Editor
-.DS_Store
+# IDE
 .vscode/
 .idea/
+*.swp
+*.swo
+*~
 
-# Data / local generated files
-data/processed/
-*.sqlite
-*.db
+# Environment / secrets
+.env
+.env.local
+.env.production
+
+# Testing / coverage
+.coverage
+coverage.xml
+htmlcov/
+.pytest_cache/
+.ruff_cache/
 
 # Logs
 logs/
 *.log
 
-# Secrets
-secrets/
-*.key
-*.pem
+# Data (local only)
+reviews.jsonl
+*.db
+*.sqlite3
 
-# Claude local settings
-.claude/settings.local.json
-
-# Claude worktrees (local only, never committed)
-.claude/worktrees/
-
-# Cache
-.cache/
-.claude/scheduled_tasks.lock
-
-# Coverage artifacts
-.coverage
-.coverage.*
-
-# Backup files
-*.bak
-
-# Broken venv (corrupted symlink)
-.venv_broken/
-subagent_results
-
+# Node.js (frontend)
 frontend/node_modules/
 frontend/dist/
+frontend/.vite/
+
+# macOS
+.DS_Store
+
+# Docker
+docker-compose.override.yml
