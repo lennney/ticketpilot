@@ -1,0 +1,269 @@
+{
+  "generated_at": "2026-06-07T12:29:34.293500+00:00",
+  "summary": {
+    "total_tickets": 10,
+    "intent_distribution": {
+      "refund": 2,
+      "logistics": 1,
+      "complaint": 1,
+      "technical_issue": 1,
+      "other": 2,
+      "product_consulting": 2,
+      "account_issue": 1
+    },
+    "agent_routing_distribution": {
+      "RefundAgent": 2,
+      "LogisticsAgent": 1,
+      "ComplaintAgent": 1,
+      "TechnicalAgent": 2,
+      "DefaultAgent": 4
+    },
+    "risk_severity_distribution": {
+      "low": 7,
+      "medium": 2,
+      "high": 1
+    },
+    "confidence_distribution": {
+      "high (>0.8)": 0,
+      "medium (0.6-0.8)": 8,
+      "low (0.4-0.6)": 2,
+      "critical (<0.4)": 0
+    },
+    "drafts_generated": 0,
+    "draft_generation_rate": "0/10",
+    "human_review_needed": 4,
+    "human_review_rate": "4/10",
+    "avg_evidence_per_ticket": 9.8
+  },
+  "tickets": [
+    {
+      "ticket_id": "DEMO-001",
+      "input_text": "我要退款，订单号 123456，收到的商品有质量问题，已经拍照了。",
+      "expected_category": "refund",
+      "description": "标准退款请求，有证据",
+      "classified_intent": "refund",
+      "classification_confidence": 0.8,
+      "intent_correct": true,
+      "risk_flags": [],
+      "risk_severity": "low",
+      "must_human_review": false,
+      "evidence_count": 10,
+      "evidence_types": [
+        "POLICY",
+        "FAQ",
+        "CASE"
+      ],
+      "draft_text": "",
+      "draft_generated": false,
+      "routed_to_agent": "RefundAgent",
+      "processed_at": "2026-06-07T12:29:10.977754+00:00"
+    },
+    {
+      "ticket_id": "DEMO-002",
+      "input_text": "我的包裹已经10天了还没到，物流单号 SF1234567890，能帮我查一下吗？",
+      "expected_category": "logistics",
+      "description": "物流延迟查询",
+      "classified_intent": "logistics",
+      "classification_confidence": 0.8,
+      "intent_correct": true,
+      "risk_flags": [],
+      "risk_severity": "low",
+      "must_human_review": false,
+      "evidence_count": 10,
+      "evidence_types": [
+        "POLICY",
+        "FAQ",
+        "CASE"
+      ],
+      "draft_text": "",
+      "draft_generated": false,
+      "routed_to_agent": "LogisticsAgent",
+      "processed_at": "2026-06-07T12:29:13.445358+00:00"
+    },
+    {
+      "ticket_id": "DEMO-003",
+      "input_text": "你们的产品太差了！用了一天就坏了，我要投诉！要求3倍赔偿！",
+      "expected_category": "complaint",
+      "description": "高风险投诉，含赔偿要求",
+      "classified_intent": "complaint",
+      "classification_confidence": 0.8,
+      "intent_correct": true,
+      "risk_flags": [
+        "complaint_risk",
+        "compensation_risk"
+      ],
+      "risk_severity": "medium",
+      "must_human_review": true,
+      "evidence_count": 10,
+      "evidence_types": [
+        "POLICY",
+        "FAQ",
+        "CASE"
+      ],
+      "draft_text": "",
+      "draft_generated": false,
+      "routed_to_agent": "ComplaintAgent",
+      "processed_at": "2026-06-07T12:29:16.318796+00:00"
+    },
+    {
+      "ticket_id": "DEMO-004",
+      "input_text": "APP登录不了，一直显示网络错误，试了好几次了。",
+      "expected_category": "technical",
+      "description": "技术问题，APP故障",
+      "classified_intent": "technical_issue",
+      "classification_confidence": 0.8,
+      "intent_correct": true,
+      "risk_flags": [],
+      "risk_severity": "low",
+      "must_human_review": false,
+      "evidence_count": 10,
+      "evidence_types": [
+        "FAQ",
+        "CASE"
+      ],
+      "draft_text": "",
+      "draft_generated": false,
+      "routed_to_agent": "TechnicalAgent",
+      "processed_at": "2026-06-07T12:29:18.949608+00:00"
+    },
+    {
+      "ticket_id": "DEMO-005",
+      "input_text": "请联系我们律师，准备起诉你们公司。订单号 789012。",
+      "expected_category": "legal_risk",
+      "description": "法律风险，应触发 CRITICAL 路由",
+      "classified_intent": "other",
+      "classification_confidence": 0.5,
+      "intent_correct": true,
+      "risk_flags": [
+        "legal_risk",
+        "low_confidence"
+      ],
+      "risk_severity": "high",
+      "must_human_review": true,
+      "evidence_count": 10,
+      "evidence_types": [
+        "POLICY",
+        "FAQ",
+        "CASE"
+      ],
+      "draft_text": "",
+      "draft_generated": false,
+      "routed_to_agent": "DefaultAgent",
+      "processed_at": "2026-06-07T12:29:21.630136+00:00"
+    },
+    {
+      "ticket_id": "DEMO-006",
+      "input_text": "你好，请问这个产品有没有红色的？想买给女朋友。",
+      "expected_category": "consulting",
+      "description": "简单产品咨询",
+      "classified_intent": "product_consulting",
+      "classification_confidence": 0.8,
+      "intent_correct": true,
+      "risk_flags": [],
+      "risk_severity": "low",
+      "must_human_review": false,
+      "evidence_count": 10,
+      "evidence_types": [
+        "POLICY",
+        "FAQ",
+        "CASE"
+      ],
+      "draft_text": "",
+      "draft_generated": false,
+      "routed_to_agent": "DefaultAgent",
+      "processed_at": "2026-06-07T12:29:23.621480+00:00"
+    },
+    {
+      "ticket_id": "DEMO-007",
+      "input_text": "我要退货退款，商品和描述不符。订单号 345678，金额 299 元。",
+      "expected_category": "refund",
+      "description": "退货退款，有金额",
+      "classified_intent": "refund",
+      "classification_confidence": 0.8,
+      "intent_correct": true,
+      "risk_flags": [],
+      "risk_severity": "low",
+      "must_human_review": false,
+      "evidence_count": 10,
+      "evidence_types": [
+        "POLICY",
+        "FAQ",
+        "CASE"
+      ],
+      "draft_text": "",
+      "draft_generated": false,
+      "routed_to_agent": "RefundAgent",
+      "processed_at": "2026-06-07T12:29:26.496498+00:00"
+    },
+    {
+      "ticket_id": "DEMO-008",
+      "input_text": "我的账号被盗了，有人盗刷了我的订单！紧急！",
+      "expected_category": "account_security",
+      "description": "账号安全，高优先级",
+      "classified_intent": "account_issue",
+      "classification_confidence": 0.8,
+      "intent_correct": true,
+      "risk_flags": [
+        "account_security_risk"
+      ],
+      "risk_severity": "medium",
+      "must_human_review": true,
+      "evidence_count": 10,
+      "evidence_types": [
+        "POLICY",
+        "FAQ",
+        "CASE"
+      ],
+      "draft_text": "",
+      "draft_generated": false,
+      "routed_to_agent": "TechnicalAgent",
+      "processed_at": "2026-06-07T12:29:29.525986+00:00"
+    },
+    {
+      "ticket_id": "DEMO-009",
+      "input_text": "发货发错颜色了，我买的蓝色收到的是绿色。",
+      "expected_category": "logistics",
+      "description": "发错货，物流问题",
+      "classified_intent": "product_consulting",
+      "classification_confidence": 0.8,
+      "intent_correct": true,
+      "risk_flags": [],
+      "risk_severity": "low",
+      "must_human_review": false,
+      "evidence_count": 10,
+      "evidence_types": [
+        "POLICY",
+        "FAQ",
+        "CASE"
+      ],
+      "draft_text": "",
+      "draft_generated": false,
+      "routed_to_agent": "DefaultAgent",
+      "processed_at": "2026-06-07T12:29:31.742737+00:00"
+    },
+    {
+      "ticket_id": "DEMO-010",
+      "input_text": "东西还行吧，就是包装有点破损，不影响使用。",
+      "expected_category": "minor_complaint",
+      "description": "轻微投诉，低风险",
+      "classified_intent": "other",
+      "classification_confidence": 0.5,
+      "intent_correct": true,
+      "risk_flags": [
+        "low_confidence"
+      ],
+      "risk_severity": "low",
+      "must_human_review": true,
+      "evidence_count": 8,
+      "evidence_types": [
+        "POLICY",
+        "FAQ",
+        "CASE"
+      ],
+      "draft_text": "",
+      "draft_generated": false,
+      "routed_to_agent": "DefaultAgent",
+      "processed_at": "2026-06-07T12:29:34.292942+00:00"
+    }
+  ]
+}
