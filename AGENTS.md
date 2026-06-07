@@ -13,6 +13,7 @@
 | 委托子 agent 做审查/研究 | "delegate_task"、"委托任务" | `hermes-workflow-patterns` |
 | 实现功能 / 修 bug | "实现"、"开发"、"写代码" | `code-with-review-hook` |
 | PM 给 Tech 派任务 | "给Claude Code写任务" | `pm-tech-verification-hooks` + `hermes-claude-code-workflow` |
+| 复杂任务需要监控进度 | "监控Claude Code"、"观察进度" | `claude-code-progress-monitor` |
 
 **核心工作流:**
 ```
