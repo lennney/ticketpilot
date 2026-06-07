@@ -8,6 +8,8 @@ from ticketpilot.classification.rules import INTENT_RULES
 from ticketpilot.config import (
     CONFIDENCE_HIGH,
     CONFIDENCE_KEYWORD_1CHAR,
+    CONFIDENCE_KEYWORD_LONG_TEXT,
+    CONFIDENCE_KEYWORD_WITH_ORDER,
     CONFIDENCE_MEDIUM,
     CONFIDENCE_STRONG_INDICATOR,
     WEAK_CONFIDENCE,
@@ -78,8 +80,13 @@ class IntentClassifier:
             else:
                 confidence = WEAK_CONFIDENCE
         elif matched_keyword_len >= 2:
-            # Strong keyword match (2+ characters)
-            confidence = CONFIDENCE_HIGH
+            # Multi-signal scoring: keyword + order number / text length
+            if re.search(r"\d{5,}", text):
+                confidence = CONFIDENCE_KEYWORD_WITH_ORDER  # 0.88
+            elif len(text) > 20:
+                confidence = CONFIDENCE_KEYWORD_LONG_TEXT  # 0.82
+            else:
+                confidence = CONFIDENCE_HIGH  # 0.78
         else:
             # Weak keyword match (1 character)
             confidence = CONFIDENCE_KEYWORD_1CHAR

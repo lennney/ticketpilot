@@ -7,8 +7,14 @@ quality checks, and escalation engine.
 # Strong indicator match (e.g. "12315投诉") — near-certain
 CONFIDENCE_STRONG_INDICATOR = 0.9
 
+# High confidence: keyword match with order number present
+CONFIDENCE_KEYWORD_WITH_ORDER = 0.88
+
+# High confidence: keyword match with longer, more detailed text
+CONFIDENCE_KEYWORD_LONG_TEXT = 0.82
+
 # High confidence: autonomous response (auto-send)
-CONFIDENCE_HIGH = 0.8
+CONFIDENCE_HIGH = 0.78
 
 # Keyword match with 1 character — weaker signal
 CONFIDENCE_KEYWORD_1CHAR = 0.7

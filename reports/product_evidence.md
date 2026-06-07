@@ -1,6 +1,6 @@
 # TicketPilot Product Evidence Report
 
-> Generated: 2026-06-07 13:16 UTC
+> Generated: 2026-06-07 15:06 UTC
 > Tickets processed: 10
 
 ---
@@ -9,16 +9,16 @@
 
 | ID | Input | Intent | Confidence | Risk | Agent | Draft |
 |-----|-------|--------|------------|------|-------|-------|
-| DEMO-001 | 我要退款，订单号 123456，收到的商品有质量问题，已经拍... | refund | 0.80 | none | RefundAgent | ✅ |
-| DEMO-002 | 我的包裹已经10天了还没到，物流单号 SF123456789... | logistics | 0.80 | none | LogisticsAgent | ✅ |
-| DEMO-003 | 你们的产品太差了！用了一天就坏了，我要投诉！要求3倍赔偿！ | complaint | 0.80 | complaint_risk, compensation_risk | ComplaintAgent | ✅ |
-| DEMO-004 | APP登录不了，一直显示网络错误，试了好几次了。 | technical_issue | 0.80 | none | TechnicalAgent | ✅ |
-| DEMO-005 | 请联系我们律师，准备起诉你们公司。订单号 789012。 | other | 0.50 | low_confidence, legal_risk | ComplaintAgent | ✅ |
-| DEMO-006 | 你好，请问这个产品有没有红色的？想买给女朋友。 | product_consulting | 0.80 | none | DefaultAgent | ✅ |
-| DEMO-007 | 我要退货退款，商品和描述不符。订单号 345678，金额 2... | refund | 0.80 | none | RefundAgent | ✅ |
-| DEMO-008 | 我的账号被盗了，有人盗刷了我的订单！紧急！ | account_issue | 0.80 | account_security_risk | TechnicalAgent | ✅ |
-| DEMO-009 | 发货发错颜色了，我买的蓝色收到的是绿色。 | return_exchange | 0.80 | none | LogisticsAgent | ✅ |
-| DEMO-010 | 东西还行吧，就是包装有点破损，不影响使用。 | complaint | 0.80 | none | ComplaintAgent | ✅ |
+| DEMO-001 | 我要退款，订单号 123456，收到的商品有质量问题，已经拍... | refund | 0.88 | none | RefundAgent | ✅ |
+| DEMO-002 | 我的包裹已经10天了还没到，物流单号 SF123456789... | logistics | 0.88 | none | LogisticsAgent | ✅ |
+| DEMO-003 | 你们的产品太差了！用了一天就坏了，我要投诉！要求3倍赔偿！ | complaint | 0.82 | complaint_risk, compensation_risk | ComplaintAgent | ✅ |
+| DEMO-004 | APP登录不了，一直显示网络错误，试了好几次了。 | technical_issue | 0.82 | none | TechnicalAgent | ✅ |
+| DEMO-005 | 请联系我们律师，准备起诉你们公司。订单号 789012。 | complaint | 0.88 | legal_risk | ComplaintAgent | ✅ |
+| DEMO-006 | 你好，请问这个产品有没有红色的？想买给女朋友。 | product_consulting | 0.82 | none | DefaultAgent | ✅ |
+| DEMO-007 | 我要退货退款，商品和描述不符。订单号 345678，金额 2... | refund | 0.88 | none | RefundAgent | ✅ |
+| DEMO-008 | 我的账号被盗了，有人盗刷了我的订单！紧急！ | account_issue | 0.82 | account_security_risk | TechnicalAgent | ✅ |
+| DEMO-009 | 发货发错颜色了，我买的蓝色收到的是绿色。 | return_exchange | 0.78 | none | LogisticsAgent | ✅ |
+| DEMO-010 | 东西还行吧，就是包装有点破损，不影响使用。 | complaint | 0.82 | none | ComplaintAgent | ✅ |
 
 ## 2. Multi-Agent Routing Distribution
 
@@ -34,9 +34,9 @@
 
 | Level | Count | Percentage |
 |-------|-------|------------|
-| high (>0.8) | 0 | 0% |
-| medium (0.6-0.8) | 9 | 90% |
-| low (0.4-0.6) | 1 | 10% |
+| high (>0.8) | 9 | 90% |
+| medium (0.6-0.8) | 1 | 10% |
+| low (0.4-0.6) | 0 | 0% |
 | critical (<0.4) | 0 | 0% |
 
 ## 4. Risk Severity Distribution

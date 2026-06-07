@@ -110,9 +110,9 @@ class TestConfidenceTiers:
         assert "critical_confidence" in (draft.escalation_reason or "")
 
     def test_boundary_high_medium(self):
-        """confidence == 0.8 → medium (not high, since high requires > 0.8)."""
-        draft = self._make_draft(0.8)
-        assert draft.confidence_level == "medium"
+        """confidence == 0.78 → high (since high requires >= 0.78)."""
+        draft = self._make_draft(0.78)
+        assert draft.confidence_level == "high"
 
     def test_boundary_medium_low(self):
         """confidence == 0.6 → medium."""

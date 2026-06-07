@@ -106,7 +106,7 @@ class DraftReply(BaseModel):
             'low' if CONFIDENCE_LOW <= confidence < CONFIDENCE_MEDIUM (human review)
             'critical' if confidence < CONFIDENCE_LOW (escalate to human)
         """
-        if self.confidence > CONFIDENCE_HIGH:
+        if self.confidence >= CONFIDENCE_HIGH:
             return "high"
         elif self.confidence >= CONFIDENCE_MEDIUM:
             return "medium"

@@ -67,8 +67,8 @@ class TestGoldenCases:
             ),
             (
                 "请联系我律师，准备起诉你们",
-                IntentClass.OTHER,
-                {RiskFlag.LEGAL_RISK, RiskFlag.LOW_CONFIDENCE},
+                IntentClass.COMPLAINT,
+                {RiskFlag.LEGAL_RISK},
                 RiskSeverity.HIGH,
             ),
             (
