@@ -1,7 +1,36 @@
 # TicketPilot Metrics Dashboard
 
 **Scope**: Local demo / portfolio prototype — NOT a production benchmark
-**Last updated**: 2026-05-08
+**Last updated**: 2026-06-07
+
+---
+
+## 0. Latest Product Evidence (2026-06-07)
+
+> Full report: `reports/product_evidence.md`
+
+| Metric | Value |
+|--------|-------|
+| Total tests passing | 1,498 |
+| Demo tickets processed | 10 |
+| Agents used | 5 (Refund, Complaint, Logistics, Technical, Default) |
+| Agent routing distribution | Default 40%, Refund 20%, Tech 20%, Logistics 10%, Complaint 10% |
+| Risk detection | legal_risk ✅, compensation_risk ✅, account_security_risk ✅ |
+| Avg evidence per ticket | 9.8 |
+| Human review triggered | 4/10 (40%) |
+| Confidence distribution | Medium 80%, Low 20% |
+| Knowledge chunks | 340 |
+
+### New Modules (June 2026)
+
+| Module | Purpose |
+|--------|---------|
+| `feedback/` | FeedbackCollector + CalibrationCurve + IsotonicCalibrator + ThresholdAdvisor |
+| `experiment/` | A/B Experiment Framework (Config + Runner + Reporter) |
+| `evaluation/nli_scorer.py` | NLI-based faithfulness (sentence decomposition, synonyms, negation) |
+| `config/` | Central confidence thresholds |
+| `review/retrieval_viz.py` | RetrievalTrace visualization (Streamlit) |
+| `prompts/templates/` | 5 domain-specific prompt templates |
 
 ---
 
