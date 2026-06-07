@@ -79,6 +79,16 @@ class RiskAssessment(BaseModel):
     assessed_at: datetime
 
 
+class Ticket(BaseModel):
+    """Convenience ticket model for direct agent invocation."""
+
+    ticket_id: str
+    text: str
+    intent: IntentClass = IntentClass.OTHER
+    confidence: float = 0.0
+    risk_flags: list[RiskFlag] = Field(default_factory=list)
+
+
 class TicketOutput(BaseModel):
     """Complete ticket processing output combining all stages."""
 

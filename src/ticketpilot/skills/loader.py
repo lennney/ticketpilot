@@ -53,3 +53,19 @@ def select_relevant_skills(
 
     candidates.sort(key=lambda x: x[0], reverse=True)
     return [skill for _, skill in candidates[:top_k]]
+
+
+def save_skill_library(
+    library: SkillLibrary,
+    path: str = _DEFAULT_LIBRARY_PATH,
+) -> None:
+    """Save the skill library to a JSON file."""
+    import json
+    from pathlib import Path
+
+    p = Path(path)
+    p.parent.mkdir(parents=True, exist_ok=True)
+    data = library.model_dump(mode="json")
+    p.write_text(
+        json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8"
+    )

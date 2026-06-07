@@ -2,6 +2,8 @@
 
 
 
+import pytest
+
 from ticketpilot.schema.ticket import IntentClass
 from ticketpilot.classification.classifier import IntentClassifier
 
@@ -86,3 +88,26 @@ class TestIntentClassifier:
         text = "测试文本"
         result = self.classifier.classify(text)
         assert result.classified_at is not None
+
+
+class TestLegalClassification:
+    """法律威胁意图分类扩展测试"""
+
+    @pytest.mark.parametrize("text,expected_intent", [
+        # 应该分类为 COMPLAINT 的法律威胁
+        ("我要向消费者协会投诉并申请仲裁", "complaint"),
+        ("已收到法院传票", "complaint"),
+        ("12315投诉，准备起诉", "complaint"),
+        ("律师函已寄出，请查收", "complaint"),
+        ("我要申请劳动仲裁", "complaint"),
+        ("请你们法务部门联系我", "complaint"),
+        # 边界: 包含法律词但不是威胁
+        ("请问你们的退款政策合法吗", "refund"),  # 退款意图优先
+        # 非法律 case
+        ("查询物流状态", "logistics"),
+    ])
+    def test_legal_and_non_legal_classification(self, text, expected_intent):
+        classifier = IntentClassifier()
+        result = classifier.classify(text)
+        assert result.intent.value == expected_intent, \
+            f"Expected {expected_intent}, got {result.intent.value} for: {text}"

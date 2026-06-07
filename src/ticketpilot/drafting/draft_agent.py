@@ -29,6 +29,7 @@ from ticketpilot.retrieval.evidence_mapper import map_fused_to_evidence
 from ticketpilot.retrieval.pipeline import hybrid_retrieval
 from ticketpilot.retrieval.schema.knowledge import DocType
 from ticketpilot.schema.evidence import EvidenceCandidate
+from ticketpilot.schema.ticket import Ticket
 from ticketpilot.tracing import create_trace, AgentTrace
 from ticketpilot.guardrails import run_guardrails, GuardrailResult
 from ticketpilot.skills.loader import load_skill_library, select_relevant_skills
@@ -312,8 +313,8 @@ class DraftAgent:
 
     def generate_draft(
         self,
-        normalized_text: str,
-        issue_type: str,
+        normalized_text: str | Ticket,
+        issue_type: str = "",
         risk_flags: list[str] | None = None,
         severity: str = "low",
         must_human_review: bool = False,
@@ -322,7 +323,7 @@ class DraftAgent:
         """Run the agentic loop to produce a DraftReply.
 
         Args:
-            normalized_text: Customer's normalized message text.
+            normalized_text: Customer's normalized message text, or a Ticket object.
             issue_type: Classified intent / issue type.
             risk_flags: Detected risk flags.
             severity: Risk severity level.
@@ -332,6 +333,12 @@ class DraftAgent:
         Returns:
             DraftReply with citations, confidence, and guard flags.
         """
+        # Accept a Ticket object for convenience
+        if isinstance(normalized_text, Ticket):
+            ticket = normalized_text
+            normalized_text = ticket.text
+            issue_type = ticket.intent.value
+            risk_flags = [f.value for f in ticket.risk_flags]
         flags = risk_flags or []
         state = _AgentState()
         
@@ -712,10 +719,17 @@ class DraftAgent:
             library = load_skill_library()
             skills = select_relevant_skills(library, issue_type, flags)
             if not skills:
+                result.reflection_passed = None
+                result.reflection_issues = []
+                result.skill_used = None
                 return result
 
             skill = skills[0]
             reflection = reflect_on_draft(result.draft_text, skill, flags)
+
+            result.reflection_passed = reflection.passed
+            result.reflection_issues = list(reflection.issues)
+            result.skill_used = skill.skill_id
 
             if not reflection.passed:
                 logger.info(
@@ -735,6 +749,9 @@ class DraftAgent:
             return result
         except Exception as e:
             logger.debug("Skill reflection skipped: %s", e)
+            result.reflection_passed = None
+            result.reflection_issues = []
+            result.skill_used = None
             return result
 
     def _reformulate_search(

@@ -57,6 +57,9 @@ class DraftReply(BaseModel):
     escalation_reason: str | None = None
     safety_notes: list[str] = Field(default_factory=list)
     cited_evidence_ids: list[str] = Field(default_factory=list)
+    reflection_passed: bool | None = None
+    reflection_issues: list[str] = Field(default_factory=list)
+    skill_used: str | None = None
     provenance: ResponseProvenance | None = Field(
         default=None,
         description="Full-chain provenance linking claims to source chunks",
@@ -95,6 +98,11 @@ class DraftReply(BaseModel):
                 msg = "cited_evidence_ids must not contain empty strings"
                 raise ValueError(msg)
         return self
+
+    @property
+    def text(self) -> str:
+        """Alias for draft_text, used by convenience callers."""
+        return self.draft_text
 
     @property
     def confidence_level(self) -> str:

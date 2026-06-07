@@ -9,7 +9,8 @@
       "keywords": [
         "退款",
         "退钱",
-        "退费"
+        "退货",
+        "退换"
       ],
       "resolution_steps": [
         "确认订单号",
@@ -19,33 +20,60 @@
       ],
       "risk_flags_to_acknowledge": [],
       "tone": "professional",
-      "success_count": 0,
+      "success_count": 10,
       "last_used": null,
-      "created_at": "2026-06-07T16:55:04.471630+00:00"
+      "created_at": "2026-06-07T17:20:27.789644Z"
     },
     "complaint_v1": {
       "skill_id": "complaint_v1",
       "intent": "complaint",
-      "name": "投诉处理",
-      "description": "处理客户投诉的标准流程",
+      "name": "标准投诉处理",
+      "description": "处理客户投诉，安抚情绪",
       "keywords": [
         "投诉",
         "差评",
-        "不满"
+        "态度差",
+        "不满意"
       ],
       "resolution_steps": [
         "表达歉意",
-        "了解问题",
-        "提供解决方案",
+        "了解问题详情",
+        "提出解决方案",
         "跟进处理"
       ],
       "risk_flags_to_acknowledge": [
-        "complaint_risk"
+        "compensation_risk"
       ],
       "tone": "empathetic",
-      "success_count": 0,
+      "success_count": 8,
       "last_used": null,
-      "created_at": "2026-06-07T16:55:04.471666+00:00"
+      "created_at": "2026-06-07T17:20:27.789678Z"
+    },
+    "legal_v1": {
+      "skill_id": "legal_v1",
+      "intent": "complaint",
+      "name": "法律威胁处理",
+      "description": "处理法律威胁类投诉，必须声明法律免责",
+      "keywords": [
+        "律师",
+        "起诉",
+        "法院",
+        "法律",
+        "仲裁"
+      ],
+      "resolution_steps": [
+        "声明法律免责",
+        "记录工单",
+        "转交法务部门",
+        "48小时内回复"
+      ],
+      "risk_flags_to_acknowledge": [
+        "legal_risk"
+      ],
+      "tone": "professional",
+      "success_count": 5,
+      "last_used": null,
+      "created_at": "2026-06-07T17:20:27.789689Z"
     },
     "logistics_v1": {
       "skill_id": "logistics_v1",
@@ -56,63 +84,47 @@
         "物流",
         "快递",
         "发货",
+        "没收到",
         "丢件"
       ],
       "resolution_steps": [
+        "确认订单号",
         "查询物流状态",
-        "联系物流公司",
-        "提供解决方案"
+        "联系物流方",
+        "给出预计时间"
       ],
       "risk_flags_to_acknowledge": [],
       "tone": "professional",
-      "success_count": 0,
+      "success_count": 7,
       "last_used": null,
-      "created_at": "2026-06-07T16:55:04.471673+00:00"
+      "created_at": "2026-06-07T17:20:27.789699Z"
     },
     "technical_v1": {
       "skill_id": "technical_v1",
-      "intent": "technical_issue",
+      "intent": "technical",
       "name": "技术问题处理",
-      "description": "处理 APP 故障、支付问题等技术问题",
+      "description": "处理APP/网站技术问题",
       "keywords": [
         "打不开",
         "闪退",
-        "支付失败"
+        "报错",
+        "无法登录",
+        "bug"
       ],
       "resolution_steps": [
-        "确认问题现象",
-        "提供临时解决方案",
-        "转交技术团队"
-      ],
-      "risk_flags_to_acknowledge": [],
-      "tone": "professional",
-      "success_count": 0,
-      "last_used": null,
-      "created_at": "2026-06-07T16:55:04.471678+00:00"
-    },
-    "legal_v1": {
-      "skill_id": "legal_v1",
-      "intent": "complaint",
-      "name": "法律威胁处理",
-      "description": "处理法律威胁、律师函等高风险投诉",
-      "keywords": [
-        "律师",
-        "起诉",
-        "法院"
-      ],
-      "resolution_steps": [
-        "表达重视",
-        "转交法务",
-        "不承诺具体结果"
+        "确认设备型号",
+        "确认APP版本",
+        "提供排查步骤",
+        "升级到技术团队"
       ],
       "risk_flags_to_acknowledge": [
-        "legal_risk"
+        "account_security_risk"
       ],
-      "tone": "formal",
-      "success_count": 0,
+      "tone": "professional",
+      "success_count": 6,
       "last_used": null,
-      "created_at": "2026-06-07T16:55:04.471683+00:00"
+      "created_at": "2026-06-07T17:20:27.789705Z"
     }
   },
-  "updated_at": "2026-06-07T16:55:04.471941+00:00"
+  "updated_at": "2026-06-07T17:20:27.789712Z"
 }
