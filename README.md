@@ -1,253 +1,182 @@
-# TicketPilot
+# 🎫 TicketPilot
 
-[![Tests](https://img.shields.io/badge/tests-1%2C662-brightgreen)]()
+**中文客服工单 AI 分拣系统 — 确定性管线，零 LLM 调用，全链路可追溯**
+
+> 跨境电商客服 Copilot：意图分类 → 风险评估 → 混合检索 → 证据化草稿 → 人工审核台
+> 60% 工单自动发送，40% 路由到人工，0% 关键工单遗漏
+
+[![Tests](https://img.shields.io/badge/tests-1%2C760-brightgreen)]()
 [![Coverage](https://img.shields.io/badge/coverage-87%25-brightgreen)]()
 [![Python](https://img.shields.io/badge/python-3.11%2B-blue)]()
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Docker](https://img.shields.io/badge/docker-compose-blue?logo=docker)]()
 
-**AI Customer Service Copilot for cross-border e-commerce — deterministic pipeline, full-chain traceability, hybrid retrieval.**
+---
 
-TicketPilot triages customer tickets through intent classification, risk assessment, hybrid evidence retrieval, and draft generation — then routes only the ~20% that need human judgment to a review console. The pipeline is fully deterministic (zero LLM calls), with every decision traceable from answer → citation → chunk → document.
+## 为什么做这个项目
 
-> This is a portfolio project demonstrating production-grade RAG architecture patterns. All data is synthetic.
+大多数 AI 客服 demo 回避了最难的问题：**你怎么知道 LLM 没有在胡说？哪些工单需要人来判断？错误的回答怎么追溯到源头？**
+
+TicketPilot 用工程手段回答这些问题：
+
+- **管线内零 LLM 调用** — 分类、风险、检索、评分全部确定性执行，结果可复现
+- **混合检索而非纯向量** — 关键词 FTS + pgvector HNSW → RRF 融合 → 4 信号混合重排序
+- **4 层置信度路由** — HIGH/MEDIUM 自动发送，LOW 人工审核，CRITICAL 强制转人工
+- **8 类禁止承诺检测** — 退款金额、法律威胁、隐私承诺等，AI 草稿不会越线
+
+> Portfolio demo project. All data is synthetic.
 
 ---
 
-## Why I Built This
+## 截图
 
-Most AI customer service demos hide the hard parts: how do you know the LLM isn't hallucinating? How do you decide which tickets need a human? How do you trace a wrong answer back to its source?
-
-TicketPilot answers these questions with engineering, not prompts:
-
-- **No black boxes** — every retrieval, classification, and confidence score is explainable
-- **No hallucination risk in the pipeline** — LLM is only used for draft generation, with 8-category forbidden-promise detection
-- **Hybrid retrieval that works** — keyword FTS + vector HNSW → RRF fusion → multi-signal reranking
-- **Confidence you can calibrate** — 4-dimensional scoring with isotonic regression, not arbitrary thresholds
+| 监控大盘 | 置信度分布 | 意图×风险热力图 |
+|:---:|:---:|:---:|
+| ![Dashboard](docs/assets/dashboard-overview.png) | ![Charts](docs/assets/dashboard-charts.png) | ![Heatmap](docs/assets/dashboard-heatmap.png) |
 
 ---
 
-## Screenshots
-
-### Confidence Monitoring Dashboard
-![Dashboard Overview](docs/assets/dashboard-overview.png)
-
-### Tier & Agent Routing Distribution
-![Dashboard Charts](docs/assets/dashboard-charts.png)
-
-### Intent × Risk Label Heatmap
-![Dashboard Heatmap](docs/assets/dashboard-heatmap.png)
-
-## Architecture
-
-```mermaid
-graph TD
-    A[Ticket Input] --> B[Intent Classifier]
-    B --> C[Risk Assessor]
-    C --> D[Hybrid Retrieval<br/>FTS + pgvector → RRF → Hybrid Rerank]
-    D --> E[Multi-Agent Router]
-    E --> F[Refund Agent]
-    E --> G[Complaint Agent]
-    E --> H[Logistics Agent]
-    E --> I[Technical Agent]
-    E --> J[Default Agent]
-    F --> K[Draft Generator]
-    G --> K
-    H --> K
-    I --> K
-    J --> K
-    K --> L[Claim Guard]
-    K --> M[Citation Validator]
-    L --> N[Confidence Scorer<br/>4 dimensions]
-    M --> N
-    N --> O{Confidence Tier}
-    O -->|HIGH| P[Auto-Send]
-    O -->|MEDIUM| P
-    O -->|LOW| Q[Human Review]
-    O -->|CRITICAL| R[Force Escalation]
-    Q --> S{Decision}
-    S -->|Approve| P
-    S -->|Edit| T[Revise]
-    T --> P
-    P --> U[Feedback Loop]
-    U --> V[Isotonic Calibrator]
-    V --> B
-```
-
-## What Makes It Different
-
-| Feature | Typical RAG | TicketPilot |
-|---------|------------|-------------|
-| Retrieval | Single vector search | Keyword FTS + Vector HNSW → RRF → **4-signal hybrid reranking** |
-| Confidence | Binary (confident / not) | 4-dimensional weighted: retrieval + classification + citation + evidence density |
-| Routing | All-auto or all-human | 4-tier degradation: AUTO → CAUTIOUS → HUMAN_REVIEW → ESCALATION |
-| Hallucination guard | None or keyword filter | 8-category forbidden promise detection (refund amounts, legal threats, etc.) |
-| Traceability | None | Full chain: answer → citation → chunk → document |
-| Agent architecture | Single agent | Multi-agent orchestrator with intent-based routing to 5 specialists |
-| Pipeline determinism | LLM-dependent | Rule-driven, zero LLM calls in pipeline |
-| Calibration | Static thresholds | Feedback loop with isotonic regression + reliability diagrams |
-| Self-reflection | None | Skill seed learning from successful draft patterns |
-
-## Hybrid Retrieval Pipeline
-
-```
-Query → LLM Query Expansion (2 variants)
-      → Parallel Retrieval (keyword FTS + vector HNSW per variant)
-      → RRF Fusion (k=60)
-      → Multi-variant Merge (sum_score dedup)
-      → Hybrid Reranker (4-signal weighted fusion):
-          ├── RRF score              (weight: 0.40)
-          ├── Embedding similarity   (weight: 0.25)
-          ├── Intent metadata boost  (weight: 0.20)
-          └── Content quality        (weight: 0.15)
-      → Top-K Evidence + Full RetrievalTrace
-```
-
-The reranker is fully configurable via `config/reranker.yaml` — weights, intent boost tables, and content quality parameters are all externalized for A/B experimentation.
-
-## Key Modules
-
-### Confidence & Routing
-- **ConfidenceScorer** — 4-dimensional scoring (retrieval 35%, classification 25%, citation 25%, evidence density 15%)
-- **DegradationRouter** — 4-tier routing based on confidence level
-- **Claim Guard** — Forbidden promise detection, citation coverage, risk acknowledgment
-
-### Multi-Agent System
-- **Orchestrator** — Intent-based routing to specialized agents
-- **5 Specialists** — RefundAgent, ComplaintAgent, LogisticsAgent, TechnicalAgent, DefaultAgent
-- **Self-Reflection Skills** — Agents learn from successful draft patterns
-
-### Retrieval
-- **Hybrid search** — PostgreSQL FTS + pgvector HNSW → RRF fusion
-- **Hybrid Reranker** — Multi-signal weighted fusion (RRF + embedding + intent + content quality)
-- **Query Expansion** — LLM-generated query variants for improved recall
-- **RetrievalTrace** — Full explainability with per-signal breakdown
-
-### Feedback & Calibration
-- **FeedbackCollector** — Records (confidence, action, was_correct) from human reviews
-- **IsotonicCalibrator** — Pure Python PAV algorithm for confidence calibration
-- **ReliabilityDiagram** — ASCII art visualization for terminal
-
-### Evaluation
-- **NLI Scorer** — Sentence decomposition, synonym expansion, negation detection
-- **Retrieval Metrics** — Precision@K, Recall@K, MRR, NDCG
-- **A/B Experiment Framework** — Same tickets, two configs, comparison report
-
-## Quick Start
+## 30 秒上手
 
 ```bash
-git clone https://github.com/lennney/ticketpilot.git
-cd ticketpilot
+git clone https://github.com/lennney/ticketpilot.git && cd ticketpilot
 
-pip install uv
-uv sync
+pip install uv && uv sync           # 安装依赖
+docker compose up -d db              # 启动 PostgreSQL + pgvector
+uv run python scripts/ingest_knowledge.py   # 灌入知识库
 
-cp .env.example .env.local
-# Edit .env.local with your API keys (optional — pipeline works without LLM keys)
-
-docker compose up -d db
-
-uv run python scripts/ingest_knowledge.py
-
-uv run uvicorn ticketpilot.api:app --host 0.0.0.0 --port 8000
+uv run uvicorn ticketpilot.api:app --port 8000   # 启动 API
 ```
 
-### One-Click Demo
-
 ```bash
+# 一键 demo（灌数据 + 启动服务 + 跑评测）
 bash scripts/demo.sh
 ```
 
-### Run Tests
+```bash
+# 人工审核台
+uv run streamlit run src/ticketpilot/review/console.py --server.port 8501
+```
+
+---
+
+## 架构
+
+```mermaid
+graph TD
+    A[工单输入] --> B[意图分类<br/>8 类 + 置信度]
+    B --> C[风险评估<br/>8 标记 × 3 级别]
+    C --> D[混合检索<br/>FTS + pgvector → RRF]
+    D --> E[多 Agent 路由]
+    E --> F[退款 / 投诉 / 物流 / 技术 / 默认]
+    F --> G[草稿生成]
+    G --> H[Claim Guard<br/>禁止承诺检测]
+    H --> I[置信度评分<br/>4 维加权]
+    I --> J{路由决策}
+    J -->|HIGH / MEDIUM| K[自动发送]
+    J -->|LOW| L[人工审核]
+    J -->|CRITICAL| M[强制转人工]
+    L -->|通过| K
+    K --> N[反馈回路]
+    N --> O[等距校准器]
+    O --> B
+```
+
+---
+
+## 和普通 RAG 的区别
+
+| 维度 | 典型 RAG | TicketPilot |
+|------|---------|-------------|
+| 检索 | 单路向量搜索 | 关键词 FTS + 向量 HNSW → RRF → **4 信号混合重排序** |
+| 置信度 | 二元（自信/不自信） | 4 维加权：检索 35% + 分类 25% + 引用 25% + 证据密度 15% |
+| 路由 | 全自动或全人工 | 4 层降级：AUTO → CAUTIOUS → HUMAN_REVIEW → ESCALATION |
+| 幻觉防护 | 无 | 8 类禁止承诺检测（退款金额、法律威胁等） |
+| 可追溯性 | 无 | 全链路：回答 → 引用 → chunk → 文档 |
+| Agent 架构 | 单 Agent | 5 个专职 Agent + 意图路由 |
+| 管线确定性 | 依赖 LLM | 规则驱动，管线内零 LLM 调用 |
+| 校准 | 静态阈值 | 反馈回路 + 等距回归 + 可靠性图 |
+
+---
+
+## API
+
+| 端点 | 方法 | 说明 |
+|------|------|------|
+| `/api/tickets` | POST | 提交工单处理 |
+| `/api/chat` | POST | 对话式 Copilot |
+| `/api/chat/stream` | POST | SSE 流式响应 |
+| `/api/reviews` | POST | 提交人工审核决策 |
+| `/api/evaluation` | GET | 评测指标 |
+
+---
+
+## 测试
 
 ```bash
-# Unit tests (no database required)
+# 单元测试（无需数据库）
 TICKETPILOT_SKIP_DB_TESTS=1 uv run pytest tests/ --ignore=tests/integration -q
 
-# Full quality gate (lint + tests + integration + openspec + secret scan)
+# 完整质量门禁（lint + 测试 + 集成 + openspec + 密钥扫描）
 bash scripts/run_quality_gate.sh
 ```
 
-### Review Console & Dashboard
-
-```bash
-# Human review interface
-uv run streamlit run src/ticketpilot/review/console.py --server.port 8501
-
-# Metrics dashboard
-uv run python scripts/run_dashboard.py
+```
+1,760 tests passing · 87% coverage · ≥ 70% enforced
 ```
 
-## API Endpoints
+---
 
-| Endpoint | Method | Description |
-|----------|--------|-------------|
-| `/api/health` | GET | Health check |
-| `/api/chat` | POST | Chat with AI copilot |
-| `/api/chat/stream` | POST | Streaming chat (SSE) |
-| `/api/tickets` | POST | Process ticket |
-| `/api/reviews` | POST | Submit review decision |
-| `/api/evaluation` | GET | Get evaluation metrics |
-
-## Project Structure
+## 项目结构
 
 ```
 src/ticketpilot/
-├── api/                # FastAPI endpoints + SSE streaming
-├── classification/     # Intent classifier (deterministic, 8 classes)
-├── confidence/         # 4-dimensional confidence scorer
-├── degradation/        # 4-tier response router
-├── drafting/           # DraftAgent, claim guard, citation validator
-├── evaluation/         # NLI scorer, retrieval metrics, A/B experiments
-├── experiment/         # A/B experiment framework
-├── feedback/           # Feedback collector, calibrator, threshold advisor
-├── guardrails/         # PII detection, security scanning
-├── intake/             # Ticket normalization, entity extraction
-├── multi_agent/        # Orchestrator + 5 specialized agents
-├── retrieval/          # Hybrid retrieval (FTS + HNSW → RRF → hybrid rerank)
-│   ├── hybrid_reranker.py    # Multi-signal weighted reranking
-│   ├── query_expander.py     # LLM query expansion
-│   ├── result_merger.py      # Multi-variant result merging
-│   └── reranker_config.py    # YAML-configurable weights
-├── review/             # Streamlit review console
-├── risk/               # Risk assessor (8 flag types, 3 severity)
-├── schema/             # Pydantic data models
-├── tracing/            # Provenance tracking
-└── triggers/           # CLI + webhook entry points
+├── api/                # FastAPI + SSE 流式
+├── classification/     # 意图分类（确定性，8 类）
+├── confidence/         # 4 维置信度评分
+├── degradation/        # 4 层响应路由
+├── drafting/           # 草稿生成 + Claim Guard + 引用验证
+├── evaluation/         # NLI 评分、检索指标、A/B 实验
+├── feedback/           # 反馈收集、等距校准、阈值顾问
+├── guardrails/         # PII 检测、安全扫描
+├── multi_agent/        # 编排器 + 5 专职 Agent
+├── retrieval/          # 混合检索（FTS + HNSW → RRF → 混合重排序）
+│   ├── hybrid_reranker.py    # 多信号加权重排序
+│   ├── query_expander.py     # LLM 查询扩展
+│   ├── result_merger.py      # 多变体结果合并
+│   └── reranker_config.py    # YAML 可配置权重
+├── review/             # Streamlit 人工审核台
+├── risk/               # 风险评估（8 标记，3 级别）
+├── schema/             # Pydantic 数据模型
+└── tracing/            # 来源追溯
 ```
 
-## Test Coverage
+---
 
-```
-1,662 tests passing
-├── Unit tests (no DB): 1,662
-├── Integration tests (DB required): separate
-└── Coverage: 87% (>= 70% enforced)
-```
+## 参与贡献
 
-## Contributing
+欢迎 PR！适合入门的方向：
 
-Contributions welcome! Good first issues:
-
-- 📝 **Documentation** — Improve Chinese/English docs, add usage examples
-- 🧪 **Test coverage** — Add edge case tests for retrieval or classification
-- 🔧 **Bug fixes** — Check [Issues](https://github.com/lennney/ticketpilot/issues) for open bugs
-- 🌐 **Internationalization** — Add multi-language support for the review console
+- 📝 **文档** — 中英文使用示例、架构说明
+- 🧪 **测试** — 检索/分类的边界 case
+- 🔧 **Bug 修复** — 看 [Issues](https://github.com/lennney/ticketpilot/issues)
+- 🌐 **国际化** — 审核台多语言支持
 
 ```bash
-# Setup dev environment
-uv sync --group dev
+uv sync --group dev    # 安装开发依赖
 uv run pytest tests/ -v
-
-# Run quality gate before submitting PR
-bash scripts/run_quality_gate.sh
+bash scripts/run_quality_gate.sh   # 提 PR 前跑一下
 ```
 
-## Technical Docs
+---
 
-- [Retrieval Architecture](docs/technical/retrieval_architecture.md) — Hybrid retrieval pipeline deep dive
-- [Validation Policy](docs/technical/validation_policy.md) — Testing and quality gate rules
-- [Portfolio](docs/portfolio/index.md) — Project elevator pitch and key metrics
+## 技术文档
+
+- [检索架构](docs/technical/retrieval_architecture.md) — 混合检索管线详解
+- [质量门禁](docs/technical/quality_gate.md) — 测试和验证规则
+- [项目 Portfolio](docs/portfolio/index.md) — 指标和 elevator pitch
+
+---
 
 ## License
 
