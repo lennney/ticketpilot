@@ -39,6 +39,8 @@ logger = logging.getLogger(__name__)
 
 # Minimum RRF score threshold for evidence to be considered "good"
 _EVIDENCE_SCORE_THRESHOLD = 0.01
+# Maximum evidence items to keep (prevents unbounded context growth)
+_MAX_EVIDENCE = 15
 # Maximum agent loop iterations (safety bound)
 _MAX_ITERATIONS = 5
 # Safe fallback when agent cannot produce a grounded reply
@@ -790,9 +792,14 @@ class DraftAgent:
                     state.evidence.append(c)
                     existing_ids.add(c.chunk_id)
 
+            # Cap evidence by score to prevent unbounded context growth
+            state.evidence.sort(key=lambda e: e.score, reverse=True)
+            state.evidence = state.evidence[:_MAX_EVIDENCE]
+
             logger.info(
-                "DraftAgent: reformulated search added %d new results",
+                "DraftAgent: reformulated search added %d new results (total %d)",
                 len(new_candidates),
+                len(state.evidence),
             )
 
     def _llm_guided_search(
@@ -832,9 +839,19 @@ class DraftAgent:
                 if query and query not in state.search_queries_used:
                     state.search_queries_used.append(query)
                     raw_results = _search_knowledge(query)
-                    state.evidence = self._raw_results_to_candidates(raw_results)
+                    # Merge with existing evidence (don't replace — preserve good earlier results)
+                    new_candidates = self._raw_results_to_candidates(raw_results)
+                    existing_ids = {c.chunk_id for c in state.evidence}
+                    for c in new_candidates:
+                        if c.chunk_id not in existing_ids:
+                            state.evidence.append(c)
+                            existing_ids.add(c.chunk_id)
+                    # Cap by score
+                    state.evidence.sort(key=lambda e: e.score, reverse=True)
+                    state.evidence = state.evidence[:_MAX_EVIDENCE]
                     logger.info(
-                        "DraftAgent: LLM-guided search returned %d results",
+                        "DraftAgent: LLM-guided search added %d new results (total %d)",
+                        len(new_candidates),
                         len(state.evidence),
                     )
         except Exception as e:
