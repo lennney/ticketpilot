@@ -99,3 +99,45 @@ class TestRerankerConfigHelpers:
         # rrf was 0.40, now should be 0.40/0.75 ≈ 0.533
         expected_ratio = 0.40 / 0.75
         assert abs(adjusted["rrf_score"] - expected_ratio) < 1e-6
+
+    def test_adjust_weights_all_signals_missing(self):
+        """When all signals are removed, return empty dict."""
+        cfg = RerankerConfig.default()
+        all_signals = set(cfg.weights.keys())
+        adjusted = cfg.adjust_weights_for_missing_signals(all_signals)
+        assert isinstance(adjusted, dict)
+        assert len(adjusted) == 0
+
+
+class TestContentQualityConfig:
+    def test_valid_config(self):
+        cq = ContentQualityConfig(optimal_length_min=100, optimal_length_max=500)
+        assert cq.optimal_length_min == 100
+
+    def test_min_greater_than_max_raises(self):
+        with pytest.raises(ValueError, match="optimal_length_min.*must be <="):
+            ContentQualityConfig(optimal_length_min=800, optimal_length_max=200)
+
+    def test_density_weight_out_of_range_raises(self):
+        with pytest.raises(ValueError, match="keyword_density_weight must be between 0 and 1"):
+            ContentQualityConfig(keyword_density_weight=1.5)
+
+    def test_negative_density_weight_raises(self):
+        with pytest.raises(ValueError, match="keyword_density_weight must be between 0 and 1"):
+            ContentQualityConfig(keyword_density_weight=-0.1)
+
+
+class TestRerankerConfigFromYamlEdgeCases:
+    def test_malformed_yaml_raises(self, tmp_path):
+        """Invalid YAML syntax should raise."""
+        p = tmp_path / "bad.yaml"
+        p.write_text(":\n  invalid: [yaml\n")
+        with pytest.raises(Exception):
+            RerankerConfig.from_yaml(str(p))
+
+    def test_empty_yaml_raises_validation(self, tmp_path):
+        """Empty YAML file produces empty weights → validation error."""
+        p = tmp_path / "empty.yaml"
+        p.write_text("")
+        with pytest.raises(ValueError, match="weights cannot be empty"):
+            RerankerConfig.from_yaml(str(p))
