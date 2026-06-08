@@ -1,6 +1,6 @@
 """Retrieval trace schema for debugging and explainability."""
 
-from datetime import datetime, timezone, timezone
+from datetime import datetime, timezone
 from typing import Any, Optional
 from uuid import UUID
 
@@ -189,6 +189,34 @@ class RetrievalTrace(BaseModel):
     reranking_enabled: bool = Field(
         default=False,
         description="Whether re-ranking was enabled",
+    )
+
+    # Hybrid reranking metadata
+    query_variants: Optional[list[str]] = Field(
+        default=None,
+        description="Query variants used for multi-query expansion",
+    )
+    expansion_latency_ms: int = Field(
+        default=0,
+        ge=0,
+        description="Query expansion latency in milliseconds",
+    )
+    merged_result_count: int = Field(
+        default=0,
+        ge=0,
+        description="Number of results after merge+dedup, before reranking",
+    )
+    rerank_signals: Optional[list[dict[str, Any]]] = Field(
+        default=None,
+        description="Per-result signal breakdown from hybrid reranker",
+    )
+    reranker_weights: Optional[dict[str, float]] = Field(
+        default=None,
+        description="Actual weights used by hybrid reranker (may be adjusted)",
+    )
+    has_real_embedding: bool = Field(
+        default=False,
+        description="Whether a real (non-fake) embedding provider was used",
     )
 
     def get_result_by_chunk_id(self, chunk_id: UUID) -> Optional[FusedResult]:

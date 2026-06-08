@@ -150,15 +150,79 @@ What the fake embedding provider **cannot** provide:
 - Meaningful ranking of results by relevance
 - Any real-world retrieval precision or recall
 
+## Hybrid Reranking (Post-RRF)
+
+After RRF fusion, an optional **Hybrid Reranker** applies multi-signal weighted fusion
+to improve Top-K ranking quality. This replaces the previous simple embedding tiebreaker.
+
+**Source:** `src/ticketpilot/retrieval/hybrid_reranker.py`
+
+### Signals
+
+| Signal | Default Weight | Description |
+|--------|---------------|-------------|
+| RRF score | 0.40 | Min-max normalized RRF fusion score |
+| Embedding similarity | 0.25 | Cosine similarity (auto-disabled with FakeEmbedding) |
+| Intent metadata boost | 0.20 | Intent → doc_type matching (e.g., refund→policy +0.15) |
+| Content quality | 0.15 | Length appropriateness + keyword density |
+
+When FakeEmbeddingProvider is detected, the embedding signal weight is redistributed
+proportionally among the other 3 signals (so weights always sum to 1.0).
+
+### Configuration
+
+Weights and parameters are configurable via `config/reranker.yaml`:
+
+```yaml
+weights:
+  rrf_score: 0.40
+  embedding_similarity: 0.25
+  intent_metadata_boost: 0.20
+  content_quality: 0.15
+```
+
+**Source:** `src/ticketpilot/retrieval/reranker_config.py`
+
+## Multi-Query Expansion
+
+An optional **MultiQueryExpander** generates query variants using LLM to improve recall.
+When enabled, the original query + N variants are each run through the retrieval pipeline
+independently, then merged before hybrid reranking.
+
+**Source:** `src/ticketpilot/retrieval/query_expander.py`
+
+### Merge Strategies
+
+Results from multiple query variants are merged using:
+
+- **sum_score** (default): RRF scores summed per chunk_id — docs found by multiple
+  variants get higher scores (multi-path validation)
+- **max_score**: Keep highest RRF score per chunk_id
+- **rrf_again**: Apply second-level RRF across variant rankings
+
+**Source:** `src/ticketpilot/retrieval/result_merger.py`
+
+### Pipeline Integration
+
+```
+Query → (optional) MultiQueryExpander → N variants
+      → per-variant: keyword + vector + RRF
+      → merge (sum_score)
+      → HybridReranker (4-signal fusion)
+      → Top-K output + RetrievalTrace
+```
+
+Both features are backward-compatible: `enable_query_expansion=False` by default,
+and `intent=None` disables intent boost. All new fields in RetrievalTrace are Optional.
+
 ## Deferred Items
 
 The following retrieval refinements are explicitly deferred:
 
-- **Real embedding provider** — Two tiers planned: small (384-d) and quality (768-d). The `EmbeddingProvider` protocol interface is ready for integration.
 - **Realistic enterprise data pack** — Current 36-document seed set is synthetic. A real data pack with actual FAQ, policy, and case documents is needed.
 - **SourceRouter implementation** — Intent-to-source routing (e.g., refund tickets search only FAQ + Policy) was designed but not implemented.
 - **Persistent retrieval traces** — `RetrievalTrace` is in-memory only. The `retrieval_traces` DB table migration is deferred.
-- **Retrieval evaluation** — No golden question-answer pairs, no precision/recall/mRR metrics, no evaluation harness.
 - **BM25 or alternative keyword retrieval** — PostgreSQL FTS is sufficient for MVP. BM25 may improve keyword ranking.
 - **Embedding fine-tuning** — No support ticket data available for fine-tuning.
 - **Evidence scoring threshold tuning** — RRF scores have no absolute meaning; threshold tuning deferred until evaluation data exists.
+- **Cross-encoder reranker** — Would require sentence-transformers dependency; deferred in favor of lightweight multi-signal fusion.
