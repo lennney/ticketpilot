@@ -66,8 +66,8 @@ class MultiQueryExpander:
             valid = [v for v in variants if self._is_valid_variant(v, query)]
             result = [query] + valid[: self._num_variants]
             logger.info(
-                "Query expansion: '%s' -> %d variants: %s",
-                query, len(valid), valid[: self._num_variants],
+                "Query expansion: original_len=%d -> %d variants (total valid: %d)",
+                len(query), len(valid[: self._num_variants]), len(valid),
             )
             return result
         except Exception as e:

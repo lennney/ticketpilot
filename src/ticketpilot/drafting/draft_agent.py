@@ -357,9 +357,10 @@ class DraftAgent:
             }
         )
 
-        # Seed state with any pre-retrieved evidence
+        # Seed state with any pre-retrieved evidence (capped to prevent context overflow)
         if evidence_candidates:
-            state.evidence = list(evidence_candidates)
+            sorted_candidates = sorted(evidence_candidates, key=lambda e: e.score, reverse=True)
+            state.evidence = sorted_candidates[:_MAX_EVIDENCE]
 
         try:
             result = self._run_agent_loop(

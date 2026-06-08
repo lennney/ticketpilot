@@ -7,10 +7,13 @@ Supports three merge strategies:
 """
 from __future__ import annotations
 
+import logging
 from collections import defaultdict
 from uuid import UUID
 
 from ticketpilot.retrieval.traces import FusedResult
+
+logger = logging.getLogger(__name__)
 
 
 def merge_retrieval_results(
@@ -43,6 +46,7 @@ def merge_retrieval_results(
     elif strategy == "rrf_again":
         return _merge_rrf_again(non_empty)
     else:
+        logger.warning("Unknown merge strategy '%s', falling back to 'sum_score'", strategy)
         return _merge_sum_score(non_empty)
 
 
@@ -60,7 +64,7 @@ def _merge_sum_score(
         for r in result_set:
             score_sums[r.chunk_id] += r.rrf_score
             # Keep the version with most info (prefer one with both keyword+vector)
-            if r.chunk_id not in best or len(r.sources) > len(best[r.chunk_id].sources):
+            if r.chunk_id not in best or r.rrf_score > best[r.chunk_id].rrf_score:
                 best[r.chunk_id] = r
 
     # Build merged results with summed scores
@@ -76,7 +80,7 @@ def _merge_sum_score(
             keyword_contribution=representative.keyword_contribution,
             vector_rank=representative.vector_rank,
             vector_contribution=representative.vector_contribution,
-            sources=representative.sources + ["multi_query"],
+            sources=representative.sources + (["multi_query"] if "multi_query" not in representative.sources else []),
         ))
 
     merged.sort(key=lambda r: r.rrf_score, reverse=True)
@@ -106,7 +110,8 @@ def _merge_rrf_again(
 
     Uses RRF k=60 on the rank positions within each query's results.
     """
-    k = 60
+    from ticketpilot.retrieval.rrf import DEFAULT_RRF_K  # noqa: PLC0415
+    k = DEFAULT_RRF_K
     # Build per-query rank maps
     rank_maps: list[dict[UUID, int]] = []
     representative: dict[UUID, FusedResult] = {}
