@@ -42,7 +42,7 @@ class BaseAgent(ABC):
         evidence_candidates: list[EvidenceCandidate],
     ) -> DraftReply:
         """Generate a draft reply for the ticket."""
-        pass
+        raise NotImplementedError
 
 
 class RefundAgent(BaseAgent):
