@@ -65,3 +65,31 @@ class TestMultiQueryExpander:
         expander = MultiQueryExpander(api_key="fake-key")
         result = expander.expand("退款没到账")
         assert result == ["退款没到账", "有效变体"]
+
+    @patch("ticketpilot.retrieval.query_expander.MultiQueryExpander._call_llm")
+    def test_expand_default_intent(self, mock_llm):
+        """Test that expand works with default intent parameter (empty string)."""
+        mock_llm.return_value = ["退款进度"]
+        expander = MultiQueryExpander(api_key="fake-key")
+        result = expander.expand("退款没到账")  # no intent arg
+        assert result == ["退款没到账", "退款进度"]
+
+    @patch("ticketpilot.retrieval.query_expander.MultiQueryExpander._call_llm")
+    def test_expand_respects_num_variants_limit(self, mock_llm):
+        """When LLM returns more variants than num_variants, truncate."""
+        mock_llm.return_value = ["变体1", "变体2", "变体3"]
+        expander = MultiQueryExpander(api_key="fake-key", num_variants=2)
+        result = expander.expand("original query")
+        assert len(result) == 3  # original + 2 variants
+        assert "变体3" not in result
+
+    def test_is_valid_variant_with_whitespace(self):
+        """Variant that equals original after strip should be invalid."""
+        expander = MultiQueryExpander(api_key="fake")
+        assert not expander._is_valid_variant(" 退款没到账 ", "退款没到账")
+
+    def test_parse_non_string_elements(self):
+        """JSON array with non-string elements should convert to strings."""
+        expander = MultiQueryExpander(api_key="fake")
+        variants = expander._parse_variants('[123, true, "正常"]')
+        assert variants == ["123", "True", "正常"]

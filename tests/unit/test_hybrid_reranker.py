@@ -1,5 +1,6 @@
 """Unit tests for HybridReranker."""
 import math
+from unittest.mock import MagicMock
 from uuid import uuid4
 
 import pytest
@@ -167,3 +168,79 @@ class TestHybridReranker:
         assert isinstance(fused, FusedResult)
         assert "hybrid_rerank" in fused.sources
         assert fused.chunk_id == c.chunk_id
+
+    def test_top_k_less_than_candidates(self):
+        """top_k truncates results."""
+        candidates = [_make_fused(rrf_score=0.1 * i) for i in range(5)]
+        reranker = HybridReranker()
+        results = reranker.rerank(candidates, "test", top_k=2)
+        assert len(results) == 2
+        assert results[0].rank == 1
+        assert results[1].rank == 2
+
+    def test_top_k_more_than_candidates(self):
+        """top_k > len(candidates) returns all candidates."""
+        candidates = [_make_fused(rrf_score=0.5)]
+        reranker = HybridReranker()
+        results = reranker.rerank(candidates, "test", top_k=10)
+        assert len(results) == 1
+
+
+class TestIsRealEmbeddingProvider:
+    def test_real_provider(self):
+        from ticketpilot.retrieval.hybrid_reranker import _is_real_embedding_provider
+        provider = MagicMock()
+        provider.embed = MagicMock()
+        provider.provider_name = "openai"
+        assert _is_real_embedding_provider(provider) is True
+
+    def test_fake_provider(self):
+        from ticketpilot.retrieval.hybrid_reranker import _is_real_embedding_provider
+        provider = MagicMock()
+        provider.embed = MagicMock()
+        provider.provider_name = "fake"
+        assert _is_real_embedding_provider(provider) is False
+
+    def test_no_embed_or_encode(self):
+        from ticketpilot.retrieval.hybrid_reranker import _is_real_embedding_provider
+        provider = MagicMock(spec=[])  # no attributes
+        assert _is_real_embedding_provider(provider) is False
+
+    def test_unknown_provider_name(self):
+        from ticketpilot.retrieval.hybrid_reranker import _is_real_embedding_provider
+        provider = MagicMock()
+        provider.encode = MagicMock()
+        # No provider_name attribute → getattr returns "unknown"
+        del provider.provider_name
+        assert _is_real_embedding_provider(provider) is False
+
+    def test_none_provider(self):
+        from ticketpilot.retrieval.hybrid_reranker import _is_real_embedding_provider
+        assert _is_real_embedding_provider(None) is False
+
+    def test_encode_method_sufficient(self):
+        from ticketpilot.retrieval.hybrid_reranker import _is_real_embedding_provider
+        provider = MagicMock(spec=["encode", "provider_name"])
+        provider.encode = MagicMock()
+        provider.provider_name = "bge"
+        assert _is_real_embedding_provider(provider) is True
+
+
+class TestKeywordDensityEdgeCases:
+    def test_latin_word_boundary_no_false_positive(self):
+        """'art' should NOT match inside 'smart'."""
+        assert _keyword_density("art", "smart car") == 0.0
+
+    def test_latin_word_boundary_exact_match(self):
+        """'art' matches standalone 'Art'."""
+        assert _keyword_density("art", "Art of war") == 1.0
+
+    def test_cjk_substring_match(self):
+        """CJK terms use substring matching."""
+        assert _keyword_density("退款", "退款政策说明") == 1.0
+
+    def test_mixed_cjk_latin(self):
+        """Mixed query: CJK substring + Latin word boundary."""
+        assert _keyword_density("退款 policy", "退款 policy 说明") == 1.0
+        # 'policy' inside 'policyholder' should not match
+        assert _keyword_density("policy", "policyholder agreement") == 0.0

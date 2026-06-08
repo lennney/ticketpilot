@@ -79,3 +79,52 @@ class TestMergeRetrievalResults:
         r = _fused()
         merged = merge_retrieval_results([[r], [r]])
         assert "multi_query" in merged[0].sources
+
+    def test_unknown_strategy_defaults_to_sum_score(self):
+        """Unknown strategy string falls back to sum_score."""
+        cid = uuid4()
+        r1 = _fused(chunk_id=cid, rrf_score=0.3)
+        r2 = _fused(chunk_id=cid, rrf_score=0.2)
+        merged = merge_retrieval_results([[r1], [r2]], strategy="unknown_strategy")
+        assert len(merged) == 1
+        assert merged[0].rrf_score == pytest.approx(0.5)  # sum_score behavior
+
+    def test_sum_score_prefers_highest_rrf_representative(self):
+        """When same chunk appears multiple times, representative has highest rrf_score."""
+        cid = uuid4()
+        r1 = _fused(chunk_id=cid, rrf_score=0.1, sources=["keyword"])
+        r2 = _fused(chunk_id=cid, rrf_score=0.8, sources=["vector"])
+        merged = merge_retrieval_results([[r1], [r2]], strategy="sum_score")
+        assert len(merged) == 1
+        # Representative should be r2 (higher rrf_score)
+        assert "vector" in merged[0].sources
+
+    def test_multi_query_marker_no_duplicate(self):
+        """Same chunk from 3 queries should have only one 'multi_query' marker."""
+        cid = uuid4()
+        r1 = _fused(chunk_id=cid, rrf_score=0.3, sources=["keyword"])
+        r2 = _fused(chunk_id=cid, rrf_score=0.2, sources=["keyword"])
+        r3 = _fused(chunk_id=cid, rrf_score=0.1, sources=["keyword"])
+        merged = merge_retrieval_results([[r1], [r2], [r3]], strategy="sum_score")
+        assert len(merged) == 1
+        assert merged[0].sources.count("multi_query") == 1
+
+    def test_rrf_again_precise_scores(self):
+        """Verify exact RRF scores with k=60."""
+        c1 = uuid4()
+        c2 = uuid4()
+        r1q1 = _fused(chunk_id=c1, rrf_score=0.5)
+        r1q2 = _fused(chunk_id=c1, rrf_score=0.4)
+        r2q1 = _fused(chunk_id=c2, rrf_score=0.3)
+        r2q2 = _fused(chunk_id=c2, rrf_score=0.6)
+        merged = merge_retrieval_results(
+            [[r1q1, r2q1], [r1q2, r2q2]], strategy="rrf_again"
+        )
+        k = 60
+        expected_c1 = 2 * (1 / (k + 1))  # Both rank 1
+        expected_c2 = 2 * (1 / (k + 2))  # Both rank 2
+        assert len(merged) == 2
+        assert merged[0].chunk_id == c1
+        assert merged[0].rrf_score == pytest.approx(expected_c1)
+        assert merged[1].chunk_id == c2
+        assert merged[1].rrf_score == pytest.approx(expected_c2)
