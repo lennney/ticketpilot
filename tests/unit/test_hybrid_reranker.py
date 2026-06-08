@@ -84,7 +84,7 @@ class TestKeywordDensity:
 class TestNormalizeMinMax:
     def test_uniform_values(self):
         result = _normalize_minmax([5, 5, 5])
-        assert result == [1.0, 1.0, 1.0]
+        assert result == [0.5, 0.5, 0.5]
 
     def test_normal_range(self):
         result = _normalize_minmax([0, 5, 10])

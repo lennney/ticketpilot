@@ -11,6 +11,8 @@ All signals are normalized to [0, 1] and combined with configurable weights.
 from __future__ import annotations
 
 import math
+import re
+import logging
 from dataclasses import dataclass, field
 from typing import Any, Optional
 from uuid import UUID
@@ -18,6 +20,7 @@ from uuid import UUID
 from ticketpilot.retrieval.reranker_config import RerankerConfig
 from ticketpilot.retrieval.traces import FusedResult
 
+logger = logging.getLogger(__name__)
 
 # ---------------------------------------------------------------------------
 # Output dataclasses
@@ -99,11 +102,18 @@ def _keyword_density(query: str, content: str) -> float:
     """Compute what fraction of query terms appear in content.
 
     Splits query by whitespace, checks each term's presence.
+    Uses word boundary for Latin text, substring for CJK.
     """
     terms = [t.strip() for t in query.split() if t.strip()]
     if not terms or not content:
         return 0.0
-    hits = sum(1 for t in terms if t in content)
+    def _term_in_content(term: str) -> bool:
+        # CJK characters: substring match (no word boundaries in Chinese/Japanese)
+        if any('\u4e00' <= ch <= '\u9fff' for ch in term):
+            return term in content
+        # Latin text: word boundary match to avoid "art" matching "smart"
+        return bool(re.search(r'\b' + re.escape(term) + r'\b', content, re.IGNORECASE))
+    hits = sum(1 for t in terms if _term_in_content(t))
     return hits / len(terms)
 
 
@@ -114,7 +124,7 @@ def _normalize_minmax(values: list[float]) -> list[float]:
     lo = min(values)
     hi = max(values)
     if hi - lo < 1e-12:
-        return [1.0] * len(values)
+        return [0.5] * len(values)
     return [(v - lo) / (hi - lo) for v in values]
 
 
@@ -271,30 +281,35 @@ class HybridReranker:
     ) -> dict[UUID, list[float]]:
         """Load document embeddings from DB for the given chunk IDs."""
         embeddings: dict[UUID, list[float]] = {}
+        if not chunk_ids:
+            return embeddings
         try:
             from ticketpilot.retrieval.db.connection import get_db_connection  # noqa: PLC0415
 
             with get_db_connection() as conn:
                 with conn.cursor() as cur:
-                    for cid in chunk_ids:
-                        cur.execute(
-                            "SELECT embedding FROM knowledge_chunks WHERE id = %s",
-                            (str(cid),),
-                        )
-                        row = cur.fetchone()
-                        if row and row[0]:
-                            emb_str = row[0]
+                    placeholders = ",".join(["%s"] * len(chunk_ids))
+                    cur.execute(
+                        f"SELECT id, embedding FROM knowledge_chunks WHERE id IN ({placeholders})",
+                        [str(cid) for cid in chunk_ids],
+                    )
+                    for row in cur.fetchall():
+                        cid = UUID(row[0])
+                        emb_str = row[1]
+                        if emb_str:
                             if isinstance(emb_str, str):
                                 emb_str = emb_str.strip("[]")
                                 embeddings[cid] = [float(x) for x in emb_str.split(",")]
                             elif isinstance(emb_str, list):
                                 embeddings[cid] = [float(x) for x in emb_str]
-        except Exception:
-            pass  # Graceful degradation
+        except Exception as e:
+            logger.warning("Failed to load document embeddings: %s", e)
         return embeddings
 
 
 def _is_real_embedding_provider(provider: Any) -> bool:
     """Check if the embedding provider is a real (non-fake) provider."""
+    if not hasattr(provider, 'embed') and not hasattr(provider, 'encode'):
+        return False
     name = getattr(provider, "provider_name", "unknown")
     return name not in ("fake", "unknown", "")

@@ -4,6 +4,7 @@ Enhanced with:
 - Multi-query expansion (LLM-generated query variants)
 - Hybrid reranking (multi-signal weighted fusion)
 """
+import logging
 import time
 from typing import Optional
 
@@ -13,6 +14,8 @@ from ticketpilot.retrieval.reranker_config import RerankerConfig
 from ticketpilot.retrieval.hybrid_reranker import HybridReranker, RerankResult
 from ticketpilot.retrieval.query_expander import MultiQueryExpander
 from ticketpilot.retrieval.result_merger import merge_retrieval_results
+
+logger = logging.getLogger(__name__)
 from ticketpilot.retrieval.rrf import DEFAULT_RRF_K, rrf_fusion
 from ticketpilot.retrieval.schema.knowledge import DocType
 from ticketpilot.retrieval.traces import FusedResult, RetrievalTrace
@@ -118,11 +121,8 @@ def hybrid_retrieval(
     query_variants = [query]
     expansion_latency = 0
     if enable_query_expansion:
-        try:
-            expander = MultiQueryExpander()
-            query_variants = expander.expand(query, intent or "")
-        except Exception:
-            query_variants = [query]
+        expander = MultiQueryExpander()
+        query_variants = expander.expand(query, intent or "")
     expansion_latency = int((time.perf_counter() - expansion_start) * 1000)
 
     # --- Step 1-3: Per-query retrieval + RRF ---
@@ -181,7 +181,8 @@ def hybrid_retrieval(
         if reranker_config is None:
             try:
                 reranker_config = RerankerConfig.from_yaml("config/reranker.yaml")
-            except Exception:
+            except Exception as e:
+                logger.warning("Failed to load reranker config from YAML, using default: %s", e)
                 reranker_config = RerankerConfig.default()
 
         # Take top candidates for reranking

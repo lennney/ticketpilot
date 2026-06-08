@@ -17,6 +17,18 @@ class ContentQualityConfig:
     optimal_length_max: int = 800
     keyword_density_weight: float = 0.5
 
+    def __post_init__(self) -> None:
+        if self.optimal_length_min > self.optimal_length_max:
+            raise ValueError(
+                f"optimal_length_min ({self.optimal_length_min}) must be <= "
+                f"optimal_length_max ({self.optimal_length_max})"
+            )
+        if not 0 <= self.keyword_density_weight <= 1:
+            raise ValueError(
+                f"keyword_density_weight must be between 0 and 1, "
+                f"got {self.keyword_density_weight}"
+            )
+
 
 @dataclass
 class RerankerConfig:
@@ -87,12 +99,14 @@ class RerankerConfig:
 
         Falls back to default if file not found.
         """
+        import logging  # noqa: PLC0415
         import yaml  # noqa: PLC0415
 
+        logger = logging.getLogger(__name__)
         path = Path(path)
         if not path.exists():
-            cfg = cls.default()
-            return cfg
+            logger.warning("Reranker config file not found: %s, using defaults", path)
+            return cls.default()
 
         with path.open("r", encoding="utf-8") as f:
             data: dict[str, Any] = yaml.safe_load(f) or {}
