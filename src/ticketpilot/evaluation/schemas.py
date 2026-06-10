@@ -282,6 +282,8 @@ class EvaluationSummary(BaseModel):
     aggregate_evidence_doc_type_recall: float = Field(default=0.0, ge=0.0, le=1.0)
     aggregate_fallback_correctness: float = Field(default=0.0, ge=0.0, le=1.0)
     aggregate_no_auto_send_compliance: float = Field(default=0.0, ge=0.0, le=1.0)
+    quality_gate_accuracy: float = Field(default=0.0, ge=0.0, le=1.0)
+    quality_intercept_rate: float = Field(default=0.0, ge=0.0, le=1.0)
     failed_cases: list[MismatchEntry] = Field(default_factory=list)
 
 

@@ -322,6 +322,30 @@ def compute_evaluation_summary(
         1 for r in results.values() if r.metrics.no_auto_send_compliance
     )
 
+    # Quality gate metrics
+    # quality_gate_accuracy: fraction of cases where quality prediction matches golden no_auto_send
+    quality_gate_correct = sum(
+        1 for r in results.values()
+        if r.prediction.predicted_no_auto_send == r.golden.expected_no_auto_send
+    )
+    quality_gate_accuracy = quality_gate_correct / total
+
+    # quality_intercept_rate: fraction of high-confidence cases where quality blocked auto-send
+    # "High confidence" = must_human_review is False (pipeline considers safe for auto-send)
+    # "Quality blocked" = predicted_no_auto_send is True (quality gate prevented auto-send)
+    high_confidence_cases = [
+        r for r in results.values()
+        if not r.prediction.predicted_must_human_review
+    ]
+    if high_confidence_cases:
+        intercepted_count = sum(
+            1 for r in high_confidence_cases
+            if r.prediction.predicted_no_auto_send
+        )
+        quality_intercept_rate = intercepted_count / len(high_confidence_cases)
+    else:
+        quality_intercept_rate = 0.0
+
     # Micro-averaged risk flag metrics (sum TP/FP/FN across all cases)
     total_tp = 0
     total_fp = 0
@@ -366,5 +390,7 @@ def compute_evaluation_summary(
         aggregate_evidence_doc_type_recall=avg_evidence_recall,
         aggregate_fallback_correctness=fallback_correct / total,
         aggregate_no_auto_send_compliance=no_auto_send_correct / total,
+        quality_gate_accuracy=quality_gate_accuracy,
+        quality_intercept_rate=quality_intercept_rate,
         failed_cases=all_mismatches,
     )
