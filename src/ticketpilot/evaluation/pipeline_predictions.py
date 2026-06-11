@@ -56,9 +56,20 @@ def predict_from_pipeline(eval_ticket: EvalTicket) -> EvalPrediction:
         PipelineError: If the pipeline itself raises (very unlikely with the
             current graceful-degradation design).
     """
+    # 使用固定时间戳以确保评测可重复
+    # eval_ticket.submitted_at 是字符串（ISO 格式），需要转为 datetime
+    submitted_at_raw = getattr(eval_ticket, 'submitted_at', None)
+    if submitted_at_raw:
+        try:
+            submitted_at = datetime.fromisoformat(submitted_at_raw)
+        except (ValueError, TypeError):
+            submitted_at = datetime.now(timezone.utc)
+    else:
+        submitted_at = datetime.now(timezone.utc)
+
     raw_ticket = RawTicket(
         original_text=eval_ticket.original_text,
-        submitted_at=datetime.now(timezone.utc),
+        submitted_at=submitted_at,
         customer_id=eval_ticket.customer_id,
     )
 
