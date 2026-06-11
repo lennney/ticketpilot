@@ -71,3 +71,26 @@ def assess_retrieval_sufficiency(
         "above_threshold_count": above_threshold,
         "reason": None if sufficient else f"{len(results)} results, avg {avg_score:.2f} < {min_avg_score}",
     }
+
+
+import re
+
+_SYNONYM_MAP = {
+    "refund": "退款",
+    "退货": "退款退货",
+    "物流": "快递物流配送",
+    "bug": "故障问题",
+    "vip": "会员",
+}
+
+def rewrite_query(query: str) -> str:
+    """Rule-based query rewriting for better retrieval recall."""
+    rewritten = query
+    for short, expanded in _SYNONYM_MAP.items():
+        if short.lower() in rewritten.lower() and expanded not in rewritten:
+            rewritten = f"{rewritten} {expanded}"
+    if len(rewritten) > 30:
+        clauses = re.split(r'[，。？！、和还有以及]', rewritten)
+        if clauses and len(clauses[0]) > 5:
+            rewritten = clauses[0].strip()
+    return rewritten.strip()
