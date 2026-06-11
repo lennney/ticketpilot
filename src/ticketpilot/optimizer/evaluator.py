@@ -97,6 +97,62 @@ class OptimizerEvaluator:
         return predictions
 
     # ------------------------------------------------------------------
+    # Partial (incremental) evaluation
+    # ------------------------------------------------------------------
+
+    def run_partial_evaluation(
+        self,
+        affected_case_ids: set[str],
+        previous_predictions: dict[str, EvalPrediction] | None = None,
+    ) -> EvaluationSummary:
+        """Run evaluation on only affected tickets, reusing previous predictions
+        for the rest.
+
+        Args:
+            affected_case_ids: Set of case IDs that need re-prediction.
+            previous_predictions: Previous predictions dict. When provided,
+                unaffected tickets reuse their previous results.
+                When None, runs full evaluation (backward compatible fallback).
+
+        Returns:
+            EvaluationSummary with updated per-case and aggregate metrics.
+        """
+        ds = self.dataset
+
+        # Start with previous predictions (or empty)
+        if previous_predictions is not None:
+            predictions = dict(previous_predictions)
+        else:
+            predictions = {}
+
+        # Only re-predict affected tickets
+        for case_id in affected_case_ids:
+            ticket = ds.tickets.get(case_id)
+            if ticket is None:
+                continue
+            try:
+                pred = predict_from_pipeline(ticket)
+                predictions[case_id] = pred
+            except Exception:
+                logger.exception("Pipeline failed for %s", case_id)
+                raise
+
+        # If no previous predictions, fill in the rest
+        if previous_predictions is None:
+            for case_id, ticket in ds.tickets.items():
+                if case_id not in predictions:
+                    try:
+                        pred = predict_from_pipeline(ticket)
+                        predictions[case_id] = pred
+                    except Exception:
+                        logger.exception("Pipeline failed for %s", case_id)
+                        raise
+
+        self._predictions = predictions
+        summary = compute_evaluation_summary(predictions, ds.golden)
+        return summary
+
+    # ------------------------------------------------------------------
     # Full evaluation
     # ------------------------------------------------------------------
 

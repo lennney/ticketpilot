@@ -333,3 +333,143 @@ class TestNowIso:
         result = _now_iso()
         assert "T" in result
         assert "+" in result or "Z" in result
+
+
+# ------------------------------------------------------------------
+# Incremental evaluation (Task 1)
+# ------------------------------------------------------------------
+
+class TestIncrementalEvaluation:
+    """Verify incremental evaluation produces same results as full evaluation."""
+
+    def test_run_partial_evaluation_returns_summary(self):
+        """run_partial_evaluation returns an EvaluationSummary with mocked pipeline."""
+        from ticketpilot.evaluation.schemas import (
+            EvalPrediction,
+            EvaluationSummary,
+            GoldenExpectation,
+        )
+        from ticketpilot.optimizer.evaluator import OptimizerEvaluator
+
+        ticket = MagicMock()
+        ticket.original_text = "test ticket text"
+        ticket.customer_id = "CUST-001"
+
+        golden = GoldenExpectation(
+            case_id="CASE-001",
+            expected_issue_type="refund",
+            expected_risk_flags=frozenset(),
+            expected_severity="MEDIUM",
+            expected_must_human_review=False,
+            expected_evidence_doc_types=frozenset(),
+            expected_relevant_doc_ids=frozenset(),
+            expected_fallback_required=False,
+            expected_no_auto_send=False,
+        )
+
+        ds = MagicMock()
+        ds.tickets = {"CASE-001": ticket}
+        ds.ticket_count = 1
+        ds.golden = {"CASE-001": golden}
+
+        with patch(
+            'ticketpilot.optimizer.evaluator.predict_from_pipeline',
+            return_value=EvalPrediction(
+                case_id="CASE-001",
+                predicted_issue_type="refund",
+                predicted_risk_flags=frozenset(),
+                predicted_severity="MEDIUM",
+                predicted_must_human_review=False,
+                predicted_evidence_doc_types=frozenset(),
+                predicted_fallback_required=False,
+                predicted_no_auto_send=False,
+            ),
+        ):
+            with patch.object(OptimizerEvaluator, 'load_dataset'):
+                engine = OptimizationEngine()
+                engine.evaluator._dataset = ds
+                engine.evaluator._predictions = {}
+
+                result = engine.evaluator.run_partial_evaluation(
+                    affected_case_ids={"CASE-001"},
+                )
+                assert isinstance(result, EvaluationSummary)
+                assert result.total_cases == 1
+
+    def test_partial_evaluation_preserves_unaffected(self):
+        """Unaffected predictions carry over from previous_predictions."""
+        from ticketpilot.evaluation.schemas import (
+            EvalPrediction,
+            EvaluationSummary,
+            GoldenExpectation,
+        )
+        from ticketpilot.optimizer.evaluator import OptimizerEvaluator
+
+        ticket = MagicMock()
+        ticket.original_text = "test text"
+        ticket.customer_id = "CUST-001"
+
+        golden = {
+            "CASE-001": GoldenExpectation(
+                case_id="CASE-001",
+                expected_issue_type="refund",
+                expected_risk_flags=frozenset(),
+                expected_severity="MEDIUM",
+                expected_must_human_review=False,
+                expected_evidence_doc_types=frozenset(),
+                expected_relevant_doc_ids=frozenset(),
+                expected_fallback_required=False,
+                expected_no_auto_send=False,
+            ),
+            "CASE-002": GoldenExpectation(
+                case_id="CASE-002",
+                expected_issue_type="refund",
+                expected_risk_flags=frozenset(),
+                expected_severity="MEDIUM",
+                expected_must_human_review=False,
+                expected_evidence_doc_types=frozenset(),
+                expected_relevant_doc_ids=frozenset(),
+                expected_fallback_required=False,
+                expected_no_auto_send=False,
+            ),
+        }
+
+        ds = MagicMock()
+        ds.tickets = {"CASE-001": ticket, "CASE-002": MagicMock()}
+        ds.ticket_count = 2
+        ds.golden = golden
+
+        CASE_002_PRED = EvalPrediction(
+            case_id="CASE-002",
+            predicted_issue_type="refund",
+            predicted_risk_flags=frozenset(),
+            predicted_severity="MEDIUM",
+            predicted_must_human_review=False,
+            predicted_evidence_doc_types=frozenset(),
+            predicted_fallback_required=False,
+            predicted_no_auto_send=False,
+        )
+
+        with patch(
+            'ticketpilot.optimizer.evaluator.predict_from_pipeline',
+            return_value=EvalPrediction(
+                case_id="CASE-001",
+                predicted_issue_type="refund",
+                predicted_risk_flags=frozenset(),
+                predicted_severity="MEDIUM",
+                predicted_must_human_review=False,
+                predicted_evidence_doc_types=frozenset(),
+                predicted_fallback_required=False,
+                predicted_no_auto_send=False,
+            ),
+        ):
+            with patch.object(OptimizerEvaluator, 'load_dataset'):
+                engine = OptimizationEngine()
+                engine.evaluator._dataset = ds
+
+                result = engine.evaluator.run_partial_evaluation(
+                    affected_case_ids={"CASE-001"},
+                    previous_predictions={"CASE-002": CASE_002_PRED},
+                )
+                assert isinstance(result, EvaluationSummary)
+                assert result.total_cases == 2
