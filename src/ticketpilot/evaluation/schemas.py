@@ -312,6 +312,7 @@ class DraftEvaluationRow(BaseModel):
     unsupported_claim_count: int = Field(default=0, ge=0)
     forbidden_promise_count: int = Field(default=0, ge=0)
     guard_passed: bool = True
+    guard_failure_types: list[str] = Field(default_factory=list)
     citation_validation_passed: bool = True
     safe_fallback_used: bool = False
     expected_human_review: bool = False
@@ -335,4 +336,5 @@ class DraftEvaluationSummary(BaseModel):
     human_review_trigger_accuracy: float | None = Field(default=None, ge=0.0, le=1.0)
     citation_validation_pass_rate: float = Field(default=0.0, ge=0.0, le=1.0)
     claim_guard_pass_rate: float = Field(default=0.0, ge=0.0, le=1.0)
+    per_failure_type_pass_rates: dict[str, float] = Field(default_factory=dict)
     average_confidence: float | None = Field(default=None, ge=0.0, le=1.0)

@@ -96,6 +96,9 @@ FakeLLMProvider (quality gate default) unchanged: guard=68%, citation_valid=100%
 | Avg confidence | 0.825 | 0.825 | — |
 
 ---
+> **Update (Phase 14.6)**: Per-failure-type pass rates are now computed automatically in the LLM Provider Comparison Report via `DraftEvaluationSummary.per_failure_type_pass_rates`. The taxonomy breakdown below is consistent with the `GuardFailureType` enum: `MISSING_RISK_ESCALATION`, `FORBIDDEN_PROMISE`, `UNSUPPORTED_POLICY_CLAIM`, `UNCITED_SUBSTANTIVE_CLAIM`, `SAFE_ESCALATION_STATEMENT`, `MANUAL_REVIEW_ACKNOWLEDGEMENT`, `EVIDENCE_INSUFFICIENT_FALLBACK`, and `AMBIGUOUS_GUARD_CASE`.
+
+---
 
 ## Guard Failure Analysis
 
