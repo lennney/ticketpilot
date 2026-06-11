@@ -613,6 +613,30 @@ class TestAnalyzeCausalFeatures:
         assert "投诉" not in result
         assert "态度" not in result
 
+    def test_causal_returns_jieba_words_not_ngrams(self):
+        """Verifies causal features are proper jieba words, not n-gram artifacts."""
+        from ticketpilot.optimizer.diagnostics import _analyze_causal_features
+
+        mis = [
+            "我要投诉你们客服态度太差了，申请退款因为服务不好",
+            "服务态度恶劣我要投诉，退款不退就算了",
+        ]
+        correct = [
+            "申请退款订单号12345请尽快处理",
+            "我要申请退款，订单号67890",
+        ]
+        result = _analyze_causal_features(mis, correct, ["退款"], max_features=3)
+        assert isinstance(result, list)
+        assert len(result) > 0
+        # "退款" should NOT appear (in existing_keywords)
+        assert "退款" not in result
+        # Keywords should be proper Chinese words, not n-gram fragments
+        for kw in result:
+            assert len(kw) >= 2  # at least 2 chars
+            # Should NOT be mid-word splits like '货但', '们的', '我申'
+            assert kw not in ("货但", "们的", "我申", "诉你", "们客", "服态"), \
+                f"'{kw}' is an n-gram artifact, not a real word"
+
 
 # ------------------------------------------------------------------
 # _verify_fix incremental path tests

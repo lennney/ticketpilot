@@ -6,6 +6,7 @@ score gain so the optimizer knows which fixes to attempt first.
 """
 from __future__ import annotations
 
+import jieba
 import re
 from collections import Counter
 from dataclasses import dataclass, field
@@ -173,8 +174,9 @@ def _extract_chinese_keywords(
 ) -> list[str]:
     """Extract frequent Chinese keywords from ticket texts.
 
-    Uses 2-4 character CJK n-grams to find words that appear frequently
-    in the given texts but are not already in ``existing_keywords``.
+    Uses jieba word segmentation to tokenize Chinese text into proper
+    words, then ranks by document frequency. Much more accurate than
+    character-based n-grams which produce meaningless fragments.
 
     Args:
         texts: List of Chinese ticket texts to analyze.
@@ -192,26 +194,32 @@ def _extract_chinese_keywords(
     word_counter: Counter[str] = Counter()
 
     for text in texts:
-        # Extract only CJK characters (remove punctuation, numbers, Latin)
-        cjk_only = re.sub(r"[^\u4e00-\u9fff]", "", text)
-        if len(cjk_only) < 2:
+        # Skip very short texts
+        if len(text.strip()) < 2:
             continue
 
-        # Generate 2-4 character n-grams
+        # Tokenize with jieba (precise mode)
+        words = jieba.lcut(text)
         seen_in_text: set[str] = set()
-        for ngram_len in (2, 3, 4):
-            for i in range(len(cjk_only) - ngram_len + 1):
-                ngram = cjk_only[i : i + ngram_len]
-                # Skip stop words and already-existing keywords
-                if ngram in existing_set or ngram in _CHINESE_STOP_WORDS:
-                    continue
-                # Count each ngram at most once per text (document frequency)
-                if ngram not in seen_in_text:
-                    seen_in_text.add(ngram)
-                    word_counter[ngram] += 1
 
-    # Filter out words that appear in >50% of texts (too generic)
-    threshold = len(texts) * 0.5
+        for word in words:
+            word = word.strip()
+            # Skip: single characters, stop words, existing keywords, non-Chinese tokens
+            if len(word) < 2:
+                continue
+            if word in existing_set:
+                continue
+            if word in _CHINESE_STOP_WORDS:
+                continue
+            if word.isascii():
+                continue
+            # Count each word at most once per text (document frequency)
+            if word not in seen_in_text:
+                seen_in_text.add(word)
+                word_counter[word] += 1
+
+    # Filter out words that appear in >75% of texts (too generic)
+    threshold = len(texts) * 0.75
     filtered = [(w, c) for w, c in word_counter.most_common() if c <= threshold]
 
     # Return top keywords by frequency
@@ -253,23 +261,29 @@ def _analyze_causal_features(
 
     existing_set = set(existing_keywords)
 
-    def _cjk_ngrams(texts: list[str]) -> Counter:
+    def _jieba_words(texts: list[str]) -> Counter:
         counter: Counter[str] = Counter()
         for text in texts:
-            cjk = re.sub(r"[^\u4e00-\u9fff]", "", text)
+            if len(text.strip()) < 2:
+                continue
+            words = jieba.lcut(text)
             seen: set[str] = set()
-            for n in (2, 3, 4):
-                for i in range(len(cjk) - n + 1):
-                    gram = cjk[i:i + n]
-                    if gram in existing_set:
-                        continue
-                    if gram not in seen:
-                        seen.add(gram)
-                        counter[gram] += 1
+            for word in words:
+                word = word.strip()
+                if len(word) < 2:
+                    continue
+                if word in existing_set:
+                    continue
+                if word in _CHINESE_STOP_WORDS:
+                    continue
+                if word in seen:
+                    continue
+                seen.add(word)
+                counter[word] += 1
         return counter
 
-    mis_counter = _cjk_ngrams(misclassified_texts)
-    correct_counter = _cjk_ngrams(correctly_classified_texts)
+    mis_counter = _jieba_words(misclassified_texts)
+    correct_counter = _jieba_words(correctly_classified_texts)
     n_mis = len(misclassified_texts)
     n_correct = len(correctly_classified_texts) or 1  # avoid division by zero
 
@@ -443,7 +457,12 @@ def _analyze_confidence_misroute(
     total_cases: int,
     weight: float,
 ) -> list[Diagnosis]:
-    """Analyze must_human_review / no_auto_send misroutes."""
+    """Analyze must_human_review / no_auto_send misroutes.
+
+    Generates a single diagnosis suggesting threshold adjustment when
+    confidence misroutes are detected. The fixer's ``_fix_confidence_threshold``
+    handler adjusts ``CONFIDENCE_MEDIUM`` as a safe starting point.
+    """
     diagnoses: list[Diagnosis] = []
     misroute_cases: list[str] = []
 
@@ -453,9 +472,27 @@ def _analyze_confidence_misroute(
         if not human_review_correct or not auto_send_correct:
             misroute_cases.append(case_id)
 
-    # Confidence misroute — requires complex threshold analysis
-    # Skipping: intent_keyword and risk_keyword fixes are more targeted
-    # Confidence issues often resolve as side effect of fixing classification
+    if not misroute_cases:
+        return diagnoses
+
+    gain = _compute_fix_gain(len(misroute_cases), weight, total_cases)
+    diagnoses.append(Diagnosis(
+        type=TYPE_CONFIDENCE_MISROUTE,
+        priority=1,  # confidence_threshold is L1 (safest fix)
+        affected_cases=misroute_cases,
+        expected_values={
+            "threshold_name": "CONFIDENCE_MEDIUM",
+            "new_value": 0.5,
+        },
+        predicted_values={},
+        suggested_fix_type="confidence_threshold",
+        suggested_keywords=[],
+        fix_gain=gain,
+        description=(
+            f"Confidence threshold misroute in {len(misroute_cases)} cases "
+            f"(must_human_review or no_auto_send incorrect)"
+        ),
+    ))
 
     return diagnoses
 

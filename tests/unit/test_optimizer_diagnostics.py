@@ -304,9 +304,8 @@ class TestDiagnosticsEngine:
         diagnoses = engine.analyze(summary, cases)
 
         fp_diags = [d for d in diagnoses if d.type == TYPE_RISK_FALSE_POSITIVE]
-        assert len(fp_diags) == 1
-        assert "T001" in fp_diags[0].affected_cases
-        assert "privacy_risk" in fp_diags[0].suggested_keywords
+        # risk_false_positive disabled — removing keywords is risky by design
+        assert len(fp_diags) == 0
 
     def test_evidence_gap_diagnosis(self):
         golden = _make_golden(
@@ -328,8 +327,8 @@ class TestDiagnosticsEngine:
         diagnoses = engine.analyze(summary, cases)
 
         ev_diags = [d for d in diagnoses if d.type == TYPE_EVIDENCE_GAP]
-        assert len(ev_diags) == 1
-        assert "policy" in ev_diags[0].suggested_keywords
+        # evidence_gap disabled — no fix handler implemented (reranker_weight not supported)
+        assert len(ev_diags) == 0
 
     def test_severity_mismatch_diagnosis(self):
         golden = _make_golden("T001", expected_severity="HIGH")
@@ -345,9 +344,9 @@ class TestDiagnosticsEngine:
         diagnoses = engine.analyze(summary, cases)
 
         sev_diags = [d for d in diagnoses if d.type == TYPE_SEVERITY_WRONG]
-        assert len(sev_diags) == 1
-        assert "T001" in sev_diags[0].affected_cases
-        assert sev_diags[0].suggested_fix_type == "confidence_weight"
+        # severity_wrong disabled — severity is derived from risk flags in assessor.py;
+        # fixing risk flags side-effects severity improvement
+        assert len(sev_diags) == 0
 
     def test_confidence_misroute_diagnosis(self):
         golden = _make_golden("T001", must_human_review=False, no_auto_send=False)
@@ -413,7 +412,7 @@ class TestDiagnosticsEngine:
 
         types_found = {d.type for d in diagnoses}
         assert TYPE_INTENT_MISMATCH in types_found
-        assert TYPE_SEVERITY_WRONG in types_found
+        # severity_wrong disabled — severity is derived from risk flags
         assert TYPE_RISK_MISS in types_found
 
     def test_empty_results(self):
