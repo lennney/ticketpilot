@@ -218,6 +218,74 @@ def _extract_chinese_keywords(
     return [word for word, _ in filtered[:max_keywords]]
 
 
+def _analyze_causal_features(
+    misclassified_texts: list[str],
+    correctly_classified_texts: list[str],
+    existing_keywords: list[str],
+    max_features: int = 3,
+) -> list[str]:
+    """Find distinguishing features in misclassified vs correctly classified texts.
+
+    Analyzes n-grams (2-4 chars) that appear significantly more often
+    in the misclassified set than in the correctly classified set.
+
+    Args:
+        misclassified_texts: Texts that were misclassified.
+        correctly_classified_texts: Texts of the same intent that were correctly
+            classified.
+        existing_keywords: Keywords already in the rule (to exclude).
+        max_features: Max distinguishing features to return.
+
+    Returns:
+        List of distinguishing feature keywords, sorted by lift score.
+    """
+    from collections import Counter
+
+    if not misclassified_texts:
+        return []
+    if not correctly_classified_texts:
+        # No reference — fall back to common keywords in misclassified texts
+        fallback_kws = _extract_chinese_keywords(
+            misclassified_texts, existing_keywords, max_keywords=max_features
+        )
+        # Filter out terms that already appear in high-priority rules
+        return [kw for kw in fallback_kws if kw not in existing_keywords][:max_features]
+
+    existing_set = set(existing_keywords)
+
+    def _cjk_ngrams(texts: list[str]) -> Counter:
+        counter: Counter[str] = Counter()
+        for text in texts:
+            cjk = re.sub(r"[^\u4e00-\u9fff]", "", text)
+            seen: set[str] = set()
+            for n in (2, 3, 4):
+                for i in range(len(cjk) - n + 1):
+                    gram = cjk[i:i + n]
+                    if gram in existing_set:
+                        continue
+                    if gram not in seen:
+                        seen.add(gram)
+                        counter[gram] += 1
+        return counter
+
+    mis_counter = _cjk_ngrams(misclassified_texts)
+    correct_counter = _cjk_ngrams(correctly_classified_texts)
+    n_mis = len(misclassified_texts)
+    n_correct = len(correctly_classified_texts) or 1  # avoid division by zero
+
+    # Compute lift: (freq_in_mis / n_mis) / (freq_in_correct / n_correct)
+    scored: list[tuple[float, str]] = []
+    for gram, freq in mis_counter.most_common(50):
+        correct_freq = correct_counter.get(gram, 0)
+        # Laplace smoothing (α=0.1) to avoid division by zero / infinite lift
+        lift = (freq / n_mis) / ((correct_freq + 0.1) / n_correct)
+        if lift >= 1.5 and gram not in existing_set:
+            scored.append((lift, gram))
+
+    scored.sort(key=lambda x: -x[0])
+    return [gram for _, gram in scored[:max_features]]
+
+
 def _build_confusion_matrix(results: dict[str, CaseResult]) -> dict[tuple[str, str], list[str]]:
     """Build an intent confusion matrix from case results.
 
@@ -453,28 +521,53 @@ class DiagnosticsEngine:
             # Extract Chinese keywords from ticket texts of mismatched cases
             suggested_keywords = [expected]  # fallback to English enum name
             if dataset:
-                texts = []
+                mis_texts = []
                 for cid in case_ids:
                     ticket = dataset.get(cid)
                     if ticket and hasattr(ticket, "original_text"):
-                        texts.append(ticket.original_text)
-                if texts:
-                    # Get existing keywords for this intent (from classification/rules.py)
-                    existing_kws = _get_existing_intent_keywords(expected.upper())
-                    extracted = _extract_chinese_keywords(texts, existing_kws)
-                    if extracted:
-                        suggested_keywords = extracted
+                        mis_texts.append(ticket.original_text)
 
-            # 决定使用哪种修复策略
-            fix_type = "intent_keyword"
+                # 决定使用哪种修复策略
+                fix_type = "intent_keyword"
 
-            # 如果 predicted intent 的优先级高于 expected intent
-            # 说明是 first-match-wins 问题，应该用 exclusion_rule
-            if expected.upper() in PRIORITY_ORDER and predicted.upper() in PRIORITY_ORDER:
-                expected_prio = PRIORITY_ORDER.index(expected.upper())
-                predicted_prio = PRIORITY_ORDER.index(predicted.upper())
-                if predicted_prio < expected_prio:
-                    fix_type = "exclusion_rule"
+                # 如果 predicted intent 的优先级高于 expected intent
+                # 说明是 first-match-wins 问题，应该用 exclusion_rule
+                if expected.upper() in PRIORITY_ORDER and predicted.upper() in PRIORITY_ORDER:
+                    expected_prio = PRIORITY_ORDER.index(expected.upper())
+                    predicted_prio = PRIORITY_ORDER.index(predicted.upper())
+                    if predicted_prio < expected_prio:
+                        fix_type = "exclusion_rule"
+
+                if mis_texts:
+                    if fix_type == "exclusion_rule":
+                        # 对于 exclusion_rule 修复：找误分类工单中
+                        # 能区分「这是 X 不是 Y」的特征词
+                        # 参考文本：找到正确分类为 predicted intent 的工单
+                        correct_texts = []
+                        for cid, cr in results.items():
+                            if cr.prediction.predicted_issue_type == predicted:
+                                if cr.metrics.intent_accuracy:
+                                    ticket = dataset.get(cid)
+                                    if ticket and hasattr(ticket, "original_text"):
+                                        correct_texts.append(ticket.original_text)
+
+                        # 获取 predicted intent 已有的关键词（作为排除项）
+                        existing_kws = _get_existing_intent_keywords(predicted.upper())
+
+                        # 因果分析：找误分类工单中有、但正确分类工单中没有的特征词
+                        causal = _analyze_causal_features(
+                            mis_texts, correct_texts,
+                            existing_keywords=existing_kws,
+                            max_features=3,
+                        )
+                        if causal:
+                            suggested_keywords = causal
+                    else:
+                        # intent_keyword 修复：原有策略不变
+                        existing_kws = _get_existing_intent_keywords(expected.upper())
+                        extracted = _extract_chinese_keywords(mis_texts, existing_kws)
+                        if extracted:
+                            suggested_keywords = extracted
 
             all_diagnoses.append(Diagnosis(
                 type=TYPE_INTENT_MISMATCH,
