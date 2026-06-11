@@ -6,6 +6,7 @@ against golden expectations, and caches the baseline for comparison.
 from __future__ import annotations
 
 import logging
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from typing import Optional
 
 from ticketpilot.evaluation.loaders import load_eval_dataset
@@ -82,18 +83,26 @@ class OptimizerEvaluator:
     # ------------------------------------------------------------------
 
     def _generate_predictions(self) -> dict[str, EvalPrediction]:
-        """Run the pipeline on every ticket and collect predictions."""
+        """Run the pipeline on every ticket in parallel and collect predictions."""
         ds = self.dataset
         predictions: dict[str, EvalPrediction] = {}
         total = ds.ticket_count
-        for idx, (case_id, ticket) in enumerate(ds.tickets.items(), start=1):
-            logger.debug("Predicting %d/%d: %s", idx, total, case_id)
-            try:
-                pred = predict_from_pipeline(ticket)
-                predictions[case_id] = pred
-            except Exception:
-                logger.exception("Pipeline failed for %s", case_id)
-                raise
+        items = list(ds.tickets.items())
+
+        with ThreadPoolExecutor(max_workers=4) as pool:
+            futures = {
+                pool.submit(predict_from_pipeline, ticket): case_id
+                for case_id, ticket in items
+            }
+            for future in as_completed(futures):
+                case_id = futures[future]
+                try:
+                    predictions[case_id] = future.result()
+                except Exception:
+                    logger.exception("Pipeline failed for %s", case_id)
+                    raise
+
+        logger.info("Predictions complete: %d/%d tickets", len(predictions), total)
         return predictions
 
     # ------------------------------------------------------------------
@@ -125,28 +134,46 @@ class OptimizerEvaluator:
         else:
             predictions = {}
 
-        # Only re-predict affected tickets
-        for case_id in affected_case_ids:
-            ticket = ds.tickets.get(case_id)
-            if ticket is None:
-                continue
-            try:
-                pred = predict_from_pipeline(ticket)
-                predictions[case_id] = pred
-            except Exception:
-                logger.exception("Pipeline failed for %s", case_id)
-                raise
-
-        # If no previous predictions, fill in the rest
-        if previous_predictions is None:
-            for case_id, ticket in ds.tickets.items():
-                if case_id not in predictions:
+        # Re-predict affected tickets in parallel
+        affected_tickets = [
+            (case_id, ds.tickets[case_id])
+            for case_id in affected_case_ids
+            if case_id in ds.tickets
+        ]
+        if affected_tickets:
+            with ThreadPoolExecutor(max_workers=4) as pool:
+                futures = {
+                    pool.submit(predict_from_pipeline, ticket): case_id
+                    for case_id, ticket in affected_tickets
+                }
+                for future in as_completed(futures):
+                    case_id = futures[future]
                     try:
-                        pred = predict_from_pipeline(ticket)
-                        predictions[case_id] = pred
+                        predictions[case_id] = future.result()
                     except Exception:
                         logger.exception("Pipeline failed for %s", case_id)
                         raise
+
+        # If no previous predictions, fill in the rest (also in parallel)
+        if previous_predictions is None:
+            remaining = [
+                (case_id, ticket)
+                for case_id, ticket in ds.tickets.items()
+                if case_id not in predictions
+            ]
+            if remaining:
+                with ThreadPoolExecutor(max_workers=4) as pool:
+                    futures = {
+                        pool.submit(predict_from_pipeline, ticket): case_id
+                        for case_id, ticket in remaining
+                    }
+                    for future in as_completed(futures):
+                        case_id = futures[future]
+                        try:
+                            predictions[case_id] = future.result()
+                        except Exception:
+                            logger.exception("Pipeline failed for %s", case_id)
+                            raise
 
         self._predictions = predictions
         summary = compute_evaluation_summary(predictions, ds.golden)

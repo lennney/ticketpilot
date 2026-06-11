@@ -1,15 +1,12 @@
 """Intent classifier for ticket text."""
 
 import re
-from datetime import datetime, timezone, timezone
+from datetime import datetime, timezone
 
 from ticketpilot.schema.ticket import ClassificationResult, IntentClass
 from ticketpilot.classification.rules import INTENT_RULES
 from ticketpilot.config import (
     CONFIDENCE_HIGH,
-    CONFIDENCE_KEYWORD_1CHAR,
-    CONFIDENCE_KEYWORD_LONG_TEXT,
-    CONFIDENCE_KEYWORD_WITH_ORDER,
     CONFIDENCE_MEDIUM,
     CONFIDENCE_STRONG_INDICATOR,
     WEAK_CONFIDENCE,
@@ -52,52 +49,69 @@ class IntentClassifier:
                         classified_at=datetime.now(timezone.utc),
                     )
 
-        # Phase 2: First-match-wins keyword matching
-        matched_intent = IntentClass.OTHER
-        match_count = 0
-        found_keyword_in_other = False
-        matched_keyword_len = 0
+        # Phase 2: Score-based intent classification
+        scores = self._score_intents(text)
 
-        for rule in self.rules:
-            if rule.intent == IntentClass.OTHER:
-                # Check if text contains strong indicator for OTHER class
-                if rule.strong_indicator and rule.strong_indicator in text:
-                    found_keyword_in_other = True
-                continue
-            for keyword in rule.keywords:
-                if keyword in text:
-                    # NEW: 检查排除规则 — 如果命中排除关键词，则跳过此规则
-                    if rule.exclusions:
-                        if any(excl in text for excl in rule.exclusions):
-                            break  # 该规则被排除，跳出内层循环，match_count 保持 0
+        if not scores:
+            return ClassificationResult(
+                intent=IntentClass.OTHER,
+                confidence=WEAK_CONFIDENCE,
+                classified_at=datetime.now(timezone.utc),
+            )
 
-                    match_count += 1
-                    matched_intent = rule.intent
-                    matched_keyword_len = len(keyword)
-                    break  # First-match-wins: exit inner loop on first keyword hit
-            if match_count > 0:
-                break  # First-match-wins: exit outer loop once a rule matches
+        # Sort by score desc, then rule priority (position in INTENT_RULES) for ties
+        priority_order = {rule.intent.value: i for i, rule in enumerate(self.rules)}
+        ranked = sorted(
+            scores.items(),
+            key=lambda x: (-x[1], priority_order.get(x[0], 999)),
+        )
+        top_intent_str, top_score = ranked[0]
 
-        if matched_intent == IntentClass.OTHER or match_count == 0:
-            if found_keyword_in_other:
-                # Partial match: keyword found but in OTHER context
-                confidence = CONFIDENCE_MEDIUM
-            else:
-                confidence = WEAK_CONFIDENCE
-        elif matched_keyword_len >= 2:
-            # Multi-signal scoring: keyword + order number / text length
-            if re.search(r"\d{5,}", text):
-                confidence = CONFIDENCE_KEYWORD_WITH_ORDER  # 0.88
-            elif len(text) > 20:
-                confidence = CONFIDENCE_KEYWORD_LONG_TEXT  # 0.82
-            else:
-                confidence = CONFIDENCE_HIGH  # 0.78
+        if top_score <= 0:
+            return ClassificationResult(
+                intent=IntentClass.OTHER,
+                confidence=WEAK_CONFIDENCE,
+                classified_at=datetime.now(timezone.utc),
+            )
+
+        matched_intent = IntentClass(top_intent_str)
+        second_score = ranked[1][1] if len(ranked) > 1 else 0.0
+        margin = (top_score - second_score) / top_score
+
+        if margin >= 0.5:
+            confidence = CONFIDENCE_HIGH
+        elif margin >= 0.25:
+            confidence = CONFIDENCE_MEDIUM
         else:
-            # Weak keyword match (1 character)
-            confidence = CONFIDENCE_KEYWORD_1CHAR
+            confidence = WEAK_CONFIDENCE
 
         return ClassificationResult(
             intent=matched_intent,
             confidence=confidence,
             classified_at=datetime.now(timezone.utc),
         )
+
+    def _score_intents(self, text: str) -> dict[str, float]:
+        """Score each intent (except OTHER) by keyword matches with exclusion penalties.
+
+        Each keyword match adds ``len(keyword)`` to the intent's score.
+        Each exclusion match subtracts ``len(excl)`` from the intent's score.
+        Final score is floored at ``0.0`` (never negative).
+
+        Returns dict mapping intent value strings (e.g. ``\"refund\"``) to their
+        cumulative scores. OTHER is excluded (always score 0).
+        """
+        scores: dict[str, float] = {}
+        for rule in self.rules:
+            if rule.intent == IntentClass.OTHER:
+                continue
+            score = 0.0
+            for keyword in rule.keywords:
+                if keyword in text:
+                    score += float(len(keyword))
+            if rule.exclusions:
+                for excl in rule.exclusions:
+                    if excl in text:
+                        score -= float(len(excl))
+            scores[rule.intent.value] = max(0.0, score)
+        return scores
