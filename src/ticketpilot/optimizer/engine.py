@@ -37,6 +37,9 @@ def _print(msg: str) -> None:
 # How many top diagnoses to try per round
 TOP_N_FIXES = 5
 
+# 提前终止：连续 N 轮无改进则停止
+CONSECUTIVE_NO_IMPROVEMENT_LIMIT = 3
+
 
 class OptimizationEngine:
     """Main optimization loop.
@@ -132,6 +135,16 @@ class OptimizationEngine:
         current_summary = baseline_summary
         any_improvement = False
 
+        # 最佳状态追踪
+        best_composite = baseline_composite
+        best_summary = baseline_summary
+        best_correct_ids = baseline_correct
+        best_iteration = 0
+        self._best_composite = best_composite  # 供 _run_one_round 记录 history 使用
+
+        # 提前终止：连续 N 轮无改进则停止
+        consecutive_no_improvement = 0
+
         for iteration in range(1, self.config.max_rounds + 1):
             _print(f"\n═══ Round {iteration}/{self.config.max_rounds} ═══ (composite={current_composite:.4f})")
             logger.info(
@@ -151,6 +164,18 @@ class OptimizationEngine:
                 current_composite = self._compute_composite(current_summary)
                 current_correct_ids = self._extract_correct_ids(current_summary)
                 any_improvement = True
+
+                # 更新最佳状态
+                if current_composite > best_composite:
+                    best_composite = current_composite
+                    best_summary = current_summary
+                    best_correct_ids = current_correct_ids
+                    best_iteration = iteration
+                    self._best_composite = best_composite
+                    consecutive_no_improvement = 0
+                else:
+                    consecutive_no_improvement += 1
+
                 _print(f"✓ Round {iteration}: improved → composite={current_composite:.4f} ({len(current_correct_ids)} correct)")
                 logger.info(
                     "Round %d: improved → composite=%.4f (%d correct)",
@@ -159,7 +184,8 @@ class OptimizationEngine:
                     len(current_correct_ids),
                 )
             else:
-                _print(f"✗ Round {iteration}: no improvement")
+                consecutive_no_improvement += 1
+                _print(f"✗ Round {iteration}: no improvement ({consecutive_no_improvement}/{CONSECUTIVE_NO_IMPROVEMENT_LIMIT} consecutive)")
                 logger.info("Round %d: no improvement", iteration)
 
             # Check early termination (perfect score)
@@ -168,10 +194,22 @@ class OptimizationEngine:
                 logger.info("Perfect composite score achieved, stopping.")
                 break
 
+            # 提前终止：连续 N 轮无改进
+            if consecutive_no_improvement >= CONSECUTIVE_NO_IMPROVEMENT_LIMIT:
+                _print(f"🛑 Stopping: {CONSECUTIVE_NO_IMPROVEMENT_LIMIT} consecutive rounds without improvement")
+                logger.info(
+                    "Early stop: %d consecutive rounds without improvement",
+                    CONSECUTIVE_NO_IMPROVEMENT_LIMIT,
+                )
+                break
+
         # Final summary
         delta = current_composite - baseline_composite
+        best_delta = best_composite - baseline_composite
         _print(f"\n═══ Optimization Complete ═══")
         _print(f"Composite: {baseline_composite:.4f} → {current_composite:.4f} ({delta:+.4f})")
+        if best_iteration > 0:
+            _print(f"Best composite: {best_composite:.4f} ({best_delta:+.4f}) @ round {best_iteration}")
         logger.info(
             "Optimization complete. Final composite: %.4f", current_composite
         )
@@ -309,6 +347,7 @@ class OptimizationEngine:
                 self.history.record({
                     "iteration": iteration,
                     "composite": new_composite,
+                    "best_composite": self._best_composite,  # NEW
                     "correct_cases": len(self._extract_correct_ids(new_summary)),
                     "total_cases": new_summary.total_cases,
                     "metrics": self._score_dict(new_summary),
