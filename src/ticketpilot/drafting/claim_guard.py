@@ -100,6 +100,24 @@ _ESCALATION_PATTERNS: list[str] = [
     "escalated",
 ]
 
+# Safe escalation keywords — draft is requesting/acknowledging human escalation
+_SAFE_ESCALATION_KEYWORDS: list[str] = [
+    "人工处理",
+    "转人工客服",
+    "需要人工审核",
+    "人工审查",
+    "升级至人工",
+    "已升级人工",
+]
+
+# Manual review keywords — draft acknowledges need for human oversight
+_MANUAL_REVIEW_KEYWORDS: list[str] = [
+    "人工审核",
+    "需人工 review",
+    "人工确认",
+    "需人工介入",
+]
+
 # Greeting prefixes exempt from uncited-claim detection
 _GREETING_PATTERNS: list[str] = [
     "尊敬的客户",
@@ -188,6 +206,39 @@ def _check_risk_acknowledgment(
         return True
     draft_lower = draft_text.lower()
     return any(p in draft_lower for p in _ESCALATION_PATTERNS)
+
+
+def check_safe_escalation_language(draft_text: str) -> bool:
+    """Detect safe escalation language in draft text.
+
+    Checks for keywords that indicate the draft is requesting or
+    acknowledging escalation to human agents.
+
+    Args:
+        draft_text: The draft reply text to check.
+
+    Returns:
+        True if any safe escalation keyword is found.
+    """
+    text = draft_text.lower()
+    return any(kw in text for kw in _SAFE_ESCALATION_KEYWORDS)
+
+
+def check_manual_review_acknowledgement(draft_text: str) -> bool:
+    """Detect manual review acknowledgement in draft text.
+
+    Checks for keywords that acknowledge the need for manual human review.
+    Distinct from safe escalation language — manual review acknowledgment
+    signals that the draft itself requires human oversight.
+
+    Args:
+        draft_text: The draft reply text to check.
+
+    Returns:
+        True if any manual review keyword is found.
+    """
+    text = draft_text.lower()
+    return any(kw in text for kw in _MANUAL_REVIEW_KEYWORDS)
 
 
 def check_claim_guard(
