@@ -109,6 +109,19 @@ class Fixer:
                 error=str(exc),
             )
 
+    def apply_fix_keyword(self, intent: str, keyword: str) -> FixResult:
+        """Directly add a keyword to an intent rule without a full Diagnosis object.
+
+        Uses a duck-type mini-diagnosis to reuse the existing _fix_intent_keywords method.
+        """
+        class _MiniDiagnosis:
+            expected_values = {"intent": intent}
+            suggested_keywords = [keyword]
+            suggested_fix_type = "intent_keyword"
+            type = "intent_keyword"
+
+        return self._fix_intent_keywords(_MiniDiagnosis())
+
     def rollback(self) -> None:
         """Restore all previously modified files to their original content."""
         for path, content in self._original_contents.items():
@@ -239,7 +252,9 @@ class Fixer:
         # inside the IntentRule that has  intent=IntentClass.<INTENT>,
         #
         # Step 1: Locate the IntentRule block for the target intent.
-        intent_pattern = rf"intent=IntentClass\.{intent_value}\b"
+        # Convert to uppercase to match Python enum convention (PRODUCT_CONSULTING vs product_consulting)
+        intent_enum_value = intent_value.upper()
+        intent_pattern = rf"intent=IntentClass\.{intent_enum_value}\b"
         intent_match = re.search(intent_pattern, source)
         if not intent_match:
             return FixResult(

@@ -2,6 +2,8 @@
 
 from typing import Optional
 
+import jieba
+
 from ticketpilot.retrieval.schema.knowledge import DocType
 from ticketpilot.retrieval.traces import KeywordResult
 
@@ -48,6 +50,43 @@ def _extract_search_terms(query: str) -> list[str]:
     terms = query.split()
     cleaned = [t.strip() for t in terms if t.strip()]
     return cleaned
+
+
+_CHINESE_STOP_CHARS: set[str] = {
+    "的", "了", "是", "在", "有", "和", "就", "不", "我", "你", "他", "它",
+    "这", "那", "上", "下", "来", "去", "为", "与", "及", "而", "从", "被",
+    "把", "以", "对", "到", "说", "要", "会", "也", "很", "都", "一", "个",
+    "可以", "么", "吗", "吧", "呢", "啊",
+}
+
+
+def _segment_chinese_terms(terms: list[str]) -> list[str]:
+    """Segment Chinese terms using jieba for better FTS recall.
+
+    Non-Chinese terms pass through unchanged. Single-character Chinese
+    stopwords are filtered out to avoid noise.
+
+    Args:
+        terms: Search terms from _extract_search_terms.
+
+    Returns:
+        List of segmented terms suitable for FTS query construction.
+    """
+    segmented: list[str] = []
+    for term in terms:
+        if any("\u4e00" <= ch <= "\u9fff" for ch in term):
+            words = list(jieba.cut(term))
+            for w in words:
+                w = w.strip()
+                if not w:
+                    continue
+                # Filter single-char stopwords
+                if len(w) == 1 and w in _CHINESE_STOP_CHARS:
+                    continue
+                segmented.append(w)
+        else:
+            segmented.append(term)
+    return segmented
 
 
 def _check_business_terms(query: str) -> list[str]:
@@ -97,9 +136,15 @@ def _fts_search(
     if not search_terms:
         return []
 
+    # Segment Chinese terms with jieba for better FTS recall
+    search_terms = _segment_chinese_terms(search_terms)
+    if not search_terms:
+        return []
+
     # Build FTS query using to_tsquery with simple config
     # Each term is joined with OR (|)
-    tsquery_parts = " | ".join(term for term in search_terms)
+    # Escape % → %% for psycopg3 (prevents placeholder interpretation)
+    tsquery_parts = " | ".join(term.replace('%', '%%') for term in search_terms)
     tsquery = f"to_tsquery('simple', '{tsquery_parts}')"
 
     # Build doc_types filter if provided

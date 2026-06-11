@@ -8,22 +8,25 @@ incremental fixes ranked by estimated gain.
 """
 from __future__ import annotations
 
+import json
 import logging
-import sys
-import time
+from datetime import datetime, timezone
+from pathlib import Path
+import os
 from typing import Any
 
 from ticketpilot.evaluation.schemas import EvalPrediction, EvaluationSummary
 from ticketpilot.optimizer.config import (
-    COMPOSITE_WEIGHTS,
     MAX_SINGLE_METRIC_DROP,
     MIN_CASES_FIXED,
     OptimizerConfig,
 )
-from ticketpilot.optimizer.diagnostics import DiagnosticsEngine, Diagnosis
+from ticketpilot.optimizer.diagnostics import DiagnosticsEngine, Diagnosis, TYPE_INTENT_MISMATCH
 from ticketpilot.optimizer.evaluator import OptimizerEvaluator
-from ticketpilot.optimizer.fixer import Fixer, FixResult
-from ticketpilot.optimizer.git_ops import commit, has_changes, revert
+from ticketpilot.optimizer.fixer import Fixer
+from ticketpilot.optimizer.tradeoff import analyze_keyword_tradeoff
+from ticketpilot.optimizer.llm_reviewer import review_keyword
+from ticketpilot.optimizer.git_ops import commit
 from ticketpilot.optimizer.history import OptimizationHistory
 from ticketpilot.optimizer.reporter import IterationRecord, OptimizationReporter
 
@@ -39,6 +42,21 @@ TOP_N_FIXES = 5
 
 # 提前终止：连续 N 轮无改进则停止
 CONSECUTIVE_NO_IMPROVEMENT_LIMIT = 3
+
+# Persistent debug log path
+_DEBUG_LOG_PATH = Path(__file__).resolve().parent.parent.parent.parent / "reports" / "optimization" / "debug_log.jsonl"
+
+
+def _debug_log(entry: dict[str, Any]) -> None:
+    """Write a JSONL entry to the persistent debug log.
+
+    Appends to ``reports/optimization/debug_log.jsonl``.
+    Thread-safe for single-process writes.
+    """
+    entry.setdefault("timestamp", datetime.now(timezone.utc).isoformat())
+    _DEBUG_LOG_PATH.parent.mkdir(parents=True, exist_ok=True)
+    with _DEBUG_LOG_PATH.open("a", encoding="utf-8") as f:
+        f.write(json.dumps(entry, ensure_ascii=False, default=str) + "\n")
 
 
 class OptimizationEngine:
@@ -63,6 +81,9 @@ class OptimizationEngine:
             diagnose_only=diagnose_only,
             dry_run=dry_run,
             resume=resume,
+            llm_api_key=os.getenv("OPTIMIZER_LLM_API_KEY", ""),
+            llm_base_url=os.getenv("OPTIMIZER_LLM_BASE_URL", ""),
+            llm_model=os.getenv("OPTIMIZER_LLM_MODEL", ""),
         )
         self.evaluator = OptimizerEvaluator(self.config)
         self.diagnostics = DiagnosticsEngine(weights=self.config.weights)
@@ -85,6 +106,18 @@ class OptimizationEngine:
         self.evaluator.load_dataset()
         dataset_count = len(self.evaluator.dataset.tickets) if hasattr(self.evaluator, "dataset") and hasattr(self.evaluator.dataset, "tickets") else "?"
         _print(f"✅ Loaded {dataset_count} eval tickets")
+
+        # Log run start
+        _debug_log({
+            "event": "run_start",
+            "max_rounds": self.config.max_rounds,
+            "diagnose_only": self.config.diagnose_only,
+            "dry_run": self.config.dry_run,
+            "resume": self.config.resume,
+            "has_llm_key": bool(self.config.llm_api_key),
+            "weights": dict(self.config.weights),
+            "dataset_size": dataset_count,
+        })
 
         # Initialize history
         self.history.init(clear=not self.config.resume)
@@ -115,12 +148,25 @@ class OptimizationEngine:
             "description": "baseline",
         })
 
+        # Log baseline
+        _debug_log({
+            "event": "baseline",
+            "composite": round(baseline_composite, 4),
+            "correct_cases": len(baseline_correct),
+            "total_cases": baseline_summary.total_cases,
+            "metrics": scores,
+            "rounds_per_metric": {
+                k: round(v / (scores.get(k, 0.01) or 0.01), 4)
+                for k, v in self.config.weights.items()
+            },
+        })
+
         # Diagnose-only mode
         if self.config.diagnose_only:
             diagnoses = self.diagnostics.analyze(
                 baseline_summary, self.evaluator.dataset.tickets
             )
-            _print(f"\n═══ Diagnose-Only Mode ═══")
+            _print("\n═══ Diagnose-Only Mode ═══")
             _print(f"Found {len(diagnoses)} issues:")
             for i, d in enumerate(diagnoses, 1):
                 _print(f"  {i}. [{d.type}] {d.description} (gain={d.fix_gain:.4f})")
@@ -137,8 +183,6 @@ class OptimizationEngine:
 
         # 最佳状态追踪
         best_composite = baseline_composite
-        best_summary = baseline_summary
-        best_correct_ids = baseline_correct
         best_iteration = 0
         self._best_composite = best_composite  # 供 _run_one_round 记录 history 使用
 
@@ -168,8 +212,6 @@ class OptimizationEngine:
                 # 更新最佳状态
                 if current_composite > best_composite:
                     best_composite = current_composite
-                    best_summary = current_summary
-                    best_correct_ids = current_correct_ids
                     best_iteration = iteration
                     self._best_composite = best_composite
                     consecutive_no_improvement = 0
@@ -206,7 +248,7 @@ class OptimizationEngine:
         # Final summary
         delta = current_composite - baseline_composite
         best_delta = best_composite - baseline_composite
-        _print(f"\n═══ Optimization Complete ═══")
+        _print("\n═══ Optimization Complete ═══")
         _print(f"Composite: {baseline_composite:.4f} → {current_composite:.4f} ({delta:+.4f})")
         if best_iteration > 0:
             _print(f"Best composite: {best_composite:.4f} ({best_delta:+.4f}) @ round {best_iteration}")
@@ -217,6 +259,18 @@ class OptimizationEngine:
         # Generate report
         _print("\n─── Report Generation ───")
         self._generate_report(baseline_summary, current_summary, any_improvement)
+
+        # Log final summary
+        _debug_log({
+            "event": "run_complete",
+            "composite_start": round(baseline_composite, 4),
+            "composite_end": round(current_composite, 4),
+            "composite_best": round(best_composite, 4),
+            "delta": round(delta, 4),
+            "best_iteration": best_iteration,
+            "max_rounds": self.config.max_rounds,
+            "any_improvement": any_improvement,
+        })
 
         return any_improvement
 
@@ -292,6 +346,25 @@ class OptimizationEngine:
             len(candidates),
         )
 
+        # Log all diagnoses for this round
+        _debug_log({
+            "event": "round_diagnoses",
+            "iteration": iteration,
+            "total_diagnoses": len(diagnoses),
+            "diagnoses": [
+                {
+                    "type": d.type,
+                    "fix_type": d.suggested_fix_type,
+                    "gain": round(d.fix_gain, 4),
+                    "affected": len(d.affected_cases),
+                    "description": d.description,
+                    "expected": {k: str(v) for k, v in d.expected_values.items()},
+                    "keywords": d.suggested_keywords[:5],
+                }
+                for d in diagnoses[:10]  # top 10 to avoid bloating
+            ],
+        })
+
         accepted_any = False
         fixes_tried = 0
         fixes_accepted = 0
@@ -300,6 +373,19 @@ class OptimizationEngine:
         current_predictions = dict(self.evaluator.predictions or {})
 
         for diag in candidates:
+            # NEW: LLM-review branch for intent_mismatch with keyword candidates
+            if diag.type == TYPE_INTENT_MISMATCH:
+                candidates_kw = diag.details.get("keyword_candidates", [])
+                if candidates_kw:
+                    kw_accepted = self._run_keyword_review_loop(
+                        diag, candidates_kw, iteration, old_summary, current_predictions,
+                    )
+                    if kw_accepted:
+                        fixes_accepted += 1
+                        accepted_any = True
+                        current_predictions = dict(self.evaluator.predictions or current_predictions)
+                        continue  # skip old verifier for this diag
+
             fixes_tried += 1
             _print(f"Trying fix: [{diag.type}] {diag.suggested_fix_type} (gain={diag.fix_gain:.4f})")
             logger.info(
@@ -318,6 +404,14 @@ class OptimizationEngine:
                     fix_result.fix_type,
                     fix_result.error or fix_result.description,
                 )
+                _debug_log({
+                    "event": "fix_failure",
+                    "iteration": iteration,
+                    "diagnosis_type": diag.type,
+                    "fix_type": fix_result.fix_type,
+                    "error": fix_result.error or fix_result.description,
+                    "gain_estimated": round(diag.fix_gain, 4),
+                })
                 continue
 
             # 增量验证：只重评受影响工单
@@ -344,6 +438,18 @@ class OptimizationEngine:
                 _print(f"✅ OK: {msg} → {sha[:8]}")
                 logger.info("  Accepted fix, committed %s", sha[:8])
 
+                _debug_log({
+                    "event": "fix_accepted",
+                    "iteration": iteration,
+                    "diagnosis_type": diag.type,
+                    "fix_type": diag.suggested_fix_type,
+                    "composite_before": round(self._compute_composite(old_summary), 4),
+                    "composite_after": round(new_composite, 4),
+                    "delta": round(new_composite - self._compute_composite(old_summary), 4),
+                    "gain_estimated": round(diag.fix_gain, 4),
+                    "commit_sha": sha[:8],
+                })
+
                 self.history.record({
                     "iteration": iteration,
                     "composite": new_composite,
@@ -363,6 +469,13 @@ class OptimizationEngine:
                 self.fixer.rollback()
                 _print(f"✗ Rolled back: no improvement after {diag.suggested_fix_type}")
                 logger.info("  Reverted fix (no improvement)")
+                _debug_log({
+                    "event": "fix_rolled_back",
+                    "iteration": iteration,
+                    "diagnosis_type": diag.type,
+                    "fix_type": diag.suggested_fix_type,
+                    "gain_estimated": round(diag.fix_gain, 4),
+                })
                 self.history.record({
                     "iteration": iteration,
                     "composite": self._compute_composite(old_summary),
@@ -391,6 +504,107 @@ class OptimizationEngine:
         })
 
         return accepted_any
+
+    # ------------------------------------------------------------------
+    # LLM review loop (internal to _run_one_round)
+    # ------------------------------------------------------------------
+
+    def _run_keyword_review_loop(
+        self,
+        diag: Diagnosis,
+        candidates_kw: list[str],
+        iteration: int,
+        old_summary: EvaluationSummary,
+        current_predictions: dict,
+    ) -> bool:
+        """Try LLM-reviewed keyword additions for an intent_mismatch diagnosis.
+
+        Returns True if at least one keyword was approved and applied.
+        """
+        tickets = self.evaluator.dataset.tickets
+        golden = self.evaluator.dataset.golden
+
+        for keyword in candidates_kw:
+            _print(f"  Simulating keyword '{keyword}' for {diag.expected_values.get('intent', '?')}...")
+
+            tradeoff = analyze_keyword_tradeoff(
+                diag, keyword, tickets, golden,
+                current_predictions=current_predictions,
+            )
+
+            if tradeoff.net_gain <= 0:
+                _print(f"    \u2717 Net gain {tradeoff.net_gain} \u2264 0, skipping")
+                continue
+
+            # Get sample texts
+            sample_fixed = [
+                tickets[cid].original_text
+                for cid in tradeoff.fixed_case_ids[:3]
+                if cid in tickets
+            ]
+            sample_harmed = [
+                tickets[cid].original_text
+                for cid in tradeoff.harmed_case_ids[:3]
+                if cid in tickets
+            ]
+
+            _print(f"    \U0001f4cb LLM reviewing '{keyword}': fix {len(tradeoff.fixed_case_ids)}, harm {len(tradeoff.harmed_case_ids)}, net={tradeoff.net_gain}")
+
+            try:
+                review = review_keyword(tradeoff, sample_fixed, sample_harmed, self.config)
+            except ValueError as e:
+                _print(f"    \u2717 LLM review failed: {e}")
+                continue
+
+            if review.get("decision") == "APPROVE":
+                _print(f"    \u2705 LLM APPROVED: {tradeoff.description}")
+                result = self.fixer.apply_fix_keyword(
+                    intent=tradeoff.target_intent,
+                    keyword=keyword,
+                )
+                if result.success:
+                    # Run verification
+                    affected_ids = set(diag.affected_cases or [])
+                    improved, new_summary, new_composite = self._verify_fix(
+                        old_summary, set(),  # use full eval for keyword changes
+                        affected_cases=affected_ids,
+                        old_predictions=current_predictions,
+                    )
+
+                    if improved:
+                        msg = (
+                            f"optimizer round {iteration}: LLM-approved keyword '{keyword}' "
+                            f"for {tradeoff.target_intent} (composite={new_composite:.4f})"
+                        )
+                        sha = commit(message=msg)
+                        current_predictions = dict(self.evaluator.predictions or current_predictions)
+
+                        _print(f"    \u2705 Committed: {msg} \u2192 {sha[:8]}")
+
+                        self.history.record({
+                            "iteration": iteration,
+                            "composite": new_composite,
+                            "best_composite": self._best_composite,
+                            "correct_cases": len(self._extract_correct_ids(new_summary)),
+                            "total_cases": new_summary.total_cases,
+                            "metrics": self._score_dict(new_summary),
+                            "timestamp": _now_iso(),
+                            "description": f"LLM keyword: {keyword} \u2192 {tradeoff.target_intent}",
+                            "fix_type": "intent_keyword_llm",
+                            "diagnosis_type": diag.type,
+                            "commit_sha": sha,
+                            "fix_gain_actual": new_composite - self._compute_composite(old_summary),
+                        })
+                        return True
+                    else:
+                        self.fixer.rollback()
+                        _print(f"    \u2717 No improvement after applying '{keyword}', rolled back")
+                else:
+                    _print(f"    \u2717 apply_fix_keyword failed: {result.error or result.description}")
+            else:
+                _print(f"    \u2717 LLM REJECTED: {review.get('reasoning', 'no reason')[:100]}")
+
+        return False
 
     # ------------------------------------------------------------------
     # Report generation

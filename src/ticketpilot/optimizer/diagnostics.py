@@ -53,6 +53,10 @@ TYPE_SEVERITY_WRONG = "severity_wrong"
 TYPE_EVIDENCE_GAP = "evidence_gap"
 TYPE_CONFIDENCE_MISROUTE = "confidence_misroute"
 
+# Meta-flags that are set programmatically by the pipeline, not by keyword
+# matching. The optimizer should NOT suggest keyword-based fixes for these.
+_META_RISK_FLAGS: set[str] = {"INSUFFICIENT_EVIDENCE", "LOW_CONFIDENCE"}
+
 
 # ---------------------------------------------------------------------------
 # Helper functions
@@ -164,6 +168,12 @@ _CHINESE_STOP_WORDS: set[str] = {
     "你们", "我们", "他们", "订单", "单号", "订单号", "申请",
     "处理", "问题", "咨询", "需要", "请问", "客服", "平台",
     "收到", "商品", "产品", "购买", "买", "货", "件",
+    # Additional stopwords from the task spec
+    "吗", "吧", "啊", "呢", "太",
+    "与", "或", "卖",
+    "两", "三", "天", "钱", "时", "间",
+    "再", "才", "所", "为", "于", "以",
+    "为什么", "不是", "就是", "不要", "这么", "那么", "只",
 }
 
 
@@ -300,6 +310,39 @@ def _analyze_causal_features(
     return [gram for _, gram in scored[:max_features]]
 
 
+def _enrich_with_keyword_candidates(
+    diagnosis: Diagnosis,
+    tickets: dict[str, Any],
+) -> Diagnosis:
+    """Add jieba keyword candidates from the affected cases' text.
+
+    Uses _extract_chinese_keywords() to extract keywords, filtering out
+    single-character tokens, already-existing keywords for this intent,
+    and common stopwords. Stores up to 5 candidates in
+    diagnosis.details["keyword_candidates"].
+
+    Args:
+        diagnosis: An intent_mismatch Diagnosis object.
+        tickets: Dict mapping case_id to EvalTicket objects.
+
+    Returns:
+        The same Diagnosis with keyword_candidates populated in details.
+    """
+    expected_intent = str(diagnosis.expected_values.get("intent", "")).upper()
+    existing_kws = _get_existing_intent_keywords(expected_intent) if expected_intent else []
+
+    texts = []
+    for cid in diagnosis.affected_cases:
+        ticket = tickets.get(cid)
+        if ticket and hasattr(ticket, "original_text"):
+            texts.append(ticket.original_text)
+
+    candidates = _extract_chinese_keywords(texts, existing_kws, max_keywords=5)
+    if candidates:
+        diagnosis.details["keyword_candidates"] = candidates
+    return diagnosis
+
+
 def _build_confusion_matrix(results: dict[str, CaseResult]) -> dict[tuple[str, str], list[str]]:
     """Build an intent confusion matrix from case results.
 
@@ -361,6 +404,9 @@ def _analyze_risk_flags(
     # Generate one diagnosis per missed risk flag (fixer expects single risk_flag)
     for flag_name, count in missed_flag_counts.most_common(3):
         flag_str = str(flag_name.value) if hasattr(flag_name, 'value') else str(flag_name)
+        # Skip meta-flags that are set programmatically, not by keyword matching
+        if flag_str.upper() in _META_RISK_FLAGS:
+            continue
         affected = [
             cid for cid in risk_miss_cases
             if cid in results and flag_name in results[cid].golden.expected_risk_flags
@@ -475,6 +521,13 @@ def _analyze_confidence_misroute(
     if not misroute_cases:
         return diagnoses
 
+    # Import current config values to suggest a meaningful adjustment
+    try:
+        from ticketpilot.config import CONFIDENCE_MEDIUM
+        adjusted = round(CONFIDENCE_MEDIUM * 0.85, 2)  # suggest 15% lower
+    except ImportError:
+        adjusted = 0.5  # fallback
+
     gain = _compute_fix_gain(len(misroute_cases), weight, total_cases)
     diagnoses.append(Diagnosis(
         type=TYPE_CONFIDENCE_MISROUTE,
@@ -482,7 +535,7 @@ def _analyze_confidence_misroute(
         affected_cases=misroute_cases,
         expected_values={
             "threshold_name": "CONFIDENCE_MEDIUM",
-            "new_value": 0.5,
+            "new_value": adjusted,
         },
         predicted_values={},
         suggested_fix_type="confidence_threshold",
@@ -621,6 +674,11 @@ class DiagnosticsEngine:
                 ),
                 details={"confusions": confusion_details},
             ))
+
+        # Enrich intent_mismatch diagnoses with jieba keyword candidates
+        for i, diag in enumerate(all_diagnoses):
+            if diag.type == TYPE_INTENT_MISMATCH:
+                all_diagnoses[i] = _enrich_with_keyword_candidates(diag, dataset)
 
         # 2. Risk flag analysis
         all_diagnoses.extend(_analyze_risk_flags(results, total_cases, risk_weight, dataset))
