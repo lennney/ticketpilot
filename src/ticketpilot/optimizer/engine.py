@@ -13,7 +13,7 @@ import sys
 import time
 from typing import Any
 
-from ticketpilot.evaluation.schemas import EvaluationSummary
+from ticketpilot.evaluation.schemas import EvalPrediction, EvaluationSummary
 from ticketpilot.optimizer.config import (
     COMPOSITE_WEIGHTS,
     MAX_SINGLE_METRIC_DROP,
@@ -258,6 +258,9 @@ class OptimizationEngine:
         fixes_tried = 0
         fixes_accepted = 0
 
+        # 获取当前的 predictions（用于增量评测）
+        current_predictions = dict(self.evaluator.predictions or {})
+
         for diag in candidates:
             fixes_tried += 1
             _print(f"Trying fix: [{diag.type}] {diag.suggested_fix_type} (gain={diag.fix_gain:.4f})")
@@ -279,12 +282,19 @@ class OptimizationEngine:
                 )
                 continue
 
+            # 增量验证：只重评受影响工单
+            affected_ids = set(diag.affected_cases) if diag.affected_cases else None
+
             # Verify improvement
             improved, new_summary, new_composite = self._verify_fix(
-                old_summary, old_correct_ids
+                old_summary, old_correct_ids,
+                affected_cases=affected_ids,
+                old_predictions=current_predictions,
             )
 
             if improved:
+                # 更新 predictions 缓存，后续修复基于最新状态
+                current_predictions = dict(self.evaluator.predictions or current_predictions)
                 # Commit the fix
                 msg = (
                     f"optimizer round {iteration}: {diag.suggested_fix_type} "
@@ -387,8 +397,13 @@ class OptimizationEngine:
         self,
         old_summary: EvaluationSummary,
         old_correct_ids: set[str],
+        affected_cases: set[str] | None = None,
+        old_predictions: dict[str, EvalPrediction] | None = None,
     ) -> tuple[bool, EvaluationSummary, float]:
         """Re-evaluate after applying a fix and check for improvement.
+
+        Uses incremental evaluation when affected_cases and old_predictions
+        are provided.
 
         A fix is accepted if:
         1. Composite score improved, AND
@@ -398,7 +413,13 @@ class OptimizationEngine:
         Returns:
             (improved, new_summary, new_composite)
         """
-        new_summary = self.evaluator.run_full_evaluation()
+        if affected_cases and old_predictions is not None:
+            new_summary = self.evaluator.run_partial_evaluation(
+                affected_case_ids=affected_cases,
+                previous_predictions=old_predictions,
+            )
+        else:
+            new_summary = self.evaluator.run_full_evaluation()
         new_composite = self._compute_composite(new_summary)
         old_composite = self._compute_composite(old_summary)
 
