@@ -50,3 +50,24 @@ def retrieve_evidence(
                 candidate.content = candidate.content.decode('utf-8', errors='replace')
 
     return candidates, trace
+
+
+def assess_retrieval_sufficiency(
+    results: list[dict],
+    min_results: int = 3,
+    min_avg_score: float = 0.7,
+) -> dict:
+    """Evaluate if retrieval results are sufficient for draft generation."""
+    if not results:
+        return {"sufficient": False, "reason": "no results", "avg_score": 0.0, "result_count": 0}
+    scores = [r.get("score", 0) for r in results]
+    avg_score = sum(scores) / len(scores)
+    above_threshold = sum(1 for s in scores if s >= min_avg_score)
+    sufficient = len(results) >= min_results and avg_score >= min_avg_score
+    return {
+        "sufficient": sufficient,
+        "avg_score": round(avg_score, 3),
+        "result_count": len(results),
+        "above_threshold_count": above_threshold,
+        "reason": None if sufficient else f"{len(results)} results, avg {avg_score:.2f} < {min_avg_score}",
+    }
