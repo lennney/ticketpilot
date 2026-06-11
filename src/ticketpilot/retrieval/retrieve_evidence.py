@@ -42,4 +42,11 @@ def retrieve_evidence(
         reranker_config=reranker_config,
     )
     candidates = map_fused_to_evidence(trace.fused_results)
+
+    # 安全处理每个 candidate 的内容，避免损坏的 UTF-8 导致下游崩溃
+    for candidate in candidates:
+        if hasattr(candidate, 'content') and candidate.content is not None:
+            if isinstance(candidate.content, bytes):
+                candidate.content = candidate.content.decode('utf-8', errors='replace')
+
     return candidates, trace

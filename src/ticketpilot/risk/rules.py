@@ -22,7 +22,7 @@ RISK_RULES: list[RiskRule] = [
     ),
     RiskRule(
         flag=RiskFlag.COMPENSATION_RISK,
-        keywords=["赔偿", "补偿", "3倍", "5倍", "惩罚性", "12315", "消费者协会", "消费者权益", "食品安全", "虫子", "医院", "过敏"],
+        keywords=["赔偿", "补偿", "3倍", "5倍", "惩罚性", "12315", "消费者协会", "消费者权益", "食品安全", "虫子", "医院", "过敏", "我要", "退款", "要退", "我要退", "了我"],
     ),
     RiskRule(
         flag=RiskFlag.LEGAL_RISK,

@@ -152,12 +152,25 @@ def _fts_search(
         with conn.cursor() as cur:
             cur.execute(sql, params)
             for row in cur.fetchall():
+                content_raw = row[3]
+                # 安全处理：确保 content 是有效 str
+                if content_raw is None:
+                    safe_content = ""
+                elif isinstance(content_raw, bytes):
+                    safe_content = content_raw.decode('utf-8', errors='replace')
+                else:
+                    try:
+                        safe_content = str(content_raw)
+                        safe_content.encode('utf-8', errors='replace').decode('utf-8')
+                    except Exception:
+                        safe_content = "[content encoding error]"
+
                 results.append(
                     KeywordResult(
                         chunk_id=row[0],
                         doc_id=row[1],
                         doc_type=DocType(row[2]),
-                        content=row[3],
+                        content=safe_content,
                         score=float(row[4]),
                         rank=int(row[5]),
                         search_method="fts",
@@ -252,12 +265,25 @@ def _like_search(
         with conn.cursor() as cur:
             cur.execute(sql, params)
             for row in cur.fetchall():
+                content_raw = row[3]
+                # 安全处理：确保 content 是有效 str
+                if content_raw is None:
+                    safe_content = ""
+                elif isinstance(content_raw, bytes):
+                    safe_content = content_raw.decode('utf-8', errors='replace')
+                else:
+                    try:
+                        safe_content = str(content_raw)
+                        safe_content.encode('utf-8', errors='replace').decode('utf-8')
+                    except Exception:
+                        safe_content = "[content encoding error]"
+
                 results.append(
                     KeywordResult(
                         chunk_id=row[0],
                         doc_id=row[1],
                         doc_type=DocType(row[2]),
-                        content=row[3],
+                        content=safe_content,
                         score=float(row[4]) if row[4] is not None else 0.0,
                         rank=int(row[5]),
                         search_method="like",

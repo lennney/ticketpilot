@@ -50,7 +50,8 @@ def get_db_pool() -> ConnectionPool:
     if _pool is None:
         conninfo = (
             f"host={DB_HOST} port={DB_PORT} dbname={DB_NAME} "
-            f"user={DB_USER} password={DB_PASSWORD}"
+            f"user={DB_USER} password={DB_PASSWORD} "
+            f"client_encoding=UTF8"
         )
         _pool = ConnectionPool(
             conninfo,
