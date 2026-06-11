@@ -93,3 +93,24 @@ def test_extract_chinese_keywords_document_frequency():
     # "服务" appears in all 3 texts
     assert isinstance(keywords, list)
     assert len(keywords) > 0
+
+
+def test_extract_jieba_returns_meaningful_words():
+    """Test that jieba produces proper Chinese words (not broken n-grams)."""
+    from ticketpilot.optimizer.diagnostics import _extract_chinese_keywords
+
+    texts = [
+        "我要投诉你们客服态度太差了",
+        "投诉服务不好态度恶劣",
+    ]
+    keywords = _extract_chinese_keywords(texts, [])
+    # Each keyword should be at least 2 chars (jieba outputs proper words)
+    for kw in keywords:
+        assert len(kw) >= 2
+    # Should have some keywords (no n-gram garbage like '诉你', '们客', '服态')
+    assert len(keywords) > 0
+    # None should be mid-word splits (n-gram artifacts)
+    for kw in keywords:
+        # These are common n-gram artifacts — none should appear
+        assert kw not in ("诉你", "们客", "服态", "货但", "我申"), \
+            f"'{kw}' is an n-gram artifact, not a real word"
