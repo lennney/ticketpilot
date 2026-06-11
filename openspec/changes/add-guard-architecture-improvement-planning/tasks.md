@@ -28,7 +28,7 @@
   - Detect manual review keywords: 人工审核, 需人工 review, 人工确认
   - Add unit tests for both functions
 
-- [ ] 14.4: Claim Guard Integration
+- [x] 14.4: Claim Guard Integration
   - Wire `failure_reasons` population into `check_claim_guard()`
   - Add `MISSING_RISK_ESCALATION` when `risk_flags_respected=False` and escalation keywords absent
   - Add `EVIDENCE_INSUFFICIENT_FALLBACK` when draft matches safe fallback text
