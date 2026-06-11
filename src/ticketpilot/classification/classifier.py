@@ -66,6 +66,11 @@ class IntentClassifier:
                 continue
             for keyword in rule.keywords:
                 if keyword in text:
+                    # NEW: 检查排除规则 — 如果命中排除关键词，则跳过此规则
+                    if rule.exclusions:
+                        if any(excl in text for excl in rule.exclusions):
+                            break  # 该规则被排除，跳出内层循环，match_count 保持 0
+
                     match_count += 1
                     matched_intent = rule.intent
                     matched_keyword_len = len(keyword)
