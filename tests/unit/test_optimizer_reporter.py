@@ -1,10 +1,8 @@
 """Tests for ticketpilot.optimizer.reporter."""
 from __future__ import annotations
 
-import tempfile
 from pathlib import Path
 
-import pytest
 
 from ticketpilot.evaluation.schemas import EvaluationSummary
 from ticketpilot.optimizer.config import OptimizerConfig

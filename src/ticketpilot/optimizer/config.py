@@ -54,3 +54,6 @@ class OptimizerConfig:
     state_json: Path = DEFAULT_STATE_JSON
     report_md: Path = DEFAULT_REPORT_MD
     weights: dict[str, float] = field(default_factory=lambda: dict(COMPOSITE_WEIGHTS))
+    llm_api_key: str = ""
+    llm_base_url: str = ""
+    llm_model: str = ""

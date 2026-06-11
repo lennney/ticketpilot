@@ -1,10 +1,8 @@
 """Tests for ticketpilot.optimizer.engine."""
 from __future__ import annotations
 
-from dataclasses import dataclass, field
 from unittest.mock import MagicMock, patch
 
-import pytest
 
 from ticketpilot.evaluation.schemas import (
     CaseResult,
@@ -12,7 +10,7 @@ from ticketpilot.evaluation.schemas import (
     EvaluationSummary,
     RiskFlagMetrics,
 )
-from ticketpilot.optimizer.config import COMPOSITE_WEIGHTS, OptimizerConfig
+from ticketpilot.optimizer.config import COMPOSITE_WEIGHTS
 from ticketpilot.optimizer.engine import OptimizationEngine, _now_iso
 
 
@@ -36,7 +34,6 @@ def _make_case_result(
     from ticketpilot.evaluation.schemas import (
         EvalPrediction,
         GoldenExpectation,
-        MismatchEntry,
     )
 
     golden = GoldenExpectation(
@@ -485,7 +482,7 @@ class TestBestStateTracking:
     def test_best_composite_tracks_improvements(self):
         """Best composite should update when score improves."""
         from ticketpilot.optimizer.engine import (
-            OptimizationEngine, CONSECUTIVE_NO_IMPROVEMENT_LIMIT,
+            CONSECUTIVE_NO_IMPROVEMENT_LIMIT,
         )
 
         # 验证常量存在且为合理值
@@ -500,7 +497,6 @@ class TestBestStateTracking:
     def test_early_termination_after_three_no_improvements(self):
         """run() should stop after CONSECUTIVE_NO_IMPROVEMENT_LIMIT consecutive no-improvement rounds."""
         from ticketpilot.optimizer.engine import (
-            CONSECUTIVE_NO_IMPROVEMENT_LIMIT,
             OptimizationEngine,
         )
 

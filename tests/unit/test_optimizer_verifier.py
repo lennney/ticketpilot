@@ -2,10 +2,8 @@
 from __future__ import annotations
 
 import subprocess
-from pathlib import Path
 from unittest.mock import MagicMock, patch
 
-import pytest
 
 from ticketpilot.evaluation.schemas import (
     CaseResult,
@@ -16,7 +14,7 @@ from ticketpilot.evaluation.schemas import (
     MismatchEntry,
     RiskFlagMetrics,
 )
-from ticketpilot.optimizer.config import MAX_SINGLE_METRIC_DROP, MIN_CASES_FIXED
+from ticketpilot.optimizer.config import MAX_SINGLE_METRIC_DROP
 from ticketpilot.optimizer.verifier import (
     VerificationResult,
     Verifier,

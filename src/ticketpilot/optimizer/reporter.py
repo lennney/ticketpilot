@@ -8,7 +8,7 @@ from __future__ import annotations
 import logging
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING
 
 from ticketpilot.evaluation.schemas import EvaluationSummary
 from ticketpilot.optimizer.config import OptimizerConfig
@@ -98,7 +98,7 @@ class OptimizationReporter:
 
         # Header
         now = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
-        sections.append(f"# Auto-Optimization Report\n")
+        sections.append("# Auto-Optimization Report\n")
         sections.append(f"Generated: {now}\n")
 
         # Score summary

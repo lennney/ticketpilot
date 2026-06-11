@@ -61,7 +61,7 @@ class OptimizerEvaluator:
                 + result.errors
             )
             raise ValueError(
-                f"Eval dataset validation failed:\n" + "\n".join(errors)
+                "Eval dataset validation failed:\n" + "\n".join(errors)
             )
         self._dataset = result.dataset
         logger.info(
@@ -91,7 +91,7 @@ class OptimizerEvaluator:
 
         with ThreadPoolExecutor(max_workers=4) as pool:
             futures = {
-                pool.submit(predict_from_pipeline, ticket): case_id
+                pool.submit(predict_from_pipeline, ticket, True): case_id
                 for case_id, ticket in items
             }
             for future in as_completed(futures):
@@ -143,7 +143,7 @@ class OptimizerEvaluator:
         if affected_tickets:
             with ThreadPoolExecutor(max_workers=4) as pool:
                 futures = {
-                    pool.submit(predict_from_pipeline, ticket): case_id
+                    pool.submit(predict_from_pipeline, ticket, True): case_id
                     for case_id, ticket in affected_tickets
                 }
                 for future in as_completed(futures):
@@ -164,7 +164,7 @@ class OptimizerEvaluator:
             if remaining:
                 with ThreadPoolExecutor(max_workers=4) as pool:
                     futures = {
-                        pool.submit(predict_from_pipeline, ticket): case_id
+                        pool.submit(predict_from_pipeline, ticket, True): case_id
                         for case_id, ticket in remaining
                     }
                     for future in as_completed(futures):

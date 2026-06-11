@@ -1,7 +1,6 @@
 """Tests for Chinese keyword extraction in diagnostics."""
 from __future__ import annotations
 
-import pytest
 
 
 def test_extract_chinese_keywords_basic():
