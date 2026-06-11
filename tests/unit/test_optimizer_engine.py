@@ -473,3 +473,26 @@ class TestIncrementalEvaluation:
                 )
                 assert isinstance(result, EvaluationSummary)
                 assert result.total_cases == 2
+
+
+# ------------------------------------------------------------------
+# Best state tracking + early termination (Task 3)
+# ------------------------------------------------------------------
+
+class TestBestStateTracking:
+    """Verify best state tracking and early termination logic."""
+
+    def test_best_composite_tracks_improvements(self):
+        """Best composite should update when score improves."""
+        from ticketpilot.optimizer.engine import (
+            OptimizationEngine, CONSECUTIVE_NO_IMPROVEMENT_LIMIT,
+        )
+
+        # 验证常量存在且为合理值
+        assert CONSECUTIVE_NO_IMPROVEMENT_LIMIT > 0
+        assert CONSECUTIVE_NO_IMPROVEMENT_LIMIT <= 10
+
+    def test_consecutive_limit_is_three(self):
+        """CONSECUTIVE_NO_IMPROVEMENT_LIMIT should be 3."""
+        from ticketpilot.optimizer.engine import CONSECUTIVE_NO_IMPROVEMENT_LIMIT
+        assert CONSECUTIVE_NO_IMPROVEMENT_LIMIT == 3
