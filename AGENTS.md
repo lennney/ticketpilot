@@ -308,3 +308,35 @@ Each phase (logical unit from tasks.md) follows a 7-step loop. See `docs/harness
 - Loop back: Review/Doc fails → back to Implementation (max 3 retries, then escalate)
 - Phase done: All steps pass → commit + push → next phase
 - Controller never implements code directly (always delegate to subagent)
+
+## 17. 文档维护约定
+
+> 见 `docs/MAINTENANCE.md` 完整版。以下是本文件的核心摘录。
+
+### 17.1 不更新文档 = 没做完
+
+任何阶段完成后，**必须**更新：
+1. `CHANGELOG.md` — `[Unreleased]` 填写变更内容。**未更新 CHANGELOG 的 commit 不能标记 `[verified]`**
+2. `docs/INDEX.md` — 如果新增/修改了文件
+3. 受影响的技术文档 — 至少加过期标记
+
+### 17.2 更新时机速查
+
+| 时机 | 必须更新 |
+|------|---------|
+| 阶段 merge 时 | CHANGELOG.md + 受影响的 technical docs |
+| 新增文件 | docs/INDEX.md |
+| 评测数据/指标变化 | CHANGELOG.md |
+| 淘汰旧功能 | 标记 deprecated + 更新 INDEX |
+
+### 17.3 文档清理
+
+| 类型 | 处理 |
+|------|------|
+| `docs/plans/` | 阶段归档后移入 `archive/` 或删除 |
+| `docs/CHECKPOINT_*.md` | 归档到 CHANGELOG 后删除 |
+| `docs/technical/` | 永久保留，修改时同步更新 |
+
+### 17.4 一句话
+
+> 每完成一件事，停下来更新一次文档。**不更新等于没做完**。
