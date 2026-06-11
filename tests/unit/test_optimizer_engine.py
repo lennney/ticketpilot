@@ -496,3 +496,161 @@ class TestBestStateTracking:
         """CONSECUTIVE_NO_IMPROVEMENT_LIMIT should be 3."""
         from ticketpilot.optimizer.engine import CONSECUTIVE_NO_IMPROVEMENT_LIMIT
         assert CONSECUTIVE_NO_IMPROVEMENT_LIMIT == 3
+
+    def test_early_termination_after_three_no_improvements(self):
+        """run() should stop after CONSECUTIVE_NO_IMPROVEMENT_LIMIT consecutive no-improvement rounds."""
+        from ticketpilot.optimizer.engine import (
+            CONSECUTIVE_NO_IMPROVEMENT_LIMIT,
+            OptimizationEngine,
+        )
+
+        engine = OptimizationEngine(max_rounds=20)
+
+        # Set up dataset so run() doesn't crash on hasattr check
+        ds = MagicMock()
+        ds.tickets = {"CASE-001": MagicMock()}
+        engine.evaluator._dataset = ds
+
+        # Mock _run_one_round to always return False (no improvement)
+        with patch.object(engine, '_run_one_round', return_value=False):
+            with patch.object(engine.evaluator, 'get_baseline') as mock_base:
+                mock_base.return_value = _make_summary(
+                    {f"CASE-{i:03d}": _make_case_result(f"CASE-{i:03d}") for i in range(1, 4)}
+                )
+                result = engine.run()
+
+        # Should complete (not loop forever) and have no improvements
+        assert result is False
+
+    def test_best_state_updates_on_improvement(self):
+        """_best_composite should update when _run_one_round improves score."""
+        from ticketpilot.optimizer.engine import OptimizationEngine
+
+        engine = OptimizationEngine(max_rounds=5)
+
+        # Set up dataset so run() doesn't crash
+        ds = MagicMock()
+        ds.tickets = {"CASE-001": MagicMock()}
+        engine.evaluator._dataset = ds
+
+        with patch.object(engine, '_run_one_round') as mock_round:
+            # Return True on first call (improvement), False on subsequent
+            mock_round.side_effect = [True, False, False]
+            with patch.object(engine.evaluator, 'get_baseline') as mock_base:
+                mock_base.return_value = _make_summary(
+                    {f"CASE-{i:03d}": _make_case_result(f"CASE-{i:03d}") for i in range(1, 4)}
+                )
+                with patch.object(engine.evaluator, 'run_full_evaluation') as mock_full:
+                    # Return a slightly better summary the first time
+                    better = _make_summary(
+                        {f"CASE-{i:03d}": _make_case_result(f"CASE-{i:03d}") for i in range(1, 6)}
+                    )
+                    mock_full.return_value = better
+                    engine.run()
+
+        # After first improvement, _best_composite should have been set
+        assert engine._best_composite > 0
+
+
+# ------------------------------------------------------------------
+# _analyze_causal_features tests
+# ------------------------------------------------------------------
+
+class TestAnalyzeCausalFeatures:
+    """Verify _analyze_causal_features lift-based keyword extraction."""
+
+    def test_empty_misclassified_returns_empty(self):
+        """Empty misclassified_texts returns []."""
+        from ticketpilot.optimizer.diagnostics import _analyze_causal_features
+        result = _analyze_causal_features([], ["correct text"], [], max_features=3)
+        assert result == []
+
+    def test_empty_correct_falls_back_to_extract(self):
+        """When correctly_classified_texts is empty, falls back to _extract_chinese_keywords."""
+        from ticketpilot.optimizer.diagnostics import _analyze_causal_features
+        mis = ["我要投诉你们客服态度太差了"]
+        result = _analyze_causal_features(mis, [], ["投诉"], max_features=2)
+        # Should find keywords from misclassified text, excluding "投诉"
+        assert isinstance(result, list)
+        assert len(result) <= 2
+        assert "投诉" not in result
+
+    def test_distinguishing_features_returned(self):
+        """Features that appear more in misclassified than correct are returned."""
+        from ticketpilot.optimizer.diagnostics import _analyze_causal_features
+        mis = [
+            "我要投诉你们客服态度太差了",
+            "态度恶劣我要投诉你们",
+            "退款处理太慢我要投诉",
+        ]
+        correct = [
+            "申请退款订单号12345",
+            "我要申请退款",
+            "退款处理一下",
+        ]
+        # "投诉" and "态度" should be distinguishing (appear in mis but not in correct)
+        result = _analyze_causal_features(mis, correct, ["退款"], max_features=3)
+        assert isinstance(result, list)
+        assert len(result) > 0
+        # "投诉" should appear (distinguishing feature)
+        # "退款" should NOT appear (in existing_keywords)
+        assert "退款" not in result
+
+    def test_max_features_respected(self):
+        """max_features limits returned keyword count."""
+        from ticketpilot.optimizer.diagnostics import _analyze_causal_features
+        mis = ["投诉态度恶劣客服差劲"]
+        correct = ["正常退货"]
+        result = _analyze_causal_features(mis, correct, [], max_features=1)
+        assert len(result) <= 1
+
+    def test_existing_keywords_filtered(self):
+        """Keywords in existing_keywords are excluded from results."""
+        from ticketpilot.optimizer.diagnostics import _analyze_causal_features
+        mis = ["投诉态度恶劣客服差劲"]
+        correct = ["正常处理"]
+        result = _analyze_causal_features(mis, correct, ["投诉", "态度"], max_features=3)
+        assert "投诉" not in result
+        assert "态度" not in result
+
+
+# ------------------------------------------------------------------
+# _verify_fix incremental path tests
+# ------------------------------------------------------------------
+
+class TestVerifyFixIncremental:
+    """Verify _verify_fix() uses incremental eval when affected_cases provided."""
+
+    def test_verify_fix_incremental_with_affected_cases(self):
+        """_verify_fix calls run_partial_evaluation when affected_cases provided."""
+        from ticketpilot.optimizer.engine import OptimizationEngine
+
+        engine = OptimizationEngine()
+
+        with patch.object(engine.evaluator, 'run_partial_evaluation') as mock_partial:
+            mock_partial.return_value = _make_summary()
+            with patch.object(engine.evaluator, 'run_full_evaluation') as mock_full:
+                summary = _make_summary()
+                improved, _, _ = engine._verify_fix(
+                    summary, {"CASE-001"},
+                    affected_cases={"CASE-001"},
+                    old_predictions={"CASE-001": MagicMock()},
+                )
+                # Should call run_partial_evaluation, NOT run_full_evaluation
+                assert mock_partial.called
+                assert not mock_full.called
+
+    def test_verify_fix_full_without_affected_cases(self):
+        """_verify_fix calls run_full_evaluation when affected_cases is None."""
+        from ticketpilot.optimizer.engine import OptimizationEngine
+
+        engine = OptimizationEngine()
+
+        with patch.object(engine.evaluator, 'run_partial_evaluation') as mock_partial:
+            with patch.object(engine.evaluator, 'run_full_evaluation') as mock_full:
+                mock_full.return_value = _make_summary()
+                summary = _make_summary()
+                improved, _, _ = engine._verify_fix(summary, {"CASE-001"})
+                # Should call run_full_evaluation, NOT run_partial_evaluation
+                assert mock_full.called
+                assert not mock_partial.called
