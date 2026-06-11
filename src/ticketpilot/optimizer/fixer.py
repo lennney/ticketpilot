@@ -87,6 +87,7 @@ class Fixer:
             "confidence_weight": self._fix_confidence_threshold,
             "intent_keyword": self._fix_intent_keywords,
             "risk_keyword": self._fix_risk_keywords,
+            "exclusion_rule": self._fix_exclusion_rule,  # NEW
         }
 
         handler = dispatch.get(fix_type)
@@ -395,5 +396,126 @@ class Fixer:
             success=True,
             fix_type="risk_keyword",
             description=f"Added {len(new_only)} keyword(s) to {risk_flag}: {new_only}",
+            files_modified=[file_path],
+        )
+
+    # ------------------------------------------------------------------
+    # L2: Exclusion rule fix
+    # ------------------------------------------------------------------
+
+    def _fix_exclusion_rule(self, diagnosis: Any) -> FixResult:
+        """Add exclusion keywords to a high-priority IntentRule.
+
+        Used when COMPLAINT cases are being absorbed by higher-priority
+        rules like REFUND or RETURN_EXCHANGE due to first-match-wins.
+
+        ``diagnosis.expected_values`` should contain:
+            - ``"intent"``: the intent whose exclusion list to modify (e.g. "REFUND")
+            - ``"predicted_intent"``: the intent that's incorrectly matching
+        ``diagnosis.suggested_keywords``: keywords to add as exclusions.
+        """
+        intent_value = diagnosis.expected_values.get("intent")
+        predicted_intent = diagnosis.expected_values.get("predicted_intent", "")
+        keywords = getattr(diagnosis, "suggested_keywords", [])
+
+        if not intent_value:
+            return FixResult(
+                success=False,
+                fix_type="exclusion_rule",
+                description="Missing 'intent' in expected_values",
+                error="expected_values must contain 'intent'",
+            )
+
+        if not keywords:
+            return FixResult(
+                success=False,
+                fix_type="exclusion_rule",
+                description="No exclusion keywords to add",
+                error="suggested_keywords is empty",
+            )
+
+        file_path = str(_CLASSIFICATION_RULES_PATH)
+        self._backup_file(file_path)
+
+        if self.dry_run:
+            return FixResult(
+                success=True,
+                fix_type="exclusion_rule",
+                description=f"[dry-run] Would add exclusions {keywords!r} to {intent_value} rule",
+                files_modified=[file_path],
+            )
+
+        source = Path(file_path).read_text(encoding="utf-8")
+
+        # 定位目标 intent 的 IntentRule
+        # 我们找的是 predicted_intent 所在的高优先级规则块
+        # 因为 COMPLAINT 被 REFUND 抢走时，需要修改 REFUND 的 exclusions
+        target_intent = predicted_intent if predicted_intent else intent_value
+
+        intent_pattern = rf"intent=IntentClass\.{target_intent}\b"
+        intent_match = re.search(intent_pattern, source)
+        if not intent_match:
+            return FixResult(
+                success=False,
+                fix_type="exclusion_rule",
+                description=f"IntentClass.{target_intent} not found in rules",
+                error=f"intent '{target_intent}' not found in {file_path}",
+            )
+
+        search_start = intent_match.start()
+
+        # 检查是否已经有 exclusions 字段
+        excl_pattern = r'exclusions=\[(.*?)\]'
+        excl_match = re.search(excl_pattern, source[search_start:], re.DOTALL)
+
+        if excl_match:
+            # 已有 exclusions，追加
+            excl_body = excl_match.group(1).strip()
+            existing_excl: list[str] = []
+            if excl_body:
+                existing_excl = [m.group(1) for m in re.finditer(r'"([^"]+)"', excl_body)]
+            new_only = [kw for kw in keywords if kw not in existing_excl]
+            if not new_only:
+                return FixResult(
+                    success=True,
+                    fix_type="exclusion_rule",
+                    description=f"All exclusions already present in {target_intent}",
+                    files_modified=[file_path],
+                )
+            all_excl = existing_excl + new_only
+            excl_entries = ", ".join(f'"{kw}"' for kw in all_excl)
+            new_excl_block = f"exclusions=[{excl_entries}]"
+
+            abs_start = search_start + excl_match.start()
+            abs_end = search_start + excl_match.end()
+            new_source = source[:abs_start] + new_excl_block + source[abs_end:]
+        else:
+            # 没有 exclusions 字段，在 keywords 列表之后插入
+            # 注意：这个 regex 假设 IntentRule 的 keywords= 后面跟逗号和其他字段
+            # 即 format 为 keywords=[...],\n       其他字段
+            # 如果 rules.py 格式变化（如末尾字段无逗号），需要调整此 regex
+            kw_list_pattern = r'keywords=\[(.*?)\](.*?,)'
+            kw_match = re.search(kw_list_pattern, source[search_start:], re.DOTALL)
+            if not kw_match:
+                return FixResult(
+                    success=False,
+                    fix_type="exclusion_rule",
+                    description="Could not locate keywords list",
+                    error="keywords=[...] not found",
+                )
+
+            kw_end = search_start + kw_match.end()
+            excl_entries = ", ".join(f'"{kw}"' for kw in keywords)
+            insertion = f',\n        exclusions=[{excl_entries}],'
+
+            # 找到 keywords 行后面的内容插入位置
+            new_source = source[:kw_end] + insertion + source[kw_end:]
+
+        self._write_file(file_path, new_source)
+
+        return FixResult(
+            success=True,
+            fix_type="exclusion_rule",
+            description=f"Added {len(keywords)} exclusion(s) to {target_intent}: {keywords}",
             files_modified=[file_path],
         )

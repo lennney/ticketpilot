@@ -34,6 +34,7 @@ FIX_PRIORITY = {
     "confidence_weight": 1,
     "intent_keyword": 2,
     "risk_keyword": 2,
+    "exclusion_rule": 2,  # NEW: same priority as keyword fixes
     "reranker_weight": 3,
     "knowledge_addition": 4,
     "code_change": 5,

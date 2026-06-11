@@ -16,6 +16,13 @@ from ticketpilot.evaluation.schemas import (
     EvaluationSummary,
 )
 
+# 意图优先级顺序（first-match-wins）
+PRIORITY_ORDER = [
+    "REFUND", "RETURN_EXCHANGE", "ACCOUNT_ISSUE",
+    "TECHNICAL_ISSUE", "PRODUCT_CONSULTING", "LOGISTICS",
+    "COMPLAINT", "OTHER"
+]
+
 
 # ---------------------------------------------------------------------------
 # Diagnosis dataclass
@@ -458,13 +465,24 @@ class DiagnosticsEngine:
                     if extracted:
                         suggested_keywords = extracted
 
+            # 决定使用哪种修复策略
+            fix_type = "intent_keyword"
+
+            # 如果 predicted intent 的优先级高于 expected intent
+            # 说明是 first-match-wins 问题，应该用 exclusion_rule
+            if expected.upper() in PRIORITY_ORDER and predicted.upper() in PRIORITY_ORDER:
+                expected_prio = PRIORITY_ORDER.index(expected.upper())
+                predicted_prio = PRIORITY_ORDER.index(predicted.upper())
+                if predicted_prio < expected_prio:
+                    fix_type = "exclusion_rule"
+
             all_diagnoses.append(Diagnosis(
                 type=TYPE_INTENT_MISMATCH,
                 priority=2,  # intent_keyword priority
                 affected_cases=case_ids,
                 expected_values={"intent": expected.upper()},
                 predicted_values={"predicted_intent": predicted},
-                suggested_fix_type="intent_keyword",
+                suggested_fix_type=fix_type,
                 suggested_keywords=suggested_keywords,
                 fix_gain=gain,
                 description=(
