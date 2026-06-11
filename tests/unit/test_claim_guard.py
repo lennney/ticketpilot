@@ -200,6 +200,40 @@ class TestFailureReasonsTaxonomy:
         assert GuardFailureType.FORBIDDEN_PROMISE not in result.failure_reasons
         assert GuardFailureType.MISSING_RISK_ESCALATION not in result.failure_reasons
 
+    def test_safe_escalation_statement_included_when_present(self) -> None:
+        """SAFE_ESCALATION_STATEMENT added when safe escalation language detected and guard fails."""
+        text = "尊敬的用户，退款500元。此问题需要人工审核。"
+        draft = _draft(text)
+        result = check_claim_guard(draft, [])
+        assert result.guard_passed is False
+        assert GuardFailureType.FORBIDDEN_PROMISE in result.failure_reasons
+        assert GuardFailureType.SAFE_ESCALATION_STATEMENT in result.failure_reasons
+
+    def test_manual_review_acknowledgement_included_when_present(self) -> None:
+        """MANUAL_REVIEW_ACKNOWLEDGEMENT added when manual review acknowledged and guard fails."""
+        text = "尊敬的用户，退款500元。需人工审核。"
+        draft = _draft(text)
+        result = check_claim_guard(draft, [])
+        assert result.guard_passed is False
+        assert GuardFailureType.FORBIDDEN_PROMISE in result.failure_reasons
+        assert GuardFailureType.MANUAL_REVIEW_ACKNOWLEDGEMENT in result.failure_reasons
+
+    def test_safe_escalation_not_included_when_not_present(self) -> None:
+        """SAFE_ESCALATION_STATEMENT absent when guard fails without escalation language."""
+        text = "尊敬的用户，退款500元。"
+        draft = _draft(text)
+        result = check_claim_guard(draft, [])
+        assert result.guard_passed is False
+        assert GuardFailureType.SAFE_ESCALATION_STATEMENT not in result.failure_reasons
+
+    def test_manual_review_not_included_when_not_present(self) -> None:
+        """MANUAL_REVIEW_ACKNOWLEDGEMENT absent when guard fails without review acknowledgement."""
+        text = "尊敬的用户，退款500元。"
+        draft = _draft(text)
+        result = check_claim_guard(draft, [])
+        assert result.guard_passed is False
+        assert GuardFailureType.MANUAL_REVIEW_ACKNOWLEDGEMENT not in result.failure_reasons
+
 
 # ---------------------------------------------------------------------------
 # _extract_chunk_ids

@@ -313,6 +313,12 @@ def check_claim_guard(
             failure_reasons.append(GuardFailureType.FORBIDDEN_PROMISE)
         if not risk_respected:
             failure_reasons.append(GuardFailureType.MISSING_RISK_ESCALATION)
+        # Safe escalation language — informational annotation
+        if check_safe_escalation_language(draft_text):
+            failure_reasons.append(GuardFailureType.SAFE_ESCALATION_STATEMENT)
+        # Manual review acknowledgement — informational annotation
+        if check_manual_review_acknowledgement(draft_text):
+            failure_reasons.append(GuardFailureType.MANUAL_REVIEW_ACKNOWLEDGEMENT)
         if not failure_reasons:
             failure_reasons.append(GuardFailureType.AMBIGUOUS_GUARD_CASE)
 
