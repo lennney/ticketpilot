@@ -3,8 +3,6 @@
 import uuid
 from datetime import datetime
 
-import pytest
-from pydantic import ValidationError
 
 from ticketpilot.tracing.provenance import ClaimProvenance, ResponseProvenance
 

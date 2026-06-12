@@ -1,6 +1,4 @@
 """Unit tests for RerankerConfig."""
-import tempfile
-from pathlib import Path
 
 import pytest
 

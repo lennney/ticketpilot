@@ -3,7 +3,6 @@
 import uuid
 from datetime import datetime
 
-import pytest
 
 from ticketpilot.confidence.scorer import ConfidenceBreakdown, ConfidenceLevel
 from ticketpilot.degradation.router import DegradedResponse, ResponseStrategy
@@ -15,7 +14,6 @@ from ticketpilot.schema.ticket import (
     NormalizedTicket,
     RawTicket,
     RiskAssessment,
-    RiskFlag,
     RiskSeverity,
     TicketOutput,
 )

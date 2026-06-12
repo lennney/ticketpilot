@@ -19,7 +19,7 @@ from pathlib import Path
 
 import pytest
 
-from ticketpilot.pipeline import intake_risk_pipeline, post_process
+from ticketpilot.pipeline import intake_risk_pipeline
 from ticketpilot.drafting.generator import generate_draft
 from ticketpilot.schema.ticket import RawTicket
 

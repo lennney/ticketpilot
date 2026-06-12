@@ -13,7 +13,7 @@ import csv
 import pathlib
 from collections import Counter
 from dataclasses import dataclass
-from datetime import datetime, timezone
+from datetime import datetime
 
 import plotly.express as px
 import streamlit as st

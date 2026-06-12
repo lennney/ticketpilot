@@ -31,7 +31,7 @@ from ticketpilot.retrieval.schema.knowledge import DocType
 from ticketpilot.schema.evidence import EvidenceCandidate
 from ticketpilot.schema.ticket import Ticket
 from ticketpilot.tracing import create_trace, AgentTrace
-from ticketpilot.guardrails import run_guardrails, GuardrailResult
+from ticketpilot.guardrails import run_guardrails
 from ticketpilot.skills.loader import load_skill_library, select_relevant_skills
 from ticketpilot.skills.reflector import reflect_on_draft
 
@@ -767,9 +767,8 @@ class DraftAgent:
         # Use intent-specific terms + key phrases from the message
         from ticketpilot.retrieval.query_builder import (
             _INTENT_TERMS,
-            _RISK_TERMS,
         )
-        from ticketpilot.schema.ticket import IntentClass, RiskFlag
+        from ticketpilot.schema.ticket import IntentClass
 
         # Build alternative query using intent terms
         try:

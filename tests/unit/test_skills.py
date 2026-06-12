@@ -15,7 +15,7 @@ from ticketpilot.skills.loader import (
     select_relevant_skills,
     save_skill_library,
 )
-from ticketpilot.skills.reflector import reflect_on_draft, ReflectionResult
+from ticketpilot.skills.reflector import reflect_on_draft
 from ticketpilot.skills.generator import generate_skill_from_success
 
 
