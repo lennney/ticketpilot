@@ -9,6 +9,7 @@ Provides REST API endpoints for:
 
 from __future__ import annotations
 
+import os
 import uuid
 from datetime import datetime, timezone
 from typing import List, Optional
@@ -29,12 +30,26 @@ app = FastAPI(
     title="TicketPilot API",
     description="AI Customer Service Copilot API",
     version="1.0.0",
+    openapi_tags=[
+        {"name": "chat", "description": "AI copilot chat interaction"},
+        {"name": "tickets", "description": "Ticket processing pipeline"},
+        {"name": "reviews", "description": "Human review decisions"},
+        {"name": "evaluation", "description": "Evaluation metrics"},
+        {"name": "health", "description": "Service health checks"},
+    ],
 )
+
+# CORS origins from environment variable (Issue #17)
+_cors_origins_raw = os.environ.get(
+    "CORS_ORIGINS",
+    "http://localhost:3000,http://localhost:5173",
+)
+_cors_origins = [o.strip() for o in _cors_origins_raw.split(",") if o.strip()]
 
 # Add CORS middleware for React frontend
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "http://localhost:5173"],  # React dev servers
+    allow_origins=_cors_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
