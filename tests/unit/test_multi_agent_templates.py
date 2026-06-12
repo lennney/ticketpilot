@@ -7,9 +7,7 @@ and that templates are loaded and injected into prompts correctly.
 from __future__ import annotations
 
 from pathlib import Path
-from unittest.mock import patch
 
-import pytest
 
 from ticketpilot.drafting.draft_agent import DraftAgent
 from ticketpilot.drafting.prompt_builder import (
@@ -18,7 +16,6 @@ from ticketpilot.drafting.prompt_builder import (
     load_template,
 )
 from ticketpilot.multi_agent import (
-    BaseAgent,
     ComplaintAgent,
     DefaultAgent,
     LogisticsAgent,

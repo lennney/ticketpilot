@@ -21,6 +21,7 @@ dependencies = [
     "sentence-transformers>=5.5.1",
     "openai>=2.38.0",
     "plotly>=6.8.0",
+    "pytest>=9.0.3",
 ]
 
 [project.scripts]
@@ -42,4 +43,9 @@ dev = [
     "pytest>=9.0.3",
     "pytest-cov>=7.0.0",
     "ruff>=0.15.12",
+    "jieba>=0.42.1",
 ]
+
+[tool.ruff.lint]
+# E402: logger definition between import blocks is intentional
+extend-ignore = ["E402"]
