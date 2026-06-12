@@ -11,8 +11,7 @@ Uses UUID for chunk_id/doc_id (consistent with FusedResult, Citation).
 
 from __future__ import annotations
 
-from datetime import datetime, timezone, timezone
-from typing import Optional
+from datetime import datetime, timezone
 from uuid import UUID
 
 from pydantic import BaseModel, Field

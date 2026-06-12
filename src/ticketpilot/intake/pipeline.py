@@ -1,6 +1,6 @@
 """Intake pipeline for ticket normalization and entity extraction."""
 
-from datetime import datetime, timezone, timezone
+from datetime import datetime, timezone
 
 from ticketpilot.schema.ticket import NormalizedTicket, RawTicket
 from ticketpilot.intake.normalizer import TextNormalizer

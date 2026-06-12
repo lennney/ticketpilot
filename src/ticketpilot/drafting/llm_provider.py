@@ -250,8 +250,6 @@ class OpenAICompatibleProvider(LLMProvider):
             )
 
         # Build guard-aware structured prompt
-        from ticketpilot.drafting.prompt_builder import format_evidence_block
-
         system_prompt = (
             "你是一名客服工单处理助手。请根据用户消息和检索到的证据，生成一个专业的回复草稿。"
             "回复必须基于提供的证据内容来组织回答，不要编造证据中没有的信息。"
@@ -259,9 +257,6 @@ class OpenAICompatibleProvider(LLMProvider):
             "只有当完全没有可用证据时，才建议转人工。"
             "回复用中文。"
         )
-
-        # Format evidence using the same block format as prompt_builder
-        formatted_evidence = format_evidence_block(evidence[:5])
 
         # Guard-aware safety rules
         # Build a mapping: chunk_id -> [N] for numbered citations

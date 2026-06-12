@@ -7,15 +7,12 @@ from __future__ import annotations
 
 from uuid import uuid4
 
-import pandas as pd
 import pytest
 
 from ticketpilot.retrieval.schema.knowledge import DocType
 from ticketpilot.retrieval.traces import (
     FusedResult,
-    KeywordResult,
     RetrievalTrace,
-    VectorResult,
 )
 from ticketpilot.review.retrieval_viz import (
     _build_contribution_df,
@@ -178,7 +175,6 @@ class TestRenderRetrievalTrace:
     @pytest.mark.parametrize("n_fused", [0, 1, 5])
     def test_render_does_not_raise(self, n_fused: int) -> None:
         """render_retrieval_trace should not raise for any result count."""
-        import streamlit as st
 
         trace = _make_trace(n_fused=n_fused) if n_fused > 0 else _make_empty_trace()
         # st.delta_generator.DeltaGenerator methods are no-ops in test context

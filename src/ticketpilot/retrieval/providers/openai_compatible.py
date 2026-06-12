@@ -102,7 +102,6 @@ class OpenAICompatibleEmbeddingProvider:
         Returns:
             List of embedding vectors in input order
         """
-        import ssl
         
         url = f"{self.base_url}/embeddings"
         headers = {

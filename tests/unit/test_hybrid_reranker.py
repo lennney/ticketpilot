@@ -1,5 +1,4 @@
 """Unit tests for HybridReranker."""
-import math
 from unittest.mock import MagicMock
 from uuid import uuid4
 
@@ -7,7 +6,6 @@ import pytest
 
 from ticketpilot.retrieval.hybrid_reranker import (
     HybridReranker,
-    RerankResult,
     _cosine_similarity,
     _keyword_density,
     _length_score,

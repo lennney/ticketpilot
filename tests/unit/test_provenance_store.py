@@ -3,7 +3,6 @@
 import uuid
 from datetime import datetime
 
-import pytest
 
 from ticketpilot.tracing.provenance import ClaimProvenance, ResponseProvenance
 from ticketpilot.tracing.store import ProvenanceStore

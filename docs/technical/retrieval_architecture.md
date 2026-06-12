@@ -1,10 +1,33 @@
 # Retrieval Architecture
 
+> **Last updated:** 2026-06-11
+> **Changes:** DashScope real embeddings + jieba FTS segmentation + seed data expansion
+
 ## Overview
 
-The retrieval engine provides hybrid keyword + vector search over a Chinese knowledge base. It is the core of TicketPilot's knowledge-grounded pipeline, enabling evidence-backed customer support replies. The retrieval operates as Stage 4 of the pipeline.
+The retrieval engine provides hybrid keyword + vector search over a Chinese knowledge base. It is the core of TicketPilot's knowledge-grounded pipeline, enabling evidence-backed customer support replies.
 
 **Source modules:** `src/ticketpilot/retrieval/`
+
+### Pipeline Flow
+
+```
+Ticket Text
+    ↓
+build_retrieval_query()      ← Query builder (text + intent/risk terms)
+    ↓
+hybrid_retrieval()
+    ├── keyword_search()      ← PostgreSQL FTS (simple config) + LIKE fallback
+    │   └── jieba分词         ← Chinese word segmentation (since 2026-06-11)
+    ├── vector_search()       ← pgvector HNSW (DashScope text-embedding-v3)
+    │   └── 1024-dim cosine   ← Real semantic embeddings (since 2026-06-11)
+    ├── RRF fusion            ← Reciprocal Rank Fusion (k=60)
+    └── HybridReranker        ← 4-signal weighted reranking
+    ↓
+map_fused_to_evidence()      ← FusedResult → EvidenceCandidate
+    ↓
+Evidence Candidates          ← Input to drafting stage
+```
 
 ## Source Separation: FAQ / Policy / Case
 
@@ -12,7 +35,7 @@ The knowledge base uses a **two-layer source architecture**:
 
 ### Layer 1: Source Tables (type-specific storage)
 
-Three physically separate PostgreSQL tables, each with columns specific to the document type:
+Three physically separate PostgreSQL tables:
 
 | Table | Document Type | Type-Specific Columns |
 |-------|--------------|----------------------|
@@ -24,7 +47,7 @@ All source tables share: `id` (UUID PK), `title`, `created_at`, `updated_at`.
 
 ### Layer 2: Chunk Table (unified retrieval)
 
-A single `knowledge_chunks` table stores all chunked content across all document types, with foreign key columns to source tables:
+A single `knowledge_chunks` table stores all chunked content across all document types:
 
 | Column | Type | Description |
 |--------|------|-------------|
@@ -34,39 +57,26 @@ A single `knowledge_chunks` table stores all chunked content across all document
 | `source_table` | text | Source table name |
 | `source_id` | UUID | FK to source table row |
 | `content` | text | Chunk text content |
-| `embedding` | vector(384) | Embedding vector (fake for MVP) |
-| `parent_chunk_id` | UUID (nullable) | FK to parent chunk (for parent-child linking) |
+| `embedding` | vector(1024) | DashScope text-embedding-v3 |
+| `parent_chunk_id` | UUID (nullable) | FK to parent chunk |
 | `chunk_level` | int | 1 (parent) or 2 (child) |
 
-**Why two layers:** Source tables satisfy the spec requirement for physical separation (different update frequencies, access patterns, retention policies). The unified chunks table enables single-query retrieval without UNION operations.
+**Why two layers:** Source tables satisfy spec requirements for physical separation (different update frequencies, access patterns, retention policies). The unified chunks table enables single-query retrieval without UNION operations.
 
-## Knowledge Chunks
+### Current Seed Data (2026-06-11)
 
-### Parent-Child Chunking
+```
+Knowledge chunks: 1,505 total
+  ├── FAQ:    619
+  ├── POLICY: 463
+  └── CASE:   423
+```
 
-Each document is split into two chunk levels:
-
-- **Level 1 (parent)**: 500-1000 tokens. Provides full context for reply generation.
-- **Level 2 (child)**: 100-300 tokens. Provides precise passage matching for retrieval.
-
-Child chunks link to parent chunks via `parent_chunk_id`, enabling traceability from a matched passage to its broader context.
-
-**Source:** `src/ticketpilot/retrieval/chunker.py`
-
-### Seed Data
-
-The current knowledge base contains synthetic seed data (not real enterprise data):
-- 12 FAQ documents
-- 12 Policy documents
-- 12 Case documents
-
-These 36 documents produce approximately 50 chunks after parent-child splitting. The seed data is sufficient for demo and integration testing but is not representative of real-world scale or content.
+All chunks have DashScope text-embedding-v3 (1024-dim) embeddings.
 
 ## Hybrid Retrieval
 
-The retrieval pipeline runs a two-stage process: keyword search + vector search, then fuses results with RRF.
-
-### Stage 1: Keyword Search (PostgreSQL FTS)
+### Stage 1: Keyword Search (PostgreSQL FTS + LIKE)
 
 **Source:** `src/ticketpilot/retrieval/keyword_search.py`
 
@@ -74,10 +84,19 @@ The retrieval pipeline runs a two-stage process: keyword search + vector search,
 |-----------|-------|
 | FTS configuration | `simple` (not `chinese`) |
 | Index | GIN on `to_tsvector('simple', content)` |
-| Ranking | `ts_rank` with default normalization |
-| Fallback | LIKE-based match on 8 Chinese business terms when FTS returns zero results |
+| Ranking | `ts_rank_cd` (cover density, normalization 32) |
+| **Chinese segmentation** | **jieba** (since 2026-06-11) |
+| LIKE fallback | 30 Chinese business terms |
+| **% escaping** | Escaped for psycopg3 (since 2026-06-11) |
 
-**Important note on FTS config:** The `simple` configuration tokenizes on whitespace. It does not perform Chinese word segmentation. For content consisting primarily of Chinese text without spaces, FTS may produce few or no results. The 8-term Chinese business keyword LIKE fallback compensates for this limitation.
+**Chinese FTS fix (2026-06-11):** PostgreSQL's `simple` config treats each CJK character as an individual token. Without segmentation, a query like "我买的手机充电器坏了" becomes a 10-character AND (`我 & 买 & 的 & 手 & 机 & 充 & 电 & 器 & 坏 & 了`) that matches almost nothing. 
+
+Solution: `_segment_chinese_terms()` uses **jieba** word segmentation to break Chinese text into meaningful words, then filters single-character stopwords (42 common chars like "的", "了", "吗"). The same query now produces:
+```
+手机 | 充电器 | 坏了        ← OR of 2-3 char groups
+```
+
+**LIKE fallback:** When FTS scores are below `FTS_MIN_SCORE_THRESHOLD` (0.1), the system checks for strong business terms (30 terms like "退款", "投诉", "清关") and runs LIKE-based search. Results from both sources are merged.
 
 ### Stage 2: Vector Search (pgvector HNSW)
 
@@ -91,6 +110,24 @@ The retrieval pipeline runs a two-stage process: keyword search + vector search,
 | ef_search | 100 |
 | Distance operator | `<=>` (cosine distance) |
 | Score formula | `1 - (embedding <=> query_vector)` |
+| Embedding provider | **DashScope text-embedding-v3** (1024-dim) |
+
+**Embedding provider history:**
+- **MVP (pre-2026-06-11):** `FakeEmbeddingProvider` — SHA-256 hash seeded random vectors. **Semantically meaningless.**
+- **Current (2026-06-11+):** `OpenAICompatibleEmbeddingProvider` → DashScope text-embedding-v3. **Real Chinese semantic embeddings.**
+
+**Configuration** (`.env.local`):
+```bash
+EMBEDDING_PROVIDER=openai_compatible
+EMBEDDING_BASE_URL=https://dashscope.aliyuncs.com/compatible-mode/v1
+EMBEDDING_API_KEY=<dashscope_api_key>
+EMBEDDING_MODEL=text-embedding-v3
+EMBEDDING_DIM=1024
+```
+
+The reranker auto-detects real embeddings via `_is_real_embedding_provider()`:
+- Fake → `embedding_similarity` signal weight redistributed to other signals
+- Real → embedding similarity contributes to ranking
 
 ### Stage 3: RRF Fusion
 
@@ -101,128 +138,81 @@ The retrieval pipeline runs a two-stage process: keyword search + vector search,
 | Parameter | Value |
 |-----------|-------|
 | k | 60 |
-| Per-ranker tracking | Each FusedResult records keyword_rank, keyword_contribution, vector_rank, vector_contribution |
+| Per-ranker tracking | Each FusedResult records keyword_rank, vector_rank, per-ranker contributions |
 
-RRF is score-agnostic — it combines rank positions rather than raw scores, which is essential since keyword FTS scores and vector cosine similarity are not directly comparable. The `k=60` constant reduces the impact of large rank differences between rankers.
+RRF is score-agnostic — it combines rank positions rather than raw scores. With real embeddings, the vector ranking now contributes **meaningful** semantic relevance alongside keyword matching.
 
-### Retrieval Pipeline Orchestration
-
-**Source:** `src/ticketpilot/retrieval/pipeline.py`
-
-The `hybrid_retrieval()` function orchestrates:
-1. Run keyword search (`keyword_search_db`)
-2. Run vector search (`vector_search_db`)
-3. Fuse results (`rrf_fusion`)
-4. Apply optional doc_type filter
-5. Return `RetrievalTrace` with full fused results
-
-### Evidence Mapping
-
-**Source:** `src/ticketpilot/retrieval/evidence_mapper.py`
-
-After fusion, `map_fused_to_evidence()` converts `FusedResult` objects to `EvidenceCandidate` objects (the boundary type used by the pipeline). This mapping:
-- Drops retrieval-internal fields (keyword_rank, vector_rank, per-ranker contributions)
-- Adds `source_table` from the chunk's source table reference
-- Preserves `rank` for downstream ordering
-
-## Fake Embedding Limitation
-
-**Critical constraint:** The `FakeEmbeddingProvider` generates deterministic pseudo-random vectors using SHA-256 hashes seeded random number generation. These vectors have **no semantic meaning**.
-
-```
-FakeEmbeddingProvider:
-  - Dimension: 384
-  - Algorithm: SHA-256(text) -> seed -> random.Random(seed) -> 384 floats in [-1, 1]
-  - Deterministic: same text always produces the same vector
-  - Status: PIPELINE VERIFICATION ONLY
-```
-
-What the fake embedding provider can verify:
-- Embedding generation and storage works
-- HNSW indexing works (cosine distance computation, index creation)
-- Vector search returns results (sorted by distance)
-- RRF fusion works with vector ranking
-- Full retrieval pipeline integration (query -> embedding -> search -> fusion -> output)
-
-What the fake embedding provider **cannot** provide:
-- Semantic retrieval quality
-- Meaningful cosine similarity scores
-- Meaningful ranking of results by relevance
-- Any real-world retrieval precision or recall
-
-## Hybrid Reranking (Post-RRF)
-
-After RRF fusion, an optional **Hybrid Reranker** applies multi-signal weighted fusion
-to improve Top-K ranking quality. This replaces the previous simple embedding tiebreaker.
+### Stage 4: Hybrid Reranker (Post-RRF)
 
 **Source:** `src/ticketpilot/retrieval/hybrid_reranker.py`
 
-### Signals
+Four signals with configurable weights (`config/reranker.yaml`):
 
-| Signal | Default Weight | Description |
-|--------|---------------|-------------|
-| RRF score | 0.40 | Min-max normalized RRF fusion score |
-| Embedding similarity | 0.25 | Cosine similarity (auto-disabled with FakeEmbedding) |
-| Intent metadata boost | 0.20 | Intent → doc_type matching (e.g., refund→policy +0.15) |
-| Content quality | 0.15 | Length appropriateness + keyword density |
+| Signal | Default Weight | Active with Fake Embed? | Active with Real Embed? |
+|--------|---------------|----------------------|----------------------|
+| RRF score | 0.40 | ✅ | ✅ |
+| Embedding similarity | 0.25 | ❌ (redistributed) | ✅ |
+| Intent metadata boost | 0.20 | ✅ | ✅ |
+| Content quality | 0.15 | ✅ | ✅ |
 
-When FakeEmbeddingProvider is detected, the embedding signal weight is redistributed
-proportionally among the other 3 signals (so weights always sum to 1.0).
+## Query Building
 
-### Configuration
+**Source:** `src/ticketpilot/retrieval/query_builder.py`
 
-Weights and parameters are configurable via `config/reranker.yaml`:
+Builds a retrieval query from ticket state:
 
-```yaml
-weights:
-  rrf_score: 0.40
-  embedding_similarity: 0.25
-  intent_metadata_boost: 0.20
-  content_quality: 0.15
+```python
+# Input: ticket text + intent + risk flags
+build_retrieval_query("我买的手机充电器坏了", IntentClass.PRODUCT_CONSULTING, {COMPENSATION_RISK})
+
+# Output: concatenated query with intent/risk terms
+→ "我买的手机充电器坏了 产品 咨询 规格 功能 赔偿 赔付 金额"
 ```
 
-**Source:** `src/ticketpilot/retrieval/reranker_config.py`
+The appended terms (from `_INTENT_TERMS` and `_RISK_TERMS`) compensate for the keyword search limitations by injecting known domain vocabulary. These are then segmented by jieba in the FTS stage.
 
-## Multi-Query Expansion
+## Evidence Mapping
 
-An optional **MultiQueryExpander** generates query variants using LLM to improve recall.
-When enabled, the original query + N variants are each run through the retrieval pipeline
-independently, then merged before hybrid reranking.
+**Source:** `src/ticketpilot/retrieval/evidence_mapper.py`
+
+After fusion, `map_fused_to_evidence()` converts `FusedResult` → `EvidenceCandidate`:
+- Drops retrieval-internal fields (keyword_rank, vector_rank, RRF details)
+- Adds `source_table` from chunk's source table reference
+- Preserves `rank` for downstream ordering
+
+## Multi-Query Expansion (Optional)
+
+An optional `MultiQueryExpander` generates LLM-based query variants to improve recall. When enabled, N variants run independently, then merged via sum_score strategy.
 
 **Source:** `src/ticketpilot/retrieval/query_expander.py`
 
-### Merge Strategies
+Enabled via `enable_query_expansion=True` in `retrieve_evidence()` call.
 
-Results from multiple query variants are merged using:
+## Key Decisions
 
-- **sum_score** (default): RRF scores summed per chunk_id — docs found by multiple
-  variants get higher scores (multi-path validation)
-- **max_score**: Keep highest RRF score per chunk_id
-- **rrf_again**: Apply second-level RRF across variant rankings
+| Date | Decision | Rationale |
+|------|----------|-----------|
+| 2026-06-11 | DashScope text-embedding-v3 | Best Chinese embedding quality, 1024-dim matches existing schema, free tier available |
+| 2026-06-11 | jieba FTS segmentation | Without word segmentation, Chinese FTS recall was near zero |
+| 2026-06-11 | % escaping in FTS | psycopg3 treats bare `%` as placeholder → SQL error |
+| 2026-06-10 | HybridReranker replaces simple embedding tiebreaker | Multi-signal fusion gives better ranking than single-signal |
 
-**Source:** `src/ticketpilot/retrieval/result_merger.py`
+## Re-seeding Process
 
-### Pipeline Integration
+To regenerate knowledge chunk embeddings with a different provider:
 
+```python
+from ticketpilot.retrieval.db.seeding import seed_knowledge_chunks
+from ticketpilot.retrieval.embedding_config import load_embedding_config_from_env
+from ticketpilot.retrieval.providers import create_embedding_provider
+
+config = load_embedding_config_from_env()
+provider = create_embedding_provider(config)
+result = seed_knowledge_chunks(
+    embedding_provider=provider,
+    clear_existing=True,  # DANGER: deletes all existing chunks
+)
+print(result)
 ```
-Query → (optional) MultiQueryExpander → N variants
-      → per-variant: keyword + vector + RRF
-      → merge (sum_score)
-      → HybridReranker (4-signal fusion)
-      → Top-K output + RetrievalTrace
-```
 
-Both features are backward-compatible: `enable_query_expansion=False` by default,
-and `intent=None` disables intent boost. All new fields in RetrievalTrace are Optional.
-
-## Deferred Items
-
-The following retrieval refinements are explicitly deferred:
-
-- **Realistic enterprise data pack** — Current 36-document seed set is synthetic. A real data pack with actual FAQ, policy, and case documents is needed.
-- **SourceRouter implementation** — Intent-to-source routing (e.g., refund tickets search only FAQ + Policy) was designed but not implemented.
-- **Persistent retrieval traces** — `RetrievalTrace` is in-memory only. The `retrieval_traces` DB table migration is deferred.
-- **BM25 or alternative keyword retrieval** — PostgreSQL FTS is sufficient for MVP. BM25 may improve keyword ranking.
-- **Embedding fine-tuning** — No support ticket data available for fine-tuning.
-- **Evidence scoring threshold tuning** — RRF scores have no absolute meaning; threshold tuning deferred until evaluation data exists.
-- **Cross-encoder reranker** — Would require sentence-transformers dependency; deferred in favor of lightweight multi-signal fusion.
+After re-seeding, the HNSW index is automatically rebuilt by PostgreSQL (the existing index definition survives because dimension matches).

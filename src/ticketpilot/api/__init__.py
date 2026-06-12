@@ -9,6 +9,7 @@ Provides REST API endpoints for:
 
 from __future__ import annotations
 
+import os
 import uuid
 from datetime import datetime, timezone
 from typing import List, Optional
@@ -18,9 +19,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
 from ticketpilot.pipeline import intake_risk_pipeline
-from ticketpilot.schema.ticket import RawTicket, TicketOutput
+from ticketpilot.schema.ticket import RawTicket
 from ticketpilot.drafting.generate import generate_draft
-from ticketpilot.drafting.schemas import DraftReply
 from ticketpilot.api.streaming import register_streaming_routes
 from ticketpilot.multi_agent import generate_draft_with_orchestrator
 
@@ -29,12 +29,26 @@ app = FastAPI(
     title="TicketPilot API",
     description="AI Customer Service Copilot API",
     version="1.0.0",
+    openapi_tags=[
+        {"name": "chat", "description": "AI copilot chat interaction"},
+        {"name": "tickets", "description": "Ticket processing pipeline"},
+        {"name": "reviews", "description": "Human review decisions"},
+        {"name": "evaluation", "description": "Evaluation metrics"},
+        {"name": "health", "description": "Service health checks"},
+    ],
 )
+
+# CORS origins from environment variable (Issue #17)
+_cors_origins_raw = os.environ.get(
+    "CORS_ORIGINS",
+    "http://localhost:3000,http://localhost:5173",
+)
+_cors_origins = [o.strip() for o in _cors_origins_raw.split(",") if o.strip()]
 
 # Add CORS middleware for React frontend
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "http://localhost:5173"],  # React dev servers
+    allow_origins=_cors_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -116,7 +130,7 @@ class EvaluationResult(BaseModel):
 # API Endpoints
 # ---------------------------------------------------------------------------
 
-@app.get("/")
+@app.get("/", tags=["health"])
 async def root():
     """Health check endpoint."""
     return {
@@ -127,7 +141,7 @@ async def root():
     }
 
 
-@app.post("/api/chat", response_model=ChatResponse)
+@app.post("/api/chat", response_model=ChatResponse, tags=["chat"])
 async def chat(request: ChatRequest):
     """Process a chat message and return AI response.
     
@@ -147,8 +161,6 @@ async def chat(request: ChatRequest):
     session_id = request.session_id or str(uuid.uuid4())
     
     # Process through pipeline
-    start_time = datetime.now(timezone.utc)
-    
     raw_ticket = RawTicket(
         original_text=user_message.content,
         submitted_at=datetime.now(timezone.utc),
@@ -166,8 +178,6 @@ async def chat(request: ChatRequest):
             must_human_review=ticket_output.risk_assessment.must_human_review,
             evidence_candidates=ticket_output.evidence_candidates,
         )
-        
-        processing_time = (datetime.now(timezone.utc) - start_time).total_seconds() * 1000
         
         # Extract evidence for response
         evidence_list = []
@@ -201,7 +211,7 @@ async def chat(request: ChatRequest):
             session_id=session_id,
         )
         
-    except Exception as e:
+    except Exception:
         # Fallback response on error
         assistant_message = ChatMessage(
             role="assistant",
@@ -220,7 +230,7 @@ async def chat(request: ChatRequest):
         )
 
 
-@app.post("/api/tickets", response_model=TicketResponse)
+@app.post("/api/tickets", response_model=TicketResponse, tags=["tickets"])
 async def process_ticket(request: TicketRequest):
     """Process a customer service ticket through the full pipeline.
     
@@ -275,7 +285,7 @@ async def process_ticket(request: TicketRequest):
         raise HTTPException(status_code=500, detail=f"Pipeline error: {str(e)}")
 
 
-@app.post("/api/reviews")
+@app.post("/api/reviews", tags=["reviews"])
 async def submit_review(decision: ReviewDecision):
     """Submit a review decision for a ticket.
     
@@ -292,7 +302,7 @@ async def submit_review(decision: ReviewDecision):
     }
 
 
-@app.get("/api/evaluation", response_model=EvaluationResult)
+@app.get("/api/evaluation", response_model=EvaluationResult, tags=["evaluation"])
 async def get_evaluation_metrics():
     """Get current evaluation metrics.
     
@@ -312,7 +322,7 @@ async def get_evaluation_metrics():
     )
 
 
-@app.get("/api/health")
+@app.get("/api/health", tags=["health"])
 async def health_check():
     """Detailed health check with component status."""
     return {

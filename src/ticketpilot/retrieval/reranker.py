@@ -5,7 +5,6 @@ Uses existing DashScope embeddings to re-rank RRF results.
 Improved strategy: Use embedding as a boost factor, not a major weight.
 """
 from typing import Optional
-from ticketpilot.retrieval.schema.knowledge import DocType
 from ticketpilot.retrieval.traces import FusedResult
 
 
@@ -67,9 +66,6 @@ def rerank_with_embeddings(
     if not rrf_scores:
         return fused_results[:top_k]
     
-    max_rrf = max(rrf_scores)
-    tolerance = max_rrf * 0.1  # 10% tolerance
-    
     # Sort by RRF score first, then use embedding as tiebreaker within tiers
     def sort_key(item):
         result, similarity = item
@@ -130,7 +126,7 @@ def _get_document_embedding(chunk_id) -> Optional[list[float]]:
                         return [float(x) for x in embedding_str.split(',')]
                     elif isinstance(embedding_str, list):
                         return embedding_str
-    except Exception as e:
+    except Exception:
         # Silently fail - will use RRF score only
         pass
     

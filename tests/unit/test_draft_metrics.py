@@ -158,6 +158,7 @@ class TestComputeDraftEvaluationSummary:
         expected_hr: bool = False,
         actual_hr: bool = False,
         confidence: float | None = 0.8,
+        guard_failure_types: list[str] | None = None,
     ) -> DraftEvaluationRow:
         return DraftEvaluationRow(
             case_id=case_id,
@@ -168,6 +169,7 @@ class TestComputeDraftEvaluationSummary:
             unsupported_claim_count=unsupported,
             forbidden_promise_count=forbidden,
             guard_passed=guard,
+            guard_failure_types=guard_failure_types or [],
             citation_validation_passed=cit_pass,
             safe_fallback_used=fallback,
             expected_human_review=expected_hr,
@@ -306,6 +308,58 @@ class TestComputeDraftEvaluationSummary:
         assert summary.unsupported_claim_rate == pytest.approx(2 / 3)
 
 
+class TestGuardFailureTypes:
+    """Tests for guard_failure_types tracking and per-failure-type pass rates."""
+
+    def test_guard_failure_types_field(self):
+        """Verify guard_failure_types is present in row."""
+        row = DraftEvaluationRow(
+            case_id="case-001",
+            guard_passed=False,
+            guard_failure_types=["UNSUPPORTED_POLICY_CLAIM", "FORBIDDEN_PROMISE"],
+        )
+        assert row.guard_failure_types == ["UNSUPPORTED_POLICY_CLAIM", "FORBIDDEN_PROMISE"]
+
+    def test_per_failure_type_pass_rate(self):
+        """Verify summary includes per-failure-type pass rates."""
+        rows = [
+            DraftEvaluationRow(
+                case_id="case-001",
+                guard_passed=False,
+                guard_failure_types=["UNSUPPORTED_POLICY_CLAIM"],
+            ),
+            DraftEvaluationRow(
+                case_id="case-002",
+                guard_passed=False,
+                guard_failure_types=["UNSUPPORTED_POLICY_CLAIM", "FORBIDDEN_PROMISE"],
+            ),
+            DraftEvaluationRow(
+                case_id="case-003",
+                guard_passed=True,
+                guard_failure_types=[],
+            ),
+            DraftEvaluationRow(
+                case_id="case-004",
+                guard_passed=True,
+                guard_failure_types=[],
+            ),
+        ]
+        summary = compute_draft_evaluation_summary(rows)
+        # UNSUPPORTED_POLICY_CLAIM: 2 failures out of 4 → pass rate = 2/4 = 0.5
+        assert summary.per_failure_type_pass_rates["UNSUPPORTED_POLICY_CLAIM"] == pytest.approx(0.5)
+        # FORBIDDEN_PROMISE: 1 failure out of 4 → pass rate = 3/4 = 0.75
+        assert summary.per_failure_type_pass_rates["FORBIDDEN_PROMISE"] == pytest.approx(0.75)
+
+    def test_per_failure_type_empty_when_no_failures(self):
+        """Empty dict when all guard_passed=True and no failure types."""
+        rows = [
+            DraftEvaluationRow(case_id="case-001", guard_passed=True),
+            DraftEvaluationRow(case_id="case-002", guard_passed=True),
+        ]
+        summary = compute_draft_evaluation_summary(rows)
+        assert summary.per_failure_type_pass_rates == {}
+
+
 class TestDraftEvaluationRowSerialization:
     """Tests that DraftEvaluationRow serializes to dict/JSON correctly."""
 
@@ -338,6 +392,7 @@ class TestDraftEvaluationRowSerialization:
         assert data["unsupported_claim_count"] == 1
         assert data["forbidden_promise_count"] == 0
         assert data["guard_passed"] is True
+        assert data["guard_failure_types"] == []
         assert data["citation_validation_passed"] is True
         assert data["safe_fallback_used"] is False
         assert data["expected_human_review"] is True
@@ -382,6 +437,7 @@ class TestDraftEvaluationSummaryDefaults:
         assert summary.safe_fallback_rate == 0.0
         assert summary.citation_validation_pass_rate == 0.0
         assert summary.claim_guard_pass_rate == 0.0
+        assert summary.per_failure_type_pass_rates == {}
         assert summary.citation_precision_avg is None
         assert summary.evidence_coverage_avg is None
         assert summary.human_review_trigger_accuracy is None

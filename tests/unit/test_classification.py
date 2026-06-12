@@ -111,3 +111,49 @@ class TestLegalClassification:
         result = classifier.classify(text)
         assert result.intent.value == expected_intent, \
             f"Expected {expected_intent}, got {result.intent.value} for: {text}"
+
+
+class TestScoringClassifier:
+    """Tests for the new scoring-based classifier (TDD: some tests fail under old first-match-wins)."""
+
+    def setup_method(self):
+        self.classifier = IntentClassifier()
+
+    def test_scoring_overrides_priority_order(self):
+        """Genuine TDD test: first-match-wins returns REFUND (priority #1, '退款');
+        scoring returns RETURN_EXCHANGE (退货+换货=4pts vs 退款=2pts)."""
+        text = "退货退款换货"
+        result = self.classifier.classify(text)
+        assert result.intent == IntentClass.RETURN_EXCHANGE  # FAILS under old code
+
+    def test_scoring_multi_intent_tie_uses_priority(self):
+        """Tie on score → priority order decides (REFUND > RETURN_EXCHANGE)."""
+        text = "退款退货"
+        result = self.classifier.classify(text)
+        assert result.intent == IntentClass.REFUND  # Tie: refund(2)=return(2), priority wins
+
+    def test_scoring_multiple_rules_scored_independently(self):
+        """Each rule gets its own score; the one with the most keyword chars wins."""
+        text = "退货！换货！退款"
+        result = self.classifier.classify(text)
+        # return_exchange: 退货(2)+换货(2)=4pts
+        # refund: 退款(2)=2pts
+        # → return_exchange wins
+        assert result.intent == IntentClass.RETURN_EXCHANGE
+
+    def test_scoring_no_keywords_other(self):
+        text = "今天天气不错"
+        result = self.classifier.classify(text)
+        assert result.intent == IntentClass.OTHER
+
+    def test_strong_indicator_still_fast_path(self):
+        text = "我要12315投诉你们"
+        result = self.classifier.classify(text)
+        assert result.intent == IntentClass.COMPLAINT
+        assert result.confidence == 0.9
+
+    def test_exclusion_penalty_reduces_score(self):
+        """'退款投诉': refund excluded by '投诉' penalty. Scoring: refund=0, complaint=2."""
+        text = "退款投诉"
+        result = self.classifier.classify(text)
+        assert result.intent == IntentClass.COMPLAINT
