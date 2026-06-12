@@ -1,7 +1,7 @@
 """Intent classifier for ticket text."""
 
 import re
-from datetime import datetime, timezone, timezone
+from datetime import datetime, timezone
 
 from ticketpilot.schema.ticket import ClassificationResult, IntentClass
 from ticketpilot.classification.rules import INTENT_RULES

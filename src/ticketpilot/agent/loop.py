@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import uuid
-from datetime import datetime, timezone, timezone
+from datetime import datetime, timezone
 from typing import Any
 
 from ticketpilot.agent.memory import WorkingMemory

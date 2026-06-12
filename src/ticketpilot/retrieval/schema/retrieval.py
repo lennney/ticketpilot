@@ -1,6 +1,6 @@
 """Retrieval schema models for queries, results, and traces."""
 
-from datetime import datetime, timezone, timezone
+from datetime import datetime, timezone
 from typing import Any, Optional
 from uuid import UUID
 

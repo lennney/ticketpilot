@@ -3,7 +3,6 @@
 import json
 import pytest
 from unittest.mock import patch, MagicMock
-from datetime import datetime
 
 from ticketpilot.triggers.cli import (
     parse_args,
@@ -11,7 +10,6 @@ from ticketpilot.triggers.cli import (
     format_output,
     main,
 )
-from ticketpilot.schema.ticket import RawTicket, TicketOutput
 
 
 class TestParseArgs:

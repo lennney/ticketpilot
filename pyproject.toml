@@ -43,3 +43,7 @@ dev = [
     "pytest-cov>=7.0.0",
     "ruff>=0.15.12",
 ]
+
+[tool.ruff.lint]
+# E402: logger = logging.getLogger() before imports is intentional
+extend-ignore = ["E402"]
