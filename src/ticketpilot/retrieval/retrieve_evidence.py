@@ -4,7 +4,7 @@ from typing import Optional
 
 from ticketpilot.retrieval.evidence_mapper import map_fused_to_evidence
 from ticketpilot.retrieval.pipeline import hybrid_retrieval
-from ticketpilot.retrieval.providers.fake_embedding import FakeEmbeddingProvider
+from ticketpilot.retrieval.providers.fake_embedding import EmbeddingProvider
 from ticketpilot.retrieval.query_builder import build_retrieval_query
 from ticketpilot.retrieval.reranker_config import RerankerConfig
 from ticketpilot.retrieval.schema.knowledge import DocType
@@ -19,7 +19,7 @@ def retrieve_evidence(
     risk_flags: set[RiskFlag],
     top_k: int = 10,
     doc_types: list[DocType] | None = None,
-    embedding_provider: Optional[FakeEmbeddingProvider] = None,
+    embedding_provider: Optional[EmbeddingProvider] = None,
     # New params for hybrid reranking (backward compatible)
     enable_query_expansion: bool = False,
     reranker_config: Optional[RerankerConfig] = None,

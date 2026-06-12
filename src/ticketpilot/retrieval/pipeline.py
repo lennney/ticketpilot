@@ -9,7 +9,7 @@ import time
 from typing import Optional
 
 from ticketpilot.retrieval.keyword_search import keyword_search
-from ticketpilot.retrieval.providers.fake_embedding import FakeEmbeddingProvider, get_fake_embedding_provider
+from ticketpilot.retrieval.providers.fake_embedding import EmbeddingProvider, get_fake_embedding_provider
 from ticketpilot.retrieval.reranker_config import RerankerConfig
 from ticketpilot.retrieval.hybrid_reranker import HybridReranker, RerankResult
 from ticketpilot.retrieval.query_expander import MultiQueryExpander
@@ -70,7 +70,7 @@ def hybrid_retrieval(
     top_k: int = 10,
     doc_types: Optional[list[DocType]] = None,
     exclude_business_domains: Optional[list[str]] = None,
-    embedding_provider: Optional[FakeEmbeddingProvider] = None,
+    embedding_provider: Optional[EmbeddingProvider] = None,
     rrf_k: int = DEFAULT_RRF_K,
     enable_reranking: bool = True,
     # New params for hybrid reranking (backward compatible)
