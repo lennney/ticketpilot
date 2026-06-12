@@ -4,7 +4,6 @@ Verifies that intake_risk_pipeline is a pure function:
 same input → same output (modulo UUIDs and timestamps).
 """
 
-import uuid
 from datetime import datetime
 
 from ticketpilot.schema.ticket import (

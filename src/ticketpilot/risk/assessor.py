@@ -1,6 +1,6 @@
 """Risk assessor for ticket risk assessment."""
 
-from datetime import datetime, timezone, timezone
+from datetime import datetime, timezone
 
 from ticketpilot.schema.ticket import (
     ClassificationResult,

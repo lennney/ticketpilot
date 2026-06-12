@@ -45,3 +45,7 @@ dev = [
     "ruff>=0.15.12",
     "jieba>=0.42.1",
 ]
+
+[tool.ruff.lint]
+# E402: logger definition between import blocks is intentional
+extend-ignore = ["E402"]

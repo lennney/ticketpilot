@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import json
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -10,7 +9,6 @@ import pytest
 
 from ticketpilot.confidence.scorer import ConfidenceBreakdown, ConfidenceLevel
 from ticketpilot.feedback.calibrator import (
-    CalibrationBucket,
     CalibrationCurve,
     IsotonicCalibrator,
     ReliabilityDiagram,

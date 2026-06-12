@@ -3,7 +3,6 @@ from ticketpilot.quality.scorer import (
     QUALITY_THRESHOLD_AUTO_SEND,
     QUALITY_THRESHOLD_CAUTIOUS,
     DraftQualityResult,
-    QualityCheckResult,
     check_citation_precision,
     check_claim_guard,
     check_evidence_coverage,

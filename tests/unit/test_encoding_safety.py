@@ -5,7 +5,6 @@ Encoding safety in the retrieval layer (keyword_search.py) requires DB
 and is tested in tests/integration/.
 """
 
-import pytest
 from ticketpilot.schema.ticket import IntentClass
 from ticketpilot.classification.classifier import IntentClassifier
 
