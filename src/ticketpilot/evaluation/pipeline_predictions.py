@@ -36,7 +36,7 @@ def _extract_doc_types(evidence_candidates: list) -> frozenset[str]:
     )
 
 
-def predict_from_pipeline(eval_ticket: EvalTicket) -> EvalPrediction:
+def predict_from_pipeline(eval_ticket: EvalTicket, force_fake_draft: bool = False) -> EvalPrediction:
     """Run the local TicketPilot pipeline on one eval ticket and return a prediction.
 
     The function:
@@ -48,6 +48,10 @@ def predict_from_pipeline(eval_ticket: EvalTicket) -> EvalPrediction:
 
     Args:
         eval_ticket: A single evaluation ticket (must have a non-empty case_id).
+        force_fake_draft: If ``True``, temporarily override the LLM provider
+            to ``"fake"`` so the draft uses the deterministic template-based
+            provider. Use this when you only need classification / risk metrics
+            and don't care about the actual draft text (e.g. optimizer baseline).
 
     Returns:
         EvalPrediction with predicted fields derived from the pipeline.
@@ -56,13 +60,40 @@ def predict_from_pipeline(eval_ticket: EvalTicket) -> EvalPrediction:
         PipelineError: If the pipeline itself raises (very unlikely with the
             current graceful-degradation design).
     """
+    # 使用固定时间戳以确保评测可重复
+    # eval_ticket.submitted_at 是字符串（ISO 格式），需要转为 datetime
+    submitted_at_raw = getattr(eval_ticket, 'submitted_at', None)
+    if submitted_at_raw:
+        try:
+            submitted_at = datetime.fromisoformat(submitted_at_raw)
+        except (ValueError, TypeError):
+            submitted_at = datetime.now(timezone.utc)
+    else:
+        submitted_at = datetime.now(timezone.utc)
+
+    import os as _os
+
     raw_ticket = RawTicket(
         original_text=eval_ticket.original_text,
-        submitted_at=datetime.now(timezone.utc),
+        submitted_at=submitted_at,
         customer_id=eval_ticket.customer_id,
     )
 
-    drafted_result = run_pipeline_with_draft(raw_ticket)
+    # 优化器评估时不调用 LLM 生成草稿（减少 3s/票 → 0.02s/票）
+    _saved_provider: str | None = None
+    if force_fake_draft:
+        _saved_provider = _os.environ.get("TICKETPILOT_LLM_PROVIDER")
+        _os.environ["TICKETPILOT_LLM_PROVIDER"] = "fake"
+
+    try:
+        drafted_result = run_pipeline_with_draft(raw_ticket)
+    finally:
+        if force_fake_draft:
+            if _saved_provider is not None:
+                _os.environ["TICKETPILOT_LLM_PROVIDER"] = _saved_provider
+            else:
+                _os.environ.pop("TICKETPILOT_LLM_PROVIDER", None)
+
     ticket_output = drafted_result.ticket_output
     draft_reply = drafted_result.draft_reply
 

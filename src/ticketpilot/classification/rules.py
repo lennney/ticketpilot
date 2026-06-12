@@ -12,6 +12,7 @@ class IntentRule:
     intent: IntentClass
     keywords: list[str]
     strong_indicator: str | None = None  # Keyword that gives high confidence
+    exclusions: list[str] | None = None  # 如果命中这些词，跳过此规则
 
 
 # Intent classification rules
@@ -22,11 +23,13 @@ INTENT_RULES: list[IntentRule] = [
         intent=IntentClass.REFUND,
         keywords=["退款", "申请退款", "退款请求", "退钱", "退费", "退押金",
                   "保价", "降价", "差价退还"],
+        exclusions=["投诉", "态度", "差评", "12315", "维权", "消费者协会"],  # 排除投诉场景
     ),
     IntentRule(
         intent=IntentClass.RETURN_EXCHANGE,
         keywords=["退货", "换货", "退换", "退货运费", "退货地址", "七天无理由",
                   "质量问题退", "发错货", "发错颜色", "保修期", "质保", "保修"],
+        exclusions=["投诉", "态度", "差评", "12315"],  # 排除投诉场景
     ),
     IntentRule(
         intent=IntentClass.ACCOUNT_ISSUE,

@@ -20,7 +20,7 @@ from ticketpilot.schema.ticket import (
 from ticketpilot.intake.pipeline import pipeline as intake_pipeline
 from ticketpilot.classification.classifier import IntentClassifier
 from ticketpilot.risk.assessor import RiskAssessor
-from ticketpilot.retrieval.providers.fake_embedding import FakeEmbeddingProvider
+from ticketpilot.retrieval.providers.fake_embedding import EmbeddingProvider
 from ticketpilot.retrieval.retrieve_evidence import retrieve_evidence
 from ticketpilot.confidence.scorer import ConfidenceBreakdown, ConfidenceScorer
 from ticketpilot.degradation.router import DegradationRouter, DegradedResponse
@@ -43,7 +43,7 @@ def _with_added_risk_flag(assessment: RiskAssessment, flag: RiskFlag) -> RiskAss
     )
 
 
-def intake_risk_pipeline(raw_ticket: RawTicket, embedding_provider: Optional[FakeEmbeddingProvider] = None) -> TicketOutput:
+def intake_risk_pipeline(raw_ticket: RawTicket, embedding_provider: Optional[EmbeddingProvider] = None) -> TicketOutput:
     """
     Process a raw ticket through a 4-stage pipeline:
 

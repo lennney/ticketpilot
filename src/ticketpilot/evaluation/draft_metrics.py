@@ -17,6 +17,8 @@ Metric definitions:
 
 from __future__ import annotations
 
+from collections import Counter
+
 from ticketpilot.evaluation.schemas import DraftEvaluationRow, DraftEvaluationSummary
 
 # ---------------------------------------------------------------------------
@@ -139,6 +141,15 @@ def compute_draft_evaluation_summary(
     guard_pass_cases = [r for r in rows if r.guard_passed]
     claim_guard_pass_rate = len(guard_pass_cases) / n if n > 0 else 0.0
 
+    # Per-failure-type pass rates
+    failure_counter: Counter[str] = Counter()
+    for r in rows:
+        for ft in r.guard_failure_types:
+            failure_counter[ft] += 1
+    per_failure_type_pass_rates: dict[str, float] = {
+        k: (n - v) / n for k, v in failure_counter.items()
+    }  # pass rate = 1 - failure_rate
+
     # Average confidence
     confidences = [r.confidence for r in rows if r.confidence is not None]
     average_confidence = sum(confidences) / len(confidences) if confidences else None
@@ -153,5 +164,6 @@ def compute_draft_evaluation_summary(
         human_review_trigger_accuracy=human_review_trigger_accuracy,
         citation_validation_pass_rate=citation_validation_pass_rate,
         claim_guard_pass_rate=claim_guard_pass_rate,
+        per_failure_type_pass_rates=per_failure_type_pass_rates,
         average_confidence=average_confidence,
     )

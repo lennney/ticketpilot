@@ -7,6 +7,7 @@ from ticketpilot.degradation.router import (
     DegradationRouter,
     ResponseStrategy,
 )
+from ticketpilot.quality.scorer import DraftQualityResult
 
 
 class TestDegradationRouter:
@@ -103,3 +104,124 @@ class TestDegradationRouter:
             ResponseStrategy.HUMAN_REVIEW,
             ResponseStrategy.HUMAN_ESCALATION,
         }
+
+
+class TestQualityGateRouting:
+    """Tests for quality gate integration in DegradationRouter."""
+
+    def _make_confidence(self, overall: float, level: ConfidenceLevel) -> ConfidenceBreakdown:
+        """Helper to create ConfidenceBreakdown."""
+        return ConfidenceBreakdown(
+            retrieval_confidence=overall,
+            classification_confidence=overall,
+            citation_confidence=overall,
+            evidence_density=overall,
+            overall=overall,
+            level=level,
+        )
+
+    def _make_quality(self, eligible_for_auto: bool = True, eligible_for_cautious: bool = True) -> DraftQualityResult:
+        """Helper to create DraftQualityResult."""
+        return DraftQualityResult(
+            overall_score=0.9 if eligible_for_auto else 0.3,
+            eligible_for_auto_send=eligible_for_auto,
+            eligible_for_cautious_send=eligible_for_cautious,
+            failures=[] if eligible_for_auto else ["unsupported_claims"],
+        )
+    def test_high_confidence_good_quality(self):
+        """HIGH confidence + good quality → AUTO_SEND."""
+        router = DegradationRouter()
+        conf = self._make_confidence(0.9, ConfidenceLevel.HIGH)
+        quality = self._make_quality(eligible_for_auto=True)
+        result = router.route(conf, draft="测试回复", quality=quality)
+
+        assert result.strategy == ResponseStrategy.AUTO_SEND
+        assert result.answer == "测试回复"
+        assert result.quality is not None
+        assert result.quality.eligible_for_auto_send is True
+        assert result.escalation_reason is None
+
+    def test_high_confidence_bad_quality(self):
+        """HIGH confidence + bad quality → HUMAN_REVIEW."""
+        router = DegradationRouter()
+        conf = self._make_confidence(0.9, ConfidenceLevel.HIGH)
+        quality = self._make_quality(eligible_for_auto=False)
+        result = router.route(conf, draft="测试回复", quality=quality)
+
+        assert result.strategy == ResponseStrategy.HUMAN_REVIEW
+        assert result.answer == "测试回复"
+        assert result.quality is not None
+        assert result.quality.eligible_for_auto_send is False
+        assert result.escalation_reason is not None
+        assert "草稿质量不足" in result.escalation_reason
+
+    def test_medium_confidence_good_quality(self):
+        """MEDIUM confidence + good quality → AUTO_SEND_CAUTIOUS."""
+        router = DegradationRouter()
+        conf = self._make_confidence(0.7, ConfidenceLevel.MEDIUM)
+        quality = self._make_quality(eligible_for_cautious=True)
+        result = router.route(conf, draft="测试回复", quality=quality)
+
+        assert result.strategy == ResponseStrategy.AUTO_SEND_CAUTIOUS
+        assert result.answer == "测试回复"
+        assert result.quality is not None
+        assert result.quality.eligible_for_cautious_send is True
+        assert result.disclaimer == DEFAULT_DISCLAIMER
+
+    def test_medium_confidence_bad_quality(self):
+        """MEDIUM confidence + bad quality → HUMAN_REVIEW."""
+        router = DegradationRouter()
+        conf = self._make_confidence(0.7, ConfidenceLevel.MEDIUM)
+        quality = self._make_quality(eligible_for_cautious=False)
+        result = router.route(conf, draft="测试回复", quality=quality)
+
+        assert result.strategy == ResponseStrategy.HUMAN_REVIEW
+        assert result.answer == "测试回复"
+        assert result.quality is not None
+        assert result.quality.eligible_for_cautious_send is False
+        assert result.escalation_reason is not None
+        assert "草稿质量不足" in result.escalation_reason
+
+    def test_quality_none_backward_compat(self):
+        """quality=None → same behavior as before (no quality gate)."""
+        router = DegradationRouter()
+
+        # HIGH confidence, no quality → AUTO_SEND
+        conf_high = self._make_confidence(0.9, ConfidenceLevel.HIGH)
+        result_high = router.route(conf_high, draft="测试回复")
+        assert result_high.strategy == ResponseStrategy.AUTO_SEND
+        assert result_high.quality is None
+
+        # MEDIUM confidence, no quality → AUTO_SEND_CAUTIOUS
+        conf_med = self._make_confidence(0.7, ConfidenceLevel.MEDIUM)
+        result_med = router.route(conf_med, draft="测试回复")
+        assert result_med.strategy == ResponseStrategy.AUTO_SEND_CAUTIOUS
+        assert result_med.quality is None
+
+    def test_forbidden_promise_veto(self):
+        """Quality with forbidden promise failure → HUMAN_REVIEW regardless of confidence."""
+        router = DegradationRouter()
+        conf = self._make_confidence(0.9, ConfidenceLevel.HIGH)
+        quality = DraftQualityResult(
+            overall_score=0.0,
+            eligible_for_auto_send=False,
+            eligible_for_cautious_send=False,
+            failures=["forbidden_promise"],
+            vetoed=True,
+        )
+        result = router.route(conf, draft="我们保证解决您的问题", quality=quality)
+        assert result.strategy == ResponseStrategy.HUMAN_REVIEW
+        assert result.quality is not None
+        assert result.quality.failures == ["forbidden_promise"]
+        assert result.escalation_reason is not None
+
+    def test_critical_always_escalates_regardless_of_quality(self):
+        """CRITICAL confidence always escalates, even with perfect quality."""
+        router = DegradationRouter()
+        conf = self._make_confidence(0.2, ConfidenceLevel.CRITICAL)
+        quality = self._make_quality(eligible_for_auto=True)
+        result = router.route(conf, draft="测试回复", quality=quality)
+
+        assert result.strategy == ResponseStrategy.HUMAN_ESCALATION
+        assert result.answer is None
+        assert result.human_handoff_context is not None
