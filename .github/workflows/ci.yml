@@ -20,7 +20,8 @@ jobs:
         run: uv run ruff format --check src/ tests/
 
   test:
-    name: Unit Tests
+    name: Tests
+    needs: lint
     runs-on: ubuntu-latest
     services:
       postgres:
@@ -62,4 +63,8 @@ jobs:
             --ignore=tests/unit/test_retrieval_viz.py \
             --ignore=tests/unit/test_review_console_helpers.py
         env:
-          DATABASE_URL: postgresql://ticketpilot:***@localhost:5432/ticketpilot_test
+          DB_HOST: localhost
+          DB_PORT: "5432"
+          DB_NAME: ticketpilot_test
+          DB_USER: ticketpilot
+          DB_PASSWORD: test_password
