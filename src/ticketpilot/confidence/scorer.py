@@ -16,6 +16,7 @@ from typing import TYPE_CHECKING, Optional
 
 from pydantic import BaseModel, Field
 
+from ticketpilot.config import CONFIDENCE_HIGH, CONFIDENCE_LOW, CONFIDENCE_MEDIUM
 from ticketpilot.schema.ticket import TicketOutput
 
 if TYPE_CHECKING:
@@ -58,21 +59,18 @@ EXPECTED_CHUNKS_BY_INTENT = {
     "other": 2,
 }
 
-# Thresholds (aligned with DraftReply.confidence_level property)
-THRESHOLDS = {
-    "high": 0.8,
-    "medium": 0.6,
-    "low": 0.4,
-}
-
+# Thresholds (aligned with config/__init__.py — imported from there)
+# This module uses the same CONFIDENCE_HIGH/MEDIUM/LOW constants that
+# drafting/schemas.py uses, so confidence threshold adjustments by the
+# optimizer actually take effect.
 
 def _classify_level(score: float) -> ConfidenceLevel:
-    """Map overall score to confidence level."""
-    if score > THRESHOLDS["high"]:
+    """Map overall score to confidence level using config thresholds."""
+    if score >= CONFIDENCE_HIGH:
         return ConfidenceLevel.HIGH
-    elif score >= THRESHOLDS["medium"]:
+    elif score >= CONFIDENCE_MEDIUM:
         return ConfidenceLevel.MEDIUM
-    elif score >= THRESHOLDS["low"]:
+    elif score >= CONFIDENCE_LOW:
         return ConfidenceLevel.LOW
     else:
         return ConfidenceLevel.CRITICAL

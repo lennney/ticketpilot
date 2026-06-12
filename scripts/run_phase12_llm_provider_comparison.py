@@ -135,6 +135,9 @@ def _build_row_from_result(
     cv = result.citation_validation
     guard = result.guard_result
 
+    # Convert GuardFailureType enum values to strings
+    guard_failure_types = [ft.value for ft in guard.failure_reasons]
+
     return {
         "case_id": case["case_id"],
         "provider_name": result.provider_name,
@@ -148,6 +151,7 @@ def _build_row_from_result(
             1 if (guard.forbidden_promise_details and len(guard.forbidden_promise_details) > 0) else 0
         ),
         "guard_passed": guard.guard_passed,
+        "guard_failure_types": guard_failure_types,
         "citation_validation_passed": cv.is_valid,
         "safe_fallback_used": _is_safe_fallback_text(result.draft.draft_text),
         "expected_human_review": case.get("must_human_review", False),
@@ -199,6 +203,7 @@ def run_provider_comparison(
                 "valid_citation_count": row_data["valid_citation_count"],
                 "invalid_citation_count": row_data["invalid_citation_count"],
                 "guard_passed": row_data["guard_passed"],
+                "guard_failure_types": row_data["guard_failure_types"],
                 "citation_validation_passed": row_data["citation_validation_passed"],
                 "safe_fallback_used": row_data["safe_fallback_used"],
                 "unsupported_claim_count": row_data["unsupported_claim_count"],
@@ -271,18 +276,7 @@ def generate_report(fake_results: dict, real_results: dict | None, output_dir: P
 
 | Provider | Avg Cited | Avg Valid Citations | Avg Invalid Citations |
 |----------|-----------|---------------------|-----------------------|
-| FakeLLMProvider | """ + f"{fake_stats.get('cited_evidence_avg', 0):.2f} | {fake_stats.get('valid_citation_avg', 0):.2f} | {fake_stats.get('invalid_citation_avg', 0):.2f}"
-    if real_stats:
-        report += f"| OpenAICompatibleProvider | {real_stats.get('total','-')} | {real_stats.get('successful','-')} | {real_stats.get('avg_confidence',0):.2f} | {real_stats.get('human_review_count','-')} | {real_stats.get('guard_pass_count','-')} | {real_stats.get('citation_valid_count','-')} | {real_stats.get('safe_fallback_count','-')} |\n"
-    else:
-        report += "| OpenAICompatibleProvider | - | real: not configured | - | - | - | - | - |\n"
-
-    report += """
-## Citation Metrics
-
-| Provider | Avg Cited | Avg Valid Citations | Avg Invalid Citations |
-|----------|-----------|---------------------|-----------------------|
-| FakeLLMProvider | """ + f"{fake_stats.get('cited_evidence_avg', 0):.2f} | {fake_stats.get('valid_citation_avg', 0):.2f} | {fake_stats.get('invalid_citation_avg', 0):.2f}"
+| FakeLLMProvider | """ + f"{fake_stats.get('cited_evidence_avg', 0):.2f} | {fake_stats.get('valid_citation_avg', 0):.2f} | {fake_stats.get('invalid_citation_avg', 0):.2f} |"
 
     if real_stats:
         report += f"""
@@ -292,6 +286,54 @@ def generate_report(fake_results: dict, real_results: dict | None, output_dir: P
         report += """
 | OpenAICompatibleProvider | - | - | - |
 """
+
+    # Per-failure-type pass rates (Phase 14.6)
+    # Compute from guard_failure_types in result rows
+    def _compute_per_failure_pass_rates(rows: list[dict]) -> dict[str, float]:
+        """Compute per-failure-type pass rates from result rows."""
+        n = len(rows)
+        if n == 0:
+            return {}
+        failure_counts: dict[str, int] = {}
+        for r in rows:
+            if "error" in r:
+                continue
+            if r.get("guard_passed", True):
+                continue
+            for ft in r.get("guard_failure_types", []):
+                failure_counts[ft] = failure_counts.get(ft, 0) + 1
+        return {
+            ft: (n - count) / n
+            for ft, count in sorted(failure_counts.items())
+        }
+
+    fake_rows_clean = [r for r in fake_results["results"] if "error" not in r]
+    fake_failure_rates = _compute_per_failure_pass_rates(fake_rows_clean)
+    real_failure_rates = (
+        _compute_per_failure_pass_rates([r for r in real_results["results"] if "error" not in r])
+        if real_results else None
+    )
+
+    if fake_failure_rates or real_failure_rates:
+        all_types = sorted(set(fake_failure_rates.keys()) | (set(real_failure_rates.keys()) if real_failure_rates else set()))
+        report += "\n## Per-Failure-Type Pass Rates\n\n"
+        report += "| Failure Type | Fake Provider |"
+        if real_failure_rates is not None:
+            report += " Real Provider |"
+        report += "\n|--------------|---------------|"
+        if real_failure_rates is not None:
+            report += "---------------|"
+        report += "\n"
+        for ft in all_types:
+            fake_val = fake_failure_rates.get(ft)
+            real_val = real_failure_rates.get(ft) if real_failure_rates else None
+            fake_str = f"{fake_val:.0%}" if fake_val is not None else "-"
+            report += f"| `{ft}` | {fake_str} |"
+            if real_failure_rates is not None:
+                real_str = f"{real_val:.0%}" if real_val is not None else "-"
+                report += f" {real_str} |"
+            report += "\n"
+        report += "\n"
 
     report += """
 ## Methodology
@@ -344,6 +386,7 @@ def _rows_to_eval_rows(rows: list[dict]) -> list[DraftEvaluationRow]:
                 unsupported_claim_count=r.get("unsupported_claim_count", 0),
                 forbidden_promise_count=r.get("forbidden_promise_count", 0),
                 guard_passed=r.get("guard_passed", True),
+                guard_failure_types=r.get("guard_failure_types", []),
                 citation_validation_passed=r.get("citation_validation_passed", True),
                 safe_fallback_used=r.get("safe_fallback_used", False),
                 expected_human_review=r.get("expected_human_review", False),

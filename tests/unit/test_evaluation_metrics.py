@@ -608,3 +608,153 @@ class TestDeterminism:
         pred2 = copy.deepcopy(prediction)
         r2 = compute_case_metrics(pred2, golden2)
         assert r1 == r2
+
+
+# ===================================================================
+# Quality gate metrics
+# ===================================================================
+
+
+class TestQualityGateMetrics:
+    """Tests for quality_gate_accuracy and quality_intercept_rate."""
+
+    def test_quality_gate_accuracy_all_match(self):
+        """All quality predictions match golden no_auto_send."""
+        golds = {
+            "case_001": _make_golden("case_001", expected_no_auto_send=False),
+            "case_002": _make_golden("case_002", expected_no_auto_send=True),
+        }
+        preds = {
+            "case_001": _make_prediction("case_001", predicted_no_auto_send=False),
+            "case_002": _make_prediction("case_002", predicted_no_auto_send=True),
+        }
+        summary = compute_evaluation_summary(preds, golds)
+        assert summary.quality_gate_accuracy == 1.0
+
+    def test_quality_gate_accuracy_partial_match(self):
+        """Some quality predictions match golden no_auto_send."""
+        golds = {
+            "case_001": _make_golden("case_001", expected_no_auto_send=False),
+            "case_002": _make_golden("case_002", expected_no_auto_send=True),
+            "case_003": _make_golden("case_003", expected_no_auto_send=True),
+        }
+        preds = {
+            "case_001": _make_prediction("case_001", predicted_no_auto_send=False),
+            "case_002": _make_prediction("case_002", predicted_no_auto_send=False),  # wrong
+            "case_003": _make_prediction("case_003", predicted_no_auto_send=True),
+        }
+        summary = compute_evaluation_summary(preds, golds)
+        assert summary.quality_gate_accuracy == pytest.approx(2.0 / 3.0)
+
+    def test_quality_intercept_rate_no_interceptions(self):
+        """No high-confidence cases are intercepted by quality gate."""
+        golds = {
+            "case_001": _make_golden("case_001", expected_no_auto_send=False),
+            "case_002": _make_golden("case_002", expected_no_auto_send=False),
+        }
+        preds = {
+            "case_001": _make_prediction(
+                "case_001",
+                predicted_must_human_review=False,
+                predicted_no_auto_send=False,
+            ),
+            "case_002": _make_prediction(
+                "case_002",
+                predicted_must_human_review=False,
+                predicted_no_auto_send=False,
+            ),
+        }
+        summary = compute_evaluation_summary(preds, golds)
+        assert summary.quality_intercept_rate == 0.0
+
+    def test_quality_intercept_rate_all_intercepted(self):
+        """All high-confidence cases are intercepted by quality gate."""
+        golds = {
+            "case_001": _make_golden("case_001", expected_no_auto_send=True),
+            "case_002": _make_golden("case_002", expected_no_auto_send=True),
+        }
+        preds = {
+            "case_001": _make_prediction(
+                "case_001",
+                predicted_must_human_review=False,  # high confidence
+                predicted_no_auto_send=True,  # quality blocked
+            ),
+            "case_002": _make_prediction(
+                "case_002",
+                predicted_must_human_review=False,  # high confidence
+                predicted_no_auto_send=True,  # quality blocked
+            ),
+        }
+        summary = compute_evaluation_summary(preds, golds)
+        assert summary.quality_intercept_rate == 1.0
+
+    def test_quality_intercept_rate_partial(self):
+        """Some high-confidence cases are intercepted."""
+        golds = {
+            "case_001": _make_golden("case_001", expected_no_auto_send=False),
+            "case_002": _make_golden("case_002", expected_no_auto_send=True),
+            "case_003": _make_golden("case_003", expected_no_auto_send=True),
+        }
+        preds = {
+            "case_001": _make_prediction(
+                "case_001",
+                predicted_must_human_review=False,
+                predicted_no_auto_send=False,
+            ),
+            "case_002": _make_prediction(
+                "case_002",
+                predicted_must_human_review=False,
+                predicted_no_auto_send=True,  # intercepted
+            ),
+            "case_003": _make_prediction(
+                "case_003",
+                predicted_must_human_review=False,
+                predicted_no_auto_send=True,  # intercepted
+            ),
+        }
+        summary = compute_evaluation_summary(preds, golds)
+        # 2 out of 3 high-confidence cases intercepted
+        assert summary.quality_intercept_rate == pytest.approx(2.0 / 3.0)
+
+    def test_quality_intercept_rate_excludes_low_confidence(self):
+        """Low-confidence cases are not counted in intercept rate."""
+        golds = {
+            "case_001": _make_golden("case_001", expected_no_auto_send=True),
+            "case_002": _make_golden("case_002", expected_no_auto_send=True),
+        }
+        preds = {
+            "case_001": _make_prediction(
+                "case_001",
+                predicted_must_human_review=True,  # low confidence
+                predicted_no_auto_send=True,
+            ),
+            "case_002": _make_prediction(
+                "case_002",
+                predicted_must_human_review=False,  # high confidence
+                predicted_no_auto_send=True,  # intercepted
+            ),
+        }
+        summary = compute_evaluation_summary(preds, golds)
+        # Only case_002 is high confidence, and it's intercepted
+        assert summary.quality_intercept_rate == 1.0
+
+    def test_quality_intercept_rate_no_high_confidence(self):
+        """No high-confidence cases yields 0.0 intercept rate."""
+        golds = {
+            "case_001": _make_golden("case_001", expected_no_auto_send=True),
+        }
+        preds = {
+            "case_001": _make_prediction(
+                "case_001",
+                predicted_must_human_review=True,  # low confidence
+                predicted_no_auto_send=True,
+            ),
+        }
+        summary = compute_evaluation_summary(preds, golds)
+        assert summary.quality_intercept_rate == 0.0
+
+    def test_quality_metrics_empty_cases(self):
+        """Empty cases yield 0.0 for both quality metrics."""
+        summary = compute_evaluation_summary({}, {})
+        assert summary.quality_gate_accuracy == 0.0
+        assert summary.quality_intercept_rate == 0.0
