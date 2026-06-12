@@ -18,9 +18,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
 from ticketpilot.pipeline import intake_risk_pipeline
-from ticketpilot.schema.ticket import RawTicket, TicketOutput
+from ticketpilot.schema.ticket import RawTicket
 from ticketpilot.drafting.generate import generate_draft
-from ticketpilot.drafting.schemas import DraftReply
 from ticketpilot.api.streaming import register_streaming_routes
 from ticketpilot.multi_agent import generate_draft_with_orchestrator
 
@@ -147,8 +146,6 @@ async def chat(request: ChatRequest):
     session_id = request.session_id or str(uuid.uuid4())
     
     # Process through pipeline
-    start_time = datetime.now(timezone.utc)
-    
     raw_ticket = RawTicket(
         original_text=user_message.content,
         submitted_at=datetime.now(timezone.utc),
@@ -166,8 +163,6 @@ async def chat(request: ChatRequest):
             must_human_review=ticket_output.risk_assessment.must_human_review,
             evidence_candidates=ticket_output.evidence_candidates,
         )
-        
-        processing_time = (datetime.now(timezone.utc) - start_time).total_seconds() * 1000
         
         # Extract evidence for response
         evidence_list = []
@@ -201,7 +196,7 @@ async def chat(request: ChatRequest):
             session_id=session_id,
         )
         
-    except Exception as e:
+    except Exception:
         # Fallback response on error
         assistant_message = ChatMessage(
             role="assistant",

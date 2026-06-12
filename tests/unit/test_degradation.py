@@ -1,12 +1,10 @@
 """Tests for DegradationRouter — tiered response strategy."""
 
-import pytest
 
 from ticketpilot.confidence.scorer import ConfidenceBreakdown, ConfidenceLevel
 from ticketpilot.degradation.router import (
     DEFAULT_DISCLAIMER,
     DegradationRouter,
-    DegradedResponse,
     ResponseStrategy,
 )
 

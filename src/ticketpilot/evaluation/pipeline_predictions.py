@@ -12,7 +12,7 @@ All functions operate deterministically on seed data.
 
 from __future__ import annotations
 
-from datetime import datetime, timezone, timezone
+from datetime import datetime, timezone
 
 from ticketpilot.drafting.pipeline import run_pipeline_with_draft
 from ticketpilot.evaluation.schemas import EvalPrediction, EvalTicket

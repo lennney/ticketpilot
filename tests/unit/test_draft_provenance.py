@@ -3,11 +3,9 @@
 import uuid
 from datetime import datetime
 
-import pytest
 
-from ticketpilot.drafting.schemas import Citation, DraftReply
+from ticketpilot.drafting.schemas import DraftReply
 from ticketpilot.tracing.provenance import ClaimProvenance, ResponseProvenance
-from ticketpilot.retrieval.schema.knowledge import DocType
 
 
 class TestDraftReplyProvenance:

@@ -15,7 +15,6 @@ Usage:
 from __future__ import annotations
 
 import json
-import sys
 from datetime import datetime
 from http.server import HTTPServer, BaseHTTPRequestHandler
 from typing import Any
@@ -106,10 +105,10 @@ def run_server(port: int = 8080, host: str = "0.0.0.0"):
     """Start webhook server."""
     server = HTTPServer((host, port), WebhookHandler)
     print(f"Webhook server started on {host}:{port}")
-    print(f"Endpoints:")
-    print(f"  POST /webhook/ticket - Process ticket")
-    print(f"  GET  /health        - Health check")
-    print(f"  POST /webhook/health - Health check")
+    print("Endpoints:")
+    print("  POST /webhook/ticket - Process ticket")
+    print("  GET  /health        - Health check")
+    print("  POST /webhook/health - Health check")
 
     try:
         server.serve_forever()

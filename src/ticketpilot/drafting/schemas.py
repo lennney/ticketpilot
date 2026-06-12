@@ -1,6 +1,6 @@
 """Pydantic models for evidence-grounded draft reply generation."""
 
-from datetime import datetime, timezone, timezone
+from datetime import datetime, timezone
 from uuid import UUID
 
 from pydantic import BaseModel, Field, model_validator
