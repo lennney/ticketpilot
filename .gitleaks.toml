@@ -1,0 +1,15 @@
+# Gitleaks configuration for TicketPilot
+# See https://github.com/gitleaks/gitleaks#configuration
+
+title = "TicketPilot gitleaks config"
+
+[allowlist]
+description = "Test fixture placeholder keys — intentional, not real secrets"
+regexes = [
+    '''sk-sec\.\.\.2345''',
+    '''sk-tes\.\.\.2345''',
+]
+paths = [
+    '''tests/unit/test_openai_compatible_llm_provider\.py''',
+    '''tests/unit/test_embedding_config\.py''',
+]
