@@ -107,8 +107,29 @@ See `docs/technical/validation_policy.md` for full details.
 - **No API keys** in source code, tests, or commit messages
 - `.env.local` is gitignored — used for local embedding provider config
 - `.env.example` has placeholder values only — never real secrets
-- Secret scan runs in quality gate (detects `sk-` OpenAI-style keys)
-- If a secret is committed, rotate it immediately and rewrite git history
+
+### 🔒 Automatic protection
+
+| Layer | What | Where |
+|-------|------|-------|
+| Pre-commit hook | `gitleaks` scans staged changes before every `git commit` | Global `~/.git-hooks/pre-commit` (core.hooksPath) |
+| Pre-push hook | `gitleaks` scans pushed commit range before every `git push` | Global `~/.git-hooks/pre-push` |
+| CI | `gitleaks-action@v2` runs on every push/PR | `.github/workflows/ci.yml` → `secrets-scan` job |
+| Skip | `git commit --no-verify` or `GITLEAKS_SKIP=1 git commit` | Emergency bypass only |
+
+### 📋 `.gitleaks.toml`
+
+Project-level allowlist at repo root (`./.gitleaks.toml`). Gitleaks auto-detects it. Currently covers test fixture placeholders (`sk-sec...2345`, `sk-tes...2345`).
+
+### 🚨 Incident response
+
+If a secret is committed and pushed:
+
+1. **Rotate the key immediately** at the provider's website (OpenCode, OpenAI, etc.)
+2. **Clean git history** with `git filter-repo` or BFG Repo-Cleaner
+3. **Force push** the cleaned history
+4. **Remove the file** (if applicable) and use env vars instead
+5. **Update `.gitleaks.toml`** to prevent recurrence
 
 ## 7. OpenSpec Workflow
 

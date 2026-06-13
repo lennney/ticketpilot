@@ -12,6 +12,7 @@
 - tradeoff.py: 关键词候选混淆簇模拟（TP/FP/Net Gain 量化）
 - llm_reviewer.py: OpenAI-compatible LLM 审批替代硬性回滚
 - 54 个新测试（tradeoff + llm_reviewer + keyword_search + engine）
+- `.gitleaks.toml`: gitleaks 项目级白名单（测试占位符豁免）
 
 ### Changed
 - engine.py: 集成 tradeoff 分析 + llm_reviewer 到优化器循环
@@ -19,11 +20,14 @@
 - evaluator.py: 支持扩展评测数据集 + 混淆分析
 - 评测数据扩展: golden_expectations +503/-503
 
+### Security
+- **修复**: `run_optimizer_with_llm.py` 中硬编码 API key 移除，改为环境变量读取
+- **新增**: CI secrets-scan job（gitleaks-action@v2，每个 push/PR 自动执行）
+- **新增**: 全局 gitleaks pre-commit + pre-push hook（三层秘密防护）
+- **更新**: AGENTS.md §6 — Secret Rules 重写（含防护层说明 + 事件响应流程）
+
 ### Docs
-- CHANGELOG.md: 正式 changelog，覆盖所有阶段迭代记录
-- docs/INDEX.md: 文档索引导航（给 Agent 和人共用）
-- docs/MAINTENANCE.md: 文档维护公约（"不更新 = 没做完"）
-- AGENTS.md §17: 文档维护约定嵌入 Agent 工作准则
+- AGENTS.md §6: Secret Rules 扩展为完整防护章节
 
 ---
 
