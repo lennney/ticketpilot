@@ -2,14 +2,14 @@
 import os
 import sys
 
-# Set LLM config directly (avoid shell env export issues)
-os.environ["OPTIMIZER_LLM_API_KEY"] = "REMOVED_KEY"
-os.environ["OPTIMIZER_LLM_BASE_URL"] = "https://opencode.ai/zen/go/v1"
-os.environ["OPTIMIZER_LLM_MODEL"] = "deepseek-v4-flash"
+# LLM config from environment variables
+os.environ.setdefault("OPTIMIZER_LLM_BASE_URL", "https://opencode.ai/zen/go/v1")
+os.environ.setdefault("OPTIMIZER_LLM_MODEL", "deepseek-v4-flash")
 
-# Verify key length
-key = os.environ["OPTIMIZER_LLM_API_KEY"]
-print(f"API key length: {len(key)} (expect 67)")
+key = os.environ.get("OPTIMIZER_LLM_API_KEY", "")
+if not key:
+    print("Error: OPTIMIZER_LLM_API_KEY environment variable is not set")
+    sys.exit(1)
 
 # Now run the optimizer
 from ticketpilot.optimizer.engine import OptimizationEngine
