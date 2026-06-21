@@ -18,6 +18,11 @@
 - engine.py: 集成 tradeoff 分析 + llm_reviewer 到优化器循环
 - diagnostics.py: jieba 因果特征分析增强
 - evaluator.py: 支持扩展评测数据集 + 混淆分析
+
+### Fixed
+- risk/rules.py: 移除 COMPENSATION_RISK 过宽关键词（"退款"/"我要"/"了我"等），修复 golden case 回归
+- data/eval/sample_predictions.csv: 补全 299 条缺失预测，对齐 golden_expectations.csv（101→400 行）
+- AGENTS.md: 新增 §2.1 规则变更同步规范，防止规则改了测试没跟上的问题
 - 评测数据扩展: golden_expectations +503/-503
 
 ### Security

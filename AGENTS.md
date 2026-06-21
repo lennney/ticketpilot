@@ -57,6 +57,42 @@ providers (FakeEmbeddingProvider by default; real provider opt-in via `.env.loca
 | No Phase 7/8/9 baseline report modification | Baseline reports are immutable |
 | No `openspec/` archived change modification | Archived changes are read-only |
 | Integration skipped must = 0 for archive/push | DB-dependent tests must pass or be properly skipped |
+| Rule changes require test sync | Changing keywords/thresholds/rules MUST update golden cases + data files in same commit |
+
+## 2.1 Rule-Test Synchronization (规则变更同步规范)
+
+**核心原则：改了规则就必须同步改测试，同一次提交完成。**
+
+| 变更类型 | 必须同步的文件 | 示例 |
+|----------|---------------|------|
+| 关键词列表变更 | `risk/rules.py` + `test_intake_risk_triage.py` + `test_risk.py` | 添加/删除风险关键词 |
+| 阈值变更 | `config.py` + `test_risk.py` + `test_pipeline.py` | 修改 CONFIDENCE_THRESHOLD |
+| severity 映射变更 | `risk/assessor.py` + `test_risk.py` + `test_pipeline.py` | 修改 flag→severity 规则 |
+| intent 分类变更 | `classification/` + `test_classification.py` | 添加/删除 intent 类别 |
+| eval 数据变更 | `data/eval/` + `test_run_eval_cli.py` | 新增/修改 golden expectations |
+
+**验证方法（提交前必跑）：**
+
+```bash
+# 1. 跑 golden case 测试
+uv run pytest tests/unit/test_intake_risk_triage.py::TestGoldenCases -v
+
+# 2. 跑 risk 测试
+uv run pytest tests/unit/test_risk.py -v
+
+# 3. 跑 pipeline 测试
+uv run pytest tests/unit/test_pipeline.py -v
+
+# 4. 如果改了 eval 数据
+uv run pytest tests/unit/test_run_eval_cli.py -v
+```
+
+**反模式：**
+- ❌ 改了 `rules.py` 但没跑 golden case 测试
+- ❌ golden case 期望值和业务逻辑不一致
+- ❌ eval 数据行数和 golden expectations 行数不匹配
+
+**Why this matters：** 2026-06-21 CI 连续 5 次失败，根因是 "退款" 被加进 COMPENSATION_RISK 关键词但 golden case 没同步更新。如果提交前跑了 golden case 测试，这个问题在本地就会被捕获。
 
 ## 3. Tech Stack
 
