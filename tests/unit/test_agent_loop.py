@@ -306,7 +306,11 @@ class TestInjectables:
             def select_template(self, text: str) -> str:
                 return "complaint_escalation"
 
-        run = run_agent_pipeline(raw_ticket, planner=CustomPlanner())
+        run = run_agent_pipeline(
+            raw_ticket,
+            planner=CustomPlanner(),
+            registry=make_mock_registry(),
+        )
         assert run.plan is not None
         assert "complaint" in run.plan.goal.lower()
 
