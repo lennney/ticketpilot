@@ -79,6 +79,14 @@ jobs:
           key: uv-${{ runner.os }}-${{ hashFiles('uv.lock') }}
           restore-keys: uv-${{ runner.os }}-
       - run: uv sync
+      - name: Run DB migrations
+        run: |
+          for f in db/migrations/*.sql; do
+            echo "Running $f..."
+            psql -h localhost -U ticketpilot -d ticketpilot_test -f "$f" 2>&1 || true
+          done
+        env:
+          PGPASSWORD: test_password
       - name: Run integration tests
         run: |
           uv run pytest tests/ \
