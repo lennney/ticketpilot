@@ -8,6 +8,7 @@ dependencies = [
     "alembic>=1.18.4",
     "fastapi>=0.136.1",
     "httpx>=0.28.1",
+    "jieba>=0.42.1",
     "langgraph>=1.1.10",
     "pgvector>=0.4.2",
     "psycopg[binary]>=3.3.3",
@@ -21,7 +22,6 @@ dependencies = [
     "sentence-transformers>=5.5.1",
     "openai>=2.38.0",
     "plotly>=6.8.0",
-    "pytest>=9.0.3",
 ]
 
 [project.scripts]
@@ -43,7 +43,6 @@ dev = [
     "pytest>=9.0.3",
     "pytest-cov>=7.0.0",
     "ruff>=0.15.12",
-    "jieba>=0.42.1",
 ]
 
 [tool.ruff.lint]

@@ -4,8 +4,11 @@ Uses existing DashScope embeddings to re-rank RRF results.
 
 Improved strategy: Use embedding as a boost factor, not a major weight.
 """
+import logging
 from typing import Optional
 from ticketpilot.retrieval.traces import FusedResult
+
+logger = logging.getLogger(__name__)
 
 
 def cosine_similarity(vec1: list[float], vec2: list[float]) -> float:
@@ -127,7 +130,8 @@ def _get_document_embedding(chunk_id) -> Optional[list[float]]:
                     elif isinstance(embedding_str, list):
                         return embedding_str
     except Exception:
-        # Silently fail - will use RRF score only
+        # Will use RRF score only — log for debugging
+        logger.debug("Could not load document embedding for chunk, falling back to RRF")
         pass
     
     return None

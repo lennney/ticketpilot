@@ -114,12 +114,7 @@ class OpenAICompatibleEmbeddingProvider:
         }
 
         try:
-            # Disable SSL verification for all requests
-            import os
-            os.environ['CURL_CA_BUNDLE'] = ''
-            os.environ['REQUESTS_CA_BUNDLE'] = ''
-            os.environ['SSL_CERT_FILE'] = ''
-            
+            # SSL verification disabled per-client only (not global env)
             with httpx.Client(timeout=60.0, verify=False) as client:
                 response = client.post(url, headers=headers, json=payload)
         except httpx.RequestError as e:

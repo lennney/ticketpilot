@@ -9,6 +9,17 @@ import logging
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from typing import Optional
 
+# Module-level thread pool singleton — reused across all evaluate() calls
+_pool: ThreadPoolExecutor | None = None
+
+
+def _get_pool() -> ThreadPoolExecutor:
+    """Return a shared ThreadPoolExecutor (created once, reused)."""
+    global _pool
+    if _pool is None:
+        _pool = ThreadPoolExecutor(max_workers=4)
+    return _pool
+
 from ticketpilot.evaluation.loaders import load_eval_dataset
 from ticketpilot.evaluation.metrics import compute_evaluation_summary
 from ticketpilot.evaluation.pipeline_predictions import predict_from_pipeline
@@ -89,18 +100,18 @@ class OptimizerEvaluator:
         total = ds.ticket_count
         items = list(ds.tickets.items())
 
-        with ThreadPoolExecutor(max_workers=4) as pool:
-            futures = {
-                pool.submit(predict_from_pipeline, ticket, True): case_id
-                for case_id, ticket in items
-            }
-            for future in as_completed(futures):
-                case_id = futures[future]
-                try:
-                    predictions[case_id] = future.result()
-                except Exception:
-                    logger.exception("Pipeline failed for %s", case_id)
-                    raise
+        pool = _get_pool()
+        futures = {
+            pool.submit(predict_from_pipeline, ticket, True): case_id
+            for case_id, ticket in items
+        }
+        for future in as_completed(futures):
+            case_id = futures[future]
+            try:
+                predictions[case_id] = future.result()
+            except Exception:
+                logger.exception("Pipeline failed for %s", case_id)
+                raise
 
         logger.info("Predictions complete: %d/%d tickets", len(predictions), total)
         return predictions
@@ -141,18 +152,18 @@ class OptimizerEvaluator:
             if case_id in ds.tickets
         ]
         if affected_tickets:
-            with ThreadPoolExecutor(max_workers=4) as pool:
-                futures = {
-                    pool.submit(predict_from_pipeline, ticket, True): case_id
-                    for case_id, ticket in affected_tickets
-                }
-                for future in as_completed(futures):
-                    case_id = futures[future]
-                    try:
-                        predictions[case_id] = future.result()
-                    except Exception:
-                        logger.exception("Pipeline failed for %s", case_id)
-                        raise
+            pool = _get_pool()
+            futures = {
+                pool.submit(predict_from_pipeline, ticket, True): case_id
+                for case_id, ticket in affected_tickets
+            }
+            for future in as_completed(futures):
+                case_id = futures[future]
+                try:
+                    predictions[case_id] = future.result()
+                except Exception:
+                    logger.exception("Pipeline failed for %s", case_id)
+                    raise
 
         # If no previous predictions, fill in the rest (also in parallel)
         if previous_predictions is None:
@@ -162,18 +173,18 @@ class OptimizerEvaluator:
                 if case_id not in predictions
             ]
             if remaining:
-                with ThreadPoolExecutor(max_workers=4) as pool:
-                    futures = {
-                        pool.submit(predict_from_pipeline, ticket, True): case_id
-                        for case_id, ticket in remaining
-                    }
-                    for future in as_completed(futures):
-                        case_id = futures[future]
-                        try:
-                            predictions[case_id] = future.result()
-                        except Exception:
-                            logger.exception("Pipeline failed for %s", case_id)
-                            raise
+                pool = _get_pool()
+                futures = {
+                    pool.submit(predict_from_pipeline, ticket, True): case_id
+                    for case_id, ticket in remaining
+                }
+                for future in as_completed(futures):
+                    case_id = futures[future]
+                    try:
+                        predictions[case_id] = future.result()
+                    except Exception:
+                        logger.exception("Pipeline failed for %s", case_id)
+                        raise
 
         self._predictions = predictions
         summary = compute_evaluation_summary(predictions, ds.golden)

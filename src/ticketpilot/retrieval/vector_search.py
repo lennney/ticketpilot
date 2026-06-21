@@ -72,6 +72,7 @@ def vector_search(
     # Convert embedding to PostgreSQL array format
     embedding_str = "[" + ",".join(str(x) for x in query_embedding) + "]"
 
+    # Embedding passed as parameter (%s) to prevent SQL injection
     sql = f"""
         SELECT
             id as chunk_id,
@@ -79,24 +80,25 @@ def vector_search(
             doc_type,
             content,
             -- Cosine similarity: 1 - (embedding <=> query_vector)
-            1 - (embedding <=> '{embedding_str}'::vector) as score,
-            ROW_NUMBER() OVER (ORDER BY embedding <=> '{embedding_str}'::vector ASC, id) as rank
+            1 - (embedding <=> %s::vector) as score,
+            ROW_NUMBER() OVER (ORDER BY embedding <=> %s::vector ASC, id) as rank
         FROM knowledge_chunks
         WHERE embedding IS NOT NULL
         {doc_types_filter}
         {domain_filter}
-        ORDER BY embedding <=> '{embedding_str}'::vector
+        ORDER BY embedding <=> %s::vector
         LIMIT %s
     """
 
-    params.append(top_k)
+    # Prepend embedding params, then filters, then top_k
+    all_params = [embedding_str, embedding_str, embedding_str] + params + [top_k]
 
     results = []
     with get_db_connection() as conn:
         with conn.cursor() as cur:
             # Set HNSW ef_search parameter
             cur.execute(f"SET hnsw.ef_search = {ef_search}")
-            cur.execute(sql, params)
+            cur.execute(sql, all_params)
             for row in cur.fetchall():
                 results.append(
                     VectorResult(
