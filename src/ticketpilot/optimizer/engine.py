@@ -24,6 +24,7 @@ from ticketpilot.optimizer.config import (
 from ticketpilot.optimizer.diagnostics import DiagnosticsEngine, Diagnosis, TYPE_INTENT_MISMATCH
 from ticketpilot.optimizer.evaluator import OptimizerEvaluator
 from ticketpilot.optimizer.fixer import Fixer
+from ticketpilot.optimizer.scoring import compute_composite, score_dict, extract_correct_ids
 from ticketpilot.optimizer.tradeoff import analyze_keyword_tradeoff
 from ticketpilot.optimizer.llm_reviewer import review_keyword
 from ticketpilot.optimizer.git_ops import commit
@@ -126,9 +127,9 @@ class OptimizationEngine:
         _print("\n─── Baseline Evaluation ───")
         logger.info("Running baseline evaluation...")
         baseline_summary = self.evaluator.get_baseline()
-        baseline_composite = self._compute_composite(baseline_summary)
-        baseline_correct = self._extract_correct_ids(baseline_summary)
-        scores = self._score_dict(baseline_summary)
+        baseline_composite = compute_composite(baseline_summary, self.config.weights)
+        baseline_correct = extract_correct_ids(baseline_summary)
+        scores = score_dict(baseline_summary)
         _print(f"Baseline composite: {baseline_composite:.4f} ({len(baseline_correct)}/101 correct)")
         _print(f"  intent={scores['intent']:.2%}  severity={scores['severity']:.2%}  risk_f1={scores['risk_f1']:.2%}  evidence={scores['evidence']:.2%}  no_auto_send={scores['no_auto_send']:.2%}  fallback={scores['fallback']:.2%}")
         logger.info(
@@ -143,7 +144,7 @@ class OptimizationEngine:
             "composite": baseline_composite,
             "correct_cases": len(baseline_correct),
             "total_cases": baseline_summary.total_cases,
-            "metrics": self._score_dict(baseline_summary),
+            "metrics": score_dict(baseline_summary),
             "timestamp": _now_iso(),
             "description": "baseline",
         })
@@ -205,8 +206,8 @@ class OptimizationEngine:
             if improved:
                 # Re-evaluate to get the new state
                 current_summary = self.evaluator.run_full_evaluation()
-                current_composite = self._compute_composite(current_summary)
-                current_correct_ids = self._extract_correct_ids(current_summary)
+                current_composite = compute_composite(current_summary, self.config.weights)
+                current_correct_ids = extract_correct_ids(current_summary)
                 any_improvement = True
 
                 # 更新最佳状态
@@ -324,10 +325,10 @@ class OptimizationEngine:
             logger.info("Round %d: no diagnoses, nothing to fix.", iteration)
             self.history.record({
                 "iteration": iteration,
-                "composite": self._compute_composite(old_summary),
+                "composite": compute_composite(old_summary, self.config.weights),
                 "correct_cases": len(old_correct_ids),
                 "total_cases": old_summary.total_cases,
-                "metrics": self._score_dict(old_summary),
+                "metrics": score_dict(old_summary),
                 "timestamp": _now_iso(),
                 "description": "no diagnoses",
                 "fixes_tried": 0,
@@ -443,9 +444,9 @@ class OptimizationEngine:
                     "iteration": iteration,
                     "diagnosis_type": diag.type,
                     "fix_type": diag.suggested_fix_type,
-                    "composite_before": round(self._compute_composite(old_summary), 4),
+                    "composite_before": round(compute_composite(old_summary, self.config.weights), 4),
                     "composite_after": round(new_composite, 4),
-                    "delta": round(new_composite - self._compute_composite(old_summary), 4),
+                    "delta": round(new_composite - compute_composite(old_summary, self.config.weights), 4),
                     "gain_estimated": round(diag.fix_gain, 4),
                     "commit_sha": sha[:8],
                 })
@@ -454,15 +455,15 @@ class OptimizationEngine:
                     "iteration": iteration,
                     "composite": new_composite,
                     "best_composite": self._best_composite,  # NEW
-                    "correct_cases": len(self._extract_correct_ids(new_summary)),
+                    "correct_cases": len(extract_correct_ids(new_summary)),
                     "total_cases": new_summary.total_cases,
-                    "metrics": self._score_dict(new_summary),
+                    "metrics": score_dict(new_summary),
                     "timestamp": _now_iso(),
                     "description": f"accepted: {diag.suggested_fix_type}",
                     "fix_type": diag.suggested_fix_type,
                     "diagnosis_type": diag.type,
                     "commit_sha": sha,
-                    "fix_gain_actual": new_composite - self._compute_composite(old_summary),
+                    "fix_gain_actual": new_composite - compute_composite(old_summary, self.config.weights),
                 })
             else:
                 # Rollback
@@ -478,10 +479,10 @@ class OptimizationEngine:
                 })
                 self.history.record({
                     "iteration": iteration,
-                    "composite": self._compute_composite(old_summary),
+                    "composite": compute_composite(old_summary, self.config.weights),
                     "correct_cases": len(old_correct_ids),
                     "total_cases": old_summary.total_cases,
-                    "metrics": self._score_dict(old_summary),
+                    "metrics": score_dict(old_summary),
                     "timestamp": _now_iso(),
                     "description": f"reverted: {diag.suggested_fix_type}",
                     "fix_type": diag.suggested_fix_type,
@@ -489,14 +490,14 @@ class OptimizationEngine:
                 })
 
         final_composite = (
-            self._compute_composite(old_summary)
+            compute_composite(old_summary, self.config.weights)
             if not accepted_any
             else None  # will use last known value
         )
         if final_composite is None:
             # At least one fix was accepted; re-evaluate to get current state
             final_summary = self.evaluator.run_full_evaluation()
-            final_composite = self._compute_composite(final_summary)
+            final_composite = compute_composite(final_summary, self.config.weights)
 
         self.history.save_state({
             "iteration": iteration,
@@ -585,15 +586,15 @@ class OptimizationEngine:
                             "iteration": iteration,
                             "composite": new_composite,
                             "best_composite": self._best_composite,
-                            "correct_cases": len(self._extract_correct_ids(new_summary)),
+                            "correct_cases": len(extract_correct_ids(new_summary)),
                             "total_cases": new_summary.total_cases,
-                            "metrics": self._score_dict(new_summary),
+                            "metrics": score_dict(new_summary),
                             "timestamp": _now_iso(),
                             "description": f"LLM keyword: {keyword} \u2192 {tradeoff.target_intent}",
                             "fix_type": "intent_keyword_llm",
                             "diagnosis_type": diag.type,
                             "commit_sha": sha,
-                            "fix_gain_actual": new_composite - self._compute_composite(old_summary),
+                            "fix_gain_actual": new_composite - compute_composite(old_summary, self.config.weights),
                         })
                         return True
                     else:
@@ -673,16 +674,16 @@ class OptimizationEngine:
             )
         else:
             new_summary = self.evaluator.run_full_evaluation()
-        new_composite = self._compute_composite(new_summary)
-        old_composite = self._compute_composite(old_summary)
+        new_composite = compute_composite(new_summary, self.config.weights)
+        old_composite = compute_composite(old_summary, self.config.weights)
 
         # Check composite improved
         if new_composite <= old_composite:
             return False, new_summary, new_composite
 
         # Check no single metric regressed too much
-        old_scores = self._score_dict(old_summary)
-        new_scores = self._score_dict(new_summary)
+        old_scores = score_dict(old_summary)
+        new_scores = score_dict(new_summary)
         for metric_name in old_scores:
             drop = old_scores[metric_name] - new_scores[metric_name]
             if drop > MAX_SINGLE_METRIC_DROP:
@@ -695,7 +696,7 @@ class OptimizationEngine:
                 return False, new_summary, new_composite
 
         # Check minimum cases fixed
-        new_correct_ids = self._extract_correct_ids(new_summary)
+        new_correct_ids = extract_correct_ids(new_summary)
         net_gain = len(new_correct_ids - old_correct_ids)
         net_loss = len(old_correct_ids - new_correct_ids)
         net = net_gain - net_loss
@@ -710,64 +711,6 @@ class OptimizationEngine:
             return False, new_summary, new_composite
 
         return True, new_summary, new_composite
-
-    # ------------------------------------------------------------------
-    # Scoring helpers
-    # ------------------------------------------------------------------
-
-    def _compute_composite(self, summary: EvaluationSummary) -> float:
-        """Compute the weighted composite score from an evaluation summary.
-
-        Uses the weights from ``COMPOSITE_WEIGHTS``:
-            intent * 0.25 + severity * 0.20 + risk_f1 * 0.20
-            + evidence * 0.15 + no_auto_send * 0.10 + fallback * 0.10
-
-        Returns:
-            Float in [0.0, 1.0].
-        """
-        scores = self._score_dict(summary)
-        return sum(
-            scores[metric] * weight
-            for metric, weight in self.config.weights.items()
-        )
-
-    def _score_dict(self, summary: EvaluationSummary) -> dict[str, float]:
-        """Extract the metric dict used for composite scoring.
-
-        Returns:
-            Dict mapping metric names to their float values:
-            ``intent``, ``severity``, ``risk_f1``, ``evidence``,
-            ``no_auto_send``, ``fallback``.
-        """
-        return {
-            "intent": summary.aggregate_intent_accuracy,
-            "severity": summary.aggregate_severity_accuracy,
-            "risk_f1": summary.aggregate_risk_flag_f1,
-            "evidence": summary.aggregate_evidence_doc_type_recall,
-            "no_auto_send": summary.aggregate_no_auto_send_compliance,
-            "fallback": summary.aggregate_fallback_correctness,
-        }
-
-    @staticmethod
-    def _extract_correct_ids(summary: EvaluationSummary) -> set[str]:
-        """Get the set of case IDs where all metrics are correct.
-
-        A case is "correct" if its intent accuracy, severity accuracy,
-        risk flag exact match, fallback correctness, and no_auto_send
-        compliance are all ``True``.
-        """
-        correct: set[str] = set()
-        for case_id, case in summary.results.items():
-            m = case.metrics
-            if (
-                m.intent_accuracy
-                and m.severity_accuracy
-                and m.risk_flag_metrics.exact_match
-                and m.fallback_correctness
-                and m.no_auto_send_compliance
-            ):
-                correct.add(case_id)
-        return correct
 
 
 # ------------------------------------------------------------------

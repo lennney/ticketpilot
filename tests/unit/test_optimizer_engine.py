@@ -12,6 +12,7 @@ from ticketpilot.evaluation.schemas import (
 )
 from ticketpilot.optimizer.config import COMPOSITE_WEIGHTS
 from ticketpilot.optimizer.engine import OptimizationEngine, _now_iso
+from ticketpilot.optimizer.scoring import compute_composite, score_dict, extract_correct_ids
 
 
 # ------------------------------------------------------------------
@@ -172,13 +173,11 @@ class TestOptimizationEngineInit:
 
 class TestComputeComposite:
     def test_perfect_score(self) -> None:
-        engine = OptimizationEngine()
         summary = _make_summary()  # all cases correct → 1.0 for every metric
-        composite = engine._compute_composite(summary)
+        composite = compute_composite(summary, weights=COMPOSITE_WEIGHTS)
         assert abs(composite - 1.0) < 1e-9
 
     def test_zero_score(self) -> None:
-        engine = OptimizationEngine()
         results = {}
         for i in range(1, 4):
             cid = f"FAIL-{i:03d}"
@@ -192,11 +191,10 @@ class TestComputeComposite:
                 no_auto_send_ok=False,
             )
         summary = _make_summary(results)
-        composite = engine._compute_composite(summary)
+        composite = compute_composite(summary, weights=COMPOSITE_WEIGHTS)
         assert abs(composite) < 1e-9
 
     def test_partial_score(self) -> None:
-        engine = OptimizationEngine()
         # 3 correct, 2 wrong on intent only
         results = {}
         for i in range(1, 6):
@@ -205,20 +203,19 @@ class TestComputeComposite:
                 cid, intent_ok=(i <= 3)
             )
         summary = _make_summary(results)
-        composite = engine._compute_composite(summary)
+        composite = compute_composite(summary, weights=COMPOSITE_WEIGHTS)
         # intent = 0.6, all others = 1.0
         expected = 0.25 * 0.6 + 0.20 * 1.0 + 0.20 * 1.0 + 0.15 * 1.0 + 0.10 * 1.0 + 0.10 * 1.0
         assert abs(composite - expected) < 1e-9
 
     def test_composite_respects_weights(self) -> None:
-        engine = OptimizationEngine()
         # Only risk_f1 is 0.5, rest are 1.0
         results = {}
         for i in range(1, 3):
             cid = f"CASE-{i:03d}"
             results[cid] = _make_case_result(cid, risk_exact=False)
         summary = _make_summary(results)
-        composite = engine._compute_composite(summary)
+        composite = compute_composite(summary, weights=COMPOSITE_WEIGHTS)
         # risk_f1 is micro-averaged: 2 cases each with f1=0.0 → aggregate 0.0
         expected = (
             0.25 * 1.0 + 0.20 * 1.0 + 0.20 * 0.0
@@ -233,16 +230,14 @@ class TestComputeComposite:
 
 class TestScoreDict:
     def test_score_dict_keys(self) -> None:
-        engine = OptimizationEngine()
         summary = _make_summary()
-        scores = engine._score_dict(summary)
+        scores = score_dict(summary)
         expected_keys = {"intent", "severity", "risk_f1", "evidence", "no_auto_send", "fallback"}
         assert set(scores.keys()) == expected_keys
 
     def test_score_dict_values(self) -> None:
-        engine = OptimizationEngine()
         summary = _make_summary()
-        scores = engine._score_dict(summary)
+        scores = score_dict(summary)
         assert scores["intent"] == summary.aggregate_intent_accuracy
         assert scores["severity"] == summary.aggregate_severity_accuracy
         assert scores["risk_f1"] == summary.aggregate_risk_flag_f1
@@ -257,14 +252,12 @@ class TestScoreDict:
 
 class TestExtractCorrectIds:
     def test_all_correct(self) -> None:
-        engine = OptimizationEngine()
         summary = _make_summary()
-        correct = engine._extract_correct_ids(summary)
+        correct = extract_correct_ids(summary)
         assert len(correct) == 5
         assert all(cid.startswith("CASE-") for cid in correct)
 
     def test_none_correct(self) -> None:
-        engine = OptimizationEngine()
         results = {}
         for i in range(1, 4):
             cid = f"FAIL-{i:03d}"
@@ -277,11 +270,10 @@ class TestExtractCorrectIds:
                 no_auto_send_ok=False,
             )
         summary = _make_summary(results)
-        correct = engine._extract_correct_ids(summary)
+        correct = extract_correct_ids(summary)
         assert len(correct) == 0
 
     def test_partial_correct(self) -> None:
-        engine = OptimizationEngine()
         results = {
             "OK-001": _make_case_result("OK-001"),
             "OK-002": _make_case_result("OK-002"),
@@ -290,7 +282,7 @@ class TestExtractCorrectIds:
             ),
         }
         summary = _make_summary(results)
-        correct = engine._extract_correct_ids(summary)
+        correct = extract_correct_ids(summary)
         assert correct == {"OK-001", "OK-002"}
 
 
