@@ -12,7 +12,6 @@ from typing import Any
 
 from ticketpilot.retrieval.evidence_mapper import map_fused_to_evidence
 from ticketpilot.retrieval.pipeline import hybrid_retrieval
-from ticketpilot.retrieval.schema.knowledge import DocType
 
 logger = logging.getLogger(__name__)
 
