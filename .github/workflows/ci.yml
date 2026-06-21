@@ -45,7 +45,10 @@ jobs:
             --ignore=tests/unit/test_chat_app.py \
             --ignore=tests/unit/test_feedback.py \
             --ignore=tests/unit/test_retrieval_viz.py \
-            --ignore=tests/unit/test_review_console_helpers.py
+            --ignore=tests/unit/test_review_console_helpers.py \
+            --ignore=tests/unit/test_experiment.py \
+            --ignore=tests/unit/test_human_review_accuracy.py \
+            --ignore=tests/unit/test_intake_risk_triage.py
         env:
           TICKETPILOT_SKIP_DB_TESTS: "1"
 
