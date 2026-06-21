@@ -72,6 +72,11 @@ EXPECTED_CHUNKS_BY_INTENT = {
 # This module uses the same CONFIDENCE_HIGH/MEDIUM/LOW constants that
 # drafting/schemas.py uses, so confidence threshold adjustments by the
 # optimizer actually take effect.
+THRESHOLDS: dict[str, float] = {
+    "high": CONFIDENCE_HIGH,
+    "medium": CONFIDENCE_MEDIUM,
+    "low": CONFIDENCE_LOW,
+}
 
 
 def _classify_level(score: float) -> ConfidenceLevel:
