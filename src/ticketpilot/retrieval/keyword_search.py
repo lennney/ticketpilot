@@ -108,7 +108,16 @@ def _extract_search_terms(query: str) -> list[str]:
     # For Chinese, we search on characters/words
     # For English, split on whitespace
     terms = query.split()
-    cleaned = [t.strip() for t in terms if t.strip()]
+    cleaned = []
+    for t in terms:
+        t = t.strip()
+        if not t:
+            continue
+        # Sanitize: remove null bytes, single quotes, and backslashes
+        # that could break FTS query construction
+        t = t.replace("\x00", "").replace("'", "").replace("\\", "")
+        if t:
+            cleaned.append(t)
     return cleaned
 
 

@@ -116,17 +116,23 @@ def retrieve_evidence_tool(input_data: dict[str, Any]) -> dict[str, Any]:
         risk_flags: set[RiskFlag] or list[str/RiskFlag]
         top_k: int (optional, default 10)
     """
+    import logging
+
     normalized_text = input_data["normalized_text"]
     intent = _parse_intent(input_data["intent"])
     risk_flags = _parse_risk_flags(input_data["risk_flags"])
     top_k = input_data.get("top_k", 10)
 
-    candidates, trace = retrieve_evidence(
-        normalized_text=normalized_text,
-        intent=intent,
-        risk_flags=risk_flags,
-        top_k=top_k,
-    )
+    try:
+        candidates, trace = retrieve_evidence(
+            normalized_text=normalized_text,
+            intent=intent,
+            risk_flags=risk_flags,
+            top_k=top_k,
+        )
+    except Exception as exc:
+        logging.warning("Evidence retrieval failed, returning empty results: %s", exc)
+        candidates, trace = [], None
 
     # RetrievalTrace is a Pydantic model; it serialises cleanly via model_dump.
     return {
