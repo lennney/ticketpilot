@@ -285,9 +285,7 @@ def compute_evaluation_summary(
     """
     errors = validate_predictions(predictions, golden)
     if errors:
-        raise ValueError(
-            "Prediction validation failed:\n" + "\n".join(errors)
-        )
+        raise ValueError("Prediction validation failed:\n" + "\n".join(errors))
 
     results: dict[str, CaseResult] = {}
     all_mismatches: list[MismatchEntry] = []
@@ -306,12 +304,8 @@ def compute_evaluation_summary(
         )
 
     # Aggregate boolean metrics (rate-based)
-    intent_correct = sum(
-        1 for r in results.values() if r.metrics.intent_accuracy
-    )
-    severity_correct = sum(
-        1 for r in results.values() if r.metrics.severity_accuracy
-    )
+    intent_correct = sum(1 for r in results.values() if r.metrics.intent_accuracy)
+    severity_correct = sum(1 for r in results.values() if r.metrics.severity_accuracy)
     must_human_review_correct = sum(
         1 for r in results.values() if r.metrics.must_human_review_accuracy
     )
@@ -325,7 +319,8 @@ def compute_evaluation_summary(
     # Quality gate metrics
     # quality_gate_accuracy: fraction of cases where quality prediction matches golden no_auto_send
     quality_gate_correct = sum(
-        1 for r in results.values()
+        1
+        for r in results.values()
         if r.prediction.predicted_no_auto_send == r.golden.expected_no_auto_send
     )
     quality_gate_accuracy = quality_gate_correct / total
@@ -334,13 +329,11 @@ def compute_evaluation_summary(
     # "High confidence" = must_human_review is False (pipeline considers safe for auto-send)
     # "Quality blocked" = predicted_no_auto_send is True (quality gate prevented auto-send)
     high_confidence_cases = [
-        r for r in results.values()
-        if not r.prediction.predicted_must_human_review
+        r for r in results.values() if not r.prediction.predicted_must_human_review
     ]
     if high_confidence_cases:
         intercepted_count = sum(
-            1 for r in high_confidence_cases
-            if r.prediction.predicted_no_auto_send
+            1 for r in high_confidence_cases if r.prediction.predicted_no_auto_send
         )
         quality_intercept_rate = intercepted_count / len(high_confidence_cases)
     else:
@@ -358,14 +351,10 @@ def compute_evaluation_summary(
         total_fn += len(gold_flags - pred_flags)
 
     micro_precision = (
-        total_tp / (total_tp + total_fp)
-        if (total_tp + total_fp) > 0
-        else 1.0
+        total_tp / (total_tp + total_fp) if (total_tp + total_fp) > 0 else 1.0
     )
     micro_recall = (
-        total_tp / (total_tp + total_fn)
-        if (total_tp + total_fn) > 0
-        else 1.0
+        total_tp / (total_tp + total_fn) if (total_tp + total_fn) > 0 else 1.0
     )
     micro_f1 = (
         2.0 * micro_precision * micro_recall / (micro_precision + micro_recall)
@@ -374,9 +363,9 @@ def compute_evaluation_summary(
     )
 
     # Average evidence doc type recall
-    avg_evidence_recall = sum(
-        r.metrics.evidence_doc_type_recall for r in results.values()
-    ) / total
+    avg_evidence_recall = (
+        sum(r.metrics.evidence_doc_type_recall for r in results.values()) / total
+    )
 
     return EvaluationSummary(
         total_cases=total,

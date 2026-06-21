@@ -52,7 +52,9 @@ def _draft(text: str, **kwargs) -> DraftReply:
     )
 
 
-def _risk(flags: set[RiskFlag] | None = None, must_review: bool = False) -> RiskAssessment:
+def _risk(
+    flags: set[RiskFlag] | None = None, must_review: bool = False
+) -> RiskAssessment:
     return RiskAssessment(
         flags=flags or set(),
         severity=RiskSeverity.MEDIUM,
@@ -85,8 +87,14 @@ class TestGuardFailureType:
         assert "AMBIGUOUS_GUARD_CASE" in types
         assert "UNCITED_SUBSTANTIVE_CLAIM" in types
         # Serialized value still "UNCITED_SUBSTANTIVE_CLAIM" (stable for persistence)
-        assert GuardFailureType("UNCITED_SUBSTANTIVE_CLAIM").name == "UNCITED_SUBSTANTIVE_CLAIM"
-        assert GuardFailureType("UNCITED_SUBSTANTIVE_CLAIM").value == "UNCITED_SUBSTANTIVE_CLAIM"
+        assert (
+            GuardFailureType("UNCITED_SUBSTANTIVE_CLAIM").name
+            == "UNCITED_SUBSTANTIVE_CLAIM"
+        )
+        assert (
+            GuardFailureType("UNCITED_SUBSTANTIVE_CLAIM").value
+            == "UNCITED_SUBSTANTIVE_CLAIM"
+        )
 
 
 class TestGuardResultDefaults:
@@ -232,7 +240,9 @@ class TestFailureReasonsTaxonomy:
         draft = _draft(text)
         result = check_claim_guard(draft, [])
         assert result.guard_passed is False
-        assert GuardFailureType.MANUAL_REVIEW_ACKNOWLEDGEMENT not in result.failure_reasons
+        assert (
+            GuardFailureType.MANUAL_REVIEW_ACKNOWLEDGEMENT not in result.failure_reasons
+        )
 
 
 # ---------------------------------------------------------------------------
@@ -566,34 +576,42 @@ class TestSafeEscalationLanguage:
 
     def test_detects_rgcl(self) -> None:
         from ticketpilot.drafting.claim_guard import check_safe_escalation_language
+
         assert check_safe_escalation_language("此案件需要人工处理。") is True
 
     def test_detects_zrgkf(self) -> None:
         from ticketpilot.drafting.claim_guard import check_safe_escalation_language
+
         assert check_safe_escalation_language("建议转人工客服处理。") is True
 
     def test_detects_xy_rgshenhe(self) -> None:
         from ticketpilot.drafting.claim_guard import check_safe_escalation_language
+
         assert check_safe_escalation_language("此问题需要人工审核。") is True
 
     def test_detects_rgshencha(self) -> None:
         from ticketpilot.drafting.claim_guard import check_safe_escalation_language
+
         assert check_safe_escalation_language("已提交人工审查。") is True
 
     def test_detects_shengjizhirengong(self) -> None:
         from ticketpilot.drafting.claim_guard import check_safe_escalation_language
+
         assert check_safe_escalation_language("此案件已升级至人工处理。") is True
 
     def test_detects_yishengjirengong(self) -> None:
         from ticketpilot.drafting.claim_guard import check_safe_escalation_language
+
         assert check_safe_escalation_language("此案件已升级人工处理。") is True
 
     def test_no_keywords_returns_false(self) -> None:
         from ticketpilot.drafting.claim_guard import check_safe_escalation_language
+
         assert check_safe_escalation_language("尊敬的客户，您好。") is False
 
     def test_empty_text_returns_false(self) -> None:
         from ticketpilot.drafting.claim_guard import check_safe_escalation_language
+
         assert check_safe_escalation_language("") is False
 
 
@@ -607,24 +625,30 @@ class TestManualReviewAcknowledgement:
 
     def test_detects_rgshenhe(self) -> None:
         from ticketpilot.drafting.claim_guard import check_manual_review_acknowledgement
+
         assert check_manual_review_acknowledgement("需进行人工审核。") is True
 
     def test_detects_xurengong_review(self) -> None:
         from ticketpilot.drafting.claim_guard import check_manual_review_acknowledgement
+
         assert check_manual_review_acknowledgement("此问题需人工 review。") is True
 
     def test_detects_rgquerren(self) -> None:
         from ticketpilot.drafting.claim_guard import check_manual_review_acknowledgement
+
         assert check_manual_review_acknowledgement("已人工确认并处理。") is True
 
     def test_detects_xurengongjieru(self) -> None:
         from ticketpilot.drafting.claim_guard import check_manual_review_acknowledgement
+
         assert check_manual_review_acknowledgement("此案件需人工介入。") is True
 
     def test_no_keywords_returns_false(self) -> None:
         from ticketpilot.drafting.claim_guard import check_manual_review_acknowledgement
+
         assert check_manual_review_acknowledgement("尊敬的客户，您好。") is False
 
     def test_empty_text_returns_false(self) -> None:
         from ticketpilot.drafting.claim_guard import check_manual_review_acknowledgement
+
         assert check_manual_review_acknowledgement("") is False

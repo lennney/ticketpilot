@@ -1,4 +1,5 @@
 """Unit tests for MultiQueryExpander."""
+
 from unittest.mock import patch
 
 

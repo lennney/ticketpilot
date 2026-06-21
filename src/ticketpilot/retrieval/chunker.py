@@ -15,7 +15,7 @@ from ticketpilot.retrieval.schema.knowledge import (
 
 # Sentence-ending punctuation patterns
 # Chinese: 。！？  English: . ! ?
-_SENTENCE_BOUNDARY_PATTERN = re.compile(r'[。！？.!?]')
+_SENTENCE_BOUNDARY_PATTERN = re.compile(r"[。！？.!?]")
 
 # Chunk size thresholds (in characters)
 _PARENT_SIZE_THRESHOLD = 1000
@@ -102,7 +102,9 @@ def _split_at_sentence_boundary(text: str, target_size: int) -> list[str]:
     return chunks
 
 
-def _split_into_parent_chunks(text: str, chunk_size: int = _PARENT_TARGET_SIZE) -> list[str]:
+def _split_into_parent_chunks(
+    text: str, chunk_size: int = _PARENT_TARGET_SIZE
+) -> list[str]:
     """
     Split text into parent chunks at sentence boundaries.
 

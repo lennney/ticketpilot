@@ -1,13 +1,20 @@
 """Evidence-grounded draft reply generation module."""
 
-from ticketpilot.drafting.claim_guard import GuardFailureType, GuardResult, check_claim_guard
+from ticketpilot.drafting.claim_guard import (
+    GuardFailureType,
+    GuardResult,
+    check_claim_guard,
+)
 from ticketpilot.drafting.citation_validator import CitationValidator
 from ticketpilot.drafting.draft_citation_validator import (
     DraftCitationValidationResult,
     validate_draft_citations,
 )
 from ticketpilot.drafting.generate import generate_draft
-from ticketpilot.drafting.generator import DraftGenerationResult, generate_draft as generate_draft_v2
+from ticketpilot.drafting.generator import (
+    DraftGenerationResult,
+    generate_draft as generate_draft_v2,
+)
 from ticketpilot.drafting.llm_provider import FakeLLMProvider, LLMProvider
 from ticketpilot.drafting.pipeline import run_pipeline_with_draft
 from ticketpilot.drafting.provider import (

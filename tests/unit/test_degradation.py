@@ -1,6 +1,5 @@
 """Tests for DegradationRouter — tiered response strategy."""
 
-
 from ticketpilot.confidence.scorer import ConfidenceBreakdown, ConfidenceLevel
 from ticketpilot.degradation.router import (
     DEFAULT_DISCLAIMER,
@@ -13,7 +12,9 @@ from ticketpilot.quality.scorer import DraftQualityResult
 class TestDegradationRouter:
     """Tests for DegradationRouter.route()."""
 
-    def _make_confidence(self, overall: float, level: ConfidenceLevel) -> ConfidenceBreakdown:
+    def _make_confidence(
+        self, overall: float, level: ConfidenceLevel
+    ) -> ConfidenceBreakdown:
         """Helper to create ConfidenceBreakdown."""
         return ConfidenceBreakdown(
             retrieval_confidence=overall,
@@ -109,7 +110,9 @@ class TestDegradationRouter:
 class TestQualityGateRouting:
     """Tests for quality gate integration in DegradationRouter."""
 
-    def _make_confidence(self, overall: float, level: ConfidenceLevel) -> ConfidenceBreakdown:
+    def _make_confidence(
+        self, overall: float, level: ConfidenceLevel
+    ) -> ConfidenceBreakdown:
         """Helper to create ConfidenceBreakdown."""
         return ConfidenceBreakdown(
             retrieval_confidence=overall,
@@ -120,7 +123,9 @@ class TestQualityGateRouting:
             level=level,
         )
 
-    def _make_quality(self, eligible_for_auto: bool = True, eligible_for_cautious: bool = True) -> DraftQualityResult:
+    def _make_quality(
+        self, eligible_for_auto: bool = True, eligible_for_cautious: bool = True
+    ) -> DraftQualityResult:
         """Helper to create DraftQualityResult."""
         return DraftQualityResult(
             overall_score=0.9 if eligible_for_auto else 0.3,
@@ -128,6 +133,7 @@ class TestQualityGateRouting:
             eligible_for_cautious_send=eligible_for_cautious,
             failures=[] if eligible_for_auto else ["unsupported_claims"],
         )
+
     def test_high_confidence_good_quality(self):
         """HIGH confidence + good quality → AUTO_SEND."""
         router = DegradationRouter()

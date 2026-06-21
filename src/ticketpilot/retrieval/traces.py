@@ -179,7 +179,7 @@ class RetrievalTrace(BaseModel):
         default=10,
         description="Requested top-k",
     )
-    
+
     # Re-ranking metadata
     rerank_latency_ms: int = Field(
         default=0,

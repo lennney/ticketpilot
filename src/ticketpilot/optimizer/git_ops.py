@@ -1,4 +1,5 @@
 """Git operations for the optimizer."""
+
 from __future__ import annotations
 
 import subprocess

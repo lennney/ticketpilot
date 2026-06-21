@@ -28,7 +28,9 @@ def pipeline(raw_ticket: RawTicket) -> NormalizedTicket:
 
     return NormalizedTicket(
         text=cleaned_text,
-        language="zh" if cleaned_text and any('一' <= c <= '鿿' for c in cleaned_text) else "unknown",
+        language="zh"
+        if cleaned_text and any("一" <= c <= "鿿" for c in cleaned_text)
+        else "unknown",
         order_numbers=entities.order_numbers,
         product_info=entities.product_info,
         amount=entities.amount,

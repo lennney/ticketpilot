@@ -76,25 +76,29 @@ def _document_to_chunks(
         embedding = embedding_provider.embed(chunk.content)
         embedding_str = "[" + ",".join(str(x) for x in embedding) + "]"
 
-        results.append((
-            chunk.id,
-            chunk.doc_id,
-            chunk.doc_type.value,
-            chunk.source_table,
-            chunk.source_id,
-            chunk.parent_chunk_id,
-            chunk.chunk_level.value,
-            chunk.business_domain.value,
-            chunk.risk_level.value if chunk.risk_level else None,
-            chunk.content,
-            chunk.content_hash,
-            embedding_str,
-        ))
+        results.append(
+            (
+                chunk.id,
+                chunk.doc_id,
+                chunk.doc_type.value,
+                chunk.source_table,
+                chunk.source_id,
+                chunk.parent_chunk_id,
+                chunk.chunk_level.value,
+                chunk.business_domain.value,
+                chunk.risk_level.value if chunk.risk_level else None,
+                chunk.content,
+                chunk.content_hash,
+                embedding_str,
+            )
+        )
 
     return results
 
 
-def _insert_source_documents(conn, clear_existing: bool = False) -> tuple[int, int, int]:
+def _insert_source_documents(
+    conn, clear_existing: bool = False
+) -> tuple[int, int, int]:
     """Insert seed documents into source tables.
 
     Args:
@@ -116,7 +120,13 @@ def _insert_source_documents(conn, clear_existing: bool = False) -> tuple[int, i
             """INSERT INTO knowledge_faq (id, business_domain, title, content, intent_tags)
                VALUES (%s, %s, %s, %s, %s)
                ON CONFLICT (id) DO NOTHING""",
-            (doc.id, doc.business_domain.value, doc.title, doc.content, doc.intent_tags),
+            (
+                doc.id,
+                doc.business_domain.value,
+                doc.title,
+                doc.content,
+                doc.intent_tags,
+            ),
         )
         faq_count += 1
 
@@ -126,7 +136,14 @@ def _insert_source_documents(conn, clear_existing: bool = False) -> tuple[int, i
             """INSERT INTO knowledge_policy (id, business_domain, policy_code, title, content, effective_date)
                VALUES (%s, %s, %s, %s, %s, %s)
                ON CONFLICT (id) DO NOTHING""",
-            (doc.id, doc.business_domain.value, doc.policy_code, doc.title, doc.content, doc.effective_date),
+            (
+                doc.id,
+                doc.business_domain.value,
+                doc.policy_code,
+                doc.title,
+                doc.content,
+                doc.effective_date,
+            ),
         )
         policy_count += 1
 
@@ -136,7 +153,15 @@ def _insert_source_documents(conn, clear_existing: bool = False) -> tuple[int, i
             """INSERT INTO knowledge_case (id, business_domain, case_id, issue_summary, resolution, risk_level, compensation_amount)
                VALUES (%s, %s, %s, %s, %s, %s, %s)
                ON CONFLICT (id) DO NOTHING""",
-            (doc.id, doc.business_domain.value, doc.case_id, doc.issue_summary, doc.resolution, doc.risk_level.value, doc.compensation_amount),
+            (
+                doc.id,
+                doc.business_domain.value,
+                doc.case_id,
+                doc.issue_summary,
+                doc.resolution,
+                doc.risk_level.value,
+                doc.compensation_amount,
+            ),
         )
         case_count += 1
 
@@ -174,34 +199,48 @@ def seed_knowledge_chunks(
     with get_db_connection() as conn:
         with conn.transaction():
             # Phase 1: Insert source documents
-            faq_count, policy_count, case_count = _insert_source_documents(conn, clear_existing)
+            faq_count, policy_count, case_count = _insert_source_documents(
+                conn, clear_existing
+            )
 
             # Phase 2: Chunk and collect
             for doc in load_faq_seed_data():
                 chunks = _document_to_chunks(
-                    doc_id=doc.id, doc_type=DocType.FAQ,
-                    source_table=SOURCE_FAQ, source_id=doc.id,
-                    business_domain=doc.business_domain, content=doc.content,
-                    risk_level=None, embedding_provider=embedding_provider,
+                    doc_id=doc.id,
+                    doc_type=DocType.FAQ,
+                    source_table=SOURCE_FAQ,
+                    source_id=doc.id,
+                    business_domain=doc.business_domain,
+                    content=doc.content,
+                    risk_level=None,
+                    embedding_provider=embedding_provider,
                 )
                 all_chunks.extend(chunks)
 
             for doc in load_policy_seed_data():
                 chunks = _document_to_chunks(
-                    doc_id=doc.id, doc_type=DocType.POLICY,
-                    source_table=SOURCE_POLICY, source_id=doc.id,
-                    business_domain=doc.business_domain, content=doc.content,
-                    risk_level=None, embedding_provider=embedding_provider,
+                    doc_id=doc.id,
+                    doc_type=DocType.POLICY,
+                    source_table=SOURCE_POLICY,
+                    source_id=doc.id,
+                    business_domain=doc.business_domain,
+                    content=doc.content,
+                    risk_level=None,
+                    embedding_provider=embedding_provider,
                 )
                 all_chunks.extend(chunks)
 
             for doc in load_case_seed_data():
                 content = f"{doc.issue_summary}\n\n{doc.resolution}"
                 chunks = _document_to_chunks(
-                    doc_id=doc.id, doc_type=DocType.CASE,
-                    source_table=SOURCE_CASE, source_id=doc.id,
-                    business_domain=doc.business_domain, content=content,
-                    risk_level=doc.risk_level, embedding_provider=embedding_provider,
+                    doc_id=doc.id,
+                    doc_type=DocType.CASE,
+                    source_table=SOURCE_CASE,
+                    source_id=doc.id,
+                    business_domain=doc.business_domain,
+                    content=content,
+                    risk_level=doc.risk_level,
+                    embedding_provider=embedding_provider,
                 )
                 all_chunks.extend(chunks)
 
@@ -283,11 +322,15 @@ def verify_seeding() -> dict:
             by_level = {row[0]: row[1] for row in cur.fetchall()}
 
             # Count with source refs
-            cur.execute("SELECT COUNT(*) FROM knowledge_chunks WHERE source_table IS NOT NULL AND source_id IS NOT NULL")
+            cur.execute(
+                "SELECT COUNT(*) FROM knowledge_chunks WHERE source_table IS NOT NULL AND source_id IS NOT NULL"
+            )
             with_source_refs = cur.fetchone()[0]
 
             # Count with embeddings
-            cur.execute("SELECT COUNT(*) FROM knowledge_chunks WHERE embedding IS NOT NULL")
+            cur.execute(
+                "SELECT COUNT(*) FROM knowledge_chunks WHERE embedding IS NOT NULL"
+            )
             with_embeddings = cur.fetchone()[0]
 
             total = get_chunk_count()
@@ -302,5 +345,7 @@ def verify_seeding() -> dict:
                 "by_chunk_level": by_level,
                 "with_source_refs": with_source_refs,
                 "with_embeddings": with_embeddings,
-                "seeding_complete": total > 0 and with_embeddings == total and with_source_refs == total,
+                "seeding_complete": total > 0
+                and with_embeddings == total
+                and with_source_refs == total,
             }

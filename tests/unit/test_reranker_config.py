@@ -117,11 +117,15 @@ class TestContentQualityConfig:
             ContentQualityConfig(optimal_length_min=800, optimal_length_max=200)
 
     def test_density_weight_out_of_range_raises(self):
-        with pytest.raises(ValueError, match="keyword_density_weight must be between 0 and 1"):
+        with pytest.raises(
+            ValueError, match="keyword_density_weight must be between 0 and 1"
+        ):
             ContentQualityConfig(keyword_density_weight=1.5)
 
     def test_negative_density_weight_raises(self):
-        with pytest.raises(ValueError, match="keyword_density_weight must be between 0 and 1"):
+        with pytest.raises(
+            ValueError, match="keyword_density_weight must be between 0 and 1"
+        ):
             ContentQualityConfig(keyword_density_weight=-0.1)
 
 

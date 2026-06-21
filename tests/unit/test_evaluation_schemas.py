@@ -198,9 +198,7 @@ class TestGoldenExpectation:
         g1 = GoldenExpectation(
             case_id="case_009",
             expected_issue_type="complaint",
-            expected_risk_flags=frozenset(
-                {"compensation_risk", "complaint_risk"}
-            ),
+            expected_risk_flags=frozenset({"compensation_risk", "complaint_risk"}),
             expected_severity="MEDIUM",
             expected_must_human_review=True,
             expected_fallback_required=False,
@@ -209,9 +207,7 @@ class TestGoldenExpectation:
         g2 = GoldenExpectation(
             case_id="case_009",
             expected_issue_type="complaint",
-            expected_risk_flags=frozenset(
-                {"complaint_risk", "compensation_risk"}
-            ),
+            expected_risk_flags=frozenset({"complaint_risk", "compensation_risk"}),
             expected_severity="MEDIUM",
             expected_must_human_review=True,
             expected_fallback_required=False,

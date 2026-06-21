@@ -25,19 +25,28 @@ if TYPE_CHECKING:
 
 class ConfidenceLevel(str, Enum):
     """Confidence level tiers."""
-    HIGH = "high"         # > 0.8  → auto-send
-    MEDIUM = "medium"     # 0.6-0.8 → auto-send with disclaimer
-    LOW = "low"           # 0.4-0.6 → human review
-    CRITICAL = "critical" # < 0.4  → escalate to human
+
+    HIGH = "high"  # > 0.8  → auto-send
+    MEDIUM = "medium"  # 0.6-0.8 → auto-send with disclaimer
+    LOW = "low"  # 0.4-0.6 → human review
+    CRITICAL = "critical"  # < 0.4  → escalate to human
 
 
 class ConfidenceBreakdown(BaseModel):
     """Detailed breakdown of confidence scoring."""
 
-    retrieval_confidence: float = Field(ge=0, le=1, description="Retrieval quality score")
-    classification_confidence: float = Field(ge=0, le=1, description="Classifier confidence")
-    citation_confidence: float = Field(ge=0, le=1, description="Citation coverage ratio")
-    evidence_density: float = Field(ge=0, le=1, description="Retrieved/expected chunks ratio")
+    retrieval_confidence: float = Field(
+        ge=0, le=1, description="Retrieval quality score"
+    )
+    classification_confidence: float = Field(
+        ge=0, le=1, description="Classifier confidence"
+    )
+    citation_confidence: float = Field(
+        ge=0, le=1, description="Citation coverage ratio"
+    )
+    evidence_density: float = Field(
+        ge=0, le=1, description="Retrieved/expected chunks ratio"
+    )
     overall: float = Field(ge=0, le=1, description="Weighted combination")
     level: ConfidenceLevel = Field(description="Confidence tier")
 
@@ -63,6 +72,7 @@ EXPECTED_CHUNKS_BY_INTENT = {
 # This module uses the same CONFIDENCE_HIGH/MEDIUM/LOW constants that
 # drafting/schemas.py uses, so confidence threshold adjustments by the
 # optimizer actually take effect.
+
 
 def _classify_level(score: float) -> ConfidenceLevel:
     """Map overall score to confidence level using config thresholds."""
@@ -116,9 +126,17 @@ def _evidence_density(ticket_output: TicketOutput) -> float:
 
     Returns min(ratio, 1.0) to cap at 1.0.
     """
-    intent = ticket_output.classification.intent.value if hasattr(ticket_output.classification.intent, 'value') else str(ticket_output.classification.intent)
+    intent = (
+        ticket_output.classification.intent.value
+        if hasattr(ticket_output.classification.intent, "value")
+        else str(ticket_output.classification.intent)
+    )
     expected = EXPECTED_CHUNKS_BY_INTENT.get(intent, 2)
-    retrieved = len(ticket_output.evidence_candidates) if ticket_output.evidence_candidates else 0
+    retrieved = (
+        len(ticket_output.evidence_candidates)
+        if ticket_output.evidence_candidates
+        else 0
+    )
     return min(retrieved / expected, 1.0) if expected > 0 else 0.0
 
 

@@ -10,13 +10,18 @@ import pytest
 from ticketpilot.confidence import scorer as scorer_mod
 from ticketpilot.experiment.config import ExperimentConfig
 from ticketpilot.experiment.reporter import ExperimentReport
-from ticketpilot.experiment.runner import ExperimentRunner, _apply_config, _compute_delta
+from ticketpilot.experiment.runner import (
+    ExperimentRunner,
+    _apply_config,
+    _compute_delta,
+)
 from ticketpilot.schema.ticket import RawTicket
 
 
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
+
 
 def _make_ticket(text: str = "I want a refund for order #12345") -> RawTicket:
     return RawTicket(
@@ -39,12 +44,14 @@ def _make_tickets(n: int = 3) -> list[RawTicket]:
 # ExperimentConfig
 # ---------------------------------------------------------------------------
 
+
 class TestExperimentConfig:
     def test_default_id_is_uuid(self):
         cfg = ExperimentConfig(name="test")
         assert cfg.experiment_id  # non-empty
         # Should be a valid UUID string
         import uuid
+
         uuid.UUID(cfg.experiment_id)  # raises on invalid
 
     def test_custom_id(self):
@@ -75,6 +82,7 @@ class TestExperimentConfig:
 # _compute_delta
 # ---------------------------------------------------------------------------
 
+
 class TestComputeDelta:
     def test_numeric_delta(self):
         control = {"avg_confidence": 0.7, "avg_latency_ms": 10.0}
@@ -100,6 +108,7 @@ class TestComputeDelta:
 # ---------------------------------------------------------------------------
 # _apply_config context manager
 # ---------------------------------------------------------------------------
+
 
 class TestApplyConfig:
     def test_no_overrides_restores_original(self):
@@ -127,6 +136,7 @@ class TestApplyConfig:
 # ExperimentRunner
 # ---------------------------------------------------------------------------
 
+
 class TestExperimentRunner:
     def test_run_returns_report(self):
         cfg = ExperimentConfig(name="basic")
@@ -140,7 +150,12 @@ class TestExperimentRunner:
         cfg = ExperimentConfig(name="metrics")
         runner = ExperimentRunner()
         report = runner.run(_make_tickets(3), cfg)
-        for key in ("intent_accuracy", "avg_confidence", "avg_latency_ms", "must_human_review_rate"):
+        for key in (
+            "intent_accuracy",
+            "avg_confidence",
+            "avg_latency_ms",
+            "must_human_review_rate",
+        ):
             assert key in report.control_results
             assert key in report.treatment_results
             assert key in report.delta
@@ -150,7 +165,12 @@ class TestExperimentRunner:
         runner = ExperimentRunner()
         report = runner.run(_make_tickets(2), cfg)
         # Non-latency metrics should be identical (latency varies by run)
-        for key in ("intent_accuracy", "avg_confidence", "must_human_review_rate", "ticket_count"):
+        for key in (
+            "intent_accuracy",
+            "avg_confidence",
+            "must_human_review_rate",
+            "ticket_count",
+        ):
             assert report.control_results[key] == report.treatment_results[key]
             if isinstance(report.delta[key], (int, float)):
                 assert report.delta[key] == pytest.approx(0.0, abs=1e-4)
@@ -165,7 +185,10 @@ class TestExperimentRunner:
         runner = ExperimentRunner()
         report = runner.run(_make_tickets(5), cfg)
         # With very high thresholds, more tickets should need human review
-        assert report.treatment_results["must_human_review_rate"] >= report.control_results["must_human_review_rate"]
+        assert (
+            report.treatment_results["must_human_review_rate"]
+            >= report.control_results["must_human_review_rate"]
+        )
 
     def test_empty_ticket_list(self):
         cfg = ExperimentConfig(name="empty")
@@ -178,6 +201,7 @@ class TestExperimentRunner:
 # ---------------------------------------------------------------------------
 # ExperimentReport
 # ---------------------------------------------------------------------------
+
 
 class TestExperimentReport:
     def test_to_dict(self):

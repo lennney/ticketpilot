@@ -3,6 +3,7 @@
 Builds a Markdown report from optimization iterations and saves it
 to the path configured in OptimizerConfig.report_md.
 """
+
 from __future__ import annotations
 
 import logging
@@ -23,6 +24,7 @@ logger = logging.getLogger(__name__)
 # ---------------------------------------------------------------------------
 # Iteration record (lightweight, decoupled from optimizer internals)
 # ---------------------------------------------------------------------------
+
 
 class IterationRecord:
     """A single optimization iteration record for the reporter.
@@ -60,6 +62,7 @@ class IterationRecord:
 # ---------------------------------------------------------------------------
 # OptimizationReporter
 # ---------------------------------------------------------------------------
+
 
 class OptimizationReporter:
     """Generates Markdown optimization reports.
@@ -150,12 +153,27 @@ class OptimizationReporter:
 
         rows = [
             ("Total Cases", str(ref.total_cases)),
-            ("Intent Accuracy", self._pct(baseline, final, "aggregate_intent_accuracy")),
-            ("Severity Accuracy", self._pct(baseline, final, "aggregate_severity_accuracy")),
+            (
+                "Intent Accuracy",
+                self._pct(baseline, final, "aggregate_intent_accuracy"),
+            ),
+            (
+                "Severity Accuracy",
+                self._pct(baseline, final, "aggregate_severity_accuracy"),
+            ),
             ("Risk Flag F1", self._pct(baseline, final, "aggregate_risk_flag_f1")),
-            ("Evidence Recall", self._pct(baseline, final, "aggregate_evidence_doc_type_recall")),
-            ("No-Auto-Send", self._pct(baseline, final, "aggregate_no_auto_send_compliance")),
-            ("Fallback Correct", self._pct(baseline, final, "aggregate_fallback_correctness")),
+            (
+                "Evidence Recall",
+                self._pct(baseline, final, "aggregate_evidence_doc_type_recall"),
+            ),
+            (
+                "No-Auto-Send",
+                self._pct(baseline, final, "aggregate_no_auto_send_compliance"),
+            ),
+            (
+                "Fallback Correct",
+                self._pct(baseline, final, "aggregate_fallback_correctness"),
+            ),
         ]
 
         # Add composite score if possible
@@ -201,7 +219,9 @@ class OptimizationReporter:
             status = "✅ Committed" if it.committed else "❌ Rolled Back"
 
             # Truncate fix description for table readability
-            desc = it.fix_description[:60] + ("…" if len(it.fix_description) > 60 else "")
+            desc = it.fix_description[:60] + (
+                "…" if len(it.fix_description) > 60 else ""
+            )
 
             lines.append(f"| {it.round_num} | {desc} | {delta_str} | {status} |")
 

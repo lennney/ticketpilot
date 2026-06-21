@@ -1,4 +1,5 @@
 """Unit tests for HybridReranker."""
+
 from unittest.mock import MagicMock
 from uuid import uuid4
 
@@ -71,7 +72,9 @@ class TestKeywordDensity:
         assert _keyword_density("退款 到账", "退款一直没到账怎么办") == 1.0
 
     def test_partial_terms(self):
-        assert _keyword_density("退款 到账 物流", "退款政策说明") == pytest.approx(1 / 3)
+        assert _keyword_density("退款 到账 物流", "退款政策说明") == pytest.approx(
+            1 / 3
+        )
 
     def test_no_terms(self):
         assert _keyword_density("退款", "物流发货说明") == 0.0
@@ -141,8 +144,10 @@ class TestHybridReranker:
         assert len(results[0].signals) == 4
         signal_names = {s.name for s in results[0].signals}
         assert signal_names == {
-            "rrf_score", "embedding_similarity",
-            "intent_metadata_boost", "content_quality",
+            "rrf_score",
+            "embedding_similarity",
+            "intent_metadata_boost",
+            "content_quality",
         }
 
     def test_fake_embedding_weight_redistribution(self):
@@ -187,6 +192,7 @@ class TestHybridReranker:
 class TestIsRealEmbeddingProvider:
     def test_real_provider(self):
         from ticketpilot.retrieval.hybrid_reranker import _is_real_embedding_provider
+
         provider = MagicMock()
         provider.embed = MagicMock()
         provider.provider_name = "openai"
@@ -194,6 +200,7 @@ class TestIsRealEmbeddingProvider:
 
     def test_fake_provider(self):
         from ticketpilot.retrieval.hybrid_reranker import _is_real_embedding_provider
+
         provider = MagicMock()
         provider.embed = MagicMock()
         provider.provider_name = "fake"
@@ -201,11 +208,13 @@ class TestIsRealEmbeddingProvider:
 
     def test_no_embed_or_encode(self):
         from ticketpilot.retrieval.hybrid_reranker import _is_real_embedding_provider
+
         provider = MagicMock(spec=[])  # no attributes
         assert _is_real_embedding_provider(provider) is False
 
     def test_unknown_provider_name(self):
         from ticketpilot.retrieval.hybrid_reranker import _is_real_embedding_provider
+
         provider = MagicMock()
         provider.encode = MagicMock()
         # No provider_name attribute → getattr returns "unknown"
@@ -214,10 +223,12 @@ class TestIsRealEmbeddingProvider:
 
     def test_none_provider(self):
         from ticketpilot.retrieval.hybrid_reranker import _is_real_embedding_provider
+
         assert _is_real_embedding_provider(None) is False
 
     def test_encode_method_sufficient(self):
         from ticketpilot.retrieval.hybrid_reranker import _is_real_embedding_provider
+
         provider = MagicMock(spec=["encode", "provider_name"])
         provider.encode = MagicMock()
         provider.provider_name = "bge"

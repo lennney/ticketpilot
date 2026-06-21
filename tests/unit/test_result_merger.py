@@ -1,4 +1,5 @@
 """Unit tests for result_merger."""
+
 from uuid import uuid4
 
 import pytest

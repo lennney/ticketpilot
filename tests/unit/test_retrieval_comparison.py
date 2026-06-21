@@ -37,7 +37,10 @@ from ticketpilot.evaluation.retrieval_metrics import (
 
 def _make_retrieved(entries: list[tuple[str, str, int]]) -> list[RetrievedDoc]:
     """Build RetrievedDoc list from (doc_id, doc_type, rank) tuples."""
-    return [RetrievedDoc(doc_id=did, doc_type=dt, rank=r, score=1.0 / r) for did, dt, r in entries]
+    return [
+        RetrievedDoc(doc_id=did, doc_type=dt, rank=r, score=1.0 / r)
+        for did, dt, r in entries
+    ]
 
 
 def _make_cases() -> list[RetrievalComparisonCase]:
@@ -46,28 +49,34 @@ def _make_cases() -> list[RetrievalComparisonCase]:
         RetrievalComparisonCase(
             case_id="case_001",
             query="refund status",
-            retrieved_docs=_make_retrieved([
-                ("doc_faq_001", "FAQ", 1),
-                ("doc_pol_001", "Policy", 2),
-            ]),
+            retrieved_docs=_make_retrieved(
+                [
+                    ("doc_faq_001", "FAQ", 1),
+                    ("doc_pol_001", "Policy", 2),
+                ]
+            ),
             expected_doc_types=frozenset(["FAQ"]),
         ),
         RetrievalComparisonCase(
             case_id="case_002",
             query="return policy",
-            retrieved_docs=_make_retrieved([
-                ("doc_faq_002", "FAQ", 1),
-                ("doc_pol_002", "Policy", 3),
-            ]),
+            retrieved_docs=_make_retrieved(
+                [
+                    ("doc_faq_002", "FAQ", 1),
+                    ("doc_pol_002", "Policy", 3),
+                ]
+            ),
             expected_doc_types=frozenset(["Policy", "Case"]),
         ),
         RetrievalComparisonCase(
             case_id="case_003",
             query="complaint",
-            retrieved_docs=_make_retrieved([
-                ("doc_faq_003", "FAQ", 1),
-                ("doc_faq_004", "FAQ", 2),
-            ]),
+            retrieved_docs=_make_retrieved(
+                [
+                    ("doc_faq_003", "FAQ", 1),
+                    ("doc_faq_004", "FAQ", 2),
+                ]
+            ),
             expected_doc_types=frozenset(["Case"]),
         ),
     ]
@@ -79,20 +88,24 @@ def _make_cases_with_doc_ids() -> list[RetrievalComparisonCase]:
         RetrievalComparisonCase(
             case_id="case_001",
             query="refund status",
-            retrieved_docs=_make_retrieved([
-                ("doc_faq_001", "FAQ", 1),
-                ("doc_pol_001", "Policy", 2),
-            ]),
+            retrieved_docs=_make_retrieved(
+                [
+                    ("doc_faq_001", "FAQ", 1),
+                    ("doc_pol_001", "Policy", 2),
+                ]
+            ),
             expected_doc_types=frozenset(["FAQ"]),
             expected_doc_ids=frozenset(["doc_faq_001"]),
         ),
         RetrievalComparisonCase(
             case_id="case_003",
             query="complaint",
-            retrieved_docs=_make_retrieved([
-                ("doc_faq_003", "FAQ", 1),
-                ("doc_faq_004", "FAQ", 2),
-            ]),
+            retrieved_docs=_make_retrieved(
+                [
+                    ("doc_faq_003", "FAQ", 1),
+                    ("doc_faq_004", "FAQ", 2),
+                ]
+            ),
             expected_doc_types=frozenset(["Case"]),
             expected_doc_ids=frozenset(["doc_case_001"]),
         ),
@@ -120,7 +133,9 @@ def summary_no_cases() -> RetrievalComparisonSummary:
 
 
 class TestComparisonSummaryToDict:
-    def test_expected_keys_present(self, sample_summary: RetrievalComparisonSummary) -> None:
+    def test_expected_keys_present(
+        self, sample_summary: RetrievalComparisonSummary
+    ) -> None:
         data = comparison_summary_to_dict(sample_summary)
         assert "generated_at" in data
         assert "metadata" in data
@@ -135,7 +150,9 @@ class TestComparisonSummaryToDict:
         data = comparison_summary_to_dict(sample_summary)
         assert data["total_cases"] == 3
 
-    def test_aggregate_metrics(self, sample_summary: RetrievalComparisonSummary) -> None:
+    def test_aggregate_metrics(
+        self, sample_summary: RetrievalComparisonSummary
+    ) -> None:
         data = comparison_summary_to_dict(sample_summary)
         metrics = data["aggregate_metrics"]
         assert "hit_rate_doc_type" in metrics
@@ -152,17 +169,23 @@ class TestComparisonSummaryToDict:
         assert "case_002" in data["per_case_results"]
         assert "case_003" in data["per_case_results"]
 
-    def test_no_doc_id_metrics(self, sample_summary: RetrievalComparisonSummary) -> None:
+    def test_no_doc_id_metrics(
+        self, sample_summary: RetrievalComparisonSummary
+    ) -> None:
         data = comparison_summary_to_dict(sample_summary)
         assert "hit_rate_doc_id" not in data["aggregate_metrics"]
         assert "mrr_doc_id" not in data["aggregate_metrics"]
 
-    def test_with_doc_id_metrics(self, summary_with_doc_ids: RetrievalComparisonSummary) -> None:
+    def test_with_doc_id_metrics(
+        self, summary_with_doc_ids: RetrievalComparisonSummary
+    ) -> None:
         data = comparison_summary_to_dict(summary_with_doc_ids)
         assert data["aggregate_metrics"]["hit_rate_doc_id"] is not None
         assert data["aggregate_metrics"]["mrr_doc_id"] is not None
 
-    def test_wrong_cases_have_required_fields(self, sample_summary: RetrievalComparisonSummary) -> None:
+    def test_wrong_cases_have_required_fields(
+        self, sample_summary: RetrievalComparisonSummary
+    ) -> None:
         data = comparison_summary_to_dict(sample_summary)
         for wc in data["wrong_cases"]:
             assert "case_id" in wc
@@ -184,24 +207,32 @@ class TestComparisonSummaryToDict:
 
 
 class TestComparisonSummaryToMarkdown:
-    def test_contains_section_headers(self, sample_summary: RetrievalComparisonSummary) -> None:
+    def test_contains_section_headers(
+        self, sample_summary: RetrievalComparisonSummary
+    ) -> None:
         md = comparison_summary_to_markdown(sample_summary)
         assert "# Retrieval Comparison Report" in md
         assert "## Dataset" in md
         assert "## Aggregate Metrics" in md
         assert "## Wrong Cases" in md
 
-    def test_contains_total_cases(self, sample_summary: RetrievalComparisonSummary) -> None:
+    def test_contains_total_cases(
+        self, sample_summary: RetrievalComparisonSummary
+    ) -> None:
         md = comparison_summary_to_markdown(sample_summary)
         assert "3" in md
 
-    def test_tickets_path_included(self, sample_summary: RetrievalComparisonSummary) -> None:
+    def test_tickets_path_included(
+        self, sample_summary: RetrievalComparisonSummary
+    ) -> None:
         md = comparison_summary_to_markdown(
             sample_summary, tickets_path="data/eval/tickets_eval.csv"
         )
         assert "tickets_eval.csv" in md
 
-    def test_golden_path_included(self, sample_summary: RetrievalComparisonSummary) -> None:
+    def test_golden_path_included(
+        self, sample_summary: RetrievalComparisonSummary
+    ) -> None:
         md = comparison_summary_to_markdown(
             sample_summary, golden_path="data/eval/golden_expectations.csv"
         )
@@ -214,16 +245,22 @@ class TestComparisonSummaryToMarkdown:
         assert "retrieval_mode" in md
         assert "## Configuration" in md
 
-    def test_hit_rate_table_present(self, sample_summary: RetrievalComparisonSummary) -> None:
+    def test_hit_rate_table_present(
+        self, sample_summary: RetrievalComparisonSummary
+    ) -> None:
         md = comparison_summary_to_markdown(sample_summary)
         assert "### Top-K Doc Type Hit Rate" in md
         assert "| k | Hit Rate |" in md
 
-    def test_mrr_section_present(self, sample_summary: RetrievalComparisonSummary) -> None:
+    def test_mrr_section_present(
+        self, sample_summary: RetrievalComparisonSummary
+    ) -> None:
         md = comparison_summary_to_markdown(sample_summary)
         assert "MRR (doc_type)" in md
 
-    def test_wrong_case_details(self, sample_summary: RetrievalComparisonSummary) -> None:
+    def test_wrong_case_details(
+        self, sample_summary: RetrievalComparisonSummary
+    ) -> None:
         md = comparison_summary_to_markdown(sample_summary)
         # case_003 should be listed as a wrong case
         assert "case_003" in md
@@ -241,11 +278,15 @@ class TestComparisonSummaryToMarkdown:
         md = comparison_summary_to_markdown(summary)
         assert "No retrieval failures detected." in md
 
-    def test_doc_id_mrr_shown(self, summary_with_doc_ids: RetrievalComparisonSummary) -> None:
+    def test_doc_id_mrr_shown(
+        self, summary_with_doc_ids: RetrievalComparisonSummary
+    ) -> None:
         md = comparison_summary_to_markdown(summary_with_doc_ids)
         assert "MRR (doc_id)" in md
 
-    def test_doc_id_hit_rate_shown(self, summary_with_doc_ids: RetrievalComparisonSummary) -> None:
+    def test_doc_id_hit_rate_shown(
+        self, summary_with_doc_ids: RetrievalComparisonSummary
+    ) -> None:
         md = comparison_summary_to_markdown(summary_with_doc_ids)
         assert "Top-K Doc ID Hit Rate" in md
 
@@ -268,7 +309,9 @@ class TestWriteJsonReport:
         finally:
             pathlib.Path(out_path).unlink(missing_ok=True)
 
-    def test_creates_parent_dir(self, sample_summary: RetrievalComparisonSummary) -> None:
+    def test_creates_parent_dir(
+        self, sample_summary: RetrievalComparisonSummary
+    ) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
             out_path = pathlib.Path(tmpdir) / "sub" / "report.json"
             write_json_report(sample_summary, out_path)
@@ -294,7 +337,9 @@ class TestWriteMarkdownReport:
         finally:
             pathlib.Path(out_path).unlink(missing_ok=True)
 
-    def test_creates_parent_dir(self, sample_summary: RetrievalComparisonSummary) -> None:
+    def test_creates_parent_dir(
+        self, sample_summary: RetrievalComparisonSummary
+    ) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
             out_path = pathlib.Path(tmpdir) / "sub" / "report.md"
             write_markdown_report(sample_summary, out_path)

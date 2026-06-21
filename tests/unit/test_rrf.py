@@ -12,7 +12,9 @@ from ticketpilot.retrieval.schema.knowledge import DocType
 class TestRRFCorrectness:
     """Tests for RRF formula correctness."""
 
-    def _make_keyword_result(self, chunk_id: uuid.UUID, rank: int, score: float = 1.0) -> KeywordResult:
+    def _make_keyword_result(
+        self, chunk_id: uuid.UUID, rank: int, score: float = 1.0
+    ) -> KeywordResult:
         """Helper to create KeywordResult."""
         return KeywordResult(
             chunk_id=chunk_id,
@@ -26,7 +28,9 @@ class TestRRFCorrectness:
             like_rank=None,
         )
 
-    def _make_vector_result(self, chunk_id: uuid.UUID, rank: int, score: float = 0.9) -> VectorResult:
+    def _make_vector_result(
+        self, chunk_id: uuid.UUID, rank: int, score: float = 0.9
+    ) -> VectorResult:
         """Helper to create VectorResult."""
         return VectorResult(
             chunk_id=chunk_id,

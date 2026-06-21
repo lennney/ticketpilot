@@ -23,8 +23,15 @@ from ticketpilot.pipeline import intake_risk_pipeline
 from ticketpilot.drafting.generator import generate_draft
 from ticketpilot.schema.ticket import RawTicket
 
-GOLDEN_CSV = Path(__file__).resolve().parent.parent.parent / "data" / "eval" / "golden_expectations.csv"
-TICKETS_CSV = Path(__file__).resolve().parent.parent.parent / "data" / "eval" / "tickets_eval.csv"
+GOLDEN_CSV = (
+    Path(__file__).resolve().parent.parent.parent
+    / "data"
+    / "eval"
+    / "golden_expectations.csv"
+)
+TICKETS_CSV = (
+    Path(__file__).resolve().parent.parent.parent / "data" / "eval" / "tickets_eval.csv"
+)
 
 
 # ---------------------------------------------------------------------------
@@ -37,34 +44,34 @@ TICKETS_CSV = Path(__file__).resolve().parent.parent.parent / "data" / "eval" / 
 # This tests the system's discriminative ability rather than its conservatism.
 
 SHOULD_REVIEW_CASES = {
-    "case_refu_009",   # legal_risk, HIGH severity
-    "case_refu_013",   # compensation_risk + policy_conflict, HIGH
-    "case_refu_015",   # complaint + compensation + legal, HIGH
-    "case_acco_001",   # account_security_risk, HIGH
-    "case_acco_003",   # privacy_risk + complaint_risk, HIGH
-    "case_acco_004",   # account_security + privacy, HIGH
-    "case_acco_006",   # privacy + account_security, HIGH
-    "case_acco_008",   # account_security_risk, HIGH
-    "case_acco_012",   # privacy + legal, HIGH
-    "case_acco_014",   # privacy + account_security + legal, HIGH
-    "case_comp_002",   # complaint + legal, HIGH
-    "case_comp_004",   # complaint + compensation + legal, HIGH
-    "case_comp_005",   # privacy + complaint + legal, HIGH
-    "case_comp_009",   # complaint + compensation + policy_conflict, HIGH
-    "case_comp_013",   # privacy + legal + complaint, HIGH
+    "case_refu_009",  # legal_risk, HIGH severity
+    "case_refu_013",  # compensation_risk + policy_conflict, HIGH
+    "case_refu_015",  # complaint + compensation + legal, HIGH
+    "case_acco_001",  # account_security_risk, HIGH
+    "case_acco_003",  # privacy_risk + complaint_risk, HIGH
+    "case_acco_004",  # account_security + privacy, HIGH
+    "case_acco_006",  # privacy + account_security, HIGH
+    "case_acco_008",  # account_security_risk, HIGH
+    "case_acco_012",  # privacy + legal, HIGH
+    "case_acco_014",  # privacy + account_security + legal, HIGH
+    "case_comp_002",  # complaint + legal, HIGH
+    "case_comp_004",  # complaint + compensation + legal, HIGH
+    "case_comp_005",  # privacy + complaint + legal, HIGH
+    "case_comp_009",  # complaint + compensation + policy_conflict, HIGH
+    "case_comp_013",  # privacy + legal + complaint, HIGH
 }
 
 SHOULD_NOT_REVIEW_CASES = {
-    "case_refu_002",   # refund, LOW severity, no risk flags
-    "case_refu_004",   # refund, LOW severity, no risk flags
-    "case_refu_007",   # refund, LOW severity, no risk flags
-    "case_refu_010",   # refund, LOW severity, no risk flags
-    "case_refu_011",   # refund, LOW severity, no risk flags
-    "case_refu_014",   # refund, LOW severity, no risk flags
-    "case_prod_001",   # product_consulting, LOW, no risk flags
-    "case_prod_002",   # product_consulting, LOW, no risk flags
-    "case_prod_003",   # product_consulting, LOW, no risk flags
-    "case_tech_001",   # technical_issue, LOW, no risk flags
+    "case_refu_002",  # refund, LOW severity, no risk flags
+    "case_refu_004",  # refund, LOW severity, no risk flags
+    "case_refu_007",  # refund, LOW severity, no risk flags
+    "case_refu_010",  # refund, LOW severity, no risk flags
+    "case_refu_011",  # refund, LOW severity, no risk flags
+    "case_refu_014",  # refund, LOW severity, no risk flags
+    "case_prod_001",  # product_consulting, LOW, no risk flags
+    "case_prod_002",  # product_consulting, LOW, no risk flags
+    "case_prod_003",  # product_consulting, LOW, no risk flags
+    "case_tech_001",  # technical_issue, LOW, no risk flags
 }
 
 
@@ -91,6 +98,7 @@ def _expected_needs_review(case_id: str) -> bool:
 # ---------------------------------------------------------------------------
 # Fixtures
 # ---------------------------------------------------------------------------
+
 
 @pytest.fixture(scope="module")
 def curated_case_ids() -> set[str]:
@@ -122,19 +130,22 @@ def pipeline_results(curated_case_ids: set[str]) -> list[dict]:
         expected = _expected_needs_review(case_id)
         actual = draft.must_human_review
 
-        results.append({
-            "case_id": case_id,
-            "expected_review": expected,
-            "actual_review": actual,
-            "severity": ticket_output.risk_assessment.severity.value,
-            "risk_flags": {f.value for f in ticket_output.risk_assessment.flags},
-        })
+        results.append(
+            {
+                "case_id": case_id,
+                "expected_review": expected,
+                "actual_review": actual,
+                "severity": ticket_output.risk_assessment.severity.value,
+                "risk_flags": {f.value for f in ticket_output.risk_assessment.flags},
+            }
+        )
     return results
 
 
 # ---------------------------------------------------------------------------
 # Helper: confusion matrix
 # ---------------------------------------------------------------------------
+
 
 def _confusion(results: list[dict]) -> dict[str, int]:
     tp = fp = tn = fn = 0
@@ -169,6 +180,7 @@ def _f1(p: float, r: float) -> float:
 # Tests
 # ---------------------------------------------------------------------------
 
+
 class TestHumanReviewAccuracy:
     """Evaluate human review trigger correctness against curated golden labels."""
 
@@ -194,20 +206,22 @@ class TestHumanReviewAccuracy:
         p = _precision(cm)
         r = _recall(cm)
         f = _f1(p, r)
-        assert f >= 0.70, (
-            f"F1 {f:.3f} < 0.70 | precision={p:.3f} recall={r:.3f}"
-        )
+        assert f >= 0.70, f"F1 {f:.3f} < 0.70 | precision={p:.3f} recall={r:.3f}"
 
-    def test_no_false_negatives_on_high_risk(self, pipeline_results: list[dict]) -> None:
+    def test_no_false_negatives_on_high_risk(
+        self, pipeline_results: list[dict]
+    ) -> None:
         """HIGH severity cases with legal/account_security/privacy risk MUST be flagged."""
         high_risk_keywords = {"legal_risk", "account_security_risk", "privacy_risk"}
         high_risk_cases = [
-            r for r in pipeline_results
+            r
+            for r in pipeline_results
             if r["expected_review"]
             and (r["risk_flags"] & high_risk_keywords or r["severity"] == "HIGH")
         ]
         missed = [
-            r for r in high_risk_cases
+            r
+            for r in high_risk_cases
             if r["expected_review"] and not r["actual_review"]
         ]
         assert len(missed) == 0, (
@@ -216,14 +230,8 @@ class TestHumanReviewAccuracy:
 
     def test_no_false_positives_on_low_risk(self, pipeline_results: list[dict]) -> None:
         """LOW severity cases with no substantive risk flags should NOT be flagged."""
-        low_risk_cases = [
-            r for r in pipeline_results
-            if not r["expected_review"]
-        ]
-        false_alarms = [
-            r for r in low_risk_cases
-            if r["actual_review"]
-        ]
+        low_risk_cases = [r for r in pipeline_results if not r["expected_review"]]
+        false_alarms = [r for r in low_risk_cases if r["actual_review"]]
         # Conservative system: allow up to all low-risk cases flagged (by design)
         assert len(false_alarms) <= len(low_risk_cases), (
             f"False positives on low-risk cases: "
@@ -236,7 +244,9 @@ class TestHumanReviewAccuracy:
         p = _precision(cm)
         r = _recall(cm)
         f = _f1(p, r)
-        print(f"\nConfusion Matrix: TP={cm['tp']} FP={cm['fp']} TN={cm['tn']} FN={cm['fn']}")
+        print(
+            f"\nConfusion Matrix: TP={cm['tp']} FP={cm['fp']} TN={cm['tn']} FN={cm['fn']}"
+        )
         print(f"Precision={p:.3f}  Recall={r:.3f}  F1={f:.3f}")
         # Always passes — informational only
         assert True

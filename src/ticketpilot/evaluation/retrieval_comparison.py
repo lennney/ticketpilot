@@ -109,7 +109,9 @@ def comparison_summary_to_dict(
     if summary.hit_rate_doc_id is not None:
         result["aggregate_metrics"]["hit_rate_doc_id"] = summary.hit_rate_doc_id
     if summary.p0_added_record_hit_rate is not None:
-        result["aggregate_metrics"]["p0_added_record_hit_rate"] = summary.p0_added_record_hit_rate
+        result["aggregate_metrics"]["p0_added_record_hit_rate"] = (
+            summary.p0_added_record_hit_rate
+        )
     if summary.mrr_doc_id is not None:
         result["aggregate_metrics"]["mrr_doc_id"] = summary.mrr_doc_id
 
@@ -176,7 +178,9 @@ def comparison_summary_to_markdown(
         _hit_rate_table(lines, summary.hit_rate_doc_id, "Top-K Doc ID Hit Rate")
 
     if summary.p0_added_record_hit_rate is not None:
-        _hit_rate_table(lines, summary.p0_added_record_hit_rate, "Top-K P0 Added Record Hit Rate")
+        _hit_rate_table(
+            lines, summary.p0_added_record_hit_rate, "Top-K P0 Added Record Hit Rate"
+        )
 
     lines.append("### Mean Reciprocal Rank")
     lines.append("")
@@ -235,8 +239,12 @@ def comparison_summary_to_markdown(
         if found_count > 0:
             lines.append("### Reclassified Cases")
             lines.append("")
-            lines.append("| Case ID | Original Failure Mode | Doc ID Found Rank | Reclassification |")
-            lines.append("|---------|----------------------|-------------------|------------------|")
+            lines.append(
+                "| Case ID | Original Failure Mode | Doc ID Found Rank | Reclassification |"
+            )
+            lines.append(
+                "|---------|----------------------|-------------------|------------------|"
+            )
             for r in summary.doc_id_rechecks:
                 if r.doc_id_found:
                     lines.append(

@@ -24,6 +24,7 @@ from ticketpilot.schema.ticket import RawTicket
 def _db_is_available() -> bool:
     try:
         from ticketpilot.retrieval.db.connection import get_db_connection
+
         with get_db_connection() as conn:
             conn.execute("SELECT 1")
         return True
@@ -33,7 +34,11 @@ def _db_is_available() -> bool:
 
 def _seed_db() -> None:
     try:
-        from ticketpilot.retrieval.db.seeding import get_chunk_count, seed_knowledge_chunks
+        from ticketpilot.retrieval.db.seeding import (
+            get_chunk_count,
+            seed_knowledge_chunks,
+        )
+
         if get_chunk_count() == 0:
             seed_knowledge_chunks(clear_existing=True)
     except Exception:
@@ -55,7 +60,6 @@ WEAK = "hello world unusual query"
 
 
 class TestRefundTicketAgentRun:
-
     @pytest.fixture(autouse=True)
     def _require_db(self) -> None:
         if not _db_is_available():
@@ -71,7 +75,11 @@ class TestRefundTicketAgentRun:
         assert run.plan is not None
         assert len(run.plan.steps) == 5
         assert len(run.events) > 0
-        assert run.final_status in (AgentRunStatus.COMPLETED, AgentRunStatus.HUMAN_REVIEW_REQUIRED, AgentRunStatus.FAILED)
+        assert run.final_status in (
+            AgentRunStatus.COMPLETED,
+            AgentRunStatus.HUMAN_REVIEW_REQUIRED,
+            AgentRunStatus.FAILED,
+        )
         assert run.started_at is not None
         assert run.completed_at is not None
         assert run.completed_at >= run.started_at
@@ -80,8 +88,12 @@ class TestRefundTicketAgentRun:
         run = run_agent_pipeline(_make_ticket(REFUND, "refund-ord"))
         types = [e.event_type for e in run.events]
         assert types[0] == AgentEventType.RUN_STARTED
-        assert types.index(AgentEventType.RUN_STARTED) < types.index(AgentEventType.PLAN_CREATED)
-        assert types.index(AgentEventType.PLAN_CREATED) < types.index(AgentEventType.TOOL_CALLED)
+        assert types.index(AgentEventType.RUN_STARTED) < types.index(
+            AgentEventType.PLAN_CREATED
+        )
+        assert types.index(AgentEventType.PLAN_CREATED) < types.index(
+            AgentEventType.TOOL_CALLED
+        )
         assert types[-1] in (AgentEventType.RUN_COMPLETED, AgentEventType.RUN_FAILED)
         assert sum(1 for t in types if t == AgentEventType.TOOL_CALLED) == 5
         assert sum(1 for t in types if t == AgentEventType.TOOL_RETURNED) == 5
@@ -89,8 +101,20 @@ class TestRefundTicketAgentRun:
     def test_plan_has_deterministic_steps(self) -> None:
         run = run_agent_pipeline(_make_ticket(REFUND, "refund-plan"))
         assert run.plan is not None
-        assert [s.step_id for s in run.plan.steps] == ["s1_normalize", "s2_classify", "s3_assess_risk", "s4_retrieve_evidence", "s5_generate_draft"]
-        assert [s.tool_name for s in run.plan.steps] == ["normalize_ticket", "classify_ticket", "assess_risk", "retrieve_evidence", "generate_draft"]
+        assert [s.step_id for s in run.plan.steps] == [
+            "s1_normalize",
+            "s2_classify",
+            "s3_assess_risk",
+            "s4_retrieve_evidence",
+            "s5_generate_draft",
+        ]
+        assert [s.tool_name for s in run.plan.steps] == [
+            "normalize_ticket",
+            "classify_ticket",
+            "assess_risk",
+            "retrieve_evidence",
+            "generate_draft",
+        ]
 
     def test_plan_goal_matches_refund(self) -> None:
         run = run_agent_pipeline(_make_ticket(REFUND, "refund-goal"))
@@ -136,7 +160,6 @@ class TestRefundTicketAgentRun:
 
 
 class TestHighRiskComplaintTicket:
-
     @pytest.fixture(autouse=True)
     def _require_db(self) -> None:
         if not _db_is_available():
@@ -149,7 +172,9 @@ class TestHighRiskComplaintTicket:
 
     def test_human_review_event(self) -> None:
         run = run_agent_pipeline(_make_ticket(COMPLAINT, "hr-ev"))
-        assert AgentEventType.HUMAN_REVIEW_REQUIRED in [e.event_type for e in run.events]
+        assert AgentEventType.HUMAN_REVIEW_REQUIRED in [
+            e.event_type for e in run.events
+        ]
 
     def test_risk_checked_must_review(self) -> None:
         run = run_agent_pipeline(_make_ticket(COMPLAINT, "hr-rc"))
@@ -169,9 +194,15 @@ class TestHighRiskComplaintTicket:
         run = run_agent_pipeline(_make_ticket(COMPLAINT, "hr-ord"))
         types = [e.event_type for e in run.events]
         assert types[0] == AgentEventType.RUN_STARTED
-        assert types.index(AgentEventType.RUN_STARTED) < types.index(AgentEventType.PLAN_CREATED)
-        assert types.index(AgentEventType.PLAN_CREATED) < types.index(AgentEventType.TOOL_CALLED)
-        assert types.index(AgentEventType.HUMAN_REVIEW_REQUIRED) < types.index(AgentEventType.RUN_COMPLETED)
+        assert types.index(AgentEventType.RUN_STARTED) < types.index(
+            AgentEventType.PLAN_CREATED
+        )
+        assert types.index(AgentEventType.PLAN_CREATED) < types.index(
+            AgentEventType.TOOL_CALLED
+        )
+        assert types.index(AgentEventType.HUMAN_REVIEW_REQUIRED) < types.index(
+            AgentEventType.RUN_COMPLETED
+        )
         assert types[-1] == AgentEventType.RUN_COMPLETED
 
     def test_plan_goal(self) -> None:
@@ -191,7 +222,11 @@ class TestHighRiskComplaintTicket:
 
     def test_trace_json(self) -> None:
         run = run_agent_pipeline(_make_ticket(COMPLAINT, "hr-json"))
-        p = {"run_id": run.run_id, "events": [e.model_dump(mode="json") for e in run.events], "final_status": run.final_status.value}
+        p = {
+            "run_id": run.run_id,
+            "events": [e.model_dump(mode="json") for e in run.events],
+            "final_status": run.final_status.value,
+        }
         d = json.loads(json.dumps(p, ensure_ascii=False))
         assert d["final_status"] == "human_review_required"
 
@@ -203,7 +238,6 @@ class TestHighRiskComplaintTicket:
 
 
 class TestAccountSecurityTicket:
-
     @pytest.fixture(autouse=True)
     def _require_db(self) -> None:
         if not _db_is_available():
@@ -218,11 +252,21 @@ class TestAccountSecurityTicket:
         assert run.plan is not None
         assert len(run.plan.steps) == 5
         assert len(run.events) > 0
-        assert run.final_status in (AgentRunStatus.COMPLETED, AgentRunStatus.HUMAN_REVIEW_REQUIRED, AgentRunStatus.FAILED)
+        assert run.final_status in (
+            AgentRunStatus.COMPLETED,
+            AgentRunStatus.HUMAN_REVIEW_REQUIRED,
+            AgentRunStatus.FAILED,
+        )
 
     def test_plan_steps(self) -> None:
         run = run_agent_pipeline(_make_ticket(ACCOUNT, "acct-plan"))
-        assert [s.tool_name for s in run.plan.steps] == ["normalize_ticket", "classify_ticket", "assess_risk", "retrieve_evidence", "generate_draft"]
+        assert [s.tool_name for s in run.plan.steps] == [
+            "normalize_ticket",
+            "classify_ticket",
+            "assess_risk",
+            "retrieve_evidence",
+            "generate_draft",
+        ]
 
     def test_plan_goal(self) -> None:
         run = run_agent_pipeline(_make_ticket(ACCOUNT, "acct-goal"))
@@ -233,8 +277,12 @@ class TestAccountSecurityTicket:
         run = run_agent_pipeline(_make_ticket(ACCOUNT, "acct-ord"))
         types = [e.event_type for e in run.events]
         assert types[0] == AgentEventType.RUN_STARTED
-        assert types.index(AgentEventType.RUN_STARTED) < types.index(AgentEventType.PLAN_CREATED)
-        assert types.index(AgentEventType.PLAN_CREATED) < types.index(AgentEventType.TOOL_CALLED)
+        assert types.index(AgentEventType.RUN_STARTED) < types.index(
+            AgentEventType.PLAN_CREATED
+        )
+        assert types.index(AgentEventType.PLAN_CREATED) < types.index(
+            AgentEventType.TOOL_CALLED
+        )
         assert types[-1] in (AgentEventType.RUN_COMPLETED, AgentEventType.RUN_FAILED)
 
     def test_draft(self) -> None:
@@ -249,12 +297,14 @@ class TestAccountSecurityTicket:
 
     def test_trace_json(self) -> None:
         run = run_agent_pipeline(_make_ticket(ACCOUNT, "acct-json"))
-        d = {"run_id": run.run_id, "events": [e.model_dump(mode="json") for e in run.events]}
+        d = {
+            "run_id": run.run_id,
+            "events": [e.model_dump(mode="json") for e in run.events],
+        }
         assert json.loads(json.dumps(d, ensure_ascii=False))["run_id"] == run.run_id
 
 
 class TestCrossCutting:
-
     @pytest.fixture(autouse=True)
     def _require_db(self) -> None:
         if not _db_is_available():
@@ -263,7 +313,11 @@ class TestCrossCutting:
 
     @staticmethod
     def _run_all():
-        for label, text in [("refund", REFUND), ("complaint", COMPLAINT), ("account", ACCOUNT)]:
+        for label, text in [
+            ("refund", REFUND),
+            ("complaint", COMPLAINT),
+            ("account", ACCOUNT),
+        ]:
             yield label, run_agent_pipeline(_make_ticket(text, f"cc-{label}"))
 
     def test_no_auto_send(self) -> None:
@@ -288,12 +342,20 @@ class TestCrossCutting:
     def test_no_evidence_fallback(self) -> None:
         run = run_agent_pipeline(_make_ticket(WEAK, "cc-nev"))
         assert isinstance(run, AgentRun)
-        assert run.final_status in (AgentRunStatus.COMPLETED, AgentRunStatus.HUMAN_REVIEW_REQUIRED, AgentRunStatus.FAILED)
+        assert run.final_status in (
+            AgentRunStatus.COMPLETED,
+            AgentRunStatus.HUMAN_REVIEW_REQUIRED,
+            AgentRunStatus.FAILED,
+        )
 
     def test_weak_no_crash(self) -> None:
         run = run_agent_pipeline(_make_ticket("zzz xxx yyy", "cc-weak"))
         assert isinstance(run, AgentRun)
-        assert run.final_status in (AgentRunStatus.COMPLETED, AgentRunStatus.HUMAN_REVIEW_REQUIRED, AgentRunStatus.FAILED)
+        assert run.final_status in (
+            AgentRunStatus.COMPLETED,
+            AgentRunStatus.HUMAN_REVIEW_REQUIRED,
+            AgentRunStatus.FAILED,
+        )
 
     def test_skill_id_none(self) -> None:
         for label, run in self._run_all():

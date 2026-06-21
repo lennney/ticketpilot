@@ -18,6 +18,7 @@ from ticketpilot.drafting.draft_agent import DraftAgent
 
 class StreamingChatRequest(BaseModel):
     """Streaming chat request."""
+
     message: str
     session_id: str | None = None
 
@@ -28,7 +29,7 @@ async def stream_chat_response(
 ) -> AsyncGenerator[str, None]:
     """
     Generate streaming chat response using SSE.
-    
+
     Yields events:
     - type: "status" - Processing status updates
     - type: "evidence" - Retrieved evidence
@@ -37,45 +38,49 @@ async def stream_chat_response(
     """
     # Send initial status
     yield f"data: {json.dumps({'type': 'status', 'content': 'processing', 'message': '正在分析您的问题...'})}\n\n"
-    
+
     # Process through pipeline
     raw_ticket = RawTicket(
         original_text=message,
         submitted_at=datetime.now(timezone.utc),
     )
-    
+
     try:
         # Run intake and risk assessment
         yield f"data: {json.dumps({'type': 'status', 'content': 'classifying', 'message': '正在识别问题类型...'})}\n\n"
-        
+
         ticket_output = intake_risk_pipeline(raw_ticket)
-        
+
         # Send classification result
         yield f"data: {json.dumps({'type': 'classification', 'content': {'intent': ticket_output.classification.intent.value, 'confidence': ticket_output.classification.confidence}})}\n\n"
-        
+
         # Send risk assessment
         risk_flags = [flag.value for flag in ticket_output.risk_assessment.flags]
         yield f"data: {json.dumps({'type': 'risk', 'content': {'flags': risk_flags, 'severity': ticket_output.risk_assessment.severity.value}})}\n\n"
-        
+
         # Retrieve evidence
         yield f"data: {json.dumps({'type': 'status', 'content': 'retrieving', 'message': '正在检索知识库...'})}\n\n"
-        
+
         # Send evidence
         evidence_list = []
         if ticket_output.evidence_candidates:
             for candidate in ticket_output.evidence_candidates[:5]:
-                evidence_list.append({
-                    "chunk_id": str(candidate.chunk_id),
-                    "doc_type": candidate.doc_type.value if hasattr(candidate.doc_type, 'value') else str(candidate.doc_type),
-                    "title": candidate.title or "",
-                    "content": candidate.content[:200] if candidate.content else "",
-                    "score": candidate.score,
-                })
+                evidence_list.append(
+                    {
+                        "chunk_id": str(candidate.chunk_id),
+                        "doc_type": candidate.doc_type.value
+                        if hasattr(candidate.doc_type, "value")
+                        else str(candidate.doc_type),
+                        "title": candidate.title or "",
+                        "content": candidate.content[:200] if candidate.content else "",
+                        "score": candidate.score,
+                    }
+                )
         yield f"data: {json.dumps({'type': 'evidence', 'content': evidence_list})}\n\n"
-        
+
         # Generate draft with streaming
         yield f"data: {json.dumps({'type': 'status', 'content': 'generating', 'message': '正在生成回复...'})}\n\n"
-        
+
         # Use DraftAgent for generation
         agent = DraftAgent()
         draft_result = agent.generate_draft(
@@ -86,17 +91,17 @@ async def stream_chat_response(
             must_human_review=ticket_output.risk_assessment.must_human_review,
             evidence_candidates=ticket_output.evidence_candidates,
         )
-        
+
         # Stream the draft text in chunks
         draft_text = draft_result.draft_text
         chunk_size = 10  # Characters per chunk
         for i in range(0, len(draft_text), chunk_size):
-            chunk = draft_text[i:i + chunk_size]
+            chunk = draft_text[i : i + chunk_size]
             yield f"data: {json.dumps({'type': 'draft_chunk', 'content': chunk})}\n\n"
-        
+
         # Send final result
         yield f"data: {json.dumps({'type': 'done', 'content': {'draft_text': draft_text, 'confidence': draft_result.confidence, 'must_human_review': draft_result.must_human_review, 'session_id': session_id}})}\n\n"
-        
+
     except Exception as e:
         # Send error
         yield f"data: {json.dumps({'type': 'error', 'content': str(e)})}\n\n"
@@ -105,12 +110,12 @@ async def stream_chat_response(
 
 def register_streaming_routes(app: FastAPI) -> None:
     """Register streaming chat routes on the FastAPI app."""
-    
+
     @app.post("/api/chat/stream")
     async def chat_stream(request: StreamingChatRequest):
         """
         Streaming chat endpoint using Server-Sent Events (SSE).
-        
+
         Returns a stream of events:
         - status: Processing status updates
         - classification: Intent classification result
@@ -122,10 +127,10 @@ def register_streaming_routes(app: FastAPI) -> None:
         """
         if not request.message:
             raise HTTPException(status_code=400, detail="No message provided")
-        
+
         # Generate session ID if not provided
         session_id = request.session_id or str(uuid.uuid4())
-        
+
         return StreamingResponse(
             stream_chat_response(
                 message=request.message,

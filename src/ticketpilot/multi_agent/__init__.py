@@ -10,6 +10,7 @@ Routes tickets to specialized agents based on intent:
 Re-exports key classes for cleaner imports:
     from ticketpilot.multi_agent import BaseAgent, Orchestrator
 """
+
 from __future__ import annotations
 
 import logging
@@ -29,7 +30,7 @@ class BaseAgent(ABC):
         self.name = name
         self.template_id = template_id
         self._draft_agent = DraftAgent(template_id=template_id)
-    
+
     @abstractmethod
     def generate_draft(
         self,
@@ -49,7 +50,7 @@ class RefundAgent(BaseAgent):
 
     def __init__(self):
         super().__init__("RefundAgent", template_id="refund")
-    
+
     def generate_draft(
         self,
         normalized_text: str,
@@ -75,7 +76,7 @@ class ComplaintAgent(BaseAgent):
 
     def __init__(self):
         super().__init__("ComplaintAgent", template_id="complaint")
-    
+
     def generate_draft(
         self,
         normalized_text: str,
@@ -88,7 +89,7 @@ class ComplaintAgent(BaseAgent):
         """Generate complaint-focused reply."""
         # Complaints always need human review
         must_human_review = True
-        
+
         return self._draft_agent.generate_draft(
             normalized_text=normalized_text,
             issue_type=issue_type,
@@ -104,7 +105,7 @@ class LogisticsAgent(BaseAgent):
 
     def __init__(self):
         super().__init__("LogisticsAgent", template_id="logistics")
-    
+
     def generate_draft(
         self,
         normalized_text: str,
@@ -130,7 +131,7 @@ class TechnicalAgent(BaseAgent):
 
     def __init__(self):
         super().__init__("TechnicalAgent", template_id="technical")
-    
+
     def generate_draft(
         self,
         normalized_text: str,
@@ -156,7 +157,7 @@ class DefaultAgent(BaseAgent):
 
     def __init__(self):
         super().__init__("DefaultAgent", template_id="default")
-    
+
     def generate_draft(
         self,
         normalized_text: str,
@@ -186,10 +187,10 @@ GeneralSpecialist = DefaultAgent
 class Orchestrator:
     """
     Multi-Agent Orchestrator.
-    
+
     Routes tickets to specialized agents based on intent.
     """
-    
+
     def __init__(self):
         # Initialize specialized agents
         self._agents = {
@@ -202,14 +203,14 @@ class Orchestrator:
             "product_consulting": DefaultAgent(),
             "other": DefaultAgent(),
         }
-        
+
         # Default agent
         self._default_agent = DefaultAgent()
-    
+
     def get_agent(self, intent: str) -> BaseAgent:
         """Get the appropriate agent for the intent."""
         return self._agents.get(intent, self._default_agent)
-    
+
     def generate_draft(
         self,
         normalized_text: str,
@@ -271,7 +272,7 @@ def generate_draft_with_orchestrator(
 ) -> DraftReply:
     """
     Generate a draft reply using the multi-agent orchestrator.
-    
+
     This is the main entry point for the multi-agent system.
     """
     orchestrator = get_orchestrator()

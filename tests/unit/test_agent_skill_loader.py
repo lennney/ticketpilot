@@ -19,6 +19,7 @@ from ticketpilot.agent.skill_loader import (
 # Real directory loading
 # ---------------------------------------------------------------------------
 
+
 class TestLoadAll:
     def test_loads_four_skills(self):
         loader = SkillLoader()
@@ -52,6 +53,7 @@ class TestLoadAll:
 # ---------------------------------------------------------------------------
 # Selection
 # ---------------------------------------------------------------------------
+
 
 class TestSelection:
     def test_select_by_id_refund(self):
@@ -144,6 +146,7 @@ class TestSelection:
 # Fallback skill properties
 # ---------------------------------------------------------------------------
 
+
 class TestFallback:
     def test_fallback_has_core_tools(self):
         assert "normalize_ticket" in self.SKILLS_BASE.fallback.required_tools
@@ -155,12 +158,14 @@ class TestFallback:
     @property
     def SKILLS_BASE(self):
         from ticketpilot.agent.skill_loader import _FALLBACK_SKILL
+
         return type("_", (), {"fallback": _FALLBACK_SKILL})()
 
 
 # ---------------------------------------------------------------------------
 # Malformed / missing directories
 # ---------------------------------------------------------------------------
+
 
 class TestErrorHandling:
     def test_missing_directory_raises(self):
@@ -182,7 +187,9 @@ class TestErrorHandling:
             skill_dir = Path(tmp) / "test_skill"
             skill_dir.mkdir()
             with open(skill_dir / "planner_template.yaml", "w") as f:
-                yaml.dump({"skill_id": "test", "required_tools": ["normalize_ticket"]}, f)
+                yaml.dump(
+                    {"skill_id": "test", "required_tools": ["normalize_ticket"]}, f
+                )
             loader = SkillLoader(base_path=Path(tmp))
             with pytest.raises(SkillLoadError, match="missing SKILL.md"):
                 loader.load_all()
@@ -203,10 +210,13 @@ class TestErrorHandling:
             skill_dir.mkdir()
             (skill_dir / "SKILL.md").write_text("# Bad")
             with open(skill_dir / "planner_template.yaml", "w") as f:
-                yaml.dump({
-                    "skill_id": "bad",
-                    "required_tools": ["nonexistent_tool"],
-                }, f)
+                yaml.dump(
+                    {
+                        "skill_id": "bad",
+                        "required_tools": ["nonexistent_tool"],
+                    },
+                    f,
+                )
             loader = SkillLoader(base_path=Path(tmp))
             with pytest.raises(SkillLoadError, match="unknown required_tools"):
                 loader.load_all()
@@ -218,10 +228,13 @@ class TestErrorHandling:
                 d.mkdir()
                 (d / "SKILL.md").write_text(f"# {name}")
                 with open(d / "planner_template.yaml", "w") as f:
-                    yaml.dump({
-                        "skill_id": "duplicate",
-                        "required_tools": ["normalize_ticket"],
-                    }, f)
+                    yaml.dump(
+                        {
+                            "skill_id": "duplicate",
+                            "required_tools": ["normalize_ticket"],
+                        },
+                        f,
+                    )
             loader = SkillLoader(base_path=Path(tmp))
             with pytest.raises(SkillLoadError, match="duplicate skill_id"):
                 loader.load_all()
@@ -230,6 +243,7 @@ class TestErrorHandling:
 # ---------------------------------------------------------------------------
 # Match keywords
 # ---------------------------------------------------------------------------
+
 
 class TestMatchKeywords:
     def test_refund_keywords_match(self):

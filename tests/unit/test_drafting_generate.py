@@ -84,7 +84,9 @@ class TestGenerateDraft:
     def test_empty_evidence_fallback(self):
         output = _make_output(evidence=[])
         result = generate_draft(output)
-        assert result.draft_text == "根据现有信息，无法确认具体政策条款，建议转人工处理。"
+        assert (
+            result.draft_text == "根据现有信息，无法确认具体政策条款，建议转人工处理。"
+        )
         assert result.citations == []
         assert result.evidence_used == []
         assert result.confidence == 0.0
@@ -117,9 +119,7 @@ class TestGenerateDraft:
     def test_unsupported_claims_populated_when_validator_fails(self):
         """When CitationValidator detects issues, unsupported_claims is populated and must_human_review=True."""
         # Patch provider to return a draft with an uncited claim keyword
-        with patch(
-            "ticketpilot.drafting.generate.FakeDraftProvider"
-        ) as MockProvider:
+        with patch("ticketpilot.drafting.generate.FakeDraftProvider") as MockProvider:
             mock_instance = MockProvider.return_value
             # Return a DraftReply whose text triggers the validator
             mock_instance.generate.return_value = DraftReply(
@@ -160,15 +160,16 @@ class TestGenerateDraft:
 
     def test_handles_exception_gracefully(self):
         """When provider raises, generate_draft returns safe fallback DraftReply."""
-        with patch(
-            "ticketpilot.drafting.generate.FakeDraftProvider"
-        ) as MockProvider:
+        with patch("ticketpilot.drafting.generate.FakeDraftProvider") as MockProvider:
             mock_instance = MockProvider.return_value
             mock_instance.generate.side_effect = RuntimeError("provider failure")
             output = _make_output(evidence=[_make_evidence()])
             result = generate_draft(output)
             assert isinstance(result, DraftReply)
-            assert result.draft_text == "根据现有信息，无法确认具体政策条款，建议转人工处理。"
+            assert (
+                result.draft_text
+                == "根据现有信息，无法确认具体政策条款，建议转人工处理。"
+            )
             assert result.citations == []
             assert result.confidence == 0.0
             assert result.must_human_review is True

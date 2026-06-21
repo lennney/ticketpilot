@@ -39,18 +39,24 @@ def rrf_fusion(
           RRF score: 0.03151
     """
     # Build lookup maps for fast access
-    keyword_map: dict[UUID, KeywordResult] = {
-        r.chunk_id: r for r in keyword_results
-    }
-    vector_map: dict[UUID, VectorResult] = {
-        r.chunk_id: r for r in vector_results
-    }
+    keyword_map: dict[UUID, KeywordResult] = {r.chunk_id: r for r in keyword_results}
+    vector_map: dict[UUID, VectorResult] = {r.chunk_id: r for r in vector_results}
 
     # Get all unique chunk IDs
     all_chunk_ids: set[UUID] = set(keyword_map.keys()) | set(vector_map.keys())
 
     # Calculate RRF scores with per-ranker contributions
-    fused_scores: list[tuple[UUID, float, Optional[int], Optional[float], Optional[int], Optional[float], list[str]]] = []
+    fused_scores: list[
+        tuple[
+            UUID,
+            float,
+            Optional[int],
+            Optional[float],
+            Optional[int],
+            Optional[float],
+            list[str],
+        ]
+    ] = []
 
     for chunk_id in all_chunk_ids:
         sources = []
@@ -80,15 +86,17 @@ def rrf_fusion(
         if vector_contribution is not None:
             rrf_score += vector_contribution
 
-        fused_scores.append((
-            chunk_id,
-            rrf_score,
-            keyword_rank,
-            keyword_contribution,
-            vector_rank,
-            vector_contribution,
-            sources,
-        ))
+        fused_scores.append(
+            (
+                chunk_id,
+                rrf_score,
+                keyword_rank,
+                keyword_contribution,
+                vector_rank,
+                vector_contribution,
+                sources,
+            )
+        )
 
     # Sort by RRF score descending
     fused_scores.sort(key=lambda x: x[1], reverse=True)
@@ -96,7 +104,15 @@ def rrf_fusion(
     # Build FusedResult list with full information, deduplicating by content
     results = []
     seen_content: set[str] = set()
-    for (chunk_id, rrf_score, keyword_rank, kw_contrib, vector_rank, vec_contrib, sources) in fused_scores:
+    for (
+        chunk_id,
+        rrf_score,
+        keyword_rank,
+        kw_contrib,
+        vector_rank,
+        vec_contrib,
+        sources,
+    ) in fused_scores:
         # Get content and doc info from either result
         if chunk_id in keyword_map:
             kw = keyword_map[chunk_id]
@@ -168,6 +184,8 @@ def format_rrf_explanation(
     kw_contrib = fused_result.keyword_contribution if fused_result.keyword_rank else 0
     vec_contrib = fused_result.vector_contribution if fused_result.vector_rank else 0
     lines.append("")
-    lines.append(f"Total: {kw_contrib:.6f} + {vec_contrib:.6f} = {fused_result.rrf_score:.6f}")
+    lines.append(
+        f"Total: {kw_contrib:.6f} + {vec_contrib:.6f} = {fused_result.rrf_score:.6f}"
+    )
 
     return "\n".join(lines)

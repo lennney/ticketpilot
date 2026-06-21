@@ -8,6 +8,7 @@ Signals:
 
 All signals are normalized to [0, 1] and combined with configurable weights.
 """
+
 from __future__ import annotations
 
 import math
@@ -26,9 +27,11 @@ logger = logging.getLogger(__name__)
 # Output dataclasses
 # ---------------------------------------------------------------------------
 
+
 @dataclass
 class RerankSignal:
     """One scoring signal with its weight and raw/normalized values."""
+
     name: str
     weight: float
     raw_value: float
@@ -39,6 +42,7 @@ class RerankSignal:
 @dataclass
 class RerankResult:
     """Reranked result with signal breakdown."""
+
     chunk_id: UUID
     doc_id: UUID
     doc_type: str
@@ -57,10 +61,13 @@ class RerankResult:
     def to_fused_result(self) -> FusedResult:
         """Convert back to FusedResult for downstream compatibility."""
         from ticketpilot.retrieval.schema.knowledge import DocType  # noqa: PLC0415
+
         return FusedResult(
             chunk_id=self.chunk_id,
             doc_id=self.doc_id,
-            doc_type=DocType(self.doc_type) if isinstance(self.doc_type, str) else self.doc_type,
+            doc_type=DocType(self.doc_type)
+            if isinstance(self.doc_type, str)
+            else self.doc_type,
             content=self.content,
             rrf_score=self.rrf_score,
             keyword_rank=self.keyword_rank,
@@ -74,6 +81,7 @@ class RerankResult:
 # ---------------------------------------------------------------------------
 # Signal computations
 # ---------------------------------------------------------------------------
+
 
 def _cosine_similarity(vec1: list[float], vec2: list[float]) -> float:
     """Compute cosine similarity between two vectors."""
@@ -107,12 +115,14 @@ def _keyword_density(query: str, content: str) -> float:
     terms = [t.strip() for t in query.split() if t.strip()]
     if not terms or not content:
         return 0.0
+
     def _term_in_content(term: str) -> bool:
         # CJK characters: substring match (no word boundaries in Chinese/Japanese)
-        if any('\u4e00' <= ch <= '\u9fff' for ch in term):
+        if any("\u4e00" <= ch <= "\u9fff" for ch in term):
             return term in content
         # Latin text: word boundary match to avoid "art" matching "smart"
-        return bool(re.search(r'\b' + re.escape(term) + r'\b', content, re.IGNORECASE))
+        return bool(re.search(r"\b" + re.escape(term) + r"\b", content, re.IGNORECASE))
+
     hits = sum(1 for t in terms if _term_in_content(t))
     return hits / len(terms)
 
@@ -131,6 +141,7 @@ def _normalize_minmax(values: list[float]) -> list[float]:
 # ---------------------------------------------------------------------------
 # HybridReranker
 # ---------------------------------------------------------------------------
+
 
 class HybridReranker:
     """Multi-signal reranker combining RRF, embedding, intent, and content signals."""
@@ -190,9 +201,7 @@ class HybridReranker:
         # Pre-compute doc embeddings if needed
         doc_embeddings: dict[UUID, list[float]] = {}
         if is_real_embedding:
-            doc_embeddings = self._load_doc_embeddings(
-                [c.chunk_id for c in candidates]
-            )
+            doc_embeddings = self._load_doc_embeddings([c.chunk_id for c in candidates])
 
         # Build rerank results
         results: list[RerankResult] = []
@@ -203,11 +212,15 @@ class HybridReranker:
             w = weights.get("rrf_score", 0.0)
             raw = rrf_scores[i]
             norm = norm_rrf[i]
-            signals.append(RerankSignal(
-                name="rrf_score", weight=w,
-                raw_value=raw, normalized_value=norm,
-                contribution=w * norm,
-            ))
+            signals.append(
+                RerankSignal(
+                    name="rrf_score",
+                    weight=w,
+                    raw_value=raw,
+                    normalized_value=norm,
+                    contribution=w * norm,
+                )
+            )
 
             # Signal 2: Embedding similarity
             w = weights.get("embedding_similarity", 0.0)
@@ -215,22 +228,30 @@ class HybridReranker:
                 sim = _cosine_similarity(query_embedding, doc_embeddings[cand.chunk_id])
             else:
                 sim = 0.0
-            signals.append(RerankSignal(
-                name="embedding_similarity", weight=w,
-                raw_value=sim, normalized_value=sim,  # already in [0,1]
-                contribution=w * sim,
-            ))
+            signals.append(
+                RerankSignal(
+                    name="embedding_similarity",
+                    weight=w,
+                    raw_value=sim,
+                    normalized_value=sim,  # already in [0,1]
+                    contribution=w * sim,
+                )
+            )
 
             # Signal 3: Intent metadata boost
             w = weights.get("intent_metadata_boost", 0.0)
             boost = self._config.get_intent_boost(intent, cand.doc_type)
             # Normalize: boost is already a small positive value, cap at 1.0
             norm_boost = min(boost, 1.0)
-            signals.append(RerankSignal(
-                name="intent_metadata_boost", weight=w,
-                raw_value=boost, normalized_value=norm_boost,
-                contribution=w * norm_boost,
-            ))
+            signals.append(
+                RerankSignal(
+                    name="intent_metadata_boost",
+                    weight=w,
+                    raw_value=boost,
+                    normalized_value=norm_boost,
+                    contribution=w * norm_boost,
+                )
+            )
 
             # Signal 4: Content quality
             w = weights.get("content_quality", 0.0)
@@ -240,32 +261,39 @@ class HybridReranker:
             )
             kd = _keyword_density(query, cand.content)
             content_score = (
-                (1 - cq.keyword_density_weight) * len_score
-                + cq.keyword_density_weight * kd
+                1 - cq.keyword_density_weight
+            ) * len_score + cq.keyword_density_weight * kd
+            signals.append(
+                RerankSignal(
+                    name="content_quality",
+                    weight=w,
+                    raw_value=content_score,
+                    normalized_value=content_score,
+                    contribution=w * content_score,
+                )
             )
-            signals.append(RerankSignal(
-                name="content_quality", weight=w,
-                raw_value=content_score, normalized_value=content_score,
-                contribution=w * content_score,
-            ))
 
             # Final score
             final = sum(s.contribution for s in signals)
 
-            results.append(RerankResult(
-                chunk_id=cand.chunk_id,
-                doc_id=cand.doc_id,
-                doc_type=cand.doc_type.value if hasattr(cand.doc_type, 'value') else str(cand.doc_type),
-                content=cand.content,
-                final_score=final,
-                signals=signals,
-                rrf_score=cand.rrf_score,
-                keyword_rank=cand.keyword_rank,
-                keyword_contribution=cand.keyword_contribution,
-                vector_rank=cand.vector_rank,
-                vector_contribution=cand.vector_contribution,
-                sources=list(cand.sources),
-            ))
+            results.append(
+                RerankResult(
+                    chunk_id=cand.chunk_id,
+                    doc_id=cand.doc_id,
+                    doc_type=cand.doc_type.value
+                    if hasattr(cand.doc_type, "value")
+                    else str(cand.doc_type),
+                    content=cand.content,
+                    final_score=final,
+                    signals=signals,
+                    rrf_score=cand.rrf_score,
+                    keyword_rank=cand.keyword_rank,
+                    keyword_contribution=cand.keyword_contribution,
+                    vector_rank=cand.vector_rank,
+                    vector_contribution=cand.vector_contribution,
+                    sources=list(cand.sources),
+                )
+            )
 
         # Sort by final_score descending
         results.sort(key=lambda r: r.final_score, reverse=True)
@@ -276,9 +304,7 @@ class HybridReranker:
 
         return results[:top_k]
 
-    def _load_doc_embeddings(
-        self, chunk_ids: list[UUID]
-    ) -> dict[UUID, list[float]]:
+    def _load_doc_embeddings(self, chunk_ids: list[UUID]) -> dict[UUID, list[float]]:
         """Load document embeddings from DB for the given chunk IDs."""
         embeddings: dict[UUID, list[float]] = {}
         if not chunk_ids:
@@ -309,7 +335,7 @@ class HybridReranker:
 
 def _is_real_embedding_provider(provider: Any) -> bool:
     """Check if the embedding provider is a real (non-fake) provider."""
-    if not hasattr(provider, 'embed') and not hasattr(provider, 'encode'):
+    if not hasattr(provider, "embed") and not hasattr(provider, "encode"):
         return False
     name = getattr(provider, "provider_name", "unknown")
     return name not in ("fake", "unknown", "")

@@ -15,6 +15,7 @@ def planner() -> DeterministicTaskPlanner:
 # Template selection — Chinese keywords
 # ---------------------------------------------------------------------------
 
+
 class TestTemplateSelectionChinese:
     def test_refund_keywords(self, planner):
         assert planner.select_template("我要退款") == "refund_request"
@@ -64,6 +65,7 @@ class TestTemplateSelectionChinese:
 # Template selection — English keywords
 # ---------------------------------------------------------------------------
 
+
 class TestTemplateSelectionEnglish:
     def test_refund_english(self, planner):
         assert planner.select_template("I want a refund") == "refund_request"
@@ -93,6 +95,7 @@ class TestTemplateSelectionEnglish:
 # Fallback
 # ---------------------------------------------------------------------------
 
+
 class TestFallback:
     def test_generic_fallback(self, planner):
         assert planner.select_template("你好，请问一下") == "generic_support"
@@ -110,6 +113,7 @@ class TestFallback:
 # ---------------------------------------------------------------------------
 # create_plan
 # ---------------------------------------------------------------------------
+
 
 class TestCreatePlan:
     def test_returns_agent_plan(self, planner):
@@ -133,13 +137,15 @@ class TestCreatePlan:
 
     def test_required_tools_are_core_five(self, planner):
         plan = planner.create_plan("投诉")
-        assert sorted(plan.required_tools) == sorted([
-            "normalize_ticket",
-            "classify_ticket",
-            "assess_risk",
-            "retrieve_evidence",
-            "generate_draft",
-        ])
+        assert sorted(plan.required_tools) == sorted(
+            [
+                "normalize_ticket",
+                "classify_ticket",
+                "assess_risk",
+                "retrieve_evidence",
+                "generate_draft",
+            ]
+        )
 
     def test_constraints_include_no_auto_send(self, planner):
         plan = planner.create_plan("我要退款")

@@ -45,9 +45,9 @@ def retrieve_evidence(
 
     # 安全处理每个 candidate 的内容，避免损坏的 UTF-8 导致下游崩溃
     for candidate in candidates:
-        if hasattr(candidate, 'content') and candidate.content is not None:
+        if hasattr(candidate, "content") and candidate.content is not None:
             if isinstance(candidate.content, bytes):
-                candidate.content = candidate.content.decode('utf-8', errors='replace')
+                candidate.content = candidate.content.decode("utf-8", errors="replace")
 
     return candidates, trace
 
@@ -59,7 +59,12 @@ def assess_retrieval_sufficiency(
 ) -> dict:
     """Evaluate if retrieval results are sufficient for draft generation."""
     if not results:
-        return {"sufficient": False, "reason": "no results", "avg_score": 0.0, "result_count": 0}
+        return {
+            "sufficient": False,
+            "reason": "no results",
+            "avg_score": 0.0,
+            "result_count": 0,
+        }
     scores = [r.get("score", 0) for r in results]
     avg_score = sum(scores) / len(scores)
     above_threshold = sum(1 for s in scores if s >= min_avg_score)
@@ -69,7 +74,9 @@ def assess_retrieval_sufficiency(
         "avg_score": round(avg_score, 3),
         "result_count": len(results),
         "above_threshold_count": above_threshold,
-        "reason": None if sufficient else f"{len(results)} results, avg {avg_score:.2f} < {min_avg_score}",
+        "reason": None
+        if sufficient
+        else f"{len(results)} results, avg {avg_score:.2f} < {min_avg_score}",
     }
 
 
@@ -83,6 +90,7 @@ _SYNONYM_MAP = {
     "vip": "会员",
 }
 
+
 def rewrite_query(query: str) -> str:
     """Rule-based query rewriting for better retrieval recall."""
     rewritten = query
@@ -90,7 +98,7 @@ def rewrite_query(query: str) -> str:
         if short.lower() in rewritten.lower() and expanded not in rewritten:
             rewritten = f"{rewritten} {expanded}"
     if len(rewritten) > 30:
-        clauses = re.split(r'[，。？！、和还有以及]', rewritten)
+        clauses = re.split(r"[，。？！、和还有以及]", rewritten)
         if clauses and len(clauses[0]) > 5:
             rewritten = clauses[0].strip()
     return rewritten.strip()

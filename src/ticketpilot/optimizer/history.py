@@ -4,6 +4,7 @@ Stores each optimization iteration as a single JSON line, enabling
 append-only writes, fast reads, and ``--continue`` support via a
 companion state.json file.
 """
+
 from __future__ import annotations
 
 import json

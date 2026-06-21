@@ -242,10 +242,34 @@ class TestComputeDraftEvaluationSummary:
 
     def test_human_review_trigger_accuracy(self):
         rows = [
-            self._row("case-001", expected_hr=True, actual_hr=True, guard=False, cit_pass=False),
-            self._row("case-002", expected_hr=True, actual_hr=False, guard=False, cit_pass=False),
-            self._row("case-003", expected_hr=False, actual_hr=False, guard=True, cit_pass=True),
-            self._row("case-004", expected_hr=True, actual_hr=True, guard=False, cit_pass=False),
+            self._row(
+                "case-001",
+                expected_hr=True,
+                actual_hr=True,
+                guard=False,
+                cit_pass=False,
+            ),
+            self._row(
+                "case-002",
+                expected_hr=True,
+                actual_hr=False,
+                guard=False,
+                cit_pass=False,
+            ),
+            self._row(
+                "case-003",
+                expected_hr=False,
+                actual_hr=False,
+                guard=True,
+                cit_pass=True,
+            ),
+            self._row(
+                "case-004",
+                expected_hr=True,
+                actual_hr=True,
+                guard=False,
+                cit_pass=False,
+            ),
         ]
         summary = compute_draft_evaluation_summary(rows)
         # Trigger cases: case-001, case-002, case-004 (case-003 has no trigger)
@@ -256,8 +280,20 @@ class TestComputeDraftEvaluationSummary:
     def test_human_review_trigger_accuracy_no_trigger_cases(self):
         """When no cases have trigger conditions, accuracy is None."""
         rows = [
-            self._row("case-001", expected_hr=False, actual_hr=False, guard=True, cit_pass=True),
-            self._row("case-002", expected_hr=False, actual_hr=False, guard=True, cit_pass=True),
+            self._row(
+                "case-001",
+                expected_hr=False,
+                actual_hr=False,
+                guard=True,
+                cit_pass=True,
+            ),
+            self._row(
+                "case-002",
+                expected_hr=False,
+                actual_hr=False,
+                guard=True,
+                cit_pass=True,
+            ),
         ]
         summary = compute_draft_evaluation_summary(rows)
         assert summary.human_review_trigger_accuracy is None
@@ -318,7 +354,10 @@ class TestGuardFailureTypes:
             guard_passed=False,
             guard_failure_types=["UNSUPPORTED_POLICY_CLAIM", "FORBIDDEN_PROMISE"],
         )
-        assert row.guard_failure_types == ["UNSUPPORTED_POLICY_CLAIM", "FORBIDDEN_PROMISE"]
+        assert row.guard_failure_types == [
+            "UNSUPPORTED_POLICY_CLAIM",
+            "FORBIDDEN_PROMISE",
+        ]
 
     def test_per_failure_type_pass_rate(self):
         """Verify summary includes per-failure-type pass rates."""
@@ -346,9 +385,13 @@ class TestGuardFailureTypes:
         ]
         summary = compute_draft_evaluation_summary(rows)
         # UNSUPPORTED_POLICY_CLAIM: 2 failures out of 4 → pass rate = 2/4 = 0.5
-        assert summary.per_failure_type_pass_rates["UNSUPPORTED_POLICY_CLAIM"] == pytest.approx(0.5)
+        assert summary.per_failure_type_pass_rates[
+            "UNSUPPORTED_POLICY_CLAIM"
+        ] == pytest.approx(0.5)
         # FORBIDDEN_PROMISE: 1 failure out of 4 → pass rate = 3/4 = 0.75
-        assert summary.per_failure_type_pass_rates["FORBIDDEN_PROMISE"] == pytest.approx(0.75)
+        assert summary.per_failure_type_pass_rates[
+            "FORBIDDEN_PROMISE"
+        ] == pytest.approx(0.75)
 
     def test_per_failure_type_empty_when_no_failures(self):
         """Empty dict when all guard_passed=True and no failure types."""

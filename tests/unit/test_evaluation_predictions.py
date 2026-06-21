@@ -19,7 +19,9 @@ def valid_csv() -> str:
         "case_002,complaint,legal_risk;compensation_risk,HIGH,true,POLICY;CASE,false,true",
         "case_003,account_issue,privacy_risk,MEDIUM,true,POLICY,false,true",
     ]
-    with tempfile.NamedTemporaryFile(mode="w", suffix=".csv", delete=False, encoding="utf-8") as f:
+    with tempfile.NamedTemporaryFile(
+        mode="w", suffix=".csv", delete=False, encoding="utf-8"
+    ) as f:
         f.write(chr(10).join(rows))
         tmppath = f.name
     yield tmppath
@@ -44,14 +46,18 @@ def test_semicolon_fields_parse_correctly() -> None:
         "case_001,refund,flag_a;flag_b;flag_c,LOW,false,FAQ;POLICY;MANUAL,false,false",
         "case_002,logistics,,LOW,false,FAQ,false,false",
     ]
-    with tempfile.NamedTemporaryFile(mode="w", suffix=".csv", delete=False, encoding="utf-8") as f:
+    with tempfile.NamedTemporaryFile(
+        mode="w", suffix=".csv", delete=False, encoding="utf-8"
+    ) as f:
         f.write(chr(10).join(rows))
         tmppath = f.name
     try:
         result = load_predictions(tmppath)
         case1 = result["case_001"]
         assert case1.predicted_risk_flags == frozenset({"flag_a", "flag_b", "flag_c"})
-        assert case1.predicted_evidence_doc_types == frozenset({"FAQ", "POLICY", "MANUAL"})
+        assert case1.predicted_evidence_doc_types == frozenset(
+            {"FAQ", "POLICY", "MANUAL"}
+        )
         case2 = result["case_002"]
         assert case2.predicted_risk_flags == frozenset()
     finally:
@@ -64,7 +70,9 @@ def test_invalid_issue_type_fails() -> None:
         "case_id,predicted_issue_type,predicted_risk_flags,predicted_severity,predicted_must_human_review,predicted_evidence_doc_types,predicted_fallback_required,predicted_no_auto_send",
         "case_001,invalid_type,,LOW,false,FAQ,false,false",
     ]
-    with tempfile.NamedTemporaryFile(mode="w", suffix=".csv", delete=False, encoding="utf-8") as f:
+    with tempfile.NamedTemporaryFile(
+        mode="w", suffix=".csv", delete=False, encoding="utf-8"
+    ) as f:
         f.write(chr(10).join(rows))
         tmppath = f.name
     try:
@@ -81,7 +89,9 @@ def test_duplicate_case_id_fails() -> None:
         "case_001,refund,,LOW,false,FAQ,false,false",
         "case_001,complaint,,HIGH,true,POLICY,false,true",
     ]
-    with tempfile.NamedTemporaryFile(mode="w", suffix=".csv", delete=False, encoding="utf-8") as f:
+    with tempfile.NamedTemporaryFile(
+        mode="w", suffix=".csv", delete=False, encoding="utf-8"
+    ) as f:
         f.write(chr(10).join(rows))
         tmppath = f.name
     try:
@@ -93,31 +103,37 @@ def test_duplicate_case_id_fails() -> None:
 
 def test_missing_case_id_fails() -> None:
     """Missing case_id in prediction is caught by validate_predictions."""
-    errors = validate_predictions({}, {
-        "case_001": GoldenExpectation(
-            case_id="case_001",
-            expected_issue_type="refund",
-            expected_severity="LOW",
-            expected_must_human_review=False,
-            expected_fallback_required=False,
-            expected_no_auto_send=False,
-        ),
-    })
+    errors = validate_predictions(
+        {},
+        {
+            "case_001": GoldenExpectation(
+                case_id="case_001",
+                expected_issue_type="refund",
+                expected_severity="LOW",
+                expected_must_human_review=False,
+                expected_fallback_required=False,
+                expected_no_auto_send=False,
+            ),
+        },
+    )
     assert len(errors) == 1
     assert "Missing prediction" in errors[0]
 
 
 def test_extra_case_id_fails() -> None:
     """Extra prediction case_id is caught by validate_predictions."""
-    errors = validate_predictions({
-        "case_999": EvalPrediction(
-            case_id="case_999",
-            predicted_issue_type="refund",
-            predicted_severity="LOW",
-            predicted_must_human_review=False,
-            predicted_fallback_required=False,
-            predicted_no_auto_send=False,
-        ),
-    }, {})
+    errors = validate_predictions(
+        {
+            "case_999": EvalPrediction(
+                case_id="case_999",
+                predicted_issue_type="refund",
+                predicted_severity="LOW",
+                predicted_must_human_review=False,
+                predicted_fallback_required=False,
+                predicted_no_auto_send=False,
+            ),
+        },
+        {},
+    )
     assert len(errors) == 1
     assert "Prediction without golden" in errors[0]

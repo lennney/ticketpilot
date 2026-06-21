@@ -57,11 +57,14 @@ def sample_summary():
 
 def test_json_report_writer_creates_valid_json(sample_summary):
     """JSON report writer creates valid JSON with expected keys."""
-    with tempfile.NamedTemporaryFile(mode="w", suffix=".json", delete=False, encoding="utf-8") as f:
+    with tempfile.NamedTemporaryFile(
+        mode="w", suffix=".json", delete=False, encoding="utf-8"
+    ) as f:
         outpath = f.name
     try:
         result = write_json_report(
-            sample_summary, outpath,
+            sample_summary,
+            outpath,
             tickets_path="t.csv",
             golden_path="g.csv",
             predictions_path="p.csv",
@@ -85,11 +88,14 @@ def test_json_report_writer_creates_valid_json(sample_summary):
 
 def test_markdown_report_contains_expected_sections(sample_summary):
     """Markdown report contains aggregate metrics and limitations."""
-    with tempfile.NamedTemporaryFile(mode="w", suffix=".md", delete=False, encoding="utf-8") as f:
+    with tempfile.NamedTemporaryFile(
+        mode="w", suffix=".md", delete=False, encoding="utf-8"
+    ) as f:
         outpath = f.name
     try:
         result = write_markdown_report(
-            sample_summary, outpath,
+            sample_summary,
+            outpath,
             tickets_path="t.csv",
             golden_path="g.csv",
             predictions_path="p.csv",
@@ -117,9 +123,13 @@ def test_json_report_keys_structure(sample_summary):
     try:
         data = json.loads(write_json_report(sample_summary, tmp))
         assert set(data.keys()) == {
-            "generated_at", "metadata", "total_cases",
-            "aggregate_metrics", "risk_flag_metrics",
-            "per_case_results", "mismatches",
+            "generated_at",
+            "metadata",
+            "total_cases",
+            "aggregate_metrics",
+            "risk_flag_metrics",
+            "per_case_results",
+            "mismatches",
         }
     finally:
         pathlib.Path(tmp).unlink(missing_ok=True)
@@ -127,22 +137,26 @@ def test_json_report_keys_structure(sample_summary):
 
 def test_markdown_report_with_no_mismatches():
     """Markdown report shows no mismatches when all correct."""
-    pred = {"case_001": EvalPrediction(
-        case_id="case_001",
-        predicted_issue_type="refund",
-        predicted_severity="LOW",
-        predicted_must_human_review=False,
-        predicted_fallback_required=False,
-        predicted_no_auto_send=False,
-    )}
-    gold = {"case_001": GoldenExpectation(
-        case_id="case_001",
-        expected_issue_type="refund",
-        expected_severity="LOW",
-        expected_must_human_review=False,
-        expected_fallback_required=False,
-        expected_no_auto_send=False,
-    )}
+    pred = {
+        "case_001": EvalPrediction(
+            case_id="case_001",
+            predicted_issue_type="refund",
+            predicted_severity="LOW",
+            predicted_must_human_review=False,
+            predicted_fallback_required=False,
+            predicted_no_auto_send=False,
+        )
+    }
+    gold = {
+        "case_001": GoldenExpectation(
+            case_id="case_001",
+            expected_issue_type="refund",
+            expected_severity="LOW",
+            expected_must_human_review=False,
+            expected_fallback_required=False,
+            expected_no_auto_send=False,
+        )
+    }
     tmp = tempfile.mktemp(suffix=".md")
     try:
         summary = compute_evaluation_summary(pred, gold)

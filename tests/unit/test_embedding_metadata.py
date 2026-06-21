@@ -31,7 +31,9 @@ class TestEmbeddingIndexMetadata:
             model_name="text-embedding-v4",
             dimension=1024,
         )
-        assert meta.fingerprint_matches_config("openai_compatible", "text-embedding-v4", 1024)
+        assert meta.fingerprint_matches_config(
+            "openai_compatible", "text-embedding-v4", 1024
+        )
 
     def test_fingerprint_mismatch_detected(self):
         """fingerprint_matches_config should return False for different params."""
@@ -40,7 +42,9 @@ class TestEmbeddingIndexMetadata:
             model_name="sha-256",
             dimension=384,
         )
-        assert not meta.fingerprint_matches_config("openai_compatible", "text-embedding-v4", 1024)
+        assert not meta.fingerprint_matches_config(
+            "openai_compatible", "text-embedding-v4", 1024
+        )
         assert not meta.fingerprint_matches_config("fake", "sha-256", 768)
         assert not meta.fingerprint_matches_config("fake", "other-model", 384)
 
@@ -142,8 +146,20 @@ class TestEmbeddingIndexMetadata:
 
     def test_different_providers_have_different_fingerprints(self):
         """Different provider/model/dim combos should produce unique fingerprints."""
-        m1 = EmbeddingIndexMetadata(provider_name="fake", model_name="sha-256", dimension=384)
-        m2 = EmbeddingIndexMetadata(provider_name="openai_compatible", model_name="text-embedding-v4", dimension=1024)
-        m3 = EmbeddingIndexMetadata(provider_name="fake", model_name="sha-256", dimension=768)
-        fingerprints = {m1.config_fingerprint, m2.config_fingerprint, m3.config_fingerprint}
+        m1 = EmbeddingIndexMetadata(
+            provider_name="fake", model_name="sha-256", dimension=384
+        )
+        m2 = EmbeddingIndexMetadata(
+            provider_name="openai_compatible",
+            model_name="text-embedding-v4",
+            dimension=1024,
+        )
+        m3 = EmbeddingIndexMetadata(
+            provider_name="fake", model_name="sha-256", dimension=768
+        )
+        fingerprints = {
+            m1.config_fingerprint,
+            m2.config_fingerprint,
+            m3.config_fingerprint,
+        }
         assert len(fingerprints) == 3

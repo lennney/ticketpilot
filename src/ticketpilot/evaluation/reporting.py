@@ -30,12 +30,15 @@ def _serialize_for_json(obj: Any) -> Any:
 
 def _case_result_to_dict(case_result: Any) -> dict[str, Any]:
     return {
-        "case_id": case_result.case_id,        "prediction": {
+        "case_id": case_result.case_id,
+        "prediction": {
             "predicted_issue_type": case_result.prediction.predicted_issue_type,
             "predicted_risk_flags": sorted(case_result.prediction.predicted_risk_flags),
             "predicted_severity": case_result.prediction.predicted_severity,
             "predicted_must_human_review": case_result.prediction.predicted_must_human_review,
-            "predicted_evidence_doc_types": sorted(case_result.prediction.predicted_evidence_doc_types),
+            "predicted_evidence_doc_types": sorted(
+                case_result.prediction.predicted_evidence_doc_types
+            ),
             "predicted_fallback_required": case_result.prediction.predicted_fallback_required,
             "predicted_no_auto_send": case_result.prediction.predicted_no_auto_send,
         },
@@ -86,9 +89,8 @@ def write_json_report(
     ]
 
     mismatch_list = [
-        _mismatch_entry_to_dict(m) for m in sorted(
-            summary.failed_cases, key=lambda x: (x.case_id, x.metric)
-        )
+        _mismatch_entry_to_dict(m)
+        for m in sorted(summary.failed_cases, key=lambda x: (x.case_id, x.metric))
     ]
 
     report = {
@@ -119,7 +121,9 @@ def write_json_report(
 
     output_path = pathlib.Path(output_path)
     output_path.parent.mkdir(parents=True, exist_ok=True)
-    output_path.write_text(json.dumps(report, indent=2, ensure_ascii=False), encoding="utf-8")
+    output_path.write_text(
+        json.dumps(report, indent=2, ensure_ascii=False), encoding="utf-8"
+    )
     return json.dumps(report, indent=2, ensure_ascii=False)
 
 
@@ -139,43 +143,52 @@ def write_markdown_report(
     generated_at = datetime.datetime.now(datetime.timezone.utc).isoformat()
 
     mode_label = "pipeline (local)" if prediction_mode == "pipeline" else "CSV"
-    md = ["# Evaluation Report",
-          "",
-          "**Generated at:** " + generated_at,
-          "",
-          "## Dataset Summary",
-          "",
-          "| Field | Value |",
-          "|---|---|",
-          "| Total cases | " + str(summary.total_cases) + " |",
-          "| Tickets file | `" + tickets_path + "` |",
-          "| Golden file | `" + golden_path + "` |",
-          "| Predictions file | `" + predictions_path + "` |",
-          "| Prediction mode | " + mode_label + " |",
-          "| Mismatches found | " + str(len(summary.failed_cases)) + " |",
-          "",
-          "## Aggregate Metrics",
-          "",
-          "| Metric | Value |",
-          "|---|---|",
-          "| Intent accuracy | " + _pct(summary.aggregate_intent_accuracy) + " |",
-          "| Severity accuracy | " + _pct(summary.aggregate_severity_accuracy) + " |",
-          "| Must-human-review accuracy | " + _pct(summary.aggregate_must_human_review_accuracy) + " |",
-          "| Evidence doc type recall | " + _pct(summary.aggregate_evidence_doc_type_recall) + " |",
-          "| Fallback correctness | " + _pct(summary.aggregate_fallback_correctness) + " |",
-          "| No-auto-send compliance | " + _pct(summary.aggregate_no_auto_send_compliance) + " |",
-          "",
-          "## Risk Flag Metrics (Micro-Averaged)",
-          "",
-          "| Metric | Value |",
-          "|---|---|",
-          "| Precision | " + _pct(summary.aggregate_risk_flag_precision) + " |",
-          "| Recall | " + _pct(summary.aggregate_risk_flag_recall) + " |",
-          "| F1 | " + _pct(summary.aggregate_risk_flag_f1) + " |",
-          "",
-          "## Mismatch Summary",
-          "",
-          ]
+    md = [
+        "# Evaluation Report",
+        "",
+        "**Generated at:** " + generated_at,
+        "",
+        "## Dataset Summary",
+        "",
+        "| Field | Value |",
+        "|---|---|",
+        "| Total cases | " + str(summary.total_cases) + " |",
+        "| Tickets file | `" + tickets_path + "` |",
+        "| Golden file | `" + golden_path + "` |",
+        "| Predictions file | `" + predictions_path + "` |",
+        "| Prediction mode | " + mode_label + " |",
+        "| Mismatches found | " + str(len(summary.failed_cases)) + " |",
+        "",
+        "## Aggregate Metrics",
+        "",
+        "| Metric | Value |",
+        "|---|---|",
+        "| Intent accuracy | " + _pct(summary.aggregate_intent_accuracy) + " |",
+        "| Severity accuracy | " + _pct(summary.aggregate_severity_accuracy) + " |",
+        "| Must-human-review accuracy | "
+        + _pct(summary.aggregate_must_human_review_accuracy)
+        + " |",
+        "| Evidence doc type recall | "
+        + _pct(summary.aggregate_evidence_doc_type_recall)
+        + " |",
+        "| Fallback correctness | "
+        + _pct(summary.aggregate_fallback_correctness)
+        + " |",
+        "| No-auto-send compliance | "
+        + _pct(summary.aggregate_no_auto_send_compliance)
+        + " |",
+        "",
+        "## Risk Flag Metrics (Micro-Averaged)",
+        "",
+        "| Metric | Value |",
+        "|---|---|",
+        "| Precision | " + _pct(summary.aggregate_risk_flag_precision) + " |",
+        "| Recall | " + _pct(summary.aggregate_risk_flag_recall) + " |",
+        "| F1 | " + _pct(summary.aggregate_risk_flag_f1) + " |",
+        "",
+        "## Mismatch Summary",
+        "",
+    ]
 
     if summary.failed_cases:
         md.append("| Case ID | Metric | Expected | Predicted |")
@@ -184,16 +197,24 @@ def write_markdown_report(
         for m in sorted_m:
             exp = m.expected.replace("|", "\|")
             pred = m.predicted.replace("|", "\|")
-            md.append("| " + m.case_id + " | " + m.metric + " | " + exp + " | " + pred + " |")
+            md.append(
+                "| " + m.case_id + " | " + m.metric + " | " + exp + " | " + pred + " |"
+            )
     else:
         md.append("No mismatches found.")
 
     md.append("")
     md.append("## Limitations")
     md.append("")
-    md.append("- **Small deterministic seed dataset**: This evaluation uses a small set of curated deterministic seed data. Results are not statistically significant and should not be used to claim real-world performance.")
-    md.append("- **No real embedding provider**: The current evaluation uses fake embeddings. Evidence retrieval metrics will change when a real embedding provider is integrated unless pipeline mode is added later.")
-    md.append("- **Not real-world performance**: This report reflects offline evaluation on synthetic/golden data only. It does not represent production behavior.")
+    md.append(
+        "- **Small deterministic seed dataset**: This evaluation uses a small set of curated deterministic seed data. Results are not statistically significant and should not be used to claim real-world performance."
+    )
+    md.append(
+        "- **No real embedding provider**: The current evaluation uses fake embeddings. Evidence retrieval metrics will change when a real embedding provider is integrated unless pipeline mode is added later."
+    )
+    md.append(
+        "- **Not real-world performance**: This report reflects offline evaluation on synthetic/golden data only. It does not represent production behavior."
+    )
 
     report_str = "\n".join(md)
 

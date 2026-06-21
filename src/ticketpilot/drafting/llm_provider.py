@@ -135,9 +135,7 @@ class FakeLLMProvider(LLMProvider):
         for ev in top_n:
             title = getattr(ev, "title", None)
             label = f"（{title}）" if title else ""
-            lines.append(
-                f"根据相关资料{label}[{ev.chunk_id}]，{ev.content[:100]}。"
-            )
+            lines.append(f"根据相关资料{label}[{ev.chunk_id}]，{ev.content[:100]}。")
         lines.append("")
         lines.append("希望以上信息对您有帮助。如有其他问题，请随时联系我们。")
 
@@ -291,10 +289,10 @@ class OpenAICompatibleProvider(LLMProvider):
         # Format evidence with numbered labels instead of raw chunk_ids
         evidence_lines: list[str] = []
         for idx, ev in enumerate(sorted_evidence_for_prompt, start=1):
-            doc_type = ev.doc_type.value if hasattr(ev.doc_type, 'value') else str(ev.doc_type)
-            evidence_lines.append(
-                f"[{idx}] ({doc_type}) {ev.content[:200]}"
+            doc_type = (
+                ev.doc_type.value if hasattr(ev.doc_type, "value") else str(ev.doc_type)
             )
+            evidence_lines.append(f"[{idx}] ({doc_type}) {ev.content[:200]}")
         numbered_evidence = "\n".join(evidence_lines)
 
         user_prompt = (
@@ -330,7 +328,9 @@ class OpenAICompatibleProvider(LLMProvider):
             with urllib.request.urlopen(req, timeout=self._timeout) as resp:
                 result = json.loads(resp.read().decode("utf-8"))
 
-            content = result.get("choices", [{}])[0].get("message", {}).get("content", "")
+            content = (
+                result.get("choices", [{}])[0].get("message", {}).get("content", "")
+            )
 
             # Build citations
             from ticketpilot.drafting.schemas import Citation as CitationModel

@@ -41,7 +41,10 @@ def _doc(
 
 def _make_retrieved(entries: list[tuple[str, str, int]]) -> list[RetrievedDoc]:
     """Build RetrievedDoc list from (doc_id, doc_type, rank) tuples."""
-    return [RetrievedDoc(doc_id=did, doc_type=dt, rank=r, score=1.0 / r) for did, dt, r in entries]
+    return [
+        RetrievedDoc(doc_id=did, doc_type=dt, rank=r, score=1.0 / r)
+        for did, dt, r in entries
+    ]
 
 
 def _case(
@@ -114,11 +117,13 @@ class TestComputeMRR:
 class TestComputeCaseRetrievalMetrics:
     def test_perfect_doc_type_hit(self) -> None:
         """Expected doc_type appears at rank 1."""
-        retrieved = _make_retrieved([
-            ("doc_faq_001", "FAQ", 1),
-            ("doc_pol_001", "Policy", 2),
-            ("doc_case_001", "Case", 3),
-        ])
+        retrieved = _make_retrieved(
+            [
+                ("doc_faq_001", "FAQ", 1),
+                ("doc_pol_001", "Policy", 2),
+                ("doc_case_001", "Case", 3),
+            ]
+        )
         case = _case(retrieved=retrieved, expected_doc_types=frozenset(["FAQ"]))
         metrics = compute_case_retrieval_metrics(case)
 
@@ -128,11 +133,13 @@ class TestComputeCaseRetrievalMetrics:
 
     def test_doc_type_at_rank_3(self) -> None:
         """Expected doc_type appears at rank 3 — misses top-1, hits top-3."""
-        retrieved = _make_retrieved([
-            ("doc_faq_001", "FAQ", 1),
-            ("doc_faq_002", "FAQ", 2),
-            ("doc_pol_001", "Policy", 3),
-        ])
+        retrieved = _make_retrieved(
+            [
+                ("doc_faq_001", "FAQ", 1),
+                ("doc_faq_002", "FAQ", 2),
+                ("doc_pol_001", "Policy", 3),
+            ]
+        )
         case = _case(retrieved=retrieved, expected_doc_types=frozenset(["Policy"]))
         metrics = compute_case_retrieval_metrics(case)
 
@@ -142,10 +149,12 @@ class TestComputeCaseRetrievalMetrics:
 
     def test_no_match(self) -> None:
         """No expected doc_type in results."""
-        retrieved = _make_retrieved([
-            ("doc_faq_001", "FAQ", 1),
-            ("doc_pol_001", "Policy", 2),
-        ])
+        retrieved = _make_retrieved(
+            [
+                ("doc_faq_001", "FAQ", 1),
+                ("doc_pol_001", "Policy", 2),
+            ]
+        )
         case = _case(retrieved=retrieved, expected_doc_types=frozenset(["Case"]))
         metrics = compute_case_retrieval_metrics(case)
 
@@ -162,9 +171,11 @@ class TestComputeCaseRetrievalMetrics:
 
     def test_empty_expected_types(self) -> None:
         """No expected doc types — all hits vacuously true."""
-        retrieved = _make_retrieved([
-            ("doc_faq_001", "FAQ", 1),
-        ])
+        retrieved = _make_retrieved(
+            [
+                ("doc_faq_001", "FAQ", 1),
+            ]
+        )
         case = _case(retrieved=retrieved, expected_doc_types=frozenset())
         metrics = compute_case_retrieval_metrics(case)
 
@@ -174,11 +185,13 @@ class TestComputeCaseRetrievalMetrics:
 
     def test_doc_id_hit(self) -> None:
         """Expected doc_id appears at rank 2."""
-        retrieved = _make_retrieved([
-            ("doc_faq_001", "FAQ", 1),
-            ("doc_faq_002", "FAQ", 2),
-            ("doc_pol_001", "Policy", 3),
-        ])
+        retrieved = _make_retrieved(
+            [
+                ("doc_faq_001", "FAQ", 1),
+                ("doc_faq_002", "FAQ", 2),
+                ("doc_pol_001", "Policy", 3),
+            ]
+        )
         case = _case(
             retrieved=retrieved,
             expected_doc_types=frozenset(["FAQ"]),
@@ -193,9 +206,11 @@ class TestComputeCaseRetrievalMetrics:
 
     def test_doc_id_not_provided(self) -> None:
         """When expected_doc_ids is None, doc_id metrics should be None."""
-        retrieved = _make_retrieved([
-            ("doc_faq_001", "FAQ", 1),
-        ])
+        retrieved = _make_retrieved(
+            [
+                ("doc_faq_001", "FAQ", 1),
+            ]
+        )
         case = _case(retrieved=retrieved, expected_doc_types=frozenset(["FAQ"]))
         metrics = compute_case_retrieval_metrics(case)
 
@@ -204,9 +219,11 @@ class TestComputeCaseRetrievalMetrics:
 
     def test_empty_doc_id_set_is_skipped(self) -> None:
         """When expected_doc_ids is empty frozenset, doc_id metrics are None."""
-        retrieved = _make_retrieved([
-            ("doc_faq_001", "FAQ", 1),
-        ])
+        retrieved = _make_retrieved(
+            [
+                ("doc_faq_001", "FAQ", 1),
+            ]
+        )
         case = _case(
             retrieved=retrieved,
             expected_doc_types=frozenset(["FAQ"]),
@@ -219,12 +236,16 @@ class TestComputeCaseRetrievalMetrics:
 
     def test_multiple_expected_doc_types(self) -> None:
         """Multiple expected doc types — hit if any appears."""
-        retrieved = _make_retrieved([
-            ("doc_faq_001", "FAQ", 1),
-            ("doc_pol_001", "Policy", 2),
-            ("doc_case_001", "Case", 3),
-        ])
-        case = _case(retrieved=retrieved, expected_doc_types=frozenset(["Policy", "Case"]))
+        retrieved = _make_retrieved(
+            [
+                ("doc_faq_001", "FAQ", 1),
+                ("doc_pol_001", "Policy", 2),
+                ("doc_case_001", "Case", 3),
+            ]
+        )
+        case = _case(
+            retrieved=retrieved, expected_doc_types=frozenset(["Policy", "Case"])
+        )
         metrics = compute_case_retrieval_metrics(case)
 
         assert metrics.top_k_doc_type_hit[1] is False  # FAQ not expected
@@ -233,13 +254,15 @@ class TestComputeCaseRetrievalMetrics:
 
     def test_custom_ks(self) -> None:
         """Custom k values produce correct hit dict."""
-        retrieved = _make_retrieved([
-            ("doc_faq_001", "FAQ", 1),
-            ("doc_faq_002", "FAQ", 2),
-            ("doc_faq_003", "FAQ", 3),
-            ("doc_faq_004", "FAQ", 4),
-            ("doc_pol_001", "Policy", 5),
-        ])
+        retrieved = _make_retrieved(
+            [
+                ("doc_faq_001", "FAQ", 1),
+                ("doc_faq_002", "FAQ", 2),
+                ("doc_faq_003", "FAQ", 3),
+                ("doc_faq_004", "FAQ", 4),
+                ("doc_pol_001", "Policy", 5),
+            ]
+        )
         case = _case(retrieved=retrieved, expected_doc_types=frozenset(["Policy"]))
         metrics = compute_case_retrieval_metrics(case, ks=[1, 3, 5])
 
@@ -288,20 +311,24 @@ class TestComputeRetrievalComparisonSummary:
             # case_002: all FAQ results, expected Policy -> never hits
             _case(
                 case_id="case_002",
-                retrieved=_make_retrieved([
-                    ("doc_faq_002", "FAQ", 1),
-                    ("doc_faq_003", "FAQ", 2),
-                ]),
+                retrieved=_make_retrieved(
+                    [
+                        ("doc_faq_002", "FAQ", 1),
+                        ("doc_faq_003", "FAQ", 2),
+                    ]
+                ),
                 expected_doc_types=frozenset(["Policy"]),
             ),
             # case_003: Policy at rank 3 -> miss at k=1, hit at k>=3
             _case(
                 case_id="case_003",
-                retrieved=_make_retrieved([
-                    ("doc_faq_004", "FAQ", 1),
-                    ("doc_faq_005", "FAQ", 2),
-                    ("doc_pol_001", "Policy", 3),
-                ]),
+                retrieved=_make_retrieved(
+                    [
+                        ("doc_faq_004", "FAQ", 1),
+                        ("doc_faq_005", "FAQ", 2),
+                        ("doc_pol_001", "Policy", 3),
+                    ]
+                ),
                 expected_doc_types=frozenset(["Policy"]),
             ),
         ]
@@ -325,10 +352,12 @@ class TestComputeRetrievalComparisonSummary:
             ),
             _case(
                 case_id="case_002",
-                retrieved=_make_retrieved([
-                    ("doc_faq_002", "FAQ", 1),
-                    ("doc_pol_001", "Policy", 2),
-                ]),
+                retrieved=_make_retrieved(
+                    [
+                        ("doc_faq_002", "FAQ", 1),
+                        ("doc_pol_001", "Policy", 2),
+                    ]
+                ),
                 expected_doc_types=frozenset(["Policy"]),
                 expected_doc_ids=frozenset(["doc_pol_001"]),
             ),
@@ -421,10 +450,12 @@ class TestSummarizeWrongCases:
         cases = [
             _case(
                 case_id="case_001",
-                retrieved=_make_retrieved([
-                    ("doc_faq_001", "FAQ", 1),
-                    ("doc_faq_002", "FAQ", 2),
-                ]),
+                retrieved=_make_retrieved(
+                    [
+                        ("doc_faq_001", "FAQ", 1),
+                        ("doc_faq_002", "FAQ", 2),
+                    ]
+                ),
                 expected_doc_types=frozenset(["Policy"]),
             ),
         ]
@@ -593,15 +624,17 @@ class TestRecheckWrongCasesWithDocId:
 
     def test_doc_id_found_at_deep_rank(self) -> None:
         """Expected doc_id found at rank 7 — still reclassified."""
-        retrieved = _make_retrieved([
-            ("doc_other_1", "FAQ", 1),
-            ("doc_other_2", "FAQ", 2),
-            ("doc_other_3", "FAQ", 3),
-            ("doc_other_4", "FAQ", 4),
-            ("doc_other_5", "FAQ", 5),
-            ("doc_other_6", "FAQ", 6),
-            ("doc_target", "FAQ", 7),
-        ])
+        retrieved = _make_retrieved(
+            [
+                ("doc_other_1", "FAQ", 1),
+                ("doc_other_2", "FAQ", 2),
+                ("doc_other_3", "FAQ", 3),
+                ("doc_other_4", "FAQ", 4),
+                ("doc_other_5", "FAQ", 5),
+                ("doc_other_6", "FAQ", 6),
+                ("doc_target", "FAQ", 7),
+            ]
+        )
         cases = [
             _case(
                 case_id="case_001",

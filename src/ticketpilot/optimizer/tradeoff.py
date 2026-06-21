@@ -6,6 +6,7 @@ keywords via jieba, then simulate adding each one and measure:
 - False Positives (FP): OTHER cases that now get misclassified
 - Net Gain: TP - FP
 """
+
 from __future__ import annotations
 
 from contextlib import contextmanager
@@ -85,7 +86,11 @@ def analyze_keyword_tradeoff(
     target_intent = diagnosis.expected_values.get("intent", "").lower()
     if not target_intent:
         return KeywordTradeoff(
-            keyword, target_intent, [], [], 0,
+            keyword,
+            target_intent,
+            [],
+            [],
+            0,
             "No target intent from diagnosis.expected_values",
         )
 
@@ -129,5 +134,5 @@ def analyze_keyword_tradeoff(
         fixed_case_ids=fixed,
         harmed_case_ids=harmed,
         net_gain=len(fixed) - len(harmed),
-        description=f"Add '{keyword}' to {target_intent}: fix {len(fixed)}, harm {len(harmed)}, net={len(fixed)-len(harmed)}",
+        description=f"Add '{keyword}' to {target_intent}: fix {len(fixed)}, harm {len(harmed)}, net={len(fixed) - len(harmed)}",
     )

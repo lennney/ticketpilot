@@ -43,7 +43,9 @@ def _with_added_risk_flag(assessment: RiskAssessment, flag: RiskFlag) -> RiskAss
     )
 
 
-def intake_risk_pipeline(raw_ticket: RawTicket, embedding_provider: Optional[EmbeddingProvider] = None) -> TicketOutput:
+def intake_risk_pipeline(
+    raw_ticket: RawTicket, embedding_provider: Optional[EmbeddingProvider] = None
+) -> TicketOutput:
     """
     Process a raw ticket through a 4-stage pipeline:
 
@@ -91,7 +93,9 @@ def intake_risk_pipeline(raw_ticket: RawTicket, embedding_provider: Optional[Emb
         assessor = RiskAssessor()
         risk_assessment = assessor.assess(normalized_ticket, classification)
     except Exception as exc:
-        logger.error("Risk assessment stage failed, using degraded output", exc_info=exc)
+        logger.error(
+            "Risk assessment stage failed, using degraded output", exc_info=exc
+        )
         # Graceful degradation for risk assessment errors
         risk_assessment = RiskAssessment(
             flags={RiskFlag.LOW_CONFIDENCE},
@@ -109,7 +113,9 @@ def intake_risk_pipeline(raw_ticket: RawTicket, embedding_provider: Optional[Emb
             embedding_provider=embedding_provider,
         )
     except Exception as exc:
-        logger.error("Evidence retrieval stage failed, using empty results", exc_info=exc)
+        logger.error(
+            "Evidence retrieval stage failed, using empty results", exc_info=exc
+        )
         candidates = []
         trace = None
 

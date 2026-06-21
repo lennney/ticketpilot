@@ -22,17 +22,22 @@ from ticketpilot.schema.ticket import RawTicket
 # Mock registry helpers
 # ---------------------------------------------------------------------------
 
+
 def _make_constant_handler(result: dict):
     """Return a handler that always returns *result*."""
+
     def handler(data: dict) -> dict:
         return result
+
     return handler
 
 
 def _make_fail_handler(msg: str = "mock error"):
     """Return a handler that raises RuntimeError."""
+
     def handler(data: dict) -> dict:
         raise RuntimeError(msg)
+
     return handler
 
 
@@ -118,17 +123,24 @@ def make_mock_registry(
     def _handler_for(name: str):
         if name == fail_tool:
             return _make_fail_handler(f"{name} failed")
-        return _make_constant_handler({
-            "normalize_ticket": _NORMALIZED,
-            "classify_ticket": _CLASSIFIED,
-            "assess_risk": risk,
-            "retrieve_evidence": _EVIDENCE,
-            "generate_draft": draft,
-        }[name])
+        return _make_constant_handler(
+            {
+                "normalize_ticket": _NORMALIZED,
+                "classify_ticket": _CLASSIFIED,
+                "assess_risk": risk,
+                "retrieve_evidence": _EVIDENCE,
+                "generate_draft": draft,
+            }[name]
+        )
 
     registry = ToolRegistry()
-    for name in ("normalize_ticket", "classify_ticket", "assess_risk",
-                 "retrieve_evidence", "generate_draft"):
+    for name in (
+        "normalize_ticket",
+        "classify_ticket",
+        "assess_risk",
+        "retrieve_evidence",
+        "generate_draft",
+    ):
         registry.register(_make_mock_tool(name, _handler_for(name)))
     return registry
 
@@ -141,6 +153,7 @@ def raw_ticket() -> RawTicket:
 # ---------------------------------------------------------------------------
 # Basic run
 # ---------------------------------------------------------------------------
+
 
 class TestBasicRun:
     def test_returns_agent_run(self, raw_ticket):
@@ -178,6 +191,7 @@ class TestBasicRun:
 # ---------------------------------------------------------------------------
 # Event ordering
 # ---------------------------------------------------------------------------
+
 
 class TestEventOrdering:
     def test_events_include_run_started(self, raw_ticket):
@@ -224,6 +238,7 @@ class TestEventOrdering:
 # Human review routing
 # ---------------------------------------------------------------------------
 
+
 class TestHumanReview:
     def test_human_review_when_risk_high(self, raw_ticket):
         reg = make_mock_registry(risk_assessment=_RISK_HIGH)
@@ -245,6 +260,7 @@ class TestHumanReview:
 # ---------------------------------------------------------------------------
 # Failure handling
 # ---------------------------------------------------------------------------
+
 
 class TestFailure:
     def test_status_failed_on_tool_error(self, raw_ticket):
@@ -273,6 +289,7 @@ class TestFailure:
 # Custom injectables
 # ---------------------------------------------------------------------------
 
+
 class TestInjectables:
     def test_custom_registry_used(self, raw_ticket):
         """Provided registry is used instead of default."""
@@ -284,6 +301,7 @@ class TestInjectables:
 
     def test_custom_planner_used(self, raw_ticket):
         """Provided planner is used instead of default."""
+
         class CustomPlanner(DeterministicTaskPlanner):
             def select_template(self, text: str) -> str:
                 return "complaint_escalation"
@@ -296,6 +314,7 @@ class TestInjectables:
 # ---------------------------------------------------------------------------
 # Edge cases
 # ---------------------------------------------------------------------------
+
 
 class TestEdgeCases:
     def test_started_at_and_completed_at_set(self, raw_ticket):

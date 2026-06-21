@@ -92,7 +92,9 @@ _default_provider: FakeEmbeddingProvider | None = None
 _default_provider_dim: int | None = None
 
 
-def get_fake_embedding_provider(dimension: int = FAKE_EMBEDDING_DIM) -> FakeEmbeddingProvider:
+def get_fake_embedding_provider(
+    dimension: int = FAKE_EMBEDDING_DIM,
+) -> FakeEmbeddingProvider:
     """Get the default fake embedding provider instance.
 
     Args:

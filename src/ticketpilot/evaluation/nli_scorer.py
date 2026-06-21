@@ -7,25 +7,122 @@ Improves on keyword overlap by using:
 - Negation detection (polarity flip)
 - Full 0.0-1.0 score range (no artificial floor)
 """
+
 from __future__ import annotations
 
 import re
 from typing import Final
 
 # Common Chinese stop words to filter out
-_STOP_WORDS: Final[frozenset[str]] = frozenset({
-    "的", "了", "在", "是", "我", "有", "和", "就", "不", "人", "都", "一",
-    "一个", "上", "也", "很", "到", "说", "要", "去", "你", "会", "着",
-    "没有", "看", "好", "自己", "这", "他", "她", "它", "们", "那", "些",
-    "吗", "吧", "呢", "啊", "哦", "嗯", "呀", "嘛", "哈", "啦",
-    "可以", "能", "可能", "应该", "需要", "已经", "正在", "将", "把",
-    "被", "从", "对", "与", "及", "或", "但", "而", "如果", "因为",
-    "所以", "虽然", "但是", "然后", "因此", "不过", "只是", "而是",
-    "这个", "那个", "什么", "怎么", "为什么", "哪里", "哪个", "多少",
-    "请", "您", "您好", "谢谢", "感谢", "请问", "关于",
-    "中", "为", "以", "于", "等", "之", "其", "更", "又", "再",
-    "还", "才", "只", "已", "曾", "每", "各", "某", "此",
-})
+_STOP_WORDS: Final[frozenset[str]] = frozenset(
+    {
+        "的",
+        "了",
+        "在",
+        "是",
+        "我",
+        "有",
+        "和",
+        "就",
+        "不",
+        "人",
+        "都",
+        "一",
+        "一个",
+        "上",
+        "也",
+        "很",
+        "到",
+        "说",
+        "要",
+        "去",
+        "你",
+        "会",
+        "着",
+        "没有",
+        "看",
+        "好",
+        "自己",
+        "这",
+        "他",
+        "她",
+        "它",
+        "们",
+        "那",
+        "些",
+        "吗",
+        "吧",
+        "呢",
+        "啊",
+        "哦",
+        "嗯",
+        "呀",
+        "嘛",
+        "哈",
+        "啦",
+        "可以",
+        "能",
+        "可能",
+        "应该",
+        "需要",
+        "已经",
+        "正在",
+        "将",
+        "把",
+        "被",
+        "从",
+        "对",
+        "与",
+        "及",
+        "或",
+        "但",
+        "而",
+        "如果",
+        "因为",
+        "所以",
+        "虽然",
+        "但是",
+        "然后",
+        "因此",
+        "不过",
+        "只是",
+        "而是",
+        "这个",
+        "那个",
+        "什么",
+        "怎么",
+        "为什么",
+        "哪里",
+        "哪个",
+        "多少",
+        "请",
+        "您",
+        "您好",
+        "谢谢",
+        "感谢",
+        "请问",
+        "关于",
+        "中",
+        "为",
+        "以",
+        "于",
+        "等",
+        "之",
+        "其",
+        "更",
+        "又",
+        "再",
+        "还",
+        "才",
+        "只",
+        "已",
+        "曾",
+        "每",
+        "各",
+        "某",
+        "此",
+    }
+)
 
 # Synonym groups — any word in a group matches any other in the same group
 _SYNONYM_GROUPS: Final[list[frozenset[str]]] = [
@@ -56,9 +153,20 @@ for _i, _group in enumerate(_SYNONYM_GROUPS):
         _SYNONYM_MAP[_word] = _i
 
 # Negation words that flip polarity
-_NEGATION_WORDS: Final[frozenset[str]] = frozenset({
-    "不", "没", "没有", "未", "无", "非", "别", "莫", "勿", "否",
-})
+_NEGATION_WORDS: Final[frozenset[str]] = frozenset(
+    {
+        "不",
+        "没",
+        "没有",
+        "未",
+        "无",
+        "非",
+        "别",
+        "莫",
+        "勿",
+        "否",
+    }
+)
 
 
 def _segment_sentences(text: str) -> list[str]:
@@ -92,7 +200,9 @@ def _tokenize_chinese(text: str) -> list[str]:
     i = 0
     while i < len(text):
         # Skip punctuation and whitespace
-        if re.match(r"[，,、。！？!?\s；;：:（）()\[\]【】\"\"''\"'a-zA-Z0-9]", text[i]):
+        if re.match(
+            r"[，,、。！？!?\s；;：:（）()\[\]【】\"\"''\"'a-zA-Z0-9]", text[i]
+        ):
             i += 1
             continue
 

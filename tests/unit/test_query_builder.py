@@ -24,13 +24,17 @@ class TestBuildRetrievalQuery:
                 assert len(query) > len("测试文本")
 
     def test_risk_flag_terms_included(self):
-        query = build_retrieval_query("用户投诉", IntentClass.COMPLAINT, {RiskFlag.LEGAL_RISK})
+        query = build_retrieval_query(
+            "用户投诉", IntentClass.COMPLAINT, {RiskFlag.LEGAL_RISK}
+        )
         assert "法律" in query
         assert "法规" in query
 
     def test_multiple_risk_flags_combined(self):
         flags = {RiskFlag.COMPENSATION_RISK, RiskFlag.PRIVACY_RISK}
-        query = build_retrieval_query("要求赔偿并删除信息", IntentClass.COMPLAINT, flags)
+        query = build_retrieval_query(
+            "要求赔偿并删除信息", IntentClass.COMPLAINT, flags
+        )
         assert "赔偿" in query
         assert "赔付" in query
         assert "金额" in query
@@ -43,7 +47,9 @@ class TestBuildRetrievalQuery:
         assert len(intent_terms) == len(set(intent_terms))
         assert len(risk_terms) == len(set(risk_terms))
 
-        query = build_retrieval_query("退款退货退款", IntentClass.REFUND, {RiskFlag.COMPENSATION_RISK})
+        query = build_retrieval_query(
+            "退款退货退款", IntentClass.REFUND, {RiskFlag.COMPENSATION_RISK}
+        )
         parts = query.split()
         assert len(parts) == len(set(parts))
 

@@ -3,6 +3,7 @@
 Uses the OpenAI-compatible API to evaluate whether a proposed keyword
 addition is worth the trade-off (fix count vs regression count).
 """
+
 from __future__ import annotations
 
 import json
@@ -95,4 +96,7 @@ def review_keyword(
     try:
         return json.loads(response_text)
     except json.JSONDecodeError:
-        return {"decision": "REJECT", "reasoning": f"Failed to parse LLM response: {response_text[:200]}"}
+        return {
+            "decision": "REJECT",
+            "reasoning": f"Failed to parse LLM response: {response_text[:200]}",
+        }

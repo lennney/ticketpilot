@@ -102,7 +102,7 @@ class OpenAICompatibleEmbeddingProvider:
         Returns:
             List of embedding vectors in input order
         """
-        
+
         url = f"{self.base_url}/embeddings"
         headers = {
             "Authorization": f"Bearer {self.api_key}",
@@ -133,14 +133,10 @@ class OpenAICompatibleEmbeddingProvider:
         try:
             data = response.json()
         except Exception as e:
-            raise RuntimeError(
-                f"Embedding API returned malformed JSON: {e}"
-            ) from e
+            raise RuntimeError(f"Embedding API returned malformed JSON: {e}") from e
 
         if "data" not in data or not isinstance(data["data"], list):
-            raise RuntimeError(
-                "Embedding API response missing 'data' field"
-            )
+            raise RuntimeError("Embedding API response missing 'data' field")
 
         # Sort by index to preserve input order
         data_items = sorted(data["data"], key=lambda x: x.get("index", 0))

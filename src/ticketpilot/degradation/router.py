@@ -21,26 +21,39 @@ from ticketpilot.quality.scorer import DraftQualityResult
 
 class ResponseStrategy(str, Enum):
     """Response strategy based on confidence tier."""
-    AUTO_SEND = "auto_send"                    # HIGH: auto-send
+
+    AUTO_SEND = "auto_send"  # HIGH: auto-send
     AUTO_SEND_CAUTIOUS = "auto_send_cautious"  # MEDIUM: auto-send + disclaimer
-    HUMAN_REVIEW = "human_review"              # LOW: human review before send
-    HUMAN_ESCALATION = "human_escalation"      # CRITICAL: escalate to human
+    HUMAN_REVIEW = "human_review"  # LOW: human review before send
+    HUMAN_ESCALATION = "human_escalation"  # CRITICAL: escalate to human
 
 
 class DegradedResponse(BaseModel):
     """Response after degradation routing."""
 
     strategy: ResponseStrategy = Field(description="Chosen response strategy")
-    answer: Optional[str] = Field(default=None, description="Draft answer (None for escalation)")
+    answer: Optional[str] = Field(
+        default=None, description="Draft answer (None for escalation)"
+    )
     confidence: ConfidenceBreakdown = Field(description="Confidence breakdown")
-    quality: Optional[DraftQualityResult] = Field(default=None, description="Draft quality result")
-    disclaimer: Optional[str] = Field(default=None, description="Disclaimer text if applicable")
-    escalation_reason: Optional[str] = Field(default=None, description="Why escalated to human")
-    human_handoff_context: Optional[dict] = Field(default=None, description="Context for warm handoff")
+    quality: Optional[DraftQualityResult] = Field(
+        default=None, description="Draft quality result"
+    )
+    disclaimer: Optional[str] = Field(
+        default=None, description="Disclaimer text if applicable"
+    )
+    escalation_reason: Optional[str] = Field(
+        default=None, description="Why escalated to human"
+    )
+    human_handoff_context: Optional[dict] = Field(
+        default=None, description="Context for warm handoff"
+    )
 
 
 # Standard disclaimer for medium-confidence auto-sends
-DEFAULT_DISCLAIMER = "以上回答基于知识库检索，仅供参考。如需进一步帮助，请转接人工客服。"
+DEFAULT_DISCLAIMER = (
+    "以上回答基于知识库检索，仅供参考。如需进一步帮助，请转接人工客服。"
+)
 
 
 class DegradationRouter:

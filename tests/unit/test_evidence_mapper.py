@@ -30,8 +30,10 @@ def _make_fused(
         vector_rank=vector_rank,
         vector_contribution=1.0 / (60 + vector_rank) if vector_rank else None,
         sources=(
-            ["keyword"] if keyword_rank and not vector_rank
-            else ["vector"] if vector_rank and not keyword_rank
+            ["keyword"]
+            if keyword_rank and not vector_rank
+            else ["vector"]
+            if vector_rank and not keyword_rank
             else ["keyword", "vector"]
         ),
     )
@@ -53,7 +55,9 @@ class TestMapFusedToEvidence:
         chunk_id = uuid.uuid4()
         doc_id = uuid.uuid4()
         fused = [
-            _make_fused(chunk_id, doc_id, DocType.FAQ, "退款政策说明", 0.95, keyword_rank=1),
+            _make_fused(
+                chunk_id, doc_id, DocType.FAQ, "退款政策说明", 0.95, keyword_rank=1
+            ),
         ]
         candidates = map_fused_to_evidence(fused)
         assert len(candidates) == 1
@@ -71,8 +75,12 @@ class TestMapFusedToEvidence:
         first_id = uuid.uuid4()
         second_id = uuid.uuid4()
         fused = [
-            _make_fused(first_id, uuid.uuid4(), DocType.FAQ, "first", 0.99, keyword_rank=1),
-            _make_fused(second_id, uuid.uuid4(), DocType.FAQ, "second", 0.85, keyword_rank=2),
+            _make_fused(
+                first_id, uuid.uuid4(), DocType.FAQ, "first", 0.99, keyword_rank=1
+            ),
+            _make_fused(
+                second_id, uuid.uuid4(), DocType.FAQ, "second", 0.85, keyword_rank=2
+            ),
         ]
         candidates = map_fused_to_evidence(fused)
         assert len(candidates) == 2
@@ -90,9 +98,20 @@ class TestMapFusedToEvidence:
         policy_id = uuid.uuid4()
         case_id = uuid.uuid4()
         fused = [
-            _make_fused(faq_id, uuid.uuid4(), DocType.FAQ, "faq content", 0.9, keyword_rank=1),
-            _make_fused(policy_id, uuid.uuid4(), DocType.POLICY, "policy content", 0.8, keyword_rank=2),
-            _make_fused(case_id, uuid.uuid4(), DocType.CASE, "case content", 0.7, keyword_rank=3),
+            _make_fused(
+                faq_id, uuid.uuid4(), DocType.FAQ, "faq content", 0.9, keyword_rank=1
+            ),
+            _make_fused(
+                policy_id,
+                uuid.uuid4(),
+                DocType.POLICY,
+                "policy content",
+                0.8,
+                keyword_rank=2,
+            ),
+            _make_fused(
+                case_id, uuid.uuid4(), DocType.CASE, "case content", 0.7, keyword_rank=3
+            ),
         ]
         candidates = map_fused_to_evidence(fused)
         assert candidates[0].source_table == "knowledge_faq"
@@ -101,14 +120,18 @@ class TestMapFusedToEvidence:
 
     def test_rrf_score_mapped_to_score(self):
         fused = [
-            _make_fused(uuid.uuid4(), uuid.uuid4(), DocType.FAQ, "test", 0.72, keyword_rank=3),
+            _make_fused(
+                uuid.uuid4(), uuid.uuid4(), DocType.FAQ, "test", 0.72, keyword_rank=3
+            ),
         ]
         candidates = map_fused_to_evidence(fused)
         assert candidates[0].score == 0.72
 
     def test_title_defaults_to_none(self):
         fused = [
-            _make_fused(uuid.uuid4(), uuid.uuid4(), DocType.FAQ, "test", 0.5, keyword_rank=1),
+            _make_fused(
+                uuid.uuid4(), uuid.uuid4(), DocType.FAQ, "test", 0.5, keyword_rank=1
+            ),
         ]
         candidates = map_fused_to_evidence(fused)
         assert candidates[0].title is None

@@ -40,30 +40,48 @@ def load_predictions(path):
 
     predictions = {}
 
-    with filepath.open(newline='', encoding='utf-8-sig') as f:
+    with filepath.open(newline="", encoding="utf-8-sig") as f:
         reader = csv.DictReader(f)
-        _check_required_columns(reader.fieldnames or [], REQUIRED_PREDICTION_COLUMNS, filepath.name)
+        _check_required_columns(
+            reader.fieldnames or [], REQUIRED_PREDICTION_COLUMNS, filepath.name
+        )
 
         for row_idx, row in enumerate(reader, start=2):
-            case_id_raw = row.get('case_id', '').strip()
+            case_id_raw = row.get("case_id", "").strip()
             if not case_id_raw:
-                raise ValueError(f"{filepath.name}: row {row_idx}: 'case_id' is empty or missing")
+                raise ValueError(
+                    f"{filepath.name}: row {row_idx}: 'case_id' is empty or missing"
+                )
             if case_id_raw in predictions:
-                raise ValueError(f"{filepath.name}: row {row_idx}: duplicate case_id '{case_id_raw}'")
+                raise ValueError(
+                    f"{filepath.name}: row {row_idx}: duplicate case_id '{case_id_raw}'"
+                )
 
             try:
                 prediction = EvalPrediction(
                     case_id=case_id_raw,
-                    predicted_issue_type=row.get('predicted_issue_type', '').strip(),
-                    predicted_risk_flags=_parse_semicolon_list(row.get('predicted_risk_flags', '')),
-                    predicted_severity=row.get('predicted_severity', '').strip(),
-                    predicted_must_human_review=row.get('predicted_must_human_review', '').strip(),
-                    predicted_evidence_doc_types=_parse_semicolon_list(row.get('predicted_evidence_doc_types', '')),
-                    predicted_fallback_required=row.get('predicted_fallback_required', '').strip(),
-                    predicted_no_auto_send=row.get('predicted_no_auto_send', '').strip(),
+                    predicted_issue_type=row.get("predicted_issue_type", "").strip(),
+                    predicted_risk_flags=_parse_semicolon_list(
+                        row.get("predicted_risk_flags", "")
+                    ),
+                    predicted_severity=row.get("predicted_severity", "").strip(),
+                    predicted_must_human_review=row.get(
+                        "predicted_must_human_review", ""
+                    ).strip(),
+                    predicted_evidence_doc_types=_parse_semicolon_list(
+                        row.get("predicted_evidence_doc_types", "")
+                    ),
+                    predicted_fallback_required=row.get(
+                        "predicted_fallback_required", ""
+                    ).strip(),
+                    predicted_no_auto_send=row.get(
+                        "predicted_no_auto_send", ""
+                    ).strip(),
                 )
             except Exception as exc:
-                raise ValueError(f"{filepath.name}: row {row_idx}: failed to create EvalPrediction: {exc}") from exc
+                raise ValueError(
+                    f"{filepath.name}: row {row_idx}: failed to create EvalPrediction: {exc}"
+                ) from exc
 
             predictions[case_id_raw] = prediction
 

@@ -1,4 +1,5 @@
 """Tests for ticketpilot.optimizer.engine."""
+
 from __future__ import annotations
 
 from unittest.mock import MagicMock, patch
@@ -12,12 +13,17 @@ from ticketpilot.evaluation.schemas import (
 )
 from ticketpilot.optimizer.config import COMPOSITE_WEIGHTS
 from ticketpilot.optimizer.engine import OptimizationEngine, _now_iso
-from ticketpilot.optimizer.scoring import compute_composite, score_dict, extract_correct_ids
+from ticketpilot.optimizer.scoring import (
+    compute_composite,
+    score_dict,
+    extract_correct_ids,
+)
 
 
 # ------------------------------------------------------------------
 # Helpers
 # ------------------------------------------------------------------
+
 
 def _make_case_result(
     case_id: str,
@@ -63,7 +69,10 @@ def _make_case_result(
         severity_accuracy=severity_ok,
         must_human_review_accuracy=True,
         risk_flag_metrics=RiskFlagMetrics(
-            precision=risk_f1_score, recall=risk_f1_score, f1=risk_f1_score, exact_match=risk_exact
+            precision=risk_f1_score,
+            recall=risk_f1_score,
+            f1=risk_f1_score,
+            exact_match=risk_exact,
         ),
         evidence_doc_type_recall=evidence_recall,
         fallback_correctness=fallback_ok,
@@ -135,6 +144,7 @@ def _make_summary(
 # OptimizationEngine init
 # ------------------------------------------------------------------
 
+
 class TestOptimizationEngineInit:
     def test_default_config(self) -> None:
         engine = OptimizationEngine()
@@ -171,6 +181,7 @@ class TestOptimizationEngineInit:
 # Composite score calculation
 # ------------------------------------------------------------------
 
+
 class TestComputeComposite:
     def test_perfect_score(self) -> None:
         summary = _make_summary()  # all cases correct → 1.0 for every metric
@@ -199,13 +210,13 @@ class TestComputeComposite:
         results = {}
         for i in range(1, 6):
             cid = f"CASE-{i:03d}"
-            results[cid] = _make_case_result(
-                cid, intent_ok=(i <= 3)
-            )
+            results[cid] = _make_case_result(cid, intent_ok=(i <= 3))
         summary = _make_summary(results)
         composite = compute_composite(summary, weights=COMPOSITE_WEIGHTS)
         # intent = 0.6, all others = 1.0
-        expected = 0.25 * 0.6 + 0.20 * 1.0 + 0.20 * 1.0 + 0.15 * 1.0 + 0.10 * 1.0 + 0.10 * 1.0
+        expected = (
+            0.25 * 0.6 + 0.20 * 1.0 + 0.20 * 1.0 + 0.15 * 1.0 + 0.10 * 1.0 + 0.10 * 1.0
+        )
         assert abs(composite - expected) < 1e-9
 
     def test_composite_respects_weights(self) -> None:
@@ -218,8 +229,7 @@ class TestComputeComposite:
         composite = compute_composite(summary, weights=COMPOSITE_WEIGHTS)
         # risk_f1 is micro-averaged: 2 cases each with f1=0.0 → aggregate 0.0
         expected = (
-            0.25 * 1.0 + 0.20 * 1.0 + 0.20 * 0.0
-            + 0.15 * 1.0 + 0.10 * 1.0 + 0.10 * 1.0
+            0.25 * 1.0 + 0.20 * 1.0 + 0.20 * 0.0 + 0.15 * 1.0 + 0.10 * 1.0 + 0.10 * 1.0
         )
         assert abs(composite - expected) < 1e-9
 
@@ -228,11 +238,19 @@ class TestComputeComposite:
 # Score dict
 # ------------------------------------------------------------------
 
+
 class TestScoreDict:
     def test_score_dict_keys(self) -> None:
         summary = _make_summary()
         scores = score_dict(summary)
-        expected_keys = {"intent", "severity", "risk_f1", "evidence", "no_auto_send", "fallback"}
+        expected_keys = {
+            "intent",
+            "severity",
+            "risk_f1",
+            "evidence",
+            "no_auto_send",
+            "fallback",
+        }
         assert set(scores.keys()) == expected_keys
 
     def test_score_dict_values(self) -> None:
@@ -249,6 +267,7 @@ class TestScoreDict:
 # ------------------------------------------------------------------
 # Extract correct IDs
 # ------------------------------------------------------------------
+
 
 class TestExtractCorrectIds:
     def test_all_correct(self) -> None:
@@ -277,9 +296,7 @@ class TestExtractCorrectIds:
         results = {
             "OK-001": _make_case_result("OK-001"),
             "OK-002": _make_case_result("OK-002"),
-            "BAD-001": _make_case_result(
-                "BAD-001", intent_ok=False, severity_ok=False
-            ),
+            "BAD-001": _make_case_result("BAD-001", intent_ok=False, severity_ok=False),
         }
         summary = _make_summary(results)
         correct = extract_correct_ids(summary)
@@ -289,6 +306,7 @@ class TestExtractCorrectIds:
 # ------------------------------------------------------------------
 # show_history
 # ------------------------------------------------------------------
+
 
 class TestShowHistory:
     def test_show_history_empty(self, tmp_path: object) -> None:
@@ -317,6 +335,7 @@ class TestShowHistory:
 # _now_iso
 # ------------------------------------------------------------------
 
+
 class TestNowIso:
     def test_returns_iso_string(self) -> None:
         result = _now_iso()
@@ -327,6 +346,7 @@ class TestNowIso:
 # ------------------------------------------------------------------
 # Incremental evaluation (Task 1)
 # ------------------------------------------------------------------
+
 
 class TestIncrementalEvaluation:
     """Verify incremental evaluation produces same results as full evaluation."""
@@ -362,7 +382,7 @@ class TestIncrementalEvaluation:
         ds.golden = {"CASE-001": golden}
 
         with patch(
-            'ticketpilot.optimizer.evaluator.predict_from_pipeline',
+            "ticketpilot.optimizer.evaluator.predict_from_pipeline",
             return_value=EvalPrediction(
                 case_id="CASE-001",
                 predicted_issue_type="refund",
@@ -374,7 +394,7 @@ class TestIncrementalEvaluation:
                 predicted_no_auto_send=False,
             ),
         ):
-            with patch.object(OptimizerEvaluator, 'load_dataset'):
+            with patch.object(OptimizerEvaluator, "load_dataset"):
                 engine = OptimizationEngine()
                 engine.evaluator._dataset = ds
                 engine.evaluator._predictions = {}
@@ -440,7 +460,7 @@ class TestIncrementalEvaluation:
         )
 
         with patch(
-            'ticketpilot.optimizer.evaluator.predict_from_pipeline',
+            "ticketpilot.optimizer.evaluator.predict_from_pipeline",
             return_value=EvalPrediction(
                 case_id="CASE-001",
                 predicted_issue_type="refund",
@@ -452,7 +472,7 @@ class TestIncrementalEvaluation:
                 predicted_no_auto_send=False,
             ),
         ):
-            with patch.object(OptimizerEvaluator, 'load_dataset'):
+            with patch.object(OptimizerEvaluator, "load_dataset"):
                 engine = OptimizationEngine()
                 engine.evaluator._dataset = ds
 
@@ -467,6 +487,7 @@ class TestIncrementalEvaluation:
 # ------------------------------------------------------------------
 # Best state tracking + early termination (Task 3)
 # ------------------------------------------------------------------
+
 
 class TestBestStateTracking:
     """Verify best state tracking and early termination logic."""
@@ -484,6 +505,7 @@ class TestBestStateTracking:
     def test_consecutive_limit_is_three(self):
         """CONSECUTIVE_NO_IMPROVEMENT_LIMIT should be 3."""
         from ticketpilot.optimizer.engine import CONSECUTIVE_NO_IMPROVEMENT_LIMIT
+
         assert CONSECUTIVE_NO_IMPROVEMENT_LIMIT == 3
 
     def test_early_termination_after_three_no_improvements(self):
@@ -500,10 +522,13 @@ class TestBestStateTracking:
         engine.evaluator._dataset = ds
 
         # Mock _run_one_round to always return False (no improvement)
-        with patch.object(engine, '_run_one_round', return_value=False):
-            with patch.object(engine.evaluator, 'get_baseline') as mock_base:
+        with patch.object(engine, "_run_one_round", return_value=False):
+            with patch.object(engine.evaluator, "get_baseline") as mock_base:
                 mock_base.return_value = _make_summary(
-                    {f"CASE-{i:03d}": _make_case_result(f"CASE-{i:03d}") for i in range(1, 4)}
+                    {
+                        f"CASE-{i:03d}": _make_case_result(f"CASE-{i:03d}")
+                        for i in range(1, 4)
+                    }
                 )
                 result = engine.run()
 
@@ -521,17 +546,23 @@ class TestBestStateTracking:
         ds.tickets = {"CASE-001": MagicMock()}
         engine.evaluator._dataset = ds
 
-        with patch.object(engine, '_run_one_round') as mock_round:
+        with patch.object(engine, "_run_one_round") as mock_round:
             # Return True on first call (improvement), False on subsequent
             mock_round.side_effect = [True, False, False]
-            with patch.object(engine.evaluator, 'get_baseline') as mock_base:
+            with patch.object(engine.evaluator, "get_baseline") as mock_base:
                 mock_base.return_value = _make_summary(
-                    {f"CASE-{i:03d}": _make_case_result(f"CASE-{i:03d}") for i in range(1, 4)}
+                    {
+                        f"CASE-{i:03d}": _make_case_result(f"CASE-{i:03d}")
+                        for i in range(1, 4)
+                    }
                 )
-                with patch.object(engine.evaluator, 'run_full_evaluation') as mock_full:
+                with patch.object(engine.evaluator, "run_full_evaluation") as mock_full:
                     # Return a slightly better summary the first time
                     better = _make_summary(
-                        {f"CASE-{i:03d}": _make_case_result(f"CASE-{i:03d}") for i in range(1, 6)}
+                        {
+                            f"CASE-{i:03d}": _make_case_result(f"CASE-{i:03d}")
+                            for i in range(1, 6)
+                        }
                     )
                     mock_full.return_value = better
                     engine.run()
@@ -544,18 +575,21 @@ class TestBestStateTracking:
 # _analyze_causal_features tests
 # ------------------------------------------------------------------
 
+
 class TestAnalyzeCausalFeatures:
     """Verify _analyze_causal_features lift-based keyword extraction."""
 
     def test_empty_misclassified_returns_empty(self):
         """Empty misclassified_texts returns []."""
         from ticketpilot.optimizer.diagnostics import _analyze_causal_features
+
         result = _analyze_causal_features([], ["correct text"], [], max_features=3)
         assert result == []
 
     def test_empty_correct_falls_back_to_extract(self):
         """When correctly_classified_texts is empty, falls back to _extract_chinese_keywords."""
         from ticketpilot.optimizer.diagnostics import _analyze_causal_features
+
         mis = ["我要投诉你们客服态度太差了"]
         result = _analyze_causal_features(mis, [], ["投诉"], max_features=2)
         # Should find keywords from misclassified text, excluding "投诉"
@@ -566,6 +600,7 @@ class TestAnalyzeCausalFeatures:
     def test_distinguishing_features_returned(self):
         """Features that appear more in misclassified than correct are returned."""
         from ticketpilot.optimizer.diagnostics import _analyze_causal_features
+
         mis = [
             "我要投诉你们客服态度太差了",
             "态度恶劣我要投诉你们",
@@ -587,6 +622,7 @@ class TestAnalyzeCausalFeatures:
     def test_max_features_respected(self):
         """max_features limits returned keyword count."""
         from ticketpilot.optimizer.diagnostics import _analyze_causal_features
+
         mis = ["投诉态度恶劣客服差劲"]
         correct = ["正常退货"]
         result = _analyze_causal_features(mis, correct, [], max_features=1)
@@ -595,9 +631,12 @@ class TestAnalyzeCausalFeatures:
     def test_existing_keywords_filtered(self):
         """Keywords in existing_keywords are excluded from results."""
         from ticketpilot.optimizer.diagnostics import _analyze_causal_features
+
         mis = ["投诉态度恶劣客服差劲"]
         correct = ["正常处理"]
-        result = _analyze_causal_features(mis, correct, ["投诉", "态度"], max_features=3)
+        result = _analyze_causal_features(
+            mis, correct, ["投诉", "态度"], max_features=3
+        )
         assert "投诉" not in result
         assert "态度" not in result
 
@@ -622,13 +661,15 @@ class TestAnalyzeCausalFeatures:
         for kw in result:
             assert len(kw) >= 2  # at least 2 chars
             # Should NOT be mid-word splits like '货但', '们的', '我申'
-            assert kw not in ("货但", "们的", "我申", "诉你", "们客", "服态"), \
+            assert kw not in ("货但", "们的", "我申", "诉你", "们客", "服态"), (
                 f"'{kw}' is an n-gram artifact, not a real word"
+            )
 
 
 # ------------------------------------------------------------------
 # _verify_fix incremental path tests
 # ------------------------------------------------------------------
+
 
 class TestVerifyFixIncremental:
     """Verify _verify_fix() uses incremental eval when affected_cases provided."""
@@ -639,12 +680,13 @@ class TestVerifyFixIncremental:
 
         engine = OptimizationEngine()
 
-        with patch.object(engine.evaluator, 'run_partial_evaluation') as mock_partial:
+        with patch.object(engine.evaluator, "run_partial_evaluation") as mock_partial:
             mock_partial.return_value = _make_summary()
-            with patch.object(engine.evaluator, 'run_full_evaluation') as mock_full:
+            with patch.object(engine.evaluator, "run_full_evaluation") as mock_full:
                 summary = _make_summary()
                 improved, _, _ = engine._verify_fix(
-                    summary, {"CASE-001"},
+                    summary,
+                    {"CASE-001"},
                     affected_cases={"CASE-001"},
                     old_predictions={"CASE-001": MagicMock()},
                 )
@@ -658,8 +700,8 @@ class TestVerifyFixIncremental:
 
         engine = OptimizationEngine()
 
-        with patch.object(engine.evaluator, 'run_partial_evaluation') as mock_partial:
-            with patch.object(engine.evaluator, 'run_full_evaluation') as mock_full:
+        with patch.object(engine.evaluator, "run_partial_evaluation") as mock_partial:
+            with patch.object(engine.evaluator, "run_full_evaluation") as mock_full:
                 mock_full.return_value = _make_summary()
                 summary = _make_summary()
                 improved, _, _ = engine._verify_fix(summary, {"CASE-001"})

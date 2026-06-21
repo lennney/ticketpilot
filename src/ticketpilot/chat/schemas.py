@@ -308,8 +308,12 @@ def update_context_from_message(
         current_product_name=context.current_product_name,
         latest_risk_flags=list(set(context.latest_risk_flags + new_flags)),
         latest_severity=new_severity if new_severity else context.latest_severity,
-        latest_evidence_ids=new_evidence if new_evidence else context.latest_evidence_ids,
-        latest_citation_ids=new_citations if new_citations else context.latest_citation_ids,
+        latest_evidence_ids=new_evidence
+        if new_evidence
+        else context.latest_evidence_ids,
+        latest_citation_ids=new_citations
+        if new_citations
+        else context.latest_citation_ids,
         latest_guard_passed=new_guard_passed
         if new_guard_passed is not None
         else context.latest_guard_passed,

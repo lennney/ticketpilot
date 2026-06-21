@@ -5,6 +5,7 @@ Supports three merge strategies:
 - sum_score: sum RRF scores across queries (boosts docs found by multiple queries)
 - rrf_again: treat each query as a ranker, apply second-level RRF
 """
+
 from __future__ import annotations
 
 import logging
@@ -46,7 +47,9 @@ def merge_retrieval_results(
     elif strategy == "rrf_again":
         return _merge_rrf_again(non_empty)
     else:
-        logger.warning("Unknown merge strategy '%s', falling back to 'sum_score'", strategy)
+        logger.warning(
+            "Unknown merge strategy '%s', falling back to 'sum_score'", strategy
+        )
         return _merge_sum_score(non_empty)
 
 
@@ -70,18 +73,25 @@ def _merge_sum_score(
     # Build merged results with summed scores
     merged: list[FusedResult] = []
     for cid, representative in best.items():
-        merged.append(FusedResult(
-            chunk_id=cid,
-            doc_id=representative.doc_id,
-            doc_type=representative.doc_type,
-            content=representative.content,
-            rrf_score=score_sums[cid],
-            keyword_rank=representative.keyword_rank,
-            keyword_contribution=representative.keyword_contribution,
-            vector_rank=representative.vector_rank,
-            vector_contribution=representative.vector_contribution,
-            sources=representative.sources + (["multi_query"] if "multi_query" not in representative.sources else []),
-        ))
+        merged.append(
+            FusedResult(
+                chunk_id=cid,
+                doc_id=representative.doc_id,
+                doc_type=representative.doc_type,
+                content=representative.content,
+                rrf_score=score_sums[cid],
+                keyword_rank=representative.keyword_rank,
+                keyword_contribution=representative.keyword_contribution,
+                vector_rank=representative.vector_rank,
+                vector_contribution=representative.vector_contribution,
+                sources=representative.sources
+                + (
+                    ["multi_query"]
+                    if "multi_query" not in representative.sources
+                    else []
+                ),
+            )
+        )
 
     merged.sort(key=lambda r: r.rrf_score, reverse=True)
     return merged
@@ -111,6 +121,7 @@ def _merge_rrf_again(
     Uses RRF k=60 on the rank positions within each query's results.
     """
     from ticketpilot.retrieval.rrf import DEFAULT_RRF_K  # noqa: PLC0415
+
     k = DEFAULT_RRF_K
     # Build per-query rank maps
     rank_maps: list[dict[UUID, int]] = []
@@ -134,18 +145,20 @@ def _merge_rrf_again(
     merged: list[FusedResult] = []
     for cid, score in rrf_scores.items():
         rep = representative[cid]
-        merged.append(FusedResult(
-            chunk_id=cid,
-            doc_id=rep.doc_id,
-            doc_type=rep.doc_type,
-            content=rep.content,
-            rrf_score=score,
-            keyword_rank=rep.keyword_rank,
-            keyword_contribution=rep.keyword_contribution,
-            vector_rank=rep.vector_rank,
-            vector_contribution=rep.vector_contribution,
-            sources=rep.sources + ["rrf_again"],
-        ))
+        merged.append(
+            FusedResult(
+                chunk_id=cid,
+                doc_id=rep.doc_id,
+                doc_type=rep.doc_type,
+                content=rep.content,
+                rrf_score=score,
+                keyword_rank=rep.keyword_rank,
+                keyword_contribution=rep.keyword_contribution,
+                vector_rank=rep.vector_rank,
+                vector_contribution=rep.vector_contribution,
+                sources=rep.sources + ["rrf_again"],
+            )
+        )
 
     merged.sort(key=lambda r: r.rrf_score, reverse=True)
     return merged

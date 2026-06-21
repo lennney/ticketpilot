@@ -287,7 +287,11 @@ class TestGuardAwarePrompting:
     def test_build_safety_instructions_requires_chunk_id_format(self):
         instructions = build_safety_instructions()
         # Must instruct to use evidence ID format
-        assert "证据ID" in instructions or "chunk_id" in instructions.lower() or "chunk" in instructions.lower()
+        assert (
+            "证据ID" in instructions
+            or "chunk_id" in instructions.lower()
+            or "chunk" in instructions.lower()
+        )
 
     def test_build_safety_instructions_forbids_numeric_citations(self):
         """Numeric [N] citations are not valid for claim guard detection."""

@@ -40,7 +40,9 @@ class TicketMetrics:
     must_human_review: bool
 
 
-def _load_raw_tickets(path: pathlib.Path = EVAL_TICKETS_PATH) -> list[tuple[str, RawTicket]]:
+def _load_raw_tickets(
+    path: pathlib.Path = EVAL_TICKETS_PATH,
+) -> list[tuple[str, RawTicket]]:
     """Load eval CSV into (case_id, RawTicket) pairs."""
     tickets: list[tuple[str, RawTicket]] = []
     with path.open(newline="", encoding="utf-8-sig") as f:
@@ -171,9 +173,7 @@ def render_metrics_page(results: list[TicketMetrics] | None = None) -> None:
         import pandas as pd
 
         flags = sorted(risk_matrix.keys())
-        intents = sorted(
-            {intent for row in risk_matrix.values() for intent in row}
-        )
+        intents = sorted({intent for row in risk_matrix.values() for intent in row})
         data = []
         for flag in flags:
             for intent in intents:

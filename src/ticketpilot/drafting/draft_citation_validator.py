@@ -127,9 +127,7 @@ def validate_draft_citations(
     if dups:
         result.duplicate_cited_evidence_ids = sorted(set(dups))
         ids_str = ", ".join(result.duplicate_cited_evidence_ids)
-        result.warnings.append(
-            f"Duplicate cited evidence IDs detected: {ids_str}"
-        )
+        result.warnings.append(f"Duplicate cited evidence IDs detected: {ids_str}")
         # Duplicates are warnings, not errors — don't set is_valid=False
 
     # --- Check 3: Missing citation heuristic ---

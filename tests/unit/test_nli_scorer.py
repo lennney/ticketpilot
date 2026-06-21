@@ -226,7 +226,10 @@ class TestScoreRelevancy:
 class TestAgentEvalIntegration:
     def test_keyword_scorer_backward_compatible(self):
         """Default scorer_type='keyword' returns same results as before."""
-        from ticketpilot.evaluation.agent_eval import compute_faithfulness, compute_relevancy
+        from ticketpilot.evaluation.agent_eval import (
+            compute_faithfulness,
+            compute_relevancy,
+        )
 
         context = ["订单已发货"]
         score = compute_faithfulness("订单已发货", context)
@@ -237,20 +240,27 @@ class TestAgentEvalIntegration:
 
     def test_nli_scorer_via_agent_eval(self):
         """scorer_type='nli' delegates to NLIScorer."""
-        from ticketpilot.evaluation.agent_eval import compute_faithfulness, compute_relevancy
+        from ticketpilot.evaluation.agent_eval import (
+            compute_faithfulness,
+            compute_relevancy,
+        )
 
         context = ["退款政策：7天内可退"]
         score = compute_faithfulness("退款政策：7天内可退", context, scorer_type="nli")
         assert score > 0.8
 
-        score = compute_relevancy("如何退款？", "退款需要在7天内申请", scorer_type="nli")
+        score = compute_relevancy(
+            "如何退款？", "退款需要在7天内申请", scorer_type="nli"
+        )
         assert score > 0.2
 
     def test_nli_no_artificial_floor(self):
         """NLI scorer returns scores below 0.5 for poor matches."""
         from ticketpilot.evaluation.agent_eval import compute_faithfulness
 
-        score_keyword = compute_faithfulness("完全无关", ["一些内容"], scorer_type="keyword")
+        score_keyword = compute_faithfulness(
+            "完全无关", ["一些内容"], scorer_type="keyword"
+        )
         score_nli = compute_faithfulness("完全无关", ["一些内容"], scorer_type="nli")
         # NLI should score lower for irrelevant content
         assert score_nli <= score_keyword
@@ -300,7 +310,9 @@ class TestNLIvsKeyword:
 
         # Very poor match
         nli_low = compute_faithfulness("苹果好吃", ["退款政策"], scorer_type="nli")
-        keyword_low = compute_faithfulness("苹果好吃", ["退款政策"], scorer_type="keyword")
+        keyword_low = compute_faithfulness(
+            "苹果好吃", ["退款政策"], scorer_type="keyword"
+        )
 
         # NLI can go below 0.5
         assert nli_low < 0.5

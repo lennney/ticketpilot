@@ -70,9 +70,7 @@ def generate_reply(
     sorted_ev = sorted(evidence, key=lambda e: e.rank)[:5]
     for idx, ev in enumerate(sorted_ev, start=1):
         doc_type = (
-            ev.doc_type.value
-            if hasattr(ev.doc_type, "value")
-            else str(ev.doc_type)
+            ev.doc_type.value if hasattr(ev.doc_type, "value") else str(ev.doc_type)
         )
         evidence_lines.append(f"[{idx}] ({doc_type}) {ev.content[:200]}")
     numbered_evidence = "\n".join(evidence_lines)
@@ -101,9 +99,7 @@ def generate_reply(
         "6. 不要在回复中提及「草稿」「审核」等内部流程词。",
     ]
     if severity in ("high", "critical"):
-        safety_lines.append(
-            f"7. 本工单严重程度为「{severity}」，必须建议转人工处理。"
-        )
+        safety_lines.append(f"7. 本工单严重程度为「{severity}」，必须建议转人工处理。")
     if flags:
         safety_lines.append(
             f"8. 本工单包含风险标记：{', '.join(flags)}，"
@@ -154,15 +150,11 @@ def generate_reply(
             return {
                 "step": "reply",
                 "draft_text": response.strip(),
-                "cited_evidence_ids": [
-                    str(ev.chunk_id) for ev in sorted_ev[:3]
-                ],
+                "cited_evidence_ids": [str(ev.chunk_id) for ev in sorted_ev[:3]],
                 "confidence": 0.5,
                 "unsupported_claims": [],
                 "missing_information": [],
-                "safety_notes": [
-                    "LLM未返回结构化格式，已直接使用回复文本"
-                ],
+                "safety_notes": ["LLM未返回结构化格式，已直接使用回复文本"],
             }
         return None
 
@@ -276,9 +268,7 @@ def verify_reply(
             escalation_reason = "unsupported_claims_detected"
 
     if flags:
-        safety_notes.append(
-            f"工单含风险标记：{', '.join(flags)}，需人工审核"
-        )
+        safety_notes.append(f"工单含风险标记：{', '.join(flags)}，需人工审核")
 
     # Build generation trace for debugging
     trace = {
@@ -329,9 +319,7 @@ def build_fallback(
     """
     safety_notes: list[str] = []
     if flags:
-        safety_notes.append(
-            f"工单含风险标记：{', '.join(flags)}，需人工审核"
-        )
+        safety_notes.append(f"工单含风险标记：{', '.join(flags)}，需人工审核")
     if error_msg:
         safety_notes.append(f"Agent错误：{error_msg}")
 

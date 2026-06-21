@@ -70,11 +70,14 @@ class WebhookHandler(BaseHTTPRequestHandler):
             result = intake_risk_pipeline(raw_ticket)
 
             # Send response
-            self._send_json(200, {
-                "status": "success",
-                "ticket_id": result.ticket_id,
-                "result": result.model_dump(),
-            })
+            self._send_json(
+                200,
+                {
+                    "status": "success",
+                    "ticket_id": result.ticket_id,
+                    "result": result.model_dump(),
+                },
+            )
 
         except json.JSONDecodeError as e:
             self._send_error(400, f"Invalid JSON: {e}")
@@ -122,7 +125,9 @@ def main():
     import argparse
 
     parser = argparse.ArgumentParser(description="TicketPilot webhook server")
-    parser.add_argument("--port", "-p", type=int, default=8080, help="Port to listen on")
+    parser.add_argument(
+        "--port", "-p", type=int, default=8080, help="Port to listen on"
+    )
     parser.add_argument("--host", "-H", default="0.0.0.0", help="Host to bind to")
 
     args = parser.parse_args()

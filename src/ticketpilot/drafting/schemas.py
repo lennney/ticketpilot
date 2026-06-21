@@ -72,7 +72,7 @@ class DraftReply(BaseModel):
             self.must_human_review = True
         if self.escalation_reason:
             self.must_human_review = True
-        
+
         # Confidence-based routing (tiered strategy)
         # > CONFIDENCE_HIGH: auto-send (HIGH)
         # CONFIDENCE_MEDIUM to CONFIDENCE_HIGH: auto-send with disclaimer (MEDIUM)
@@ -87,7 +87,7 @@ class DraftReply(BaseModel):
             self.must_human_review = True
             if not self.escalation_reason:
                 self.escalation_reason = f"low_confidence ({self.confidence:.2f})"
-        
+
         return self
 
     @model_validator(mode="after")
@@ -107,7 +107,7 @@ class DraftReply(BaseModel):
     @property
     def confidence_level(self) -> str:
         """Get confidence level category.
-        
+
         Returns:
             'high' if confidence > CONFIDENCE_HIGH (autonomous)
             'medium' if CONFIDENCE_MEDIUM <= confidence <= CONFIDENCE_HIGH (auto-send with disclaimer)
@@ -126,7 +126,7 @@ class DraftReply(BaseModel):
     @property
     def routing_decision(self) -> str:
         """Get routing decision based on confidence.
-        
+
         Returns:
             'autonomous' if high confidence
             'auto_send_cautious' if medium confidence

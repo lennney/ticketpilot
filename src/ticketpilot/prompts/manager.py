@@ -22,8 +22,12 @@ class PromptVersion(BaseModel):
 
     prompt_id: str = Field(description="Unique prompt identifier")
     version: str = Field(description="Semver version (e.g., '1.0.0')")
-    template: str = Field(description="Prompt template text (supports {variable} placeholders)")
-    variables: list[str] = Field(default_factory=list, description="Required template variables")
+    template: str = Field(
+        description="Prompt template text (supports {variable} placeholders)"
+    )
+    variables: list[str] = Field(
+        default_factory=list, description="Required template variables"
+    )
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     changelog: str = Field(default="", description="What changed in this version")
 
@@ -82,7 +86,9 @@ class PromptManager:
 
         raise KeyError(f"Version '{version}' not found for prompt '{prompt_id}'")
 
-    def render(self, prompt_id: str, variables: dict[str, Any], version: str = "latest") -> str:
+    def render(
+        self, prompt_id: str, variables: dict[str, Any], version: str = "latest"
+    ) -> str:
         """Render a prompt template with variables.
 
         Args:

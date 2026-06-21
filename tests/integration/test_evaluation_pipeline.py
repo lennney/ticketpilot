@@ -29,20 +29,25 @@ from ticketpilot.evaluation.reporting import (
 TICKETS_PATH = "data/eval/tickets_eval.csv"
 GOLDEN_PATH = "data/eval/golden_expectations.csv"
 
+
 # Dynamically load case IDs from the actual CSV files
 def _load_all_case_ids():
     import csv
+
     with open(TICKETS_PATH, encoding="utf-8") as f:
         return [row["case_id"] for row in csv.DictReader(f)]
 
+
 def _load_high_risk_case_ids():
     import csv
+
     result = set()
     with open(GOLDEN_PATH, encoding="utf-8") as f:
         for row in csv.DictReader(f):
             if row.get("expected_risk_flags", "").strip():
                 result.add(row["case_id"])
     return result
+
 
 ALL_CASE_IDS = _load_all_case_ids()
 HIGH_RISK_CASE_IDS = _load_high_risk_case_ids()
@@ -174,7 +179,8 @@ class TestPipelinePredictions:
         if not db_available:
             pytest.skip("Database not available")
         no_risk_ids = [
-            cid for cid, p in pipeline_predictions.items()
+            cid
+            for cid, p in pipeline_predictions.items()
             if len(p.predicted_risk_flags) == 0
         ]
         assert len(no_risk_ids) > 0, "Expected at least one no-risk case"
@@ -201,9 +207,7 @@ class TestPipelinePredictions:
         if not db_available:
             pytest.skip("Database not available")
         # This should not raise
-        summary = compute_evaluation_summary(
-            pipeline_predictions, dataset.golden
-        )
+        summary = compute_evaluation_summary(pipeline_predictions, dataset.golden)
         assert summary.total_cases == len(ALL_CASE_IDS)
         assert summary.total_cases == len(summary.results)
         # All aggregate metrics should be populated and in range
@@ -225,22 +229,22 @@ class TestPipelinePredictions:
         if not db_available:
             pytest.skip("Database not available")
 
-        summary = compute_evaluation_summary(
-            pipeline_predictions, dataset.golden
-        )
+        summary = compute_evaluation_summary(pipeline_predictions, dataset.golden)
 
         tmp_json = tempfile.mktemp(suffix=".json")
         tmp_md = tempfile.mktemp(suffix=".md")
         try:
             write_json_report(
-                summary, tmp_json,
+                summary,
+                tmp_json,
                 tickets_path=TICKETS_PATH,
                 golden_path=GOLDEN_PATH,
                 predictions_path="pipeline",
                 prediction_mode="pipeline",
             )
             write_markdown_report(
-                summary, tmp_md,
+                summary,
+                tmp_md,
                 tickets_path=TICKETS_PATH,
                 golden_path=GOLDEN_PATH,
                 predictions_path="pipeline",
@@ -267,9 +271,7 @@ class TestPipelinePredictions:
     # CLI pipeline mode
     # ------------------------------------------------------------------
 
-    def test_cli_pipeline_mode_works(
-        self, db_available, ensure_seeded
-    ):
+    def test_cli_pipeline_mode_works(self, db_available, ensure_seeded):
         """CLI --prediction-mode pipeline runs end-to-end."""
         if not db_available:
             pytest.skip("Database not available")
@@ -279,13 +281,20 @@ class TestPipelinePredictions:
         tmp_json = tempfile.mktemp(suffix=".json")
         tmp_md = tempfile.mktemp(suffix=".md")
         try:
-            args = cli.parse_args([
-                "--tickets", TICKETS_PATH,
-                "--golden", GOLDEN_PATH,
-                "--prediction-mode", "pipeline",
-                "--out-json", tmp_json,
-                "--out-md", tmp_md,
-            ])
+            args = cli.parse_args(
+                [
+                    "--tickets",
+                    TICKETS_PATH,
+                    "--golden",
+                    GOLDEN_PATH,
+                    "--prediction-mode",
+                    "pipeline",
+                    "--out-json",
+                    tmp_json,
+                    "--out-md",
+                    tmp_md,
+                ]
+            )
             cli.run_eval(args)
 
             assert pathlib.Path(tmp_json).exists()
@@ -302,9 +311,7 @@ class TestPipelinePredictions:
     # CSV mode still works
     # ------------------------------------------------------------------
 
-    def test_cli_csv_prediction_mode_still_works(
-        self, db_available, ensure_seeded
-    ):
+    def test_cli_csv_prediction_mode_still_works(self, db_available, ensure_seeded):
         """CLI CSV prediction mode still works (regression test)."""
         # CSV mode does not need DB — it loads predictions from file
         import scripts.run_eval as cli
@@ -312,13 +319,20 @@ class TestPipelinePredictions:
         tmp_json = tempfile.mktemp(suffix=".json")
         tmp_md = tempfile.mktemp(suffix=".md")
         try:
-            args = cli.parse_args([
-                "--tickets", TICKETS_PATH,
-                "--golden", GOLDEN_PATH,
-                "--predictions", "data/eval/sample_predictions.csv",
-                "--out-json", tmp_json,
-                "--out-md", tmp_md,
-            ])
+            args = cli.parse_args(
+                [
+                    "--tickets",
+                    TICKETS_PATH,
+                    "--golden",
+                    GOLDEN_PATH,
+                    "--predictions",
+                    "data/eval/sample_predictions.csv",
+                    "--out-json",
+                    tmp_json,
+                    "--out-md",
+                    tmp_md,
+                ]
+            )
             cli.run_eval(args)
 
             assert pathlib.Path(tmp_json).exists()

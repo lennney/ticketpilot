@@ -42,7 +42,11 @@ def reflect_on_draft(
 
     # 1. Risk-flag acknowledgement
     for flag in skill.risk_flags_to_acknowledge:
-        if flag == "legal_risk" and "律师" not in draft_text and "法律" not in draft_text:
+        if (
+            flag == "legal_risk"
+            and "律师" not in draft_text
+            and "法律" not in draft_text
+        ):
             issues.append(f"缺少法律风险声明: {flag}")
             suggestions.append("添加法律风险相关的免责声明")
 
@@ -52,7 +56,11 @@ def reflect_on_draft(
             suggestions.append(f"建议添加: {step}")
 
     # 3. Tone check
-    if skill.tone == "empathetic" and "抱歉" not in draft_text and "理解" not in draft_text:
+    if (
+        skill.tone == "empathetic"
+        and "抱歉" not in draft_text
+        and "理解" not in draft_text
+    ):
         suggestions.append("建议添加同理心表达")
 
     passed = len(issues) == 0

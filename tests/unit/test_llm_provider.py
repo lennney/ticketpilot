@@ -71,7 +71,9 @@ class TestFakeLLMProvider:
             normalized_text="我要退款",
             issue_type="refund",
         )
-        assert result.draft_text == "根据现有信息，无法确认具体政策条款，建议转人工处理。"
+        assert (
+            result.draft_text == "根据现有信息，无法确认具体政策条款，建议转人工处理。"
+        )
         assert result.citations == []
         assert result.evidence_used == []
         assert result.confidence == 0.0

@@ -3,6 +3,7 @@
 These tests avoid actual LLM API calls by monkeypatching the OpenAI client
 or the _llm_complete helper where appropriate.
 """
+
 from __future__ import annotations
 
 from unittest.mock import MagicMock, patch
@@ -81,7 +82,9 @@ class TestLlmCompleteErrors:
 
             mock_response = MagicMock()
             mock_response.choices = [MagicMock()]
-            mock_response.choices[0].message.content = '{"decision": "APPROVE", "reasoning": "ok"}'
+            mock_response.choices[
+                0
+            ].message.content = '{"decision": "APPROVE", "reasoning": "ok"}'
             mock_client.chat.completions.create.return_value = mock_response
 
             result = _llm_complete("some prompt", cfg)
@@ -89,7 +92,9 @@ class TestLlmCompleteErrors:
             assert "APPROVE" in result
 
             # Verify the env var was used
-            mock_openai.assert_called_once_with(api_key="env-key", base_url=cfg.llm_base_url)
+            mock_openai.assert_called_once_with(
+                api_key="env-key", base_url=cfg.llm_base_url
+            )
 
 
 # ---------------------------------------------------------------------------
@@ -106,8 +111,12 @@ class TestReviewKeywordPromptConstruction:
         harmed_samples = ["请问发货时间是多久"]
 
         with patch("ticketpilot.optimizer.llm_reviewer._llm_complete") as mock_llm:
-            mock_llm.return_value = '{"decision": "APPROVE", "reasoning": "Good improvement"}'
-            result = review_keyword(sample_tradeoff, fixed_samples, harmed_samples, config)
+            mock_llm.return_value = (
+                '{"decision": "APPROVE", "reasoning": "Good improvement"}'
+            )
+            result = review_keyword(
+                sample_tradeoff, fixed_samples, harmed_samples, config
+            )
 
             # Check _llm_complete was called
             mock_llm.assert_called_once()
@@ -142,7 +151,9 @@ class TestReviewKeywordPromptConstruction:
     def test_prompt_with_negative_tradeoff(self, negative_tradeoff, config):
         """Negative tradeoff should be reflected in the prompt."""
         with patch("ticketpilot.optimizer.llm_reviewer._llm_complete") as mock_llm:
-            mock_llm.return_value = '{"decision": "REJECT", "reasoning": "Net gain negative"}'
+            mock_llm.return_value = (
+                '{"decision": "REJECT", "reasoning": "Net gain negative"}'
+            )
             result = review_keyword(negative_tradeoff, ["a"], ["b"], config)
 
             prompt = mock_llm.call_args[0][0]
@@ -181,7 +192,9 @@ class TestJsonParseFallback:
     def test_json_in_code_fence(self, sample_tradeoff, config):
         """JSON inside markdown code fences won't parse directly -> REJECT."""
         with patch("ticketpilot.optimizer.llm_reviewer._llm_complete") as mock_llm:
-            mock_llm.return_value = "```json\n{\"decision\": \"APPROVE\", \"reasoning\": \"ok\"}\n```"
+            mock_llm.return_value = (
+                '```json\n{"decision": "APPROVE", "reasoning": "ok"}\n```'
+            )
             result = review_keyword(sample_tradeoff, ["a"], ["b"], config)
 
             # json.loads on the raw string will fail because of the ``` fences

@@ -8,6 +8,7 @@ Provides:
 - Context precision/recall
 - Version comparison
 """
+
 from __future__ import annotations
 
 import json
@@ -21,6 +22,7 @@ from typing import Any
 @dataclass
 class EvalCase:
     """Single evaluation case."""
+
     case_id: str
     input_text: str
     expected_intent: str
@@ -32,6 +34,7 @@ class EvalCase:
 @dataclass
 class EvalResult:
     """Result of evaluating a single case."""
+
     case_id: str
     actual_output: str
     actual_intent: str
@@ -47,6 +50,7 @@ class EvalResult:
 @dataclass
 class EvalReport:
     """Complete evaluation report."""
+
     report_id: str
     timestamp: datetime
     total_cases: int
@@ -100,37 +104,42 @@ class EvalReport:
         """Save report to file."""
         dir_path = Path(directory)
         dir_path.mkdir(parents=True, exist_ok=True)
-        
-        file_path = dir_path / f"eval_{self.report_id[:8]}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
+
+        file_path = (
+            dir_path
+            / f"eval_{self.report_id[:8]}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
+        )
         file_path.write_text(self.to_json(), encoding="utf-8")
         return file_path
 
 
 class EvalDataset:
     """Evaluation dataset manager."""
-    
+
     def __init__(self, cases: list[EvalCase] | None = None):
         self.cases = cases or []
-    
+
     def add_case(self, case: EvalCase) -> None:
         """Add a case to the dataset."""
         self.cases.append(case)
-    
+
     def load(self, path: str | Path) -> None:
         """Load cases from JSON file."""
         with open(path) as f:
             data = json.load(f)
-        
+
         for item in data:
-            self.cases.append(EvalCase(
-                case_id=item.get("case_id", str(uuid.uuid4())),
-                input_text=item["input_text"],
-                expected_intent=item["expected_intent"],
-                expected_output=item.get("expected_output"),
-                context=item.get("context"),
-                metadata=item.get("metadata", {}),
-            ))
-    
+            self.cases.append(
+                EvalCase(
+                    case_id=item.get("case_id", str(uuid.uuid4())),
+                    input_text=item["input_text"],
+                    expected_intent=item["expected_intent"],
+                    expected_output=item.get("expected_output"),
+                    context=item.get("context"),
+                    metadata=item.get("metadata", {}),
+                )
+            )
+
     def save(self, path: str | Path) -> None:
         """Save cases to JSON file."""
         data = [
@@ -144,7 +153,7 @@ class EvalDataset:
             }
             for c in self.cases
         ]
-        
+
         with open(path, "w") as f:
             json.dump(data, f, ensure_ascii=False, indent=2)
 
@@ -177,8 +186,12 @@ def compute_faithfulness(
 
     all_context = " ".join(context)
 
-    output_words = set(actual_output.replace("。", " ").replace("，", " ").replace("、", " ").split())
-    context_words = set(all_context.replace("。", " ").replace("，", " ").replace("、", " ").split())
+    output_words = set(
+        actual_output.replace("。", " ").replace("，", " ").replace("、", " ").split()
+    )
+    context_words = set(
+        all_context.replace("。", " ").replace("，", " ").replace("、", " ").split()
+    )
 
     if not output_words:
         return 0.5
@@ -215,8 +228,18 @@ def compute_relevancy(
     if not input_text or not actual_output:
         return 0.5  # Default score
 
-    input_clean = input_text.replace("？", "").replace("。", "").replace("，", " ").replace("、", " ")
-    output_clean = actual_output.replace("？", "").replace("。", "").replace("，", " ").replace("、", " ")
+    input_clean = (
+        input_text.replace("？", "")
+        .replace("。", "")
+        .replace("，", " ")
+        .replace("、", " ")
+    )
+    output_clean = (
+        actual_output.replace("？", "")
+        .replace("。", "")
+        .replace("，", " ")
+        .replace("、", " ")
+    )
 
     input_words = set(input_clean.split())
     output_words = set(output_clean.split())
@@ -238,71 +261,82 @@ def run_evaluation(
 ) -> EvalReport:
     """
     Run evaluation on a dataset.
-    
+
     Args:
         dataset: Evaluation dataset
         agent_fn: Function that takes input_text and returns (output, intent)
         pass_threshold: Threshold for passing a case
-    
+
     Returns:
         EvalReport with results
     """
     results = []
     passed = 0
     failed = 0
-    
+
     for case in dataset.cases:
         try:
             # Run agent
             import time
+
             start = time.time()
             output, intent = agent_fn(case.input_text)
             duration = (time.time() - start) * 1000
-            
+
             # Check intent
             intent_correct = intent == case.expected_intent
-            
+
             # Compute scores
-            faithfulness = compute_faithfulness(output, case.context or [], scorer_type=scorer_type)
-            relevancy = compute_relevancy(case.input_text, output, scorer_type=scorer_type)
+            faithfulness = compute_faithfulness(
+                output, case.context or [], scorer_type=scorer_type
+            )
+            relevancy = compute_relevancy(
+                case.input_text, output, scorer_type=scorer_type
+            )
             has_citations = "[" in output and "]" in output
-            
+
             # Determine pass/fail
             score = (faithfulness + relevancy) / 2
             if score >= pass_threshold:
                 passed += 1
             else:
                 failed += 1
-            
-            results.append(EvalResult(
-                case_id=case.case_id,
-                actual_output=output,
-                actual_intent=intent,
-                expected_intent=case.expected_intent,
-                intent_correct=intent_correct,
-                faithfulness_score=faithfulness,
-                relevancy_score=relevancy,
-                has_citations=has_citations,
-                duration_ms=duration,
-            ))
+
+            results.append(
+                EvalResult(
+                    case_id=case.case_id,
+                    actual_output=output,
+                    actual_intent=intent,
+                    expected_intent=case.expected_intent,
+                    intent_correct=intent_correct,
+                    faithfulness_score=faithfulness,
+                    relevancy_score=relevancy,
+                    has_citations=has_citations,
+                    duration_ms=duration,
+                )
+            )
         except Exception as e:
             failed += 1
-            results.append(EvalResult(
-                case_id=case.case_id,
-                actual_output="",
-                actual_intent="",
-                expected_intent=case.expected_intent,
-                intent_correct=False,
-                error=str(e),
-            ))
-    
+            results.append(
+                EvalResult(
+                    case_id=case.case_id,
+                    actual_output="",
+                    actual_intent="",
+                    expected_intent=case.expected_intent,
+                    intent_correct=False,
+                    error=str(e),
+                )
+            )
+
     # Compute averages
     total = len(results)
     intent_correct = sum(1 for r in results if r.intent_correct)
-    avg_faithfulness = sum(r.faithfulness_score for r in results) / total if total > 0 else 0
+    avg_faithfulness = (
+        sum(r.faithfulness_score for r in results) / total if total > 0 else 0
+    )
     avg_relevancy = sum(r.relevancy_score for r in results) / total if total > 0 else 0
     avg_duration = sum(r.duration_ms for r in results) / total if total > 0 else 0
-    
+
     return EvalReport(
         report_id=str(uuid.uuid4()),
         timestamp=datetime.now(timezone.utc),

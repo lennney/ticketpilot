@@ -10,8 +10,14 @@ from pathlib import Path
 
 
 # Path to the runner script
-RUNNER_SCRIPT = Path(__file__).parent.parent.parent / "scripts" / "run_phase12_llm_provider_comparison.py"
-FIXTURES_PATH = Path(__file__).parent.parent / "fixtures" / "phase12_draft_comparison_cases.json"
+RUNNER_SCRIPT = (
+    Path(__file__).parent.parent.parent
+    / "scripts"
+    / "run_phase12_llm_provider_comparison.py"
+)
+FIXTURES_PATH = (
+    Path(__file__).parent.parent / "fixtures" / "phase12_draft_comparison_cases.json"
+)
 
 
 class TestPhase12RunnerIntegration:
@@ -30,7 +36,14 @@ class TestPhase12RunnerIntegration:
     def test_runner_with_limit(self, tmp_path):
         """Test runner execution with limited cases."""
         result = subprocess.run(
-            [sys.executable, str(RUNNER_SCRIPT), "--limit", "3", "--output-dir", str(tmp_path)],
+            [
+                sys.executable,
+                str(RUNNER_SCRIPT),
+                "--limit",
+                "3",
+                "--output-dir",
+                str(tmp_path),
+            ],
             capture_output=True,
             text=True,
         )
@@ -42,7 +55,14 @@ class TestPhase12RunnerIntegration:
     def test_runner_generates_json_output(self, tmp_path):
         """Test that runner generates JSON results file."""
         result = subprocess.run(
-            [sys.executable, str(RUNNER_SCRIPT), "--limit", "2", "--output-dir", str(tmp_path)],
+            [
+                sys.executable,
+                str(RUNNER_SCRIPT),
+                "--limit",
+                "2",
+                "--output-dir",
+                str(tmp_path),
+            ],
             capture_output=True,
             text=True,
         )
@@ -61,7 +81,14 @@ class TestPhase12RunnerIntegration:
     def test_runner_generates_markdown_report(self, tmp_path):
         """Test that runner generates markdown report."""
         result = subprocess.run(
-            [sys.executable, str(RUNNER_SCRIPT), "--limit", "2", "--output-dir", str(tmp_path)],
+            [
+                sys.executable,
+                str(RUNNER_SCRIPT),
+                "--limit",
+                "2",
+                "--output-dir",
+                str(tmp_path),
+            ],
             capture_output=True,
             text=True,
         )
@@ -88,17 +115,28 @@ class TestPhase12RunnerIntegration:
         assert len(fixtures) >= 25
 
         # Check structure
-        required_keys = {"case_id", "scenario", "normalized_text", "issue_type", "risk_flags"}
+        required_keys = {
+            "case_id",
+            "scenario",
+            "normalized_text",
+            "issue_type",
+            "risk_flags",
+        }
         for fixture in fixtures[:3]:
-            assert required_keys.issubset(fixture.keys()), f"Missing keys in fixture: {fixture}"
+            assert required_keys.issubset(fixture.keys()), (
+                f"Missing keys in fixture: {fixture}"
+            )
 
     def test_runner_handles_missing_fixtures(self, tmp_path):
         """Test runner behavior when fixture file is missing."""
         result = subprocess.run(
             [
-                sys.executable, str(RUNNER_SCRIPT),
-                "--fixtures", str(tmp_path / "nonexistent.json"),
-                "--output-dir", str(tmp_path),
+                sys.executable,
+                str(RUNNER_SCRIPT),
+                "--fixtures",
+                str(tmp_path / "nonexistent.json"),
+                "--output-dir",
+                str(tmp_path),
             ],
             capture_output=True,
             text=True,

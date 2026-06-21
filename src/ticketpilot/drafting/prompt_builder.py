@@ -145,9 +145,7 @@ def build_safety_instructions(
         )
 
     if must_human_review:
-        rules.append(
-            "风险评估已要求人工审核，回复必须明确建议转人工处理。"
-        )
+        rules.append("风险评估已要求人工审核，回复必须明确建议转人工处理。")
 
     for i, rule in enumerate(rules, start=1):
         lines.append(f"{i}. {rule}")
@@ -221,7 +219,9 @@ def build_prompt(
     # Load and insert specialized template if available
     template_content = load_template(effective_template_id)
     if template_content:
-        sections.append(f"## 专项处理指南（{effective_template_id}）\n\n{template_content}")
+        sections.append(
+            f"## 专项处理指南（{effective_template_id}）\n\n{template_content}"
+        )
     elif effective_template_id != "default":
         # Try falling back to default template
         default_content = load_template("default")

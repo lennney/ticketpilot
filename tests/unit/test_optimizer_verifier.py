@@ -1,4 +1,5 @@
 """Tests for ticketpilot.optimizer.verifier."""
+
 from __future__ import annotations
 
 import subprocess
@@ -25,6 +26,7 @@ from ticketpilot.optimizer.verifier import (
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
+
 
 def _make_summary(
     *,
@@ -76,7 +78,9 @@ def _make_case_result(
         intent_accuracy=True,
         severity_accuracy=True,
         must_human_review_accuracy=True,
-        risk_flag_metrics=RiskFlagMetrics(precision=1.0, recall=1.0, f1=1.0, exact_match=True),
+        risk_flag_metrics=RiskFlagMetrics(
+            precision=1.0, recall=1.0, f1=1.0, exact_match=True
+        ),
         evidence_doc_type_recall=1.0,
         fallback_correctness=True,
         no_auto_send_compliance=True,
@@ -102,6 +106,7 @@ def _make_mismatch(case_id: str, metric: str = "intent_accuracy") -> MismatchEnt
 # ---------------------------------------------------------------------------
 # VerificationResult basics
 # ---------------------------------------------------------------------------
+
 
 class TestVerificationResult:
     def test_dataclass_fields(self) -> None:
@@ -136,19 +141,28 @@ class TestVerificationResult:
 # compute_composite_score
 # ---------------------------------------------------------------------------
 
+
 class TestComputeCompositeScore:
     def test_zero_summary(self) -> None:
         summary = _make_summary(
-            intent=0.0, severity=0.0, risk_f1=0.0,
-            evidence=0.0, no_auto_send=0.0, fallback=0.0,
+            intent=0.0,
+            severity=0.0,
+            risk_f1=0.0,
+            evidence=0.0,
+            no_auto_send=0.0,
+            fallback=0.0,
         )
         score = compute_composite_score(summary)
         assert score == 0.0
 
     def test_perfect_summary(self) -> None:
         summary = _make_summary(
-            intent=1.0, severity=1.0, risk_f1=1.0,
-            evidence=1.0, no_auto_send=1.0, fallback=1.0,
+            intent=1.0,
+            severity=1.0,
+            risk_f1=1.0,
+            evidence=1.0,
+            no_auto_send=1.0,
+            fallback=1.0,
         )
         score = compute_composite_score(summary)
         # All weights sum to 1.0, so perfect = 1.0
@@ -156,13 +170,19 @@ class TestComputeCompositeScore:
 
     def test_custom_weights(self) -> None:
         summary = _make_summary(intent=1.0, severity=0.0)
-        score = compute_composite_score(summary, weights={"intent": 0.5, "severity": 0.5})
+        score = compute_composite_score(
+            summary, weights={"intent": 0.5, "severity": 0.5}
+        )
         assert abs(score - 0.5) < 1e-6
 
     def test_partial_scores(self) -> None:
         summary = _make_summary(
-            intent=0.8, severity=0.6, risk_f1=0.7,
-            evidence=0.9, no_auto_send=1.0, fallback=0.5,
+            intent=0.8,
+            severity=0.6,
+            risk_f1=0.7,
+            evidence=0.9,
+            no_auto_send=1.0,
+            fallback=0.5,
         )
         score = compute_composite_score(summary)
         assert 0.0 <= score <= 1.0
@@ -174,6 +194,7 @@ class TestComputeCompositeScore:
 # ---------------------------------------------------------------------------
 # Verifier: Layer 1 (mocked pytest)
 # ---------------------------------------------------------------------------
+
 
 class TestVerifierLayer1:
     @patch("subprocess.run")
@@ -193,7 +214,10 @@ class TestVerifierLayer1:
         assert passed is False
         assert rc == 1
 
-    @patch("subprocess.run", side_effect=subprocess.TimeoutExpired(cmd="pytest", timeout=300))
+    @patch(
+        "subprocess.run",
+        side_effect=subprocess.TimeoutExpired(cmd="pytest", timeout=300),
+    )
     def test_pytest_timeout(self, mock_run: MagicMock) -> None:
         verifier = Verifier()
         passed, output, rc = verifier._layer1_pytest()
@@ -213,10 +237,25 @@ class TestVerifierLayer1:
 # Verifier: Layer 2 (mocked evaluation)
 # ---------------------------------------------------------------------------
 
+
 class TestVerifierLayer2:
     def test_improved_composite_passes(self) -> None:
-        old = _make_summary(intent=0.7, severity=0.7, risk_f1=0.7, evidence=0.7, no_auto_send=0.7, fallback=0.7)
-        new = _make_summary(intent=0.8, severity=0.8, risk_f1=0.8, evidence=0.8, no_auto_send=0.8, fallback=0.8)
+        old = _make_summary(
+            intent=0.7,
+            severity=0.7,
+            risk_f1=0.7,
+            evidence=0.7,
+            no_auto_send=0.7,
+            fallback=0.7,
+        )
+        new = _make_summary(
+            intent=0.8,
+            severity=0.8,
+            risk_f1=0.8,
+            evidence=0.8,
+            no_auto_send=0.8,
+            fallback=0.8,
+        )
         verifier = Verifier()
         passed, sum_out, delta, deltas = verifier._layer2_evaluate(old, new_summary=new)
         assert passed is True
@@ -251,6 +290,7 @@ class TestVerifierLayer2:
 # Verifier: Layer 3 (safety checks)
 # ---------------------------------------------------------------------------
 
+
 class TestVerifierLayer3:
     def test_improvement_no_regression_passes(self) -> None:
         # T001 was wrong before, now correct → improvement
@@ -269,7 +309,9 @@ class TestVerifierLayer3:
         old_correct_ids = {"T002"}
 
         verifier = Verifier()
-        passed, regressed, improved = verifier._layer3_safety(old_summary, new_summary, old_correct_ids)
+        passed, regressed, improved = verifier._layer3_safety(
+            old_summary, new_summary, old_correct_ids
+        )
         assert passed is True
         assert "T001" in improved
         assert regressed == []
@@ -289,7 +331,9 @@ class TestVerifierLayer3:
         old_correct_ids = {"T001", "T002"}
 
         verifier = Verifier()
-        passed, regressed, improved = verifier._layer3_safety(old_summary, new_summary, old_correct_ids)
+        passed, regressed, improved = verifier._layer3_safety(
+            old_summary, new_summary, old_correct_ids
+        )
         assert passed is False
         assert "T001" in regressed
 
@@ -308,15 +352,28 @@ class TestVerifierLayer3:
         old_correct_ids = {"T001", "T002"}
 
         verifier = Verifier()
-        passed, _, _ = verifier._layer3_safety(old_summary, new_summary, old_correct_ids)
+        passed, _, _ = verifier._layer3_safety(
+            old_summary, new_summary, old_correct_ids
+        )
         assert passed is False  # no improvement
 
     def test_metric_drop_exceeding_threshold_fails(self) -> None:
-        old_summary = _make_summary(intent=0.9, severity=0.9, risk_f1=0.9, evidence=0.9, no_auto_send=0.9, fallback=0.9)
+        old_summary = _make_summary(
+            intent=0.9,
+            severity=0.9,
+            risk_f1=0.9,
+            evidence=0.9,
+            no_auto_send=0.9,
+            fallback=0.9,
+        )
         # Drop intent by >2%
         new_summary = _make_summary(
             intent=0.9 - MAX_SINGLE_METRIC_DROP - 0.01,
-            severity=0.9, risk_f1=0.9, evidence=0.9, no_auto_send=0.9, fallback=0.9,
+            severity=0.9,
+            risk_f1=0.9,
+            evidence=0.9,
+            no_auto_send=0.9,
+            fallback=0.9,
             results={
                 "T001": _make_case_result("T001", mismatches=[_make_mismatch("T001")]),
             },
@@ -326,7 +383,9 @@ class TestVerifierLayer3:
         old_summary.results = {"T001": _make_case_result("T001")}
 
         verifier = Verifier()
-        passed, _, _ = verifier._layer3_safety(old_summary, new_summary, old_correct_ids)
+        passed, _, _ = verifier._layer3_safety(
+            old_summary, new_summary, old_correct_ids
+        )
         assert passed is False
 
     def test_none_new_summary_fails(self) -> None:
@@ -340,11 +399,26 @@ class TestVerifierLayer3:
 # Verifier: full integration (mocked layers)
 # ---------------------------------------------------------------------------
 
+
 class TestVerifierIntegration:
     @patch.object(Verifier, "_layer1_pytest", return_value=(True, "OK", 0))
     def test_all_layers_pass(self, _mock_l1: MagicMock) -> None:
-        old_summary = _make_summary(intent=0.7, severity=0.7, risk_f1=0.7, evidence=0.7, no_auto_send=0.7, fallback=0.7)
-        new_summary = _make_summary(intent=0.8, severity=0.8, risk_f1=0.8, evidence=0.8, no_auto_send=0.8, fallback=0.8)
+        old_summary = _make_summary(
+            intent=0.7,
+            severity=0.7,
+            risk_f1=0.7,
+            evidence=0.7,
+            no_auto_send=0.7,
+            fallback=0.7,
+        )
+        new_summary = _make_summary(
+            intent=0.8,
+            severity=0.8,
+            risk_f1=0.8,
+            evidence=0.8,
+            no_auto_send=0.8,
+            fallback=0.8,
+        )
 
         case_result_old = _make_case_result("T001", mismatches=[_make_mismatch("T001")])
         case_result_new = _make_case_result("T001")  # fixed
@@ -368,7 +442,14 @@ class TestVerifierIntegration:
     @patch.object(Verifier, "_layer1_pytest", return_value=(False, "FAIL", 1))
     def test_layer1_failure_cascades(self, _mock_l1: MagicMock) -> None:
         old = _make_summary()
-        new = _make_summary(intent=0.8, severity=0.8, risk_f1=0.8, evidence=0.8, no_auto_send=0.8, fallback=0.8)
+        new = _make_summary(
+            intent=0.8,
+            severity=0.8,
+            risk_f1=0.8,
+            evidence=0.8,
+            no_auto_send=0.8,
+            fallback=0.8,
+        )
         case_old = _make_case_result("T001", mismatches=[_make_mismatch("T001")])
         case_new = _make_case_result("T001")
         old.results = {"T001": case_old}

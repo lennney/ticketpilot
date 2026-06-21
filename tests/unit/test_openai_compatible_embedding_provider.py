@@ -101,9 +101,7 @@ class TestEmbed:
     @patch("httpx.Client.post")
     def test_embed_returns_one_vector(self, mock_post):
         """embed(text) should return a single vector."""
-        mock_post.return_value = _make_success_response(
-            [_make_item(0, dim=4)]
-        )
+        mock_post.return_value = _make_success_response([_make_item(0, dim=4)])
         provider = OpenAICompatibleEmbeddingProvider(
             base_url="http://localhost:1234/v1",
             api_key="sk-test",
@@ -118,9 +116,7 @@ class TestEmbed:
     @patch("httpx.Client.post")
     def test_embed_sends_correct_request_shape(self, mock_post):
         """embed() should POST to {base_url}/embeddings with Bearer auth."""
-        mock_post.return_value = _make_success_response(
-            [_make_item(0, dim=4)]
-        )
+        mock_post.return_value = _make_success_response([_make_item(0, dim=4)])
         provider = OpenAICompatibleEmbeddingProvider(
             base_url="http://localhost:1234/v1",
             api_key="sk-test-key",
@@ -188,7 +184,9 @@ class TestEmbedBatch:
         )
         results = provider.embed_batch(["b", "a"])
         # index 0 corresponds to "b", index 1 to "a"
-        assert results[0] == _make_item(1, dim=4)["embedding"]  # "b" was index 1 but sorted
+        assert (
+            results[0] == _make_item(1, dim=4)["embedding"]
+        )  # "b" was index 1 but sorted
         assert results[1] == _make_item(0, dim=4)["embedding"]  # "a" was index 0
 
     @patch("httpx.Client.post")

@@ -1,4 +1,5 @@
 """Tests for the diagnostics engine."""
+
 from __future__ import annotations
 
 import pytest
@@ -165,19 +166,23 @@ class TestComputeFixGain:
 
     def test_basic_gain(self):
         from ticketpilot.optimizer.diagnostics import _compute_fix_gain
+
         # 3 out of 10 cases, weight 0.25 → 0.075
         assert _compute_fix_gain(3, 0.25, 10) == pytest.approx(0.075)
 
     def test_zero_total(self):
         from ticketpilot.optimizer.diagnostics import _compute_fix_gain
+
         assert _compute_fix_gain(5, 0.25, 0) == 0.0
 
     def test_zero_cases(self):
         from ticketpilot.optimizer.diagnostics import _compute_fix_gain
+
         assert _compute_fix_gain(0, 0.25, 10) == 0.0
 
     def test_all_cases_affected(self):
         from ticketpilot.optimizer.diagnostics import _compute_fix_gain
+
         assert _compute_fix_gain(10, 0.25, 10) == pytest.approx(0.25)
 
 
@@ -186,6 +191,7 @@ class TestBuildConfusionMatrix:
 
     def test_no_mismatches(self):
         from ticketpilot.optimizer.diagnostics import _build_confusion_matrix
+
         cases = {
             "T001": _make_case("T001", "refund", "refund", intent_correct=True),
         }
@@ -194,6 +200,7 @@ class TestBuildConfusionMatrix:
 
     def test_single_mismatch(self):
         from ticketpilot.optimizer.diagnostics import _build_confusion_matrix
+
         cases = {
             "T001": _make_case("T001", "refund", "other", intent_correct=False),
         }
@@ -204,10 +211,13 @@ class TestBuildConfusionMatrix:
 
     def test_grouped_mismatches(self):
         from ticketpilot.optimizer.diagnostics import _build_confusion_matrix
+
         cases = {
             "T001": _make_case("T001", "refund", "other", intent_correct=False),
             "T002": _make_case("T002", "refund", "other", intent_correct=False),
-            "T003": _make_case("T003", "technical_issue", "other", intent_correct=False),
+            "T003": _make_case(
+                "T003", "technical_issue", "other", intent_correct=False
+            ),
         }
         matrix = _build_confusion_matrix(cases)
         assert len(matrix) == 2
@@ -350,21 +360,15 @@ class TestDiagnosticsEngine:
 
     def test_confidence_misroute_diagnosis(self):
         golden = _make_golden("T001", must_human_review=False, no_auto_send=False)
-        prediction = _make_prediction(
-            "T001", must_human_review=True, no_auto_send=True
-        )
-        metrics = _make_metrics(
-            human_review_correct=False, auto_send_correct=False
-        )
+        prediction = _make_prediction("T001", must_human_review=True, no_auto_send=True)
+        metrics = _make_metrics(human_review_correct=False, auto_send_correct=False)
         cases = {
             "T001": CaseResult(
                 case_id="T001", golden=golden, prediction=prediction, metrics=metrics
             ),
         }
         summary = _make_summary(1, cases)
-        engine = DiagnosticsEngine(
-            weights={"no_auto_send": 0.10, "fallback": 0.10}
-        )
+        engine = DiagnosticsEngine(weights={"no_auto_send": 0.10, "fallback": 0.10})
         diagnoses = engine.analyze(summary, cases)
 
         conf_diags = [d for d in diagnoses if d.type == TYPE_CONFIDENCE_MISROUTE]

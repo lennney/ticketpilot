@@ -34,17 +34,19 @@ def search_knowledge(query: str, top_k: int = 10) -> list[dict[str, Any]]:
         candidates = map_fused_to_evidence(trace.fused_results)
         results: list[dict[str, Any]] = []
         for c in candidates:
-            results.append({
-                "chunk_id": str(c.chunk_id),
-                "doc_id": str(c.doc_id),
-                "doc_type": c.doc_type.value,
-                "content": c.content[:300],
-                "score": round(c.score, 4),
-                "rank": c.rank,
-                "title": c.title,
-                "source_table": c.source_table,
-                "source_id": str(c.source_id),
-            })
+            results.append(
+                {
+                    "chunk_id": str(c.chunk_id),
+                    "doc_id": str(c.doc_id),
+                    "doc_type": c.doc_type.value,
+                    "content": c.content[:300],
+                    "score": round(c.score, 4),
+                    "rank": c.rank,
+                    "title": c.title,
+                    "source_table": c.source_table,
+                    "source_id": str(c.source_id),
+                }
+            )
         return results
     except Exception as e:
         logger.error("search_knowledge failed: %s", e)

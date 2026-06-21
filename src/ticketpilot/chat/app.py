@@ -172,7 +172,9 @@ def _render_context_panel(ctx: ChatContext) -> None:
     with col2:
         st.markdown("**风险等级**")
         if ctx.latest_severity:
-            text_color, bg_color = RISK_BADGE_COLORS.get(ctx.latest_severity, ("#666666", "#f5f5f5"))
+            text_color, bg_color = RISK_BADGE_COLORS.get(
+                ctx.latest_severity, ("#666666", "#f5f5f5")
+            )
             badge_html = (
                 f"<span style='background-color:{bg_color};color:{text_color};"
                 f"padding:2px 8px;border-radius:4px;font-weight:bold;'>"
@@ -201,7 +203,9 @@ def _render_risk_panel(display: ChatDisplay | None) -> None:
         return
 
     if display.risk_badge:
-        text_color, bg_color = RISK_BADGE_COLORS.get(display.risk_badge, ("#666666", "#f5f5f5"))
+        text_color, bg_color = RISK_BADGE_COLORS.get(
+            display.risk_badge, ("#666666", "#f5f5f5")
+        )
         badge_html = (
             f"<span style='background-color:{bg_color};color:{text_color};"
             f"padding:4px 12px;border-radius:4px;font-weight:bold;'>"
@@ -258,7 +262,9 @@ def _render_evidence_panel(display: ChatDisplay | None) -> None:
         emoji = DOC_TYPE_EMOJI.get(doc_type, "📄")
         st.subheader(f"{emoji} {doc_type} ({len(items)})")
         for item in items:
-            with st.expander(f"`{item.chunk_id[:8]}...` · {item.title or item.doc_type}"):
+            with st.expander(
+                f"`{item.chunk_id[:8]}...` · {item.title or item.doc_type}"
+            ):
                 if item.title:
                     st.markdown(f"**{item.title}**")
                 if item.score is not None:
@@ -287,14 +293,22 @@ def _render_draft_panel(display: ChatDisplay | None) -> None:
             for cid in display.citation_ids:
                 marker = marker_map.get(cid, f"[UNKNOWN]:{cid[:8]}")
                 # Replace [ID:xxx] or [xxx] patterns
-                draft_text = re.sub(r"\[ID:" + re.escape(cid) + r"\]", marker, draft_text)
+                draft_text = re.sub(
+                    r"\[ID:" + re.escape(cid) + r"\]", marker, draft_text
+                )
                 draft_text = re.sub(r"\[" + re.escape(cid) + r"\]", marker, draft_text)
-                if f"[ID:{cid}]" in display.draft_text or f"[{cid}]" in display.draft_text:
+                if (
+                    f"[ID:{cid}]" in display.draft_text
+                    or f"[{cid}]" in display.draft_text
+                ):
                     replaced = True
 
             # If no placeholders found, append inline markers after draft paragraph
             if not replaced:
-                markers = [marker_map.get(cid, f"[UNKNOWN]:{cid[:8]}") for cid in display.citation_ids]
+                markers = [
+                    marker_map.get(cid, f"[UNKNOWN]:{cid[:8]}")
+                    for cid in display.citation_ids
+                ]
                 draft_text += "\n\n" + " ".join(markers)
 
         st.markdown(draft_text)
@@ -315,9 +329,13 @@ def _render_draft_panel(display: ChatDisplay | None) -> None:
         if display.citation_ids:
             st.markdown("**引用证据**:")
             for cid in display.citation_ids:
-                item = next((ev for ev in display.evidence_panel if ev.chunk_id == cid), None)
+                item = next(
+                    (ev for ev in display.evidence_panel if ev.chunk_id == cid), None
+                )
                 if item:
-                    ref_label = f"[{item.doc_type.upper()}] {item.title or item.chunk_id[:8]}"
+                    ref_label = (
+                        f"[{item.doc_type.upper()}] {item.title or item.chunk_id[:8]}"
+                    )
                     with st.expander(ref_label):
                         st.caption(f"完整 chunk_id: `{cid}`")
                 else:
@@ -343,17 +361,14 @@ def _render_human_review_panel(session: ChatSession) -> None:
     if session.human_review_required or session.context.human_review_required:
         if session.display and session.display.escalation_reason:
             st.warning(
-                f"此工单需要人工审核。\n\n"
-                f"原因: {session.display.escalation_reason}"
+                f"此工单需要人工审核。\n\n原因: {session.display.escalation_reason}"
             )
         else:
             st.warning("此工单需要人工审核。")
 
         if st.button("🔍 进行人工审核", type="primary"):
             # Snapshot session for the reviewer
-            st.session_state.pending_review_session = session.model_copy(
-                deep=True
-            )
+            st.session_state.pending_review_session = session.model_copy(deep=True)
             # Navigate to review page
             st.query_params["page"] = "review"
             st.rerun()
@@ -403,9 +418,7 @@ def _render_review_decision_panel(session: ChatSession) -> None:
     st.subheader("📋 审核结果")
 
     # Get color for action badge
-    text_color, bg_color = ACTION_BADGE_COLORS.get(
-        action, ("#666666", "#f5f5f5")
-    )
+    text_color, bg_color = ACTION_BADGE_COLORS.get(action, ("#666666", "#f5f5f5"))
     action_label = ACTION_LABELS.get(action, action)
 
     # Render action badge

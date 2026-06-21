@@ -4,12 +4,16 @@ Enhanced with:
 - Multi-query expansion (LLM-generated query variants)
 - Hybrid reranking (multi-signal weighted fusion)
 """
+
 import logging
 import time
 from typing import Optional
 
 from ticketpilot.retrieval.keyword_search import keyword_search
-from ticketpilot.retrieval.providers.fake_embedding import EmbeddingProvider, get_fake_embedding_provider
+from ticketpilot.retrieval.providers.fake_embedding import (
+    EmbeddingProvider,
+    get_fake_embedding_provider,
+)
 from ticketpilot.retrieval.reranker_config import RerankerConfig
 from ticketpilot.retrieval.hybrid_reranker import HybridReranker, RerankResult
 from ticketpilot.retrieval.query_expander import MultiQueryExpander
@@ -107,6 +111,7 @@ def hybrid_retrieval(
     # Use provided embedding provider or default
     if embedding_provider is None:
         from ticketpilot.retrieval.vector_search import _detect_embedding_dim  # noqa: PLC0415
+
         dim = _detect_embedding_dim()
         embedding_provider = get_fake_embedding_provider(dimension=dim)
 
@@ -182,7 +187,9 @@ def hybrid_retrieval(
             try:
                 reranker_config = RerankerConfig.from_yaml("config/reranker.yaml")
             except Exception as e:
-                logger.warning("Failed to load reranker config from YAML, using default: %s", e)
+                logger.warning(
+                    "Failed to load reranker config from YAML, using default: %s", e
+                )
                 reranker_config = RerankerConfig.default()
 
         # Take top candidates for reranking

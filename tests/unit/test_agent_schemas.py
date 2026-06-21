@@ -79,7 +79,10 @@ class TestAgentToolSpec:
             name="classify_ticket",
             description="Classify a ticket into 8 intent categories",
             input_schema={"type": "object", "properties": {"text": {"type": "string"}}},
-            output_schema={"type": "object", "properties": {"intent": {"type": "string"}}},
+            output_schema={
+                "type": "object",
+                "properties": {"intent": {"type": "string"}},
+            },
             risk_level="low",
         )
         assert spec.name == "classify_ticket"
@@ -216,8 +219,12 @@ class TestAgentPlan:
 
     def test_allows_multiple_steps(self):
         steps = [
-            AgentStep(step_id="s1", description="d1", tool_name="t1", expected_output="o1"),
-            AgentStep(step_id="s2", description="d2", tool_name="t2", expected_output="o2"),
+            AgentStep(
+                step_id="s1", description="d1", tool_name="t1", expected_output="o1"
+            ),
+            AgentStep(
+                step_id="s2", description="d2", tool_name="t2", expected_output="o2"
+            ),
         ]
         plan = AgentPlan(goal="goal", steps=steps)
         assert len(plan.steps) == 2

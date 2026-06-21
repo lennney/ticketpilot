@@ -45,8 +45,13 @@ _FALLBACK_SKILL = SkillDefinition(
     issue_type="general",
     goal="Provide general support for the ticket",
     description="Fallback skill when no specific business skill matches",
-    required_tools=["normalize_ticket", "classify_ticket", "assess_risk",
-                    "retrieve_evidence", "generate_draft"],
+    required_tools=[
+        "normalize_ticket",
+        "classify_ticket",
+        "assess_risk",
+        "retrieve_evidence",
+        "generate_draft",
+    ],
     steps=[
         {"step_id": "s1_normalize", "tool_name": "normalize_ticket"},
         {"step_id": "s2_classify", "tool_name": "classify_ticket"},
@@ -56,10 +61,15 @@ _FALLBACK_SKILL = SkillDefinition(
     ],
 )
 
-_KNOWN_TOOLS = frozenset({
-    "normalize_ticket", "classify_ticket", "assess_risk",
-    "retrieve_evidence", "generate_draft",
-})
+_KNOWN_TOOLS = frozenset(
+    {
+        "normalize_ticket",
+        "classify_ticket",
+        "assess_risk",
+        "retrieve_evidence",
+        "generate_draft",
+    }
+)
 
 
 class SkillLoadError(Exception):
@@ -83,21 +93,15 @@ def _parse_skill_dir(skill_dir: Path) -> SkillDefinition:
     md_path = skill_dir / "SKILL.md"
 
     if not yaml_path.exists():
-        raise SkillLoadError(
-            f"missing planner_template.yaml in {skill_dir}"
-        )
+        raise SkillLoadError(f"missing planner_template.yaml in {skill_dir}")
     if not md_path.exists():
-        raise SkillLoadError(
-            f"missing SKILL.md in {skill_dir}"
-        )
+        raise SkillLoadError(f"missing SKILL.md in {skill_dir}")
 
     with open(yaml_path, encoding="utf-8") as f:
         try:
             data: dict[str, Any] = yaml.safe_load(f)
         except yaml.YAMLError as e:
-            raise SkillLoadError(
-                f"invalid YAML in {yaml_path}: {e}"
-            ) from e
+            raise SkillLoadError(f"invalid YAML in {yaml_path}: {e}") from e
 
     if not isinstance(data, dict):
         raise SkillLoadError(
@@ -118,13 +122,9 @@ def _parse_skill_dir(skill_dir: Path) -> SkillDefinition:
     steps = data.get("steps", [])
 
     if not isinstance(match_keywords, list):
-        raise SkillLoadError(
-            f"'match_keywords' must be a list in {yaml_path}"
-        )
+        raise SkillLoadError(f"'match_keywords' must be a list in {yaml_path}")
     if not isinstance(required_tools, list):
-        raise SkillLoadError(
-            f"'required_tools' must be a list in {yaml_path}"
-        )
+        raise SkillLoadError(f"'required_tools' must be a list in {yaml_path}")
 
     _validate_required_tools(required_tools)
 
@@ -161,9 +161,7 @@ class SkillLoader:
         Raises SkillLoadError on malformed files.
         """
         if not self._base.exists():
-            raise SkillLoadError(
-                f"skills base directory not found: {self._base}"
-            )
+            raise SkillLoadError(f"skills base directory not found: {self._base}")
 
         loaded: list[SkillDefinition] = []
         for entry in sorted(self._base.iterdir()):

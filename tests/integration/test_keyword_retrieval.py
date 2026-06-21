@@ -116,12 +116,14 @@ class TestKeywordSearchFTS:
         """Check if database is available."""
         try:
             from ticketpilot.retrieval.db.connection import get_db_connection
+
             with get_db_connection() as conn:
                 conn.execute("SELECT 1")
             return True
         except Exception as e:
             import sys
             import traceback
+
             print(f"DEBUG db_available exception: {e}", file=sys.stderr)
             traceback.print_exc(file=sys.stderr)
             return False
@@ -132,7 +134,11 @@ class TestKeywordSearchFTS:
         if not db_available:
             pytest.skip("Database not available")
         try:
-            from ticketpilot.retrieval.db.seeding import seed_knowledge_chunks, get_chunk_count
+            from ticketpilot.retrieval.db.seeding import (
+                seed_knowledge_chunks,
+                get_chunk_count,
+            )
+
             if get_chunk_count() == 0:
                 seed_knowledge_chunks(clear_existing=True)
         except Exception as e:

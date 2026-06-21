@@ -15,8 +15,14 @@ class TestFallbackToFake:
     """When no env or .env.local is present, config must fall back to fake."""
 
     def test_no_env_no_dotenv_returns_fake(self, monkeypatch):
-        for var in ["EMBEDDING_PROVIDER", "EMBEDDING_MODEL", "EMBEDDING_DIM",
-                     "EMBEDDING_BASE_URL", "EMBEDDING_API_KEY", "EMBEDDING_BATCH_SIZE"]:
+        for var in [
+            "EMBEDDING_PROVIDER",
+            "EMBEDDING_MODEL",
+            "EMBEDDING_DIM",
+            "EMBEDDING_BASE_URL",
+            "EMBEDDING_API_KEY",
+            "EMBEDDING_BATCH_SIZE",
+        ]:
             monkeypatch.delenv(var, raising=False)
 
         config = load_embedding_config_from_env()
@@ -46,8 +52,14 @@ class TestDotEnvLocalLoading:
             "EMBEDDING_BATCH_SIZE=10\n"
         )
         # Clear env first
-        for var in ["EMBEDDING_PROVIDER", "EMBEDDING_MODEL", "EMBEDDING_DIM",
-                     "EMBEDDING_BASE_URL", "EMBEDDING_API_KEY", "EMBEDDING_BATCH_SIZE"]:
+        for var in [
+            "EMBEDDING_PROVIDER",
+            "EMBEDDING_MODEL",
+            "EMBEDDING_DIM",
+            "EMBEDDING_BASE_URL",
+            "EMBEDDING_API_KEY",
+            "EMBEDDING_BATCH_SIZE",
+        ]:
             monkeypatch.delenv(var, raising=False)
 
         load_dotenv(str(dotenv_path), override=False)
@@ -69,9 +81,7 @@ class TestShellEnvPriority:
     def test_shell_env_wins_over_dotenv(self, tmp_path, monkeypatch):
         dotenv_path = tmp_path / ".env.local"
         dotenv_path.write_text(
-            "EMBEDDING_PROVIDER=fake\n"
-            "EMBEDDING_MODEL=fake-384\n"
-            "EMBEDDING_DIM=384\n"
+            "EMBEDDING_PROVIDER=fake\nEMBEDDING_MODEL=fake-384\nEMBEDDING_DIM=384\n"
         )
         # Shell env says openai_compatible
         monkeypatch.setenv("EMBEDDING_PROVIDER", "openai_compatible")
@@ -82,7 +92,9 @@ class TestShellEnvPriority:
         load_dotenv(str(dotenv_path), override=False)
 
         config = load_embedding_config_from_env()
-        assert config.provider == "openai_compatible", "shell env must win over .env.local"
+        assert config.provider == "openai_compatible", (
+            "shell env must win over .env.local"
+        )
         assert config.model == "text-embedding-v4"
         assert config.dimension == 1024
 
@@ -93,8 +105,9 @@ class TestShellEnvPriority:
 
         load_dotenv(str(dotenv_path), override=False)
 
-        assert os.environ.get("EMBEDDING_API_KEY") == "sk-from-shell", \
+        assert os.environ.get("EMBEDDING_API_KEY") == "sk-from-shell", (
             "shell env API key must not be overridden by .env.local"
+        )
 
 
 class TestApiKeyNotLeaked:
@@ -133,6 +146,7 @@ class TestApiKeyNotLeaked:
         # This config has no api_key — factory should complain about missing key,
         # but must NOT print the key value (which is None here anyway)
         from ticketpilot.retrieval.providers import create_embedding_provider
+
         with pytest.raises(ValueError) as exc:
             create_embedding_provider(config)
         msg = str(exc.value)
@@ -146,8 +160,10 @@ class TestModuleLevelDotenvPath:
 
     def test_dotenv_path_is_project_root(self):
         import ticketpilot.retrieval.embedding_config as ec
+
         env_local_path = ec._env_local  # type: Path
         assert env_local_path.name == ".env.local"
         # The parent should be the project root (contains pyproject.toml)
-        assert (env_local_path.parent / "pyproject.toml").exists(), \
+        assert (env_local_path.parent / "pyproject.toml").exists(), (
             f"{env_local_path.parent} should be project root (contain pyproject.toml)"
+        )

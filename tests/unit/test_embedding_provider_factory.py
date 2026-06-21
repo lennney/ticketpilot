@@ -54,8 +54,14 @@ class TestLoadConfigFromEnv:
 
     def test_load_defaults_when_no_env(self, monkeypatch):
         """Loading config with no env vars should return defaults."""
-        for var in ["EMBEDDING_PROVIDER", "EMBEDDING_MODEL", "EMBEDDING_DIM",
-                     "EMBEDDING_BASE_URL", "EMBEDDING_API_KEY", "EMBEDDING_BATCH_SIZE"]:
+        for var in [
+            "EMBEDDING_PROVIDER",
+            "EMBEDDING_MODEL",
+            "EMBEDDING_DIM",
+            "EMBEDDING_BASE_URL",
+            "EMBEDDING_API_KEY",
+            "EMBEDDING_BATCH_SIZE",
+        ]:
             monkeypatch.delenv(var, raising=False)
 
         config = load_embedding_config_from_env()
@@ -154,8 +160,14 @@ class TestGetEmbeddingProvider:
 
     def test_get_default_provider(self, monkeypatch):
         """Getting default provider should return FakeEmbeddingProvider."""
-        for var in ["EMBEDDING_PROVIDER", "EMBEDDING_MODEL", "EMBEDDING_DIM",
-                     "EMBEDDING_BASE_URL", "EMBEDDING_API_KEY", "EMBEDDING_BATCH_SIZE"]:
+        for var in [
+            "EMBEDDING_PROVIDER",
+            "EMBEDDING_MODEL",
+            "EMBEDDING_DIM",
+            "EMBEDDING_BASE_URL",
+            "EMBEDDING_API_KEY",
+            "EMBEDDING_BATCH_SIZE",
+        ]:
             monkeypatch.delenv(var, raising=False)
 
         provider = get_embedding_provider()

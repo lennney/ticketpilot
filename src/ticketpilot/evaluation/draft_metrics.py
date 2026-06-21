@@ -117,7 +117,8 @@ def compute_draft_evaluation_summary(
     # Denominator: cases where any trigger condition exists
     # (expected=True OR any guard/validation failure reason)
     trigger_cases = [
-        r for r in rows
+        r
+        for r in rows
         if r.expected_human_review
         or not r.citation_validation_passed
         or not r.guard_passed
@@ -130,12 +131,8 @@ def compute_draft_evaluation_summary(
     )
 
     # Citation validation pass rate
-    valid_citation_cases = [
-        r for r in rows if r.citation_validation_passed
-    ]
-    citation_validation_pass_rate = (
-        len(valid_citation_cases) / n if n > 0 else 0.0
-    )
+    valid_citation_cases = [r for r in rows if r.citation_validation_passed]
+    citation_validation_pass_rate = len(valid_citation_cases) / n if n > 0 else 0.0
 
     # Claim guard pass rate
     guard_pass_cases = [r for r in rows if r.guard_passed]

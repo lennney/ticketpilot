@@ -3,6 +3,7 @@
 Defines signal weights, intent boost tables, and content quality parameters.
 Supports loading from YAML files for A/B experiments.
 """
+
 from __future__ import annotations
 
 from dataclasses import dataclass, field
@@ -13,6 +14,7 @@ from typing import Any
 @dataclass
 class ContentQualityConfig:
     """Parameters for the content quality scoring signal."""
+
     optimal_length_min: int = 200
     optimal_length_max: int = 800
     keyword_density_weight: float = 0.5

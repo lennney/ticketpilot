@@ -1,4 +1,5 @@
 """Optimizer configuration."""
+
 from __future__ import annotations
 
 from dataclasses import dataclass, field
@@ -44,6 +45,7 @@ FIX_PRIORITY = {
 @dataclass
 class OptimizerConfig:
     """Runtime configuration for the optimizer."""
+
     max_rounds: int = 20
     diagnose_only: bool = False
     dry_run: bool = False

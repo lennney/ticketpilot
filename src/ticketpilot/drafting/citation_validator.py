@@ -75,8 +75,7 @@ class CitationValidator:
             has_keyword = any(kw in stripped for kw in _CLAIM_KEYWORDS)
             if has_keyword and not has_marker:
                 issues.append(
-                    f"Potential unsupported claim in sentence: "
-                    f"'{stripped[:80]}'"
+                    f"Potential unsupported claim in sentence: '{stripped[:80]}'"
                 )
 
         # Check 3: cross-reference citations against evidence (if provided)
@@ -84,9 +83,7 @@ class CitationValidator:
             valid_chunk_ids = {ec.chunk_id for ec in evidence_candidates}
             for c in citations:
                 if c.chunk_id not in valid_chunk_ids:
-                    issues.append(
-                        f"Citation references unknown chunk_id: {c.chunk_id}"
-                    )
+                    issues.append(f"Citation references unknown chunk_id: {c.chunk_id}")
 
         return (len(issues) == 0, issues)
 

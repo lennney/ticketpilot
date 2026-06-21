@@ -52,9 +52,7 @@ class ExperimentReport(BaseModel):
             "|--------|---------|-----------|-------|",
         ]
 
-        all_keys = sorted(
-            set(self.control_results) | set(self.treatment_results)
-        )
+        all_keys = sorted(set(self.control_results) | set(self.treatment_results))
         for key in all_keys:
             c = self.control_results.get(key, "N/A")
             t = self.treatment_results.get(key, "N/A")

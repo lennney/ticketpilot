@@ -97,7 +97,13 @@ class AgentStateStore:
                 """UPDATE agent_runs
                    SET status = ?, run_data = ?, updated_at = ?, pause_reason = ?
                    WHERE run_id = ?""",
-                (AgentRunStatus.PAUSED.value, run.model_dump_json(), now, reason, run_id),
+                (
+                    AgentRunStatus.PAUSED.value,
+                    run.model_dump_json(),
+                    now,
+                    reason,
+                    run_id,
+                ),
             )
             conn.commit()
 

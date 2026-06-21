@@ -85,20 +85,14 @@ def draft_gen_to_audit_fields(
         "provider_name": gen_result.provider_name,
         "model_name": gen_result.model_name,
         "citation_validation_valid": cv.is_valid if cv else None,
-        "valid_cited_evidence_ids": (
-            cv.valid_cited_evidence_ids if cv else []
-        ),
-        "invalid_cited_evidence_ids": (
-            cv.invalid_cited_evidence_ids if cv else []
-        ),
+        "valid_cited_evidence_ids": (cv.valid_cited_evidence_ids if cv else []),
+        "invalid_cited_evidence_ids": (cv.invalid_cited_evidence_ids if cv else []),
         "missing_citation_required": cv.missing_citation_required if cv else None,
         "guard_passed": gr.guard_passed if gr else None,
         "guard_uncited_claims": gr.has_uncited_claims if gr else None,
         "guard_forbidden_promise": gr.has_forbidden_promise if gr else None,
         "guard_forbidden_details": gr.forbidden_promise_details if gr else [],
-        "guard_risk_not_acknowledged": (
-            not gr.risk_flags_respected if gr else None
-        ),
+        "guard_risk_not_acknowledged": (not gr.risk_flags_respected if gr else None),
         "human_review_forced": draft.must_human_review,
         "human_review_reasons": sorted(set(reasons)),
         "escalation_reason": draft.escalation_reason,
@@ -214,7 +208,9 @@ def build_review_decision(
         # Confidence breakdown
         confidence_level=confidence.level.value if confidence else None,
         confidence_retrieval=confidence.retrieval_confidence if confidence else None,
-        confidence_classification=confidence.classification_confidence if confidence else None,
+        confidence_classification=confidence.classification_confidence
+        if confidence
+        else None,
         confidence_citation=confidence.citation_confidence if confidence else None,
         confidence_evidence_density=confidence.evidence_density if confidence else None,
         response_strategy=degraded.strategy.value if degraded else None,
@@ -375,9 +371,7 @@ def _render_draft_and_actions(result: DraftedTicketResult) -> None:
     confidence: ConfidenceBreakdown | None = getattr(
         st.session_state, "confidence", None
     )
-    degraded: DegradedResponse | None = getattr(
-        st.session_state, "degraded", None
-    )
+    degraded: DegradedResponse | None = getattr(st.session_state, "degraded", None)
 
     if confidence and degraded:
         st.subheader("置信度分析")
@@ -441,7 +435,7 @@ def _render_draft_and_actions(result: DraftedTicketResult) -> None:
         st.subheader("溯源链")
         for claim in provenance.claims:
             st.write(
-                f"[{claim.citation_index}] \"{claim.claim_text[:50]}\" "
+                f'[{claim.citation_index}] "{claim.claim_text[:50]}" '
                 f"← chunk `{str(claim.source_chunk_id)[:8]}...` "
                 f"({claim.source_doc_type}, {claim.retrieval_method}, "
                 f"score={claim.retrieval_score:.2f})"
@@ -479,9 +473,7 @@ def _render_draft_and_actions(result: DraftedTicketResult) -> None:
         reason = st.text_input("升级原因", key="escalate_reason")
         if st.button("确认升级", key="confirm_escalate_btn"):
             if reason.strip():
-                _save_and_display(
-                    result, ReviewAction.ESCALATE, decision_reason=reason
-                )
+                _save_and_display(result, ReviewAction.ESCALATE, decision_reason=reason)
             else:
                 st.error("请输入升级原因")
 
@@ -490,9 +482,7 @@ def _render_draft_and_actions(result: DraftedTicketResult) -> None:
         reason = st.text_input("拒绝原因", key="reject_reason")
         if st.button("确认拒绝", key="confirm_reject_btn"):
             if reason.strip():
-                _save_and_display(
-                    result, ReviewAction.REJECT, decision_reason=reason
-                )
+                _save_and_display(result, ReviewAction.REJECT, decision_reason=reason)
             else:
                 st.error("请输入拒绝原因")
 
@@ -507,8 +497,12 @@ def _save_and_display(
     confidence = getattr(st.session_state, "confidence", None)
     degraded = getattr(st.session_state, "degraded", None)
     decision = build_review_decision(
-        result, action, edited_text, decision_reason,
-        confidence=confidence, degraded=degraded,
+        result,
+        action,
+        edited_text,
+        decision_reason,
+        confidence=confidence,
+        degraded=degraded,
     )
     store = ReviewStore(DEFAULT_STORE_PATH)
     store.save(decision)

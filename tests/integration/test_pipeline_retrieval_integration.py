@@ -100,9 +100,7 @@ class TestPipelineRetrievalIntegration:
         assert RiskFlag.LEGAL_RISK in output.risk_assessment.flags
         assert isinstance(output.retrieval_trace, RetrievalTrace)
 
-    def test_low_confidence_does_not_block_retrieval(
-        self, db_available, ensure_seeded
-    ):
+    def test_low_confidence_does_not_block_retrieval(self, db_available, ensure_seeded):
         """LOW_CONFIDENCE classification does not prevent retrieval from running."""
         if not db_available:
             pytest.skip("Database not available")
@@ -139,9 +137,7 @@ class TestPipelineRetrievalIntegration:
             assert isinstance(candidate.rank, int)
             assert candidate.rank >= 1
 
-    def test_retrieval_trace_has_expected_fields(
-        self, db_available, ensure_seeded
-    ):
+    def test_retrieval_trace_has_expected_fields(self, db_available, ensure_seeded):
         """RetrievalTrace contains expected structured fields."""
         if not db_available:
             pytest.skip("Database not available")

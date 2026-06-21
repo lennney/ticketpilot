@@ -64,9 +64,7 @@ class ThresholdAdvisor:
             "low": round(suggested_high * 0.5, 2),
         }
 
-        changed = any(
-            abs(suggested[k] - current[k]) > 0.01 for k in current
-        )
+        changed = any(abs(suggested[k] - current[k]) > 0.01 for k in current)
 
         if changed:
             reasoning = (

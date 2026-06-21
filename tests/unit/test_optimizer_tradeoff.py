@@ -1,4 +1,5 @@
 """Tests for the keyword trade-off analysis module."""
+
 from __future__ import annotations
 
 import pytest

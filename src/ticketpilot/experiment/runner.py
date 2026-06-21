@@ -89,7 +89,9 @@ def _run_group(
     }
 
 
-def _compute_delta(control: dict[str, Any], treatment: dict[str, Any]) -> dict[str, Any]:
+def _compute_delta(
+    control: dict[str, Any], treatment: dict[str, Any]
+) -> dict[str, Any]:
     """Compute treatment - control for numeric keys."""
     delta: dict[str, Any] = {}
     for key in set(control) | set(treatment):

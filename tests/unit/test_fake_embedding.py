@@ -1,6 +1,5 @@
 """Tests for FakeEmbeddingProvider determinism."""
 
-
 from ticketpilot.retrieval.providers.fake_embedding import (
     FAKE_EMBEDDING_DIM,
     FakeEmbeddingProvider,
@@ -35,7 +34,9 @@ class TestFakeEmbeddingDeterminism:
 
         vec = provider.embed("test text")
 
-        assert len(vec) == FAKE_EMBEDDING_DIM, f"Expected {FAKE_EMBEDDING_DIM} dimensions, got {len(vec)}"
+        assert len(vec) == FAKE_EMBEDDING_DIM, (
+            f"Expected {FAKE_EMBEDDING_DIM} dimensions, got {len(vec)}"
+        )
 
     def test_batch_embedding_is_deterministic(self):
         """Test that batch embeddings are deterministic."""
@@ -54,7 +55,9 @@ class TestFakeEmbeddingDeterminism:
 
         batch = provider.embed_batch(texts)
 
-        assert len(batch) == len(texts), f"Expected {len(texts)} embeddings, got {len(batch)}"
+        assert len(batch) == len(texts), (
+            f"Expected {len(texts)} embeddings, got {len(batch)}"
+        )
 
     def test_embedding_values_in_range(self):
         """Test that embedding values are in range [-1, 1]."""
@@ -71,7 +74,9 @@ class TestFakeEmbeddingDeterminism:
 
         vec = provider.embed("")
 
-        assert len(vec) == FAKE_EMBEDDING_DIM, "Empty string must produce valid embedding"
+        assert len(vec) == FAKE_EMBEDDING_DIM, (
+            "Empty string must produce valid embedding"
+        )
 
     def test_chinese_text_is_deterministic(self):
         """Test that Chinese text embeddings are deterministic."""
@@ -105,7 +110,9 @@ class TestFakeEmbeddingDeterminism:
 
     def test_provider_singleton_reuse(self):
         """Test that singleton provider produces same results."""
-        from ticketpilot.retrieval.providers.fake_embedding import get_fake_embedding_provider
+        from ticketpilot.retrieval.providers.fake_embedding import (
+            get_fake_embedding_provider,
+        )
 
         provider1 = get_fake_embedding_provider()
         provider2 = get_fake_embedding_provider()
@@ -144,4 +151,6 @@ class TestFakeEmbeddingStatisticalProperties:
         max_val = max(vec)
 
         # Should span at least some range
-        assert max_val - min_val > 0.1, "Embedding values should span a reasonable range"
+        assert max_val - min_val > 0.1, (
+            "Embedding values should span a reasonable range"
+        )

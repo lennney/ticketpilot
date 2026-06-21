@@ -39,7 +39,9 @@ def _get_llm_provider():
     if provider_type == "openai_compatible":
         from ticketpilot.drafting.llm_provider import OpenAICompatibleProvider
 
-        base_url = os.environ.get("TICKETPILOT_LLM_BASE_URL", "https://api.deepseek.com")
+        base_url = os.environ.get(
+            "TICKETPILOT_LLM_BASE_URL", "https://api.deepseek.com"
+        )
         api_key = os.environ.get("TICKETPILOT_LLM_API_KEY", "")
         model = os.environ.get("TICKETPILOT_LLM_MODEL", "deepseek-chat")
         timeout = int(os.environ.get("TICKETPILOT_LLM_TIMEOUT_SECONDS", "30"))
@@ -47,7 +49,9 @@ def _get_llm_provider():
         temperature = float(os.environ.get("TICKETPILOT_LLM_TEMPERATURE", "0.3"))
 
         if not api_key:
-            logger.warning("TICKETPILOT_LLM_API_KEY not set, falling back to FakeDraftProvider")
+            logger.warning(
+                "TICKETPILOT_LLM_API_KEY not set, falling back to FakeDraftProvider"
+            )
             return None
 
         return OpenAICompatibleProvider(
@@ -59,7 +63,9 @@ def _get_llm_provider():
             temperature=temperature,
         )
 
-    logger.warning("Unknown TICKETPILOT_LLM_PROVIDER=%s, falling back to fake", provider_type)
+    logger.warning(
+        "Unknown TICKETPILOT_LLM_PROVIDER=%s, falling back to fake", provider_type
+    )
     return None
 
 

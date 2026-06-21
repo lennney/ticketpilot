@@ -247,9 +247,7 @@ def compute_case_retrieval_metrics(
     expected_types = set(case.expected_doc_types)
 
     # Doc-type level
-    type_hits = {
-        k: _is_any_doc_type_in_top_k(retrieved, expected_types, k) for k in ks
-    }
+    type_hits = {k: _is_any_doc_type_in_top_k(retrieved, expected_types, k) for k in ks}
     first_type_rank = _find_first_relevant_rank_by_doc_type(retrieved, expected_types)
     rr_type = 1.0 / first_type_rank if first_type_rank is not None else 0.0
 
@@ -397,7 +395,9 @@ def recheck_wrong_cases_with_doc_id(
                 original_failure_mode=wc.failure_mode,
                 doc_id_found=found_rank is not None,
                 doc_id_found_rank=found_rank,
-                reclassified="doc_id_found_in_top_10" if found_rank is not None else None,
+                reclassified="doc_id_found_in_top_10"
+                if found_rank is not None
+                else None,
             )
         )
 
@@ -447,9 +447,7 @@ def compute_retrieval_comparison_summary(
     mrr_type = compute_mrr(rr_types)
 
     # Doc-id hit rates (only if all cases have doc_id data)
-    has_any_doc_ids = any(
-        m.top_k_doc_id_hit is not None for m in per_case.values()
-    )
+    has_any_doc_ids = any(m.top_k_doc_id_hit is not None for m in per_case.values())
     hit_rate_id: dict[int, float] | None = None
     mrr_id: float | None = None
     if has_any_doc_ids and per_case:

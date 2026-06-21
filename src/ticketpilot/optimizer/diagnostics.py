@@ -4,6 +4,7 @@ Examines EvaluationSummary per-case results, groups mismatches into
 actionable Diagnosis objects, and ranks them by estimated composite
 score gain so the optimizer knows which fixes to attempt first.
 """
+
 from __future__ import annotations
 
 import jieba
@@ -19,15 +20,21 @@ from ticketpilot.evaluation.schemas import (
 
 # 意图优先级顺序（first-match-wins）
 PRIORITY_ORDER = [
-    "REFUND", "RETURN_EXCHANGE", "ACCOUNT_ISSUE",
-    "TECHNICAL_ISSUE", "PRODUCT_CONSULTING", "LOGISTICS",
-    "COMPLAINT", "OTHER"
+    "REFUND",
+    "RETURN_EXCHANGE",
+    "ACCOUNT_ISSUE",
+    "TECHNICAL_ISSUE",
+    "PRODUCT_CONSULTING",
+    "LOGISTICS",
+    "COMPLAINT",
+    "OTHER",
 ]
 
 
 # ---------------------------------------------------------------------------
 # Diagnosis dataclass
 # ---------------------------------------------------------------------------
+
 
 @dataclass
 class Diagnosis:
@@ -62,6 +69,7 @@ _META_RISK_FLAGS: set[str] = {"INSUFFICIENT_EVIDENCE", "LOW_CONFIDENCE"}
 # Helper functions
 # ---------------------------------------------------------------------------
 
+
 def _compute_fix_gain(
     affected_cases: int,
     metric_weight: float,
@@ -85,11 +93,7 @@ def _get_existing_intent_keywords(intent_name: str) -> list[str]:
     """
     from pathlib import Path
 
-    rules_path = (
-        Path(__file__).parent.parent.parent
-        / "classification"
-        / "rules.py"
-    )
+    rules_path = Path(__file__).parent.parent.parent / "classification" / "rules.py"
     if not rules_path.is_file():
         return []
 
@@ -103,9 +107,7 @@ def _get_existing_intent_keywords(intent_name: str) -> list[str]:
 
         # Find keywords=[...] after intent match
         search_start = intent_match.start()
-        kw_match = re.search(
-            r"keywords=\[(.*?)\]", source[search_start:], re.DOTALL
-        )
+        kw_match = re.search(r"keywords=\[(.*?)\]", source[search_start:], re.DOTALL)
         if not kw_match:
             return []
 
@@ -139,9 +141,7 @@ def _get_existing_risk_keywords(flag_name: str) -> list[str]:
 
         # Find keywords=[...] after flag match
         search_start = flag_match.start()
-        kw_match = re.search(
-            r"keywords=\[(.*?)\]", source[search_start:], re.DOTALL
-        )
+        kw_match = re.search(r"keywords=\[(.*?)\]", source[search_start:], re.DOTALL)
         if not kw_match:
             return []
 
@@ -156,24 +156,130 @@ def _get_existing_risk_keywords(flag_name: str) -> list[str]:
 # Common Chinese stop words to filter out from keyword extraction
 _CHINESE_STOP_WORDS: set[str] = {
     # 基础停用词
-    "的", "了", "是", "在", "我", "有", "和", "就", "不", "人",
-    "都", "一", "一个", "上", "也", "很", "到", "说", "要", "去",
-    "你", "会", "着", "没有", "看", "好", "自己", "这", "他", "她",
-    "它", "们", "那", "被", "把", "让", "用", "来", "过", "对",
-    "能", "可", "但", "而", "又", "如果", "因为", "所以", "虽然",
-    "还是", "已经", "什么", "怎么", "这个", "那个", "一下", "可以",
-    "没", "做", "给", "还", "想", "知道", "觉得", "应该", "时候",
-    "现在", "比较", "真的", "其实", "问题", "情况", "东西", "地方",
+    "的",
+    "了",
+    "是",
+    "在",
+    "我",
+    "有",
+    "和",
+    "就",
+    "不",
+    "人",
+    "都",
+    "一",
+    "一个",
+    "上",
+    "也",
+    "很",
+    "到",
+    "说",
+    "要",
+    "去",
+    "你",
+    "会",
+    "着",
+    "没有",
+    "看",
+    "好",
+    "自己",
+    "这",
+    "他",
+    "她",
+    "它",
+    "们",
+    "那",
+    "被",
+    "把",
+    "让",
+    "用",
+    "来",
+    "过",
+    "对",
+    "能",
+    "可",
+    "但",
+    "而",
+    "又",
+    "如果",
+    "因为",
+    "所以",
+    "虽然",
+    "还是",
+    "已经",
+    "什么",
+    "怎么",
+    "这个",
+    "那个",
+    "一下",
+    "可以",
+    "没",
+    "做",
+    "给",
+    "还",
+    "想",
+    "知道",
+    "觉得",
+    "应该",
+    "时候",
+    "现在",
+    "比较",
+    "真的",
+    "其实",
+    "问题",
+    "情况",
+    "东西",
+    "地方",
     # 高频通用词（出现在大多数工单中，无区分度）
-    "你们", "我们", "他们", "订单", "单号", "订单号", "申请",
-    "处理", "问题", "咨询", "需要", "请问", "客服", "平台",
-    "收到", "商品", "产品", "购买", "买", "货", "件",
+    "你们",
+    "我们",
+    "他们",
+    "订单",
+    "单号",
+    "订单号",
+    "申请",
+    "处理",
+    "问题",
+    "咨询",
+    "需要",
+    "请问",
+    "客服",
+    "平台",
+    "收到",
+    "商品",
+    "产品",
+    "购买",
+    "买",
+    "货",
+    "件",
     # Additional stopwords from the task spec
-    "吗", "吧", "啊", "呢", "太",
-    "与", "或", "卖",
-    "两", "三", "天", "钱", "时", "间",
-    "再", "才", "所", "为", "于", "以",
-    "为什么", "不是", "就是", "不要", "这么", "那么", "只",
+    "吗",
+    "吧",
+    "啊",
+    "呢",
+    "太",
+    "与",
+    "或",
+    "卖",
+    "两",
+    "三",
+    "天",
+    "钱",
+    "时",
+    "间",
+    "再",
+    "才",
+    "所",
+    "为",
+    "于",
+    "以",
+    "为什么",
+    "不是",
+    "就是",
+    "不要",
+    "这么",
+    "那么",
+    "只",
 }
 
 
@@ -329,7 +435,9 @@ def _enrich_with_keyword_candidates(
         The same Diagnosis with keyword_candidates populated in details.
     """
     expected_intent = str(diagnosis.expected_values.get("intent", "")).upper()
-    existing_kws = _get_existing_intent_keywords(expected_intent) if expected_intent else []
+    existing_kws = (
+        _get_existing_intent_keywords(expected_intent) if expected_intent else []
+    )
 
     texts = []
     for cid in diagnosis.affected_cases:
@@ -343,7 +451,9 @@ def _enrich_with_keyword_candidates(
     return diagnosis
 
 
-def _build_confusion_matrix(results: dict[str, CaseResult]) -> dict[tuple[str, str], list[str]]:
+def _build_confusion_matrix(
+    results: dict[str, CaseResult],
+) -> dict[tuple[str, str], list[str]]:
     """Build an intent confusion matrix from case results.
 
     Returns dict mapping (expected, predicted) → list of case_ids.
@@ -403,12 +513,15 @@ def _analyze_risk_flags(
 
     # Generate one diagnosis per missed risk flag (fixer expects single risk_flag)
     for flag_name, count in missed_flag_counts.most_common(3):
-        flag_str = str(flag_name.value) if hasattr(flag_name, 'value') else str(flag_name)
+        flag_str = (
+            str(flag_name.value) if hasattr(flag_name, "value") else str(flag_name)
+        )
         # Skip meta-flags that are set programmatically, not by keyword matching
         if flag_str.upper() in _META_RISK_FLAGS:
             continue
         affected = [
-            cid for cid in risk_miss_cases
+            cid
+            for cid in risk_miss_cases
             if cid in results and flag_name in results[cid].golden.expected_risk_flags
         ]
         gain = _compute_fix_gain(len(affected), weight, total_cases)
@@ -428,19 +541,19 @@ def _analyze_risk_flags(
                 if extracted:
                     suggested_keywords = extracted
 
-        diagnoses.append(Diagnosis(
-            type=TYPE_RISK_MISS,
-            priority=2,
-            affected_cases=affected,
-            expected_values={"risk_flag": flag_str.upper()},
-            predicted_values={},
-            suggested_fix_type="risk_keyword",
-            suggested_keywords=suggested_keywords,
-            fix_gain=gain,
-            description=(
-                f"Risk flag '{flag_str}' missed in {len(affected)} cases"
-            ),
-        ))
+        diagnoses.append(
+            Diagnosis(
+                type=TYPE_RISK_MISS,
+                priority=2,
+                affected_cases=affected,
+                expected_values={"risk_flag": flag_str.upper()},
+                predicted_values={},
+                suggested_fix_type="risk_keyword",
+                suggested_keywords=suggested_keywords,
+                fix_gain=gain,
+                description=(f"Risk flag '{flag_str}' missed in {len(affected)} cases"),
+            )
+        )
 
     # Generate risk_false_positive diagnosis (skip — removing keywords is risky)
 
@@ -524,28 +637,31 @@ def _analyze_confidence_misroute(
     # Import current config values to suggest a meaningful adjustment
     try:
         from ticketpilot.config import CONFIDENCE_MEDIUM
+
         adjusted = round(CONFIDENCE_MEDIUM * 0.85, 2)  # suggest 15% lower
     except ImportError:
         adjusted = 0.5  # fallback
 
     gain = _compute_fix_gain(len(misroute_cases), weight, total_cases)
-    diagnoses.append(Diagnosis(
-        type=TYPE_CONFIDENCE_MISROUTE,
-        priority=1,  # confidence_threshold is L1 (safest fix)
-        affected_cases=misroute_cases,
-        expected_values={
-            "threshold_name": "CONFIDENCE_MEDIUM",
-            "new_value": adjusted,
-        },
-        predicted_values={},
-        suggested_fix_type="confidence_threshold",
-        suggested_keywords=[],
-        fix_gain=gain,
-        description=(
-            f"Confidence threshold misroute in {len(misroute_cases)} cases "
-            f"(must_human_review or no_auto_send incorrect)"
-        ),
-    ))
+    diagnoses.append(
+        Diagnosis(
+            type=TYPE_CONFIDENCE_MISROUTE,
+            priority=1,  # confidence_threshold is L1 (safest fix)
+            affected_cases=misroute_cases,
+            expected_values={
+                "threshold_name": "CONFIDENCE_MEDIUM",
+                "new_value": adjusted,
+            },
+            predicted_values={},
+            suggested_fix_type="confidence_threshold",
+            suggested_keywords=[],
+            fix_gain=gain,
+            description=(
+                f"Confidence threshold misroute in {len(misroute_cases)} cases "
+                f"(must_human_review or no_auto_send incorrect)"
+            ),
+        )
+    )
 
     return diagnoses
 
@@ -553,6 +669,7 @@ def _analyze_confidence_misroute(
 # ---------------------------------------------------------------------------
 # Main diagnostics engine
 # ---------------------------------------------------------------------------
+
 
 class DiagnosticsEngine:
     """Analyze evaluation results and produce ranked diagnoses."""
@@ -622,7 +739,10 @@ class DiagnosticsEngine:
 
                 # 如果 predicted intent 的优先级高于 expected intent
                 # 说明是 first-match-wins 问题，应该用 exclusion_rule
-                if expected.upper() in PRIORITY_ORDER and predicted.upper() in PRIORITY_ORDER:
+                if (
+                    expected.upper() in PRIORITY_ORDER
+                    and predicted.upper() in PRIORITY_ORDER
+                ):
                     expected_prio = PRIORITY_ORDER.index(expected.upper())
                     predicted_prio = PRIORITY_ORDER.index(predicted.upper())
                     if predicted_prio < expected_prio:
@@ -646,7 +766,8 @@ class DiagnosticsEngine:
 
                         # 因果分析：找误分类工单中有、但正确分类工单中没有的特征词
                         causal = _analyze_causal_features(
-                            mis_texts, correct_texts,
+                            mis_texts,
+                            correct_texts,
                             existing_keywords=existing_kws,
                             max_features=3,
                         )
@@ -659,21 +780,23 @@ class DiagnosticsEngine:
                         if extracted:
                             suggested_keywords = extracted
 
-            all_diagnoses.append(Diagnosis(
-                type=TYPE_INTENT_MISMATCH,
-                priority=2,  # intent_keyword priority
-                affected_cases=case_ids,
-                expected_values={"intent": expected.upper()},
-                predicted_values={"predicted_intent": predicted},
-                suggested_fix_type=fix_type,
-                suggested_keywords=suggested_keywords,
-                fix_gain=gain,
-                description=(
-                    f"Intent mismatch: expected '{expected}', predicted '{predicted}' "
-                    f"({len(case_ids)} cases)"
-                ),
-                details={"confusions": confusion_details},
-            ))
+            all_diagnoses.append(
+                Diagnosis(
+                    type=TYPE_INTENT_MISMATCH,
+                    priority=2,  # intent_keyword priority
+                    affected_cases=case_ids,
+                    expected_values={"intent": expected.upper()},
+                    predicted_values={"predicted_intent": predicted},
+                    suggested_fix_type=fix_type,
+                    suggested_keywords=suggested_keywords,
+                    fix_gain=gain,
+                    description=(
+                        f"Intent mismatch: expected '{expected}', predicted '{predicted}' "
+                        f"({len(case_ids)} cases)"
+                    ),
+                    details={"confusions": confusion_details},
+                )
+            )
 
         # Enrich intent_mismatch diagnoses with jieba keyword candidates
         for i, diag in enumerate(all_diagnoses):
@@ -681,7 +804,9 @@ class DiagnosticsEngine:
                 all_diagnoses[i] = _enrich_with_keyword_candidates(diag, dataset)
 
         # 2. Risk flag analysis
-        all_diagnoses.extend(_analyze_risk_flags(results, total_cases, risk_weight, dataset))
+        all_diagnoses.extend(
+            _analyze_risk_flags(results, total_cases, risk_weight, dataset)
+        )
 
         # 3. Evidence doc type recall
         all_diagnoses.extend(_analyze_evidence(results, total_cases, evidence_weight))

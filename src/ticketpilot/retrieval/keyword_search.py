@@ -11,24 +11,84 @@ from ticketpilot.retrieval.traces import KeywordResult
 # These are terms where FTS with simple config may not capture exact matches
 BUSINESS_TERMS_LIKE = [
     # 通用客服
-    "退款", "投诉", "赔偿", "7天", "3个工作日", "订单号", "违约", "账号异常",
+    "退款",
+    "投诉",
+    "赔偿",
+    "7天",
+    "3个工作日",
+    "订单号",
+    "违约",
+    "账号异常",
     # 跨境电商
-    "关税", "清关", "海关", "保税", "直邮", "跨境", "海淘", "全球购",
-    "退货", "换货", "物流", "丢件", "理赔", "签收", "快递",
-    "税费", "增值税", "消费税", "限值", "额度",
-    "假货", "正品", "质量", "食品安全", "过敏", "过期",
-    "保修", "售后", "维修", "质保",
-    "12315", "消费者", "维权", "投诉",
+    "关税",
+    "清关",
+    "海关",
+    "保税",
+    "直邮",
+    "跨境",
+    "海淘",
+    "全球购",
+    "退货",
+    "换货",
+    "物流",
+    "丢件",
+    "理赔",
+    "签收",
+    "快递",
+    "税费",
+    "增值税",
+    "消费税",
+    "限值",
+    "额度",
+    "假货",
+    "正品",
+    "质量",
+    "食品安全",
+    "过敏",
+    "过期",
+    "保修",
+    "售后",
+    "维修",
+    "质保",
+    "12315",
+    "消费者",
+    "维权",
+    "投诉",
     # 账号安全
-    "账号", "被盗", "盗号", "密码", "冻结", "异常登录", "异地",
+    "账号",
+    "被盗",
+    "盗号",
+    "密码",
+    "冻结",
+    "异常登录",
+    "异地",
     # 支付
-    "支付", "汇率", "扣款", "退款中",
+    "支付",
+    "汇率",
+    "扣款",
+    "退款中",
     # 禁运合规
-    "禁运", "违禁", "检疫", "备案", "中文标签", "成分",
+    "禁运",
+    "违禁",
+    "检疫",
+    "备案",
+    "中文标签",
+    "成分",
     # 食品安全
-    "食品", "虫子", "过期", "过敏", "医院", "异物", "变质",
+    "食品",
+    "虫子",
+    "过期",
+    "过敏",
+    "医院",
+    "异物",
+    "变质",
     # 通用
-    "怎么办", "如何", "可以吗", "需要", "多久", "费用",
+    "怎么办",
+    "如何",
+    "可以吗",
+    "需要",
+    "多久",
+    "费用",
 ]
 
 # Minimum FTS score threshold for considering results good
@@ -53,10 +113,48 @@ def _extract_search_terms(query: str) -> list[str]:
 
 
 _CHINESE_STOP_CHARS: set[str] = {
-    "的", "了", "是", "在", "有", "和", "就", "不", "我", "你", "他", "它",
-    "这", "那", "上", "下", "来", "去", "为", "与", "及", "而", "从", "被",
-    "把", "以", "对", "到", "说", "要", "会", "也", "很", "都", "一", "个",
-    "可以", "么", "吗", "吧", "呢", "啊",
+    "的",
+    "了",
+    "是",
+    "在",
+    "有",
+    "和",
+    "就",
+    "不",
+    "我",
+    "你",
+    "他",
+    "它",
+    "这",
+    "那",
+    "上",
+    "下",
+    "来",
+    "去",
+    "为",
+    "与",
+    "及",
+    "而",
+    "从",
+    "被",
+    "把",
+    "以",
+    "对",
+    "到",
+    "说",
+    "要",
+    "会",
+    "也",
+    "很",
+    "都",
+    "一",
+    "个",
+    "可以",
+    "么",
+    "吗",
+    "吧",
+    "呢",
+    "啊",
 }
 
 
@@ -128,8 +226,7 @@ def _fts_search(
     """
     # Import using __import__ to bypass package __init__ which may have heavy dependencies
     get_db_connection = __import__(
-        "ticketpilot.retrieval.db.connection",
-        fromlist=["get_db_connection"]
+        "ticketpilot.retrieval.db.connection", fromlist=["get_db_connection"]
     ).get_db_connection
 
     search_terms = _extract_search_terms(query)
@@ -144,7 +241,7 @@ def _fts_search(
     # Build FTS query using to_tsquery with simple config
     # Each term is joined with OR (|)
     # Escape % → %% for psycopg3 (prevents placeholder interpretation)
-    tsquery_parts = " | ".join(term.replace('%', '%%') for term in search_terms)
+    tsquery_parts = " | ".join(term.replace("%", "%%") for term in search_terms)
     tsquery = f"to_tsquery('simple', '{tsquery_parts}')"
 
     # Build doc_types filter if provided
@@ -202,11 +299,11 @@ def _fts_search(
                 if content_raw is None:
                     safe_content = ""
                 elif isinstance(content_raw, bytes):
-                    safe_content = content_raw.decode('utf-8', errors='replace')
+                    safe_content = content_raw.decode("utf-8", errors="replace")
                 else:
                     try:
                         safe_content = str(content_raw)
-                        safe_content.encode('utf-8', errors='replace').decode('utf-8')
+                        safe_content.encode("utf-8", errors="replace").decode("utf-8")
                     except Exception:
                         safe_content = "[content encoding error]"
 
@@ -279,9 +376,7 @@ def _like_search(
     # Each term's LIKE is repeated num_occurrences times
     score_terms_parts = []
     for i in range(len(terms)):
-        score_terms_parts.append(
-            "CASE WHEN k.content LIKE %s THEN 1 ELSE 0 END"
-        )
+        score_terms_parts.append("CASE WHEN k.content LIKE %s THEN 1 ELSE 0 END")
     score_terms = " + ".join(score_terms_parts)
 
     # Combine params: like_term_params (duplicated) + doc_type_params
@@ -315,11 +410,11 @@ def _like_search(
                 if content_raw is None:
                     safe_content = ""
                 elif isinstance(content_raw, bytes):
-                    safe_content = content_raw.decode('utf-8', errors='replace')
+                    safe_content = content_raw.decode("utf-8", errors="replace")
                 else:
                     try:
                         safe_content = str(content_raw)
-                        safe_content.encode('utf-8', errors='replace').decode('utf-8')
+                        safe_content.encode("utf-8", errors="replace").decode("utf-8")
                     except Exception:
                         safe_content = "[content encoding error]"
 
@@ -374,7 +469,9 @@ def keyword_search(
         business_terms = _check_business_terms(query)
         if business_terms:
             # Supplement with LIKE search
-            like_results = _like_search(business_terms, top_k, doc_types, exclude_business_domains)
+            like_results = _like_search(
+                business_terms, top_k, doc_types, exclude_business_domains
+            )
             if like_results:
                 search_method = "fts+like"
                 # Merge results, avoiding duplicates
@@ -384,7 +481,9 @@ def keyword_search(
                         fts_results.append(result)
 
                 # Re-rank combined results
-                for i, result in enumerate(sorted(fts_results, key=lambda x: x.score, reverse=True), 1):
+                for i, result in enumerate(
+                    sorted(fts_results, key=lambda x: x.score, reverse=True), 1
+                ):
                     result.rank = i
 
     # Sort by rank and limit

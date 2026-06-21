@@ -9,7 +9,9 @@ from ticketpilot.retrieval.schema.knowledge import (
     PolicyDocument,
 )
 
-_SEED_DATA_DIR = Path(__file__).parent.parent.parent.parent.parent / "data" / "knowledge"
+_SEED_DATA_DIR = (
+    Path(__file__).parent.parent.parent.parent.parent / "data" / "knowledge"
+)
 
 
 def _load_json_file(filename: str) -> list[dict]:
@@ -39,7 +41,9 @@ def load_case_seed_data() -> list[CaseDocument]:
     return [CaseDocument(**item) for item in data]
 
 
-def load_seed_data() -> tuple[list[FAQDocument], list[PolicyDocument], list[CaseDocument]]:
+def load_seed_data() -> tuple[
+    list[FAQDocument], list[PolicyDocument], list[CaseDocument]
+]:
     """Load all seed data files."""
     return (
         load_faq_seed_data(),

@@ -1,4 +1,5 @@
 """Entry point: python -m ticketpilot.optimizer"""
+
 import argparse
 import sys
 
@@ -16,11 +17,24 @@ def main() -> None:
   python -m ticketpilot.optimizer --history    # Show past runs
 """,
     )
-    parser.add_argument("--rounds", type=int, default=20, help="Max optimization rounds (default: 20)")
-    parser.add_argument("--diagnose-only", action="store_true", help="Run diagnosis only, no fixes")
-    parser.add_argument("--continue", dest="continue_run", action="store_true", help="Resume from last iteration")
-    parser.add_argument("--dry-run", action="store_true", help="Simulate without modifying files")
-    parser.add_argument("--history", action="store_true", help="Show optimization history")
+    parser.add_argument(
+        "--rounds", type=int, default=20, help="Max optimization rounds (default: 20)"
+    )
+    parser.add_argument(
+        "--diagnose-only", action="store_true", help="Run diagnosis only, no fixes"
+    )
+    parser.add_argument(
+        "--continue",
+        dest="continue_run",
+        action="store_true",
+        help="Resume from last iteration",
+    )
+    parser.add_argument(
+        "--dry-run", action="store_true", help="Simulate without modifying files"
+    )
+    parser.add_argument(
+        "--history", action="store_true", help="Show optimization history"
+    )
     args = parser.parse_args()
 
     # Lazy import to avoid loading heavy deps on --help

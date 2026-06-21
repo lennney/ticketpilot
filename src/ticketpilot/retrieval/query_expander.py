@@ -3,6 +3,7 @@
 Generates query variants by asking an LLM to rephrase the original query
 from different semantic angles. Falls back to original query on failure.
 """
+
 from __future__ import annotations
 
 import json
@@ -67,7 +68,9 @@ class MultiQueryExpander:
             result = [query] + valid[: self._num_variants]
             logger.info(
                 "Query expansion: original_len=%d -> %d variants (total valid: %d)",
-                len(query), len(valid[: self._num_variants]), len(valid),
+                len(query),
+                len(valid[: self._num_variants]),
+                len(valid),
             )
             return result
         except Exception as e:

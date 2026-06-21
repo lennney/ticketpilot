@@ -62,7 +62,8 @@ class RiskAssessor:
         # Calculate severity based on substantive flag count
         # Exclude meta-flags (LOW_CONFIDENCE, INSUFFICIENT_EVIDENCE) from count
         substantive_flags = {
-            f for f in flags
+            f
+            for f in flags
             if f not in (RiskFlag.LOW_CONFIDENCE, RiskFlag.INSUFFICIENT_EVIDENCE)
         }
         substantive_count = len(substantive_flags)

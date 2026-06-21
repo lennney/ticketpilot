@@ -1,4 +1,5 @@
 """Tests for DraftQualityScorer — draft quality scoring module."""
+
 from ticketpilot.quality.scorer import (
     QUALITY_THRESHOLD_AUTO_SEND,
     QUALITY_THRESHOLD_CAUTIOUS,
@@ -178,9 +179,9 @@ class TestComputeDraftQuality:
         """Some pass some fail → intermediate score."""
         result = compute_draft_quality(
             guardrail_passed=True,
-            citation_precision=0.6,   # partial → score=0.5
+            citation_precision=0.6,  # partial → score=0.5
             claim_guard_passed=True,
-            evidence_coverage=0.5,   # partial → score=0.5
+            evidence_coverage=0.5,  # partial → score=0.5
         )
         # weighted: 0.35*0.5 + 0.30*1.0 + 0.35*0.5 = 0.65
         assert 0.5 <= result.overall_score < 0.7
@@ -220,7 +221,12 @@ class TestComputeDraftQuality:
         result = compute_draft_quality(guardrail_passed=True)
         assert len(result.checks) == 4
         names = {c.name for c in result.checks}
-        assert names == {"forbidden_promise", "citation_precision", "claim_guard", "evidence_coverage"}
+        assert names == {
+            "forbidden_promise",
+            "citation_precision",
+            "claim_guard",
+            "evidence_coverage",
+        }
 
     def test_passed_property(self):
         """passed property reflects auto-send eligibility."""

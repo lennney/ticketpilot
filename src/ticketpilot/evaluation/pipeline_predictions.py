@@ -36,7 +36,9 @@ def _extract_doc_types(evidence_candidates: list) -> frozenset[str]:
     )
 
 
-def predict_from_pipeline(eval_ticket: EvalTicket, force_fake_draft: bool = False) -> EvalPrediction:
+def predict_from_pipeline(
+    eval_ticket: EvalTicket, force_fake_draft: bool = False
+) -> EvalPrediction:
     """Run the local TicketPilot pipeline on one eval ticket and return a prediction.
 
     The function:
@@ -62,7 +64,7 @@ def predict_from_pipeline(eval_ticket: EvalTicket, force_fake_draft: bool = Fals
     """
     # 使用固定时间戳以确保评测可重复
     # eval_ticket.submitted_at 是字符串（ISO 格式），需要转为 datetime
-    submitted_at_raw = getattr(eval_ticket, 'submitted_at', None)
+    submitted_at_raw = getattr(eval_ticket, "submitted_at", None)
     if submitted_at_raw:
         try:
             submitted_at = datetime.fromisoformat(submitted_at_raw)
@@ -113,14 +115,11 @@ def predict_from_pipeline(eval_ticket: EvalTicket, force_fake_draft: bool = Fals
     # predicted_must_human_review: True if risk assessment says so OR
     # the DraftReply flags it (covers generation-level human-review signals)
     predicted_must_human_review = (
-        ticket_output.risk_assessment.must_human_review
-        or draft_reply.must_human_review
+        ticket_output.risk_assessment.must_human_review or draft_reply.must_human_review
     )
 
     # predicted_evidence_doc_types from evidence candidates' doc_type values
-    predicted_evidence_doc_types = _extract_doc_types(
-        ticket_output.evidence_candidates
-    )
+    predicted_evidence_doc_types = _extract_doc_types(ticket_output.evidence_candidates)
 
     # predicted_fallback_required: True when DraftReply has a fallback_reason
     predicted_fallback_required = draft_reply.fallback_reason is not None

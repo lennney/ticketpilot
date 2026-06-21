@@ -25,6 +25,7 @@ from ticketpilot.review.retrieval_viz import (
 # Fixtures
 # ---------------------------------------------------------------------------
 
+
 def _make_trace(
     *,
     n_fused: int = 3,
@@ -67,13 +68,21 @@ def _make_empty_trace() -> RetrievalTrace:
 # _build_results_df
 # ---------------------------------------------------------------------------
 
+
 class TestBuildResultsDf:
     """Tests for the results DataFrame builder."""
 
     def test_columns_present(self) -> None:
         trace = _make_trace()
         df = _build_results_df(trace)
-        expected = {"chunk_id", "doc_type", "keyword_rank", "vector_rank", "rrf_score", "sources"}
+        expected = {
+            "chunk_id",
+            "doc_type",
+            "keyword_rank",
+            "vector_rank",
+            "rrf_score",
+            "sources",
+        }
         assert set(df.columns) == expected
 
     def test_row_count_matches_fused(self) -> None:
@@ -120,6 +129,7 @@ class TestBuildResultsDf:
 # ---------------------------------------------------------------------------
 # _build_contribution_df
 # ---------------------------------------------------------------------------
+
 
 class TestBuildContributionDf:
     """Tests for the contribution DataFrame builder."""
@@ -168,6 +178,7 @@ class TestBuildContributionDf:
 # ---------------------------------------------------------------------------
 # render_retrieval_trace (smoke test)
 # ---------------------------------------------------------------------------
+
 
 class TestRenderRetrievalTrace:
     """Smoke tests — verify the render function does not raise."""

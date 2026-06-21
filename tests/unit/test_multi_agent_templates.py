@@ -29,7 +29,13 @@ from ticketpilot.multi_agent import (
 # Template file existence tests
 # ---------------------------------------------------------------------------
 
-_TEMPLATES_DIR = Path(__file__).resolve().parent.parent.parent / "src" / "ticketpilot" / "prompts" / "templates"
+_TEMPLATES_DIR = (
+    Path(__file__).resolve().parent.parent.parent
+    / "src"
+    / "ticketpilot"
+    / "prompts"
+    / "templates"
+)
 
 
 class TestTemplateFilesExist:
@@ -124,6 +130,7 @@ class TestComplaintAgentHumanReview:
         # Verify the agent's generate_draft sets must_human_review=True
         # by checking the method source or mock
         import inspect
+
         source = inspect.getsource(agent.generate_draft)
         assert "must_human_review = True" in source
 
@@ -131,6 +138,7 @@ class TestComplaintAgentHumanReview:
         """Even if must_human_review=False is passed, ComplaintAgent forces it."""
         agent = ComplaintAgent()
         import inspect
+
         source = inspect.getsource(agent.generate_draft)
         # The assignment happens before the call to draft_agent
         assert "must_human_review = True" in source

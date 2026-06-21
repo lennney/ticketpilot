@@ -3,6 +3,7 @@
 These module-level functions are extracted from ``OptimizationEngine`` so they
 can be imported and tested independently.
 """
+
 from __future__ import annotations
 
 import logging
@@ -24,10 +25,7 @@ def compute_composite(summary: EvaluationSummary, weights: dict[str, float]) -> 
         Float in [0.0, 1.0].
     """
     scores = score_dict(summary)
-    return sum(
-        scores[metric] * weight
-        for metric, weight in weights.items()
-    )
+    return sum(scores[metric] * weight for metric, weight in weights.items())
 
 
 def score_dict(summary: EvaluationSummary) -> dict[str, float]:

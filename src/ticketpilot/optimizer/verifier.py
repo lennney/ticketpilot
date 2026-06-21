@@ -5,6 +5,7 @@ Runs a 3-layer verification after each optimization round:
   Layer 2: re-evaluate and compute composite delta
   Layer 3: safety checks (no metric drop >2%, no regressions, at least 1 improvement)
 """
+
 from __future__ import annotations
 
 import logging
@@ -15,7 +16,11 @@ from pathlib import Path
 from typing import TYPE_CHECKING
 
 from ticketpilot.evaluation.schemas import EvaluationSummary
-from ticketpilot.optimizer.config import COMPOSITE_WEIGHTS, MAX_SINGLE_METRIC_DROP, MIN_CASES_FIXED
+from ticketpilot.optimizer.config import (
+    COMPOSITE_WEIGHTS,
+    MAX_SINGLE_METRIC_DROP,
+    MIN_CASES_FIXED,
+)
 
 if TYPE_CHECKING:
     from ticketpilot.optimizer.evaluator import OptimizerEvaluator
@@ -26,6 +31,7 @@ logger = logging.getLogger(__name__)
 # ---------------------------------------------------------------------------
 # Verification result
 # ---------------------------------------------------------------------------
+
 
 @dataclass
 class VerificationResult:
@@ -47,6 +53,7 @@ class VerificationResult:
 # ---------------------------------------------------------------------------
 # Composite score helper
 # ---------------------------------------------------------------------------
+
 
 def compute_composite_score(
     summary: EvaluationSummary,
@@ -77,6 +84,7 @@ def compute_composite_score(
 # Verifier
 # ---------------------------------------------------------------------------
 
+
 class Verifier:
     """Runs 3-layer verification after an optimization round.
 
@@ -94,7 +102,9 @@ class Verifier:
         project_root: Path | None = None,
         weights: dict[str, float] | None = None,
     ) -> None:
-        self.project_root = project_root or Path(__file__).resolve().parent.parent.parent.parent
+        self.project_root = (
+            project_root or Path(__file__).resolve().parent.parent.parent.parent
+        )
         self.weights = weights or dict(COMPOSITE_WEIGHTS)
 
     # ------------------------------------------------------------------
@@ -149,11 +159,11 @@ class Verifier:
             )
         if not layer3:
             if regressed:
-                messages.append(
-                    f"Layer 3 FAILED: {len(regressed)} case(s) regressed"
-                )
+                messages.append(f"Layer 3 FAILED: {len(regressed)} case(s) regressed")
             else:
-                messages.append("Layer 3 FAILED: no cases improved or safety check failed")
+                messages.append(
+                    "Layer 3 FAILED: no cases improved or safety check failed"
+                )
 
         if passed:
             messages.append(
@@ -182,9 +192,13 @@ class Verifier:
     def _layer1_pytest(self) -> tuple[bool, str, int]:
         """Run ``pytest tests/unit/ -x -q --tb=no`` and return success."""
         cmd = [
-            sys.executable, "-m", "pytest",
+            sys.executable,
+            "-m",
+            "pytest",
             "tests/unit/",
-            "-x", "-q", "--tb=no",
+            "-x",
+            "-q",
+            "--tb=no",
         ]
         logger.info("Layer 1: running %s", " ".join(cmd))
 
@@ -198,7 +212,11 @@ class Verifier:
             )
             output = result.stdout + "\n" + result.stderr
             success = result.returncode == 0
-            logger.info("Layer 1: pytest exited %d (%s)", result.returncode, "PASS" if success else "FAIL")
+            logger.info(
+                "Layer 1: pytest exited %d (%s)",
+                result.returncode,
+                "PASS" if success else "FAIL",
+            )
             return success, output, result.returncode
         except subprocess.TimeoutExpired:
             msg = "Layer 1: pytest timed out after 300s"
@@ -229,7 +247,9 @@ class Verifier:
         if new_summary is None:
             if evaluator is None:
                 # No evaluator available — skip layer 2, treat as pass
-                logger.warning("Layer 2: no evaluator or new_summary provided, skipping")
+                logger.warning(
+                    "Layer 2: no evaluator or new_summary provided, skipping"
+                )
                 return True, old_summary, 0.0, {}
             try:
                 new_summary = evaluator.run_full_evaluation()
@@ -243,19 +263,28 @@ class Verifier:
 
         # Per-metric deltas
         metric_deltas = {
-            "intent": new_summary.aggregate_intent_accuracy - old_summary.aggregate_intent_accuracy,
-            "severity": new_summary.aggregate_severity_accuracy - old_summary.aggregate_severity_accuracy,
-            "risk_f1": new_summary.aggregate_risk_flag_f1 - old_summary.aggregate_risk_flag_f1,
-            "evidence": new_summary.aggregate_evidence_doc_type_recall - old_summary.aggregate_evidence_doc_type_recall,
-            "no_auto_send": new_summary.aggregate_no_auto_send_compliance - old_summary.aggregate_no_auto_send_compliance,
-            "fallback": new_summary.aggregate_fallback_correctness - old_summary.aggregate_fallback_correctness,
+            "intent": new_summary.aggregate_intent_accuracy
+            - old_summary.aggregate_intent_accuracy,
+            "severity": new_summary.aggregate_severity_accuracy
+            - old_summary.aggregate_severity_accuracy,
+            "risk_f1": new_summary.aggregate_risk_flag_f1
+            - old_summary.aggregate_risk_flag_f1,
+            "evidence": new_summary.aggregate_evidence_doc_type_recall
+            - old_summary.aggregate_evidence_doc_type_recall,
+            "no_auto_send": new_summary.aggregate_no_auto_send_compliance
+            - old_summary.aggregate_no_auto_send_compliance,
+            "fallback": new_summary.aggregate_fallback_correctness
+            - old_summary.aggregate_fallback_correctness,
             "composite": delta,
         }
 
         passed = delta > 0
         logger.info(
             "Layer 2: composite %.4f → %.4f (delta %+.4f) [%s]",
-            old_composite, new_composite, delta, "PASS" if passed else "FAIL",
+            old_composite,
+            new_composite,
+            delta,
+            "PASS" if passed else "FAIL",
         )
         return passed, new_summary, delta, metric_deltas
 
@@ -319,7 +348,9 @@ class Verifier:
             if old_val - new_val > MAX_SINGLE_METRIC_DROP:
                 logger.warning(
                     "Layer 3: metric '%s' dropped %.4f > %.4f threshold",
-                    name, old_val - new_val, MAX_SINGLE_METRIC_DROP,
+                    name,
+                    old_val - new_val,
+                    MAX_SINGLE_METRIC_DROP,
                 )
                 metric_ok = False
 
@@ -330,7 +361,8 @@ class Verifier:
 
         logger.info(
             "Layer 3: %d regressed, %d improved, metrics %s [%s]",
-            len(regressed), len(improved),
+            len(regressed),
+            len(improved),
             "OK" if metric_ok else "VIOLATION",
             "PASS" if passed else "FAIL",
         )

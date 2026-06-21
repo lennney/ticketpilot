@@ -31,6 +31,7 @@ class TestVectorSearchLogic:
         """
         try:
             from ticketpilot.retrieval.vector_search import _detect_embedding_dim
+
             expected_dim = _detect_embedding_dim()
         except Exception:
             pytest.skip("Database not available")
@@ -43,6 +44,7 @@ class TestVectorSearchLogic:
     def test_fake_embedding_produces_default_dim(self):
         """Test that fake embeddings have correct dimension."""
         from ticketpilot.retrieval.providers.fake_embedding import FAKE_EMBEDDING_DIM
+
         provider = FakeEmbeddingProvider(dimension=FAKE_EMBEDDING_DIM)
         vec = provider.embed("test")
 
@@ -89,6 +91,7 @@ class TestVectorSearchMocked:
             pytest.skip("Database not available")
 
         from ticketpilot.retrieval.vector_search import vector_search, get_hnsw_params
+
         assert callable(vector_search)
         params = get_hnsw_params()
         assert params["m"] == 16
@@ -102,6 +105,7 @@ class TestVectorSearchIntegration:
         """Check if database is available."""
         try:
             from ticketpilot.retrieval.db.connection import get_db_connection
+
             with get_db_connection() as conn:
                 conn.execute("SELECT 1")
             return True
@@ -114,7 +118,11 @@ class TestVectorSearchIntegration:
         if not db_available:
             pytest.skip("Database not available")
         try:
-            from ticketpilot.retrieval.db.seeding import seed_knowledge_chunks, get_chunk_count
+            from ticketpilot.retrieval.db.seeding import (
+                seed_knowledge_chunks,
+                get_chunk_count,
+            )
+
             if get_chunk_count() == 0:
                 seed_knowledge_chunks(clear_existing=True)
         except Exception as e:
@@ -124,9 +132,12 @@ class TestVectorSearchIntegration:
     def expected_dim(self, db_available):
         """Get expected embedding dimension from DB."""
         from ticketpilot.retrieval.vector_search import _detect_embedding_dim
+
         return _detect_embedding_dim()
 
-    def test_vector_search_returns_results(self, db_available, ensure_seeded, expected_dim):
+    def test_vector_search_returns_results(
+        self, db_available, ensure_seeded, expected_dim
+    ):
         """Test vector search returns results."""
         if not db_available:
             pytest.skip("Database not available")
@@ -140,7 +151,9 @@ class TestVectorSearchIntegration:
         assert latency_ms >= 0
         assert all(isinstance(r, VectorResult) for r in results)
 
-    def test_vector_search_ranks_by_similarity(self, db_available, ensure_seeded, expected_dim):
+    def test_vector_search_ranks_by_similarity(
+        self, db_available, ensure_seeded, expected_dim
+    ):
         """Test that vector results are ranked by similarity."""
         if not db_available:
             pytest.skip("Database not available")
@@ -154,7 +167,9 @@ class TestVectorSearchIntegration:
             # First result should have higher or equal similarity
             assert results[0].score >= results[1].score
 
-    def test_vector_search_with_doc_type_filter(self, db_available, ensure_seeded, expected_dim):
+    def test_vector_search_with_doc_type_filter(
+        self, db_available, ensure_seeded, expected_dim
+    ):
         """Test vector search with doc_type filter."""
         if not db_available:
             pytest.skip("Database not available")
@@ -170,7 +185,9 @@ class TestVectorSearchIntegration:
 
         assert all(r.doc_type == DocType.POLICY for r in results)
 
-    def test_vector_search_returns_trace_fields(self, db_available, ensure_seeded, expected_dim):
+    def test_vector_search_returns_trace_fields(
+        self, db_available, ensure_seeded, expected_dim
+    ):
         """Test that vector results have all required fields."""
         if not db_available:
             pytest.skip("Database not available")
@@ -190,7 +207,9 @@ class TestVectorSearchIntegration:
             assert result.rank >= 1
             assert result.embedding_provider == "fake"
 
-    def test_vector_search_scores_are_cosine_similarity(self, db_available, ensure_seeded, expected_dim):
+    def test_vector_search_scores_are_cosine_similarity(
+        self, db_available, ensure_seeded, expected_dim
+    ):
         """Test that vector scores are valid cosine similarities."""
         if not db_available:
             pytest.skip("Database not available")

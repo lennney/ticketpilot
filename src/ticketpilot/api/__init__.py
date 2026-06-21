@@ -62,8 +62,10 @@ register_streaming_routes(app)
 # Request/Response Models
 # ---------------------------------------------------------------------------
 
+
 class ChatMessage(BaseModel):
     """Chat message from user."""
+
     role: str  # "user" or "assistant"
     content: str
     timestamp: Optional[datetime] = None
@@ -71,12 +73,14 @@ class ChatMessage(BaseModel):
 
 class ChatRequest(BaseModel):
     """Chat request with message history."""
+
     messages: List[ChatMessage]
     session_id: Optional[str] = None
 
 
 class ChatResponse(BaseModel):
     """Chat response with AI-generated reply."""
+
     message: ChatMessage
     evidence: List[dict] = []
     risk_flags: List[str] = []
@@ -88,6 +92,7 @@ class ChatResponse(BaseModel):
 
 class TicketRequest(BaseModel):
     """Ticket processing request."""
+
     text: str
     order_number: Optional[str] = None
     customer_id: Optional[str] = None
@@ -95,6 +100,7 @@ class TicketRequest(BaseModel):
 
 class TicketResponse(BaseModel):
     """Ticket processing response."""
+
     ticket_id: str
     intent: str
     confidence: float
@@ -107,6 +113,7 @@ class TicketResponse(BaseModel):
 
 class ReviewDecision(BaseModel):
     """Review decision for a ticket."""
+
     ticket_id: str
     decision: str  # "approve", "edit", "escalate", "reject"
     edited_reply: Optional[str] = None
@@ -116,6 +123,7 @@ class ReviewDecision(BaseModel):
 
 class EvaluationResult(BaseModel):
     """Evaluation metrics result."""
+
     total_tickets: int
     intent_accuracy: float
     severity_accuracy: float
@@ -129,6 +137,7 @@ class EvaluationResult(BaseModel):
 # ---------------------------------------------------------------------------
 # API Endpoints
 # ---------------------------------------------------------------------------
+
 
 @app.get("/", tags=["health"])
 async def root():
@@ -144,31 +153,31 @@ async def root():
 @app.post("/api/chat", response_model=ChatResponse, tags=["chat"])
 async def chat(request: ChatRequest):
     """Process a chat message and return AI response.
-    
+
     This endpoint handles multi-turn conversation with the AI copilot.
     It processes the user's message through the pipeline and generates
     an evidence-grounded response.
     """
     if not request.messages:
         raise HTTPException(status_code=400, detail="No messages provided")
-    
+
     # Get the latest user message
     user_message = request.messages[-1]
     if user_message.role != "user":
         raise HTTPException(status_code=400, detail="Last message must be from user")
-    
+
     # Generate session ID if not provided
     session_id = request.session_id or str(uuid.uuid4())
-    
+
     # Process through pipeline
     raw_ticket = RawTicket(
         original_text=user_message.content,
         submitted_at=datetime.now(timezone.utc),
     )
-    
+
     try:
         ticket_output = intake_risk_pipeline(raw_ticket)
-        
+
         # Generate draft using multi-agent orchestrator
         draft_result = generate_draft_with_orchestrator(
             normalized_text=ticket_output.normalized_ticket.text,
@@ -178,29 +187,37 @@ async def chat(request: ChatRequest):
             must_human_review=ticket_output.risk_assessment.must_human_review,
             evidence_candidates=ticket_output.evidence_candidates,
         )
-        
+
         # Extract evidence for response
         evidence_list = []
         if ticket_output.evidence_candidates:
             for candidate in ticket_output.evidence_candidates[:5]:  # Top 5 evidence
-                evidence_list.append({
-                    "chunk_id": str(candidate.chunk_id),
-                    "doc_type": candidate.doc_type.value if hasattr(candidate.doc_type, 'value') else str(candidate.doc_type),
-                    "title": candidate.title or "",
-                    "content": candidate.content[:200] if candidate.content else "",  # Truncate for API
-                    "score": candidate.score,
-                })
-        
+                evidence_list.append(
+                    {
+                        "chunk_id": str(candidate.chunk_id),
+                        "doc_type": candidate.doc_type.value
+                        if hasattr(candidate.doc_type, "value")
+                        else str(candidate.doc_type),
+                        "title": candidate.title or "",
+                        "content": candidate.content[:200]
+                        if candidate.content
+                        else "",  # Truncate for API
+                        "score": candidate.score,
+                    }
+                )
+
         # Extract risk flags
         risk_flags = [flag.value for flag in ticket_output.risk_assessment.flags]
-        
+
         # Build response
         assistant_message = ChatMessage(
             role="assistant",
-            content=draft_result.draft_text if hasattr(draft_result, 'draft_text') else "感谢您的咨询，我正在为您处理...",
+            content=draft_result.draft_text
+            if hasattr(draft_result, "draft_text")
+            else "感谢您的咨询，我正在为您处理...",
             timestamp=datetime.now(timezone.utc),
         )
-        
+
         return ChatResponse(
             message=assistant_message,
             evidence=evidence_list,
@@ -210,7 +227,7 @@ async def chat(request: ChatRequest):
             confidence=ticket_output.classification.confidence,
             session_id=session_id,
         )
-        
+
     except Exception:
         # Fallback response on error
         assistant_message = ChatMessage(
@@ -218,7 +235,7 @@ async def chat(request: ChatRequest):
             content="抱歉，处理您的请求时出现了问题。请稍后重试或联系人工客服。",
             timestamp=datetime.now(timezone.utc),
         )
-        
+
         return ChatResponse(
             message=assistant_message,
             evidence=[],
@@ -233,7 +250,7 @@ async def chat(request: ChatRequest):
 @app.post("/api/tickets", response_model=TicketResponse, tags=["tickets"])
 async def process_ticket(request: TicketRequest):
     """Process a customer service ticket through the full pipeline.
-    
+
     This endpoint runs the complete ticket processing pipeline:
     1. Intake - normalize and extract entities
     2. Classification - determine intent
@@ -243,33 +260,39 @@ async def process_ticket(request: TicketRequest):
     """
     start_time = datetime.now(timezone.utc)
     ticket_id = str(uuid.uuid4())
-    
+
     raw_ticket = RawTicket(
         original_text=request.text,
         submitted_at=datetime.now(timezone.utc),
     )
-    
+
     try:
         # Run pipeline
         ticket_output = intake_risk_pipeline(raw_ticket)
-        
+
         # Generate draft
         draft_result = generate_draft(ticket_output)
-        
-        processing_time = (datetime.now(timezone.utc) - start_time).total_seconds() * 1000
-        
+
+        processing_time = (
+            datetime.now(timezone.utc) - start_time
+        ).total_seconds() * 1000
+
         # Extract evidence
         evidence_list = []
         if ticket_output.evidence_candidates:
             for candidate in ticket_output.evidence_candidates[:10]:
-                evidence_list.append({
-                    "chunk_id": str(candidate.chunk_id),
-                    "doc_type": candidate.doc_type.value if hasattr(candidate.doc_type, 'value') else str(candidate.doc_type),
-                    "title": candidate.title or "",
-                    "content": candidate.content[:200] if candidate.content else "",
-                    "score": candidate.score,
-                })
-        
+                evidence_list.append(
+                    {
+                        "chunk_id": str(candidate.chunk_id),
+                        "doc_type": candidate.doc_type.value
+                        if hasattr(candidate.doc_type, "value")
+                        else str(candidate.doc_type),
+                        "title": candidate.title or "",
+                        "content": candidate.content[:200] if candidate.content else "",
+                        "score": candidate.score,
+                    }
+                )
+
         return TicketResponse(
             ticket_id=ticket_id,
             intent=ticket_output.classification.intent.value,
@@ -277,10 +300,12 @@ async def process_ticket(request: TicketRequest):
             risk_flags=[flag.value for flag in ticket_output.risk_assessment.flags],
             risk_severity=ticket_output.risk_assessment.severity.value,
             evidence=evidence_list,
-            draft_reply=draft_result.draft_text if hasattr(draft_result, 'draft_text') else None,
+            draft_reply=draft_result.draft_text
+            if hasattr(draft_result, "draft_text")
+            else None,
             processing_time_ms=processing_time,
         )
-        
+
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Pipeline error: {str(e)}")
 
@@ -288,7 +313,7 @@ async def process_ticket(request: TicketRequest):
 @app.post("/api/reviews", tags=["reviews"])
 async def submit_review(decision: ReviewDecision):
     """Submit a review decision for a ticket.
-    
+
     This endpoint records human review decisions for audit trail.
     In a real system, this would persist to a database.
     """
@@ -305,7 +330,7 @@ async def submit_review(decision: ReviewDecision):
 @app.get("/api/evaluation", response_model=EvaluationResult, tags=["evaluation"])
 async def get_evaluation_metrics():
     """Get current evaluation metrics.
-    
+
     Returns the latest evaluation results from the evaluation pipeline.
     """
     # In demo mode, return sample metrics
@@ -344,4 +369,5 @@ async def health_check():
 
 if __name__ == "__main__":
     import uvicorn
+
     uvicorn.run(app, host="0.0.0.0", port=8000)

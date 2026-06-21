@@ -66,8 +66,7 @@ def reflect_and_revise(
 
     # Build evidence summary for critique
     evidence_summary = "\n".join(
-        f"[{i+1}] {e.content[:200]}"
-        for i, e in enumerate(evidence[:5])
+        f"[{i + 1}] {e.content[:200]}" for i, e in enumerate(evidence[:5])
     )
 
     for revision in range(max_revisions):
@@ -84,11 +83,11 @@ def reflect_and_revise(
             "3. 引用是否准确？\n"
             "4. 有无遗漏重要信息？\n\n"
             "审核结果格式（JSON）：\n"
-            '{\n'
+            "{\n"
             '  "pass": true/false,\n'
             '  "issues": ["问题1", "问题2"],\n'
             '  "suggestions": ["建议1", "建议2"]\n'
-            '}'
+            "}"
         )
 
         try:
@@ -113,9 +112,7 @@ def reflect_and_revise(
             critique = extract_json(response)
 
             if not critique:
-                logger.warning(
-                    "reflect_and_revise: failed to parse critique response"
-                )
+                logger.warning("reflect_and_revise: failed to parse critique response")
                 break
 
             # If critique passes, return original draft
@@ -151,14 +148,14 @@ def reflect_and_revise(
                 "2. 回答客户问题\n"
                 "3. 引用准确\n\n"
                 "修改后的回复格式（JSON）：\n"
-                '{\n'
+                "{\n"
                 '  "draft_text": "修改后的回复内容",\n'
                 '  "cited_evidence_ids": ["证据ID1", "证据ID2"],\n'
                 '  "confidence": 0.8,\n'
                 '  "unsupported_claims": [],\n'
                 '  "missing_information": [],\n'
                 '  "safety_notes": []\n'
-                '}'
+                "}"
             )
 
             messages = [
@@ -172,13 +169,9 @@ def reflect_and_revise(
             if revised and revised.get("draft_text"):
                 draft_result = revised
                 draft_text = revised["draft_text"]
-                logger.info(
-                    "reflect_and_revise: draft revised (revision %d)", revision
-                )
+                logger.info("reflect_and_revise: draft revised (revision %d)", revision)
             else:
-                logger.warning(
-                    "reflect_and_revise: revision failed, keeping original"
-                )
+                logger.warning("reflect_and_revise: revision failed, keeping original")
                 break
 
         except Exception as e:
@@ -236,8 +229,7 @@ def skill_reflect(
             )
             # Append suggestions to safety notes for human reviewers
             result.safety_notes.extend(
-                f"[Skill:{skill.skill_id}] {s}"
-                for s in reflection.suggestions
+                f"[Skill:{skill.skill_id}] {s}" for s in reflection.suggestions
             )
             # Lower confidence slightly when skill reflection fails
             result.confidence = max(0.0, result.confidence - 0.1)

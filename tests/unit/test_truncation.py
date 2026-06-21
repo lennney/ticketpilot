@@ -48,11 +48,15 @@ class TestTruncationConfig:
         assert config.reserve_tokens == 200
 
     def test_effective_max_chars(self):
-        config = TruncationConfig(max_tokens=4000, chars_per_token=4.0, reserve_tokens=200)
+        config = TruncationConfig(
+            max_tokens=4000, chars_per_token=4.0, reserve_tokens=200
+        )
         assert config.effective_max_chars == 15200  # (4000 - 200) * 4
 
     def test_custom_config(self):
-        config = TruncationConfig(max_tokens=1000, chars_per_token=3.0, reserve_tokens=100)
+        config = TruncationConfig(
+            max_tokens=1000, chars_per_token=3.0, reserve_tokens=100
+        )
         assert config.effective_max_chars == 2700  # (1000 - 100) * 3
 
 
@@ -104,7 +108,9 @@ class TestTruncateContext:
         assert len(result) == 1
 
     def test_preserves_all_if_within_budget(self):
-        config = TruncationConfig(max_tokens=10000, chars_per_token=4.0, reserve_tokens=0)
+        config = TruncationConfig(
+            max_tokens=10000, chars_per_token=4.0, reserve_tokens=0
+        )
         chunks = [_make_chunk("short", rrf_score=0.5) for _ in range(10)]
 
         result = truncate_context(chunks, config)

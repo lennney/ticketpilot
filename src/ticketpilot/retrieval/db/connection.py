@@ -10,6 +10,7 @@ if sys.platform == "win32":
     import shutil as _shutil
     import site as _site
     import tempfile as _tempfile
+
     for _sp in _site.getsitepackages():
         _d = os.path.join(_sp, "psycopg_binary.libs")
         if os.path.exists(_d):

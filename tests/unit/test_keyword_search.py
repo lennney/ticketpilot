@@ -1,4 +1,5 @@
 """Tests for Chinese text segmentation in keyword search."""
+
 from ticketpilot.retrieval.keyword_search import _segment_chinese_terms
 
 

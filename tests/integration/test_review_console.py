@@ -237,9 +237,7 @@ class TestReviewDecisionPersistence:
             result2 = _make_result(draft_text="草稿B")
             store.save(build_review_decision(result1, ReviewAction.APPROVE))
             store.save(
-                build_review_decision(
-                    result2, ReviewAction.EDIT, edited_text="修改版B"
-                )
+                build_review_decision(result2, ReviewAction.EDIT, edited_text="修改版B")
             )
             loaded = store.load_all()
             assert len(loaded) == 2

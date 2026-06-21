@@ -176,6 +176,7 @@ class TestRetrievalTraceIntegration:
         """Check if database is available."""
         try:
             from ticketpilot.retrieval.db.connection import get_db_connection
+
             with get_db_connection() as conn:
                 conn.execute("SELECT 1")
             return True
@@ -188,7 +189,11 @@ class TestRetrievalTraceIntegration:
         if not db_available:
             pytest.skip("Database not available")
         try:
-            from ticketpilot.retrieval.db.seeding import seed_knowledge_chunks, get_chunk_count
+            from ticketpilot.retrieval.db.seeding import (
+                seed_knowledge_chunks,
+                get_chunk_count,
+            )
+
             if get_chunk_count() == 0:
                 seed_knowledge_chunks(clear_existing=True)
         except Exception as e:
@@ -201,6 +206,7 @@ class TestRetrievalTraceIntegration:
 
         from ticketpilot.retrieval.pipeline import hybrid_retrieval
         from ticketpilot.retrieval.vector_search import _detect_embedding_dim
+
         expected_dim = _detect_embedding_dim()
 
         trace = hybrid_retrieval("退款政策", top_k=5)
@@ -245,7 +251,9 @@ class TestRetrievalTraceIntegration:
             assert 0 <= result.score <= 1
             assert result.rank >= 1
 
-    def test_trace_captures_fused_results_with_contributions(self, db_available, ensure_seeded):
+    def test_trace_captures_fused_results_with_contributions(
+        self, db_available, ensure_seeded
+    ):
         """Test that trace captures fused results with per-ranker contributions."""
         if not db_available:
             pytest.skip("Database not available")

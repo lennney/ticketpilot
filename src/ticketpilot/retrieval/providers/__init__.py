@@ -96,7 +96,9 @@ def get_embedding_provider(config: EmbeddingConfig | None = None):
     global _default_config, _default_provider
 
     if config is None:
-        from ticketpilot.retrieval.embedding_config import load_embedding_config_from_env
+        from ticketpilot.retrieval.embedding_config import (
+            load_embedding_config_from_env,
+        )
 
         config = load_embedding_config_from_env()
 

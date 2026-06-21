@@ -82,7 +82,9 @@ class TestCitationValidator:
         assert passed is False
         assert any("unknown chunk_id" in i for i in issues)
 
-    def test_missing_citation_marker_exceeds_count(self, validator, sample_citations, sample_evidence):
+    def test_missing_citation_marker_exceeds_count(
+        self, validator, sample_citations, sample_evidence
+    ):
         text = "根据政策[1]和条款[5]。"
         passed, issues = validator.validate(text, sample_citations, sample_evidence)
         assert passed is False
@@ -94,7 +96,9 @@ class TestCitationValidator:
         assert passed is False
         assert any("unsupported claim" in i.lower() for i in issues)
 
-    def test_cited_claim_not_flagged(self, validator, sample_citations, sample_evidence):
+    def test_cited_claim_not_flagged(
+        self, validator, sample_citations, sample_evidence
+    ):
         text = "根据相关政策[1]，您可以申请全额退款。"
         passed, issues = validator.validate(text, sample_citations, sample_evidence)
         assert passed is True

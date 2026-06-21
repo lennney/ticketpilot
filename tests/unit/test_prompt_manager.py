@@ -41,7 +41,7 @@ class TestPromptManager:
         assert v2.template == "新版：{ticket_text}"
 
     def test_get_latest(self):
-        """"latest" returns the last registered version."""
+        """ "latest" returns the last registered version."""
         pm = PromptManager()
         pm.register(self._make_prompt(version="1.0.0"))
         pm.register(self._make_prompt(version="2.0.0"))

@@ -11,7 +11,9 @@ from ticketpilot.tracing.store import ProvenanceStore
 class TestProvenanceStore:
     """Tests for ProvenanceStore CRUD and query."""
 
-    def _make_provenance(self, chunk_ids: list[uuid.UUID] | None = None) -> ResponseProvenance:
+    def _make_provenance(
+        self, chunk_ids: list[uuid.UUID] | None = None
+    ) -> ResponseProvenance:
         """Create provenance with claims referencing given chunk_ids."""
         if chunk_ids is None:
             chunk_ids = [uuid.uuid4()]

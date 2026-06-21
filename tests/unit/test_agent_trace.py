@@ -103,7 +103,9 @@ class TestAgentTrace:
 
     def test_to_dict_event_has_expected_keys(self):
         trace = AgentTrace("run_001")
-        trace.add_event(AgentEventType.TOOL_RETURNED, data={"result": "ok"}, step_number=2)
+        trace.add_event(
+            AgentEventType.TOOL_RETURNED, data={"result": "ok"}, step_number=2
+        )
         d = trace.to_dict()
         event = d["events"][0]
         assert "event_type" in event

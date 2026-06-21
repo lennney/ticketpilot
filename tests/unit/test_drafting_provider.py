@@ -50,7 +50,9 @@ def _make_risk(
     )
 
 
-def _make_classification(intent: IntentClass = IntentClass.REFUND) -> ClassificationResult:
+def _make_classification(
+    intent: IntentClass = IntentClass.REFUND,
+) -> ClassificationResult:
     return ClassificationResult(
         intent=intent,
         confidence=0.9,

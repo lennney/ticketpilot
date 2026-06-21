@@ -8,6 +8,7 @@ Supports:
 All modifications are backed up before writing and can be rolled back.
 Dry-run mode logs intended changes without writing files.
 """
+
 from __future__ import annotations
 
 import importlib
@@ -22,6 +23,7 @@ from ticketpilot.optimizer.config import PROJECT_ROOT
 # ---------------------------------------------------------------------------
 # Fix result
 # ---------------------------------------------------------------------------
+
 
 @dataclass
 class FixResult:
@@ -39,13 +41,16 @@ class FixResult:
 # ---------------------------------------------------------------------------
 
 _CONFIG_INIT_PATH = PROJECT_ROOT / "src" / "ticketpilot" / "config" / "__init__.py"
-_CLASSIFICATION_RULES_PATH = PROJECT_ROOT / "src" / "ticketpilot" / "classification" / "rules.py"
+_CLASSIFICATION_RULES_PATH = (
+    PROJECT_ROOT / "src" / "ticketpilot" / "classification" / "rules.py"
+)
 _RISK_RULES_PATH = PROJECT_ROOT / "src" / "ticketpilot" / "risk" / "rules.py"
 
 
 # ---------------------------------------------------------------------------
 # Helper: find the source file for a runtime module
 # ---------------------------------------------------------------------------
+
 
 def _module_path(module_name: str) -> Path:
     """Return the __file__ path of a loaded module."""
@@ -56,6 +61,7 @@ def _module_path(module_name: str) -> Path:
 # ---------------------------------------------------------------------------
 # Fixer
 # ---------------------------------------------------------------------------
+
 
 class Fixer:
     """Applies targeted fixes with backup and rollback support."""
@@ -114,6 +120,7 @@ class Fixer:
 
         Uses a duck-type mini-diagnosis to reuse the existing _fix_intent_keywords method.
         """
+
         class _MiniDiagnosis:
             expected_values = {"intent": intent}
             suggested_keywords = [keyword]
@@ -267,7 +274,7 @@ class Fixer:
         # Step 2: From the intent match position, find the keywords=[...] block.
         # Search forward from the intent match for "keywords=["
         search_start = intent_match.start()
-        kw_list_pattern = r'keywords=\[(.*?)\]'
+        kw_list_pattern = r"keywords=\[(.*?)\]"
         kw_match = re.search(kw_list_pattern, source[search_start:], re.DOTALL)
 
         if not kw_match:
@@ -369,7 +376,7 @@ class Fixer:
 
         # Find the keywords=[...] block after the flag definition.
         search_start = flag_match.start()
-        kw_list_pattern = r'keywords=\[(.*?)\]'
+        kw_list_pattern = r"keywords=\[(.*?)\]"
         kw_match = re.search(kw_list_pattern, source[search_start:], re.DOTALL)
 
         if not kw_match:
@@ -480,7 +487,7 @@ class Fixer:
         search_start = intent_match.start()
 
         # 检查是否已经有 exclusions 字段
-        excl_pattern = r'exclusions=\[(.*?)\]'
+        excl_pattern = r"exclusions=\[(.*?)\]"
         excl_match = re.search(excl_pattern, source[search_start:], re.DOTALL)
 
         if excl_match:
@@ -488,7 +495,9 @@ class Fixer:
             excl_body = excl_match.group(1).strip()
             existing_excl: list[str] = []
             if excl_body:
-                existing_excl = [m.group(1) for m in re.finditer(r'"([^"]+)"', excl_body)]
+                existing_excl = [
+                    m.group(1) for m in re.finditer(r'"([^"]+)"', excl_body)
+                ]
             new_only = [kw for kw in keywords if kw not in existing_excl]
             if not new_only:
                 return FixResult(
@@ -509,7 +518,7 @@ class Fixer:
             # 注意：这个 regex 假设 IntentRule 的 keywords= 后面跟逗号和其他字段
             # 即 format 为 keywords=[...],\n       其他字段
             # 如果 rules.py 格式变化（如末尾字段无逗号），需要调整此 regex
-            kw_list_pattern = r'keywords=\[(.*?)\](.*?,)'
+            kw_list_pattern = r"keywords=\[(.*?)\](.*?,)"
             kw_match = re.search(kw_list_pattern, source[search_start:], re.DOTALL)
             if not kw_match:
                 return FixResult(
@@ -521,7 +530,7 @@ class Fixer:
 
             kw_end = search_start + kw_match.end()
             excl_entries = ", ".join(f'"{kw}"' for kw in keywords)
-            insertion = f',\n        exclusions=[{excl_entries}],'
+            insertion = f",\n        exclusions=[{excl_entries}],"
 
             # 找到 keywords 行后面的内容插入位置
             new_source = source[:kw_end] + insertion + source[kw_end:]

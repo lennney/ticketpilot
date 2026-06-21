@@ -1,6 +1,6 @@
 """Tests for Chinese keyword extraction in diagnostics."""
-from __future__ import annotations
 
+from __future__ import annotations
 
 
 def test_extract_chinese_keywords_basic():
@@ -111,5 +111,6 @@ def test_extract_jieba_returns_meaningful_words():
     # None should be mid-word splits (n-gram artifacts)
     for kw in keywords:
         # These are common n-gram artifacts — none should appear
-        assert kw not in ("诉你", "们客", "服态", "货但", "我申"), \
+        assert kw not in ("诉你", "们客", "服态", "货但", "我申"), (
             f"'{kw}' is an n-gram artifact, not a real word"
+        )

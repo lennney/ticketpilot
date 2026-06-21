@@ -35,7 +35,8 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         help="Raw ticket text",
     )
     input_group.add_argument(
-        "--file", "-f",
+        "--file",
+        "-f",
         type=Path,
         help="Read ticket text from file",
     )
@@ -47,7 +48,8 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
 
     # Output options
     parser.add_argument(
-        "--json", "-j",
+        "--json",
+        "-j",
         action="store_true",
         help="Output as JSON",
     )
@@ -57,7 +59,8 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         help="Pretty-print JSON output",
     )
     parser.add_argument(
-        "--output", "-o",
+        "--output",
+        "-o",
         type=Path,
         help="Write output to file",
     )
@@ -112,21 +115,25 @@ def format_output(
 
     # Add evidence summary
     for i, ev in enumerate(result.get("evidence", [])[:3], 1):
-        lines.append(f"  [{i}] {ev.get('doc_type', 'N/A')}: {ev.get('content', '')[:80]}...")
+        lines.append(
+            f"  [{i}] {ev.get('doc_type', 'N/A')}: {ev.get('content', '')[:80]}..."
+        )
 
-    lines.extend([
-        "-" * 60,
-        "Draft Reply:",
-        f"  {result.get('draft', {}).get('text', 'N/A')[:200]}...",
-        "-" * 60,
-        "Confidence:",
-        f"  Overall: {result.get('confidence', {}).get('overall', 0):.2%}",
-        f"  Level: {result.get('confidence', {}).get('level', 'N/A')}",
-        "-" * 60,
-        "Degradation:",
-        f"  Strategy: {result.get('degraded_response', {}).get('strategy', 'N/A')}",
-        "=" * 60,
-    ])
+    lines.extend(
+        [
+            "-" * 60,
+            "Draft Reply:",
+            f"  {result.get('draft', {}).get('text', 'N/A')[:200]}...",
+            "-" * 60,
+            "Confidence:",
+            f"  Overall: {result.get('confidence', {}).get('overall', 0):.2%}",
+            f"  Level: {result.get('confidence', {}).get('level', 'N/A')}",
+            "-" * 60,
+            "Degradation:",
+            f"  Strategy: {result.get('degraded_response', {}).get('strategy', 'N/A')}",
+            "=" * 60,
+        ]
+    )
 
     return "\n".join(lines)
 

@@ -1,4 +1,5 @@
 """Tests for ticketpilot.optimizer.reporter."""
+
 from __future__ import annotations
 
 from pathlib import Path
@@ -13,6 +14,7 @@ from ticketpilot.optimizer.verifier import VerificationResult, compute_composite
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
+
 
 def _make_summary(
     *,
@@ -51,7 +53,8 @@ def _make_verification(
         composite_delta=composite_delta,
         improved_cases=improved or [],
         regressed_cases=regressed or [],
-        metric_deltas=metric_deltas or {
+        metric_deltas=metric_deltas
+        or {
             "intent": 0.02,
             "severity": 0.01,
             "risk_f1": 0.03,
@@ -65,6 +68,7 @@ def _make_verification(
 # ---------------------------------------------------------------------------
 # IterationRecord basics
 # ---------------------------------------------------------------------------
+
 
 class TestIterationRecord:
     def test_defaults(self) -> None:
@@ -92,6 +96,7 @@ class TestIterationRecord:
 # ---------------------------------------------------------------------------
 # OptimizationReporter.generate
 # ---------------------------------------------------------------------------
+
 
 class TestReporterGenerate:
     def test_empty_iterations(self) -> None:
@@ -186,8 +191,22 @@ class TestReporterGenerate:
         assert long_desc not in md  # truncated
 
     def test_composite_score_in_summary_table(self) -> None:
-        baseline = _make_summary(intent=0.8, severity=0.8, risk_f1=0.8, evidence=0.8, no_auto_send=0.8, fallback=0.8)
-        final = _make_summary(intent=0.9, severity=0.9, risk_f1=0.9, evidence=0.9, no_auto_send=0.9, fallback=0.9)
+        baseline = _make_summary(
+            intent=0.8,
+            severity=0.8,
+            risk_f1=0.8,
+            evidence=0.8,
+            no_auto_send=0.8,
+            fallback=0.8,
+        )
+        final = _make_summary(
+            intent=0.9,
+            severity=0.9,
+            risk_f1=0.9,
+            evidence=0.9,
+            no_auto_send=0.9,
+            fallback=0.9,
+        )
         reporter = OptimizationReporter()
         md = reporter.generate([], baseline=baseline, final=final)
         assert "Composite Score" in md
@@ -200,6 +219,7 @@ class TestReporterGenerate:
 # ---------------------------------------------------------------------------
 # OptimizationReporter.save
 # ---------------------------------------------------------------------------
+
 
 class TestReporterSave:
     def test_save_creates_file(self, tmp_path: Path) -> None:
@@ -236,6 +256,7 @@ class TestReporterSave:
 # ---------------------------------------------------------------------------
 # _pct helper
 # ---------------------------------------------------------------------------
+
 
 class TestPctHelper:
     def test_both_values(self) -> None:

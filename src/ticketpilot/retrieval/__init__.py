@@ -32,7 +32,12 @@ from ticketpilot.retrieval.schema.seeds import (
     load_policy_seed_data,
     load_seed_data,
 )
-from ticketpilot.retrieval.traces import FusedResult, KeywordResult, RetrievalTrace, VectorResult
+from ticketpilot.retrieval.traces import (
+    FusedResult,
+    KeywordResult,
+    RetrievalTrace,
+    VectorResult,
+)
 from ticketpilot.retrieval.vector_search import (
     HNSW_EF_SEARCH,
     HNSW_M,
@@ -93,9 +98,18 @@ __all__ = [
 
 
 _LAZY_IMPORTS: dict[str, tuple[str, str]] = {
-    "build_retrieval_query": ("ticketpilot.retrieval.query_builder", "build_retrieval_query"),
-    "map_fused_to_evidence": ("ticketpilot.retrieval.evidence_mapper", "map_fused_to_evidence"),
-    "retrieve_evidence": ("ticketpilot.retrieval.retrieve_evidence", "retrieve_evidence"),
+    "build_retrieval_query": (
+        "ticketpilot.retrieval.query_builder",
+        "build_retrieval_query",
+    ),
+    "map_fused_to_evidence": (
+        "ticketpilot.retrieval.evidence_mapper",
+        "map_fused_to_evidence",
+    ),
+    "retrieve_evidence": (
+        "ticketpilot.retrieval.retrieve_evidence",
+        "retrieve_evidence",
+    ),
 }
 
 

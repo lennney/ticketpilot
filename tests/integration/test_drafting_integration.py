@@ -56,24 +56,18 @@ class TestDraftingIntegration:
             customer_id="test-drafting-integration-001",
         )
 
-    def test_returns_drafted_ticket_result(
-        self, db_available, ensure_seeded
-    ):
+    def test_returns_drafted_ticket_result(self, db_available, ensure_seeded):
         """run_pipeline_with_draft returns DraftedTicketResult with both halves."""
         if not db_available:
             pytest.skip("Database not available")
 
-        result = run_pipeline_with_draft(
-            self._make_ticket("我申请退款，订单号123456")
-        )
+        result = run_pipeline_with_draft(self._make_ticket("我申请退款，订单号123456"))
 
         assert isinstance(result, DraftedTicketResult)
         assert isinstance(result.ticket_output, TicketOutput)
         assert isinstance(result.draft_reply, DraftReply)
 
-    def test_ticket_output_preserved(
-        self, db_available, ensure_seeded
-    ):
+    def test_ticket_output_preserved(self, db_available, ensure_seeded):
         """TicketOutput fields are preserved through the drafting workflow."""
         if not db_available:
             pytest.skip("Database not available")
@@ -81,21 +75,19 @@ class TestDraftingIntegration:
         raw_ticket = self._make_ticket("我申请退款，订单号123456")
         result = run_pipeline_with_draft(raw_ticket)
 
-        assert result.ticket_output.raw_ticket.original_text == "我申请退款，订单号123456"
+        assert (
+            result.ticket_output.raw_ticket.original_text == "我申请退款，订单号123456"
+        )
         assert result.ticket_output.ticket_id != ""
         assert result.ticket_output.ticket_id == result.draft_reply.ticket_id
         assert isinstance(result.ticket_output.evidence_candidates, list)
 
-    def test_draft_reply_has_expected_structure(
-        self, db_available, ensure_seeded
-    ):
+    def test_draft_reply_has_expected_structure(self, db_available, ensure_seeded):
         """DraftReply has deterministic fields regardless of evidence."""
         if not db_available:
             pytest.skip("Database not available")
 
-        result = run_pipeline_with_draft(
-            self._make_ticket("我申请退款，订单号123456")
-        )
+        result = run_pipeline_with_draft(self._make_ticket("我申请退款，订单号123456"))
 
         draft = result.draft_reply
         assert isinstance(draft.draft_text, str)
@@ -107,30 +99,25 @@ class TestDraftingIntegration:
         assert isinstance(draft.must_human_review, bool)
         assert draft.fallback_reason is None or isinstance(draft.fallback_reason, str)
 
-    def test_draft_is_chinese(
-        self, db_available, ensure_seeded
-    ):
+    def test_draft_is_chinese(self, db_available, ensure_seeded):
         """Draft reply text is in Chinese."""
         if not db_available:
             pytest.skip("Database not available")
 
-        result = run_pipeline_with_draft(
-            self._make_ticket("我申请退款，订单号123456")
-        )
+        result = run_pipeline_with_draft(self._make_ticket("我申请退款，订单号123456"))
 
         assert result.draft_reply.draft_text.startswith("您好")
-        assert "退款" in result.draft_reply.draft_text or "人工" in result.draft_reply.draft_text
+        assert (
+            "退款" in result.draft_reply.draft_text
+            or "人工" in result.draft_reply.draft_text
+        )
 
-    def test_evidence_backed_case_has_citations(
-        self, db_available, ensure_seeded
-    ):
+    def test_evidence_backed_case_has_citations(self, db_available, ensure_seeded):
         """When evidence exists, draft has citations referencing real evidence."""
         if not db_available:
             pytest.skip("Database not available")
 
-        result = run_pipeline_with_draft(
-            self._make_ticket("我申请退款，订单号123456")
-        )
+        result = run_pipeline_with_draft(self._make_ticket("我申请退款，订单号123456"))
 
         evidence = result.ticket_output.evidence_candidates
         draft = result.draft_reply
@@ -148,18 +135,14 @@ class TestDraftingIntegration:
                 assert len(citation.evidence_excerpt) > 0
             # Every citation doc_type should be a valid DocType enum
             for citation in draft.citations:
-                assert citation.doc_type in (
-                    DocType.FAQ, DocType.POLICY, DocType.CASE
-                )
+                assert citation.doc_type in (DocType.FAQ, DocType.POLICY, DocType.CASE)
         else:
             # No evidence → fallback
             assert draft.citations == []
             assert draft.confidence == 0.0
             assert draft.fallback_reason == "no_evidence"
 
-    def test_high_risk_preserves_must_human_review(
-        self, db_available, ensure_seeded
-    ):
+    def test_high_risk_preserves_must_human_review(self, db_available, ensure_seeded):
         """High-risk ticket preserves must_human_review=True in draft."""
         if not db_available:
             pytest.skip("Database not available")
@@ -172,29 +155,21 @@ class TestDraftingIntegration:
         assert RiskFlag.LEGAL_RISK in result.ticket_output.risk_assessment.flags
         assert result.draft_reply.must_human_review is True
 
-    def test_confidence_is_bounded(
-        self, db_available, ensure_seeded
-    ):
+    def test_confidence_is_bounded(self, db_available, ensure_seeded):
         """Confidence is always in [0.0, 1.0]."""
         if not db_available:
             pytest.skip("Database not available")
 
-        result = run_pipeline_with_draft(
-            self._make_ticket("我申请退款，订单号123456")
-        )
+        result = run_pipeline_with_draft(self._make_ticket("我申请退款，订单号123456"))
 
         assert 0.0 <= result.draft_reply.confidence <= 1.0
 
-    def test_low_confidence_not_raise(
-        self, db_available, ensure_seeded
-    ):
+    def test_low_confidence_not_raise(self, db_available, ensure_seeded):
         """Empty or low-confidence input does not raise — falls back safely."""
         if not db_available:
             pytest.skip("Database not available")
 
-        result = run_pipeline_with_draft(
-            self._make_ticket("")
-        )
+        result = run_pipeline_with_draft(self._make_ticket(""))
 
         draft = result.draft_reply
         assert isinstance(draft, DraftReply)
@@ -205,9 +180,7 @@ class TestDraftingIntegration:
         else:
             assert draft.confidence < 0.5
 
-    def test_draft_deterministic_for_same_ticket(
-        self, db_available, ensure_seeded
-    ):
+    def test_draft_deterministic_for_same_ticket(self, db_available, ensure_seeded):
         """Repeated calls with same input produce identical draft."""
         if not db_available:
             pytest.skip("Database not available")
@@ -227,9 +200,7 @@ class TestDraftingIntegration:
         if not db_available:
             pytest.skip("Database not available")
 
-        result = run_pipeline_with_draft(
-            self._make_ticket("我申请退款，订单号123456")
-        )
+        result = run_pipeline_with_draft(self._make_ticket("我申请退款，订单号123456"))
 
         draft = result.draft_reply
         evidence = result.ticket_output.evidence_candidates

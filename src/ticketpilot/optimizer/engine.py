@@ -6,6 +6,7 @@ Orchestrates the iterative cycle:
 Each round attempts to improve the composite score by applying safe,
 incremental fixes ranked by estimated gain.
 """
+
 from __future__ import annotations
 
 import json
@@ -21,10 +22,18 @@ from ticketpilot.optimizer.config import (
     MIN_CASES_FIXED,
     OptimizerConfig,
 )
-from ticketpilot.optimizer.diagnostics import DiagnosticsEngine, Diagnosis, TYPE_INTENT_MISMATCH
+from ticketpilot.optimizer.diagnostics import (
+    DiagnosticsEngine,
+    Diagnosis,
+    TYPE_INTENT_MISMATCH,
+)
 from ticketpilot.optimizer.evaluator import OptimizerEvaluator
 from ticketpilot.optimizer.fixer import Fixer
-from ticketpilot.optimizer.scoring import compute_composite, score_dict, extract_correct_ids
+from ticketpilot.optimizer.scoring import (
+    compute_composite,
+    score_dict,
+    extract_correct_ids,
+)
 from ticketpilot.optimizer.tradeoff import analyze_keyword_tradeoff
 from ticketpilot.optimizer.llm_reviewer import review_keyword
 from ticketpilot.optimizer.git_ops import commit
@@ -38,6 +47,7 @@ def _print(msg: str) -> None:
     """Print to stdout immediately (for user-visible output)."""
     print(msg, flush=True)
 
+
 # How many top diagnoses to try per round
 TOP_N_FIXES = 5
 
@@ -45,7 +55,12 @@ TOP_N_FIXES = 5
 CONSECUTIVE_NO_IMPROVEMENT_LIMIT = 3
 
 # Persistent debug log path
-_DEBUG_LOG_PATH = Path(__file__).resolve().parent.parent.parent.parent / "reports" / "optimization" / "debug_log.jsonl"
+_DEBUG_LOG_PATH = (
+    Path(__file__).resolve().parent.parent.parent.parent
+    / "reports"
+    / "optimization"
+    / "debug_log.jsonl"
+)
 
 
 def _debug_log(entry: dict[str, Any]) -> None:
@@ -105,20 +120,27 @@ class OptimizationEngine:
         _print("═══ TicketPilot Auto-Optimizer ═══")
         logger.info("Loading evaluation dataset...")
         self.evaluator.load_dataset()
-        dataset_count = len(self.evaluator.dataset.tickets) if hasattr(self.evaluator, "dataset") and hasattr(self.evaluator.dataset, "tickets") else "?"
+        dataset_count = (
+            len(self.evaluator.dataset.tickets)
+            if hasattr(self.evaluator, "dataset")
+            and hasattr(self.evaluator.dataset, "tickets")
+            else "?"
+        )
         _print(f"✅ Loaded {dataset_count} eval tickets")
 
         # Log run start
-        _debug_log({
-            "event": "run_start",
-            "max_rounds": self.config.max_rounds,
-            "diagnose_only": self.config.diagnose_only,
-            "dry_run": self.config.dry_run,
-            "resume": self.config.resume,
-            "has_llm_key": bool(self.config.llm_api_key),
-            "weights": dict(self.config.weights),
-            "dataset_size": dataset_count,
-        })
+        _debug_log(
+            {
+                "event": "run_start",
+                "max_rounds": self.config.max_rounds,
+                "diagnose_only": self.config.diagnose_only,
+                "dry_run": self.config.dry_run,
+                "resume": self.config.resume,
+                "has_llm_key": bool(self.config.llm_api_key),
+                "weights": dict(self.config.weights),
+                "dataset_size": dataset_count,
+            }
+        )
 
         # Initialize history
         self.history.init(clear=not self.config.resume)
@@ -130,8 +152,12 @@ class OptimizationEngine:
         baseline_composite = compute_composite(baseline_summary, self.config.weights)
         baseline_correct = extract_correct_ids(baseline_summary)
         scores = score_dict(baseline_summary)
-        _print(f"Baseline composite: {baseline_composite:.4f} ({len(baseline_correct)}/101 correct)")
-        _print(f"  intent={scores['intent']:.2%}  severity={scores['severity']:.2%}  risk_f1={scores['risk_f1']:.2%}  evidence={scores['evidence']:.2%}  no_auto_send={scores['no_auto_send']:.2%}  fallback={scores['fallback']:.2%}")
+        _print(
+            f"Baseline composite: {baseline_composite:.4f} ({len(baseline_correct)}/101 correct)"
+        )
+        _print(
+            f"  intent={scores['intent']:.2%}  severity={scores['severity']:.2%}  risk_f1={scores['risk_f1']:.2%}  evidence={scores['evidence']:.2%}  no_auto_send={scores['no_auto_send']:.2%}  fallback={scores['fallback']:.2%}"
+        )
         logger.info(
             "Baseline composite: %.4f (%d correct cases)",
             baseline_composite,
@@ -139,28 +165,32 @@ class OptimizationEngine:
         )
 
         # Record baseline
-        self.history.record({
-            "iteration": 0,
-            "composite": baseline_composite,
-            "correct_cases": len(baseline_correct),
-            "total_cases": baseline_summary.total_cases,
-            "metrics": score_dict(baseline_summary),
-            "timestamp": _now_iso(),
-            "description": "baseline",
-        })
+        self.history.record(
+            {
+                "iteration": 0,
+                "composite": baseline_composite,
+                "correct_cases": len(baseline_correct),
+                "total_cases": baseline_summary.total_cases,
+                "metrics": score_dict(baseline_summary),
+                "timestamp": _now_iso(),
+                "description": "baseline",
+            }
+        )
 
         # Log baseline
-        _debug_log({
-            "event": "baseline",
-            "composite": round(baseline_composite, 4),
-            "correct_cases": len(baseline_correct),
-            "total_cases": baseline_summary.total_cases,
-            "metrics": scores,
-            "rounds_per_metric": {
-                k: round(v / (scores.get(k, 0.01) or 0.01), 4)
-                for k, v in self.config.weights.items()
-            },
-        })
+        _debug_log(
+            {
+                "event": "baseline",
+                "composite": round(baseline_composite, 4),
+                "correct_cases": len(baseline_correct),
+                "total_cases": baseline_summary.total_cases,
+                "metrics": scores,
+                "rounds_per_metric": {
+                    k: round(v / (scores.get(k, 0.01) or 0.01), 4)
+                    for k, v in self.config.weights.items()
+                },
+            }
+        )
 
         # Diagnose-only mode
         if self.config.diagnose_only:
@@ -191,7 +221,9 @@ class OptimizationEngine:
         consecutive_no_improvement = 0
 
         for iteration in range(1, self.config.max_rounds + 1):
-            _print(f"\n═══ Round {iteration}/{self.config.max_rounds} ═══ (composite={current_composite:.4f})")
+            _print(
+                f"\n═══ Round {iteration}/{self.config.max_rounds} ═══ (composite={current_composite:.4f})"
+            )
             logger.info(
                 "=== Round %d/%d (composite=%.4f) ===",
                 iteration,
@@ -206,7 +238,9 @@ class OptimizationEngine:
             if improved:
                 # Re-evaluate to get the new state
                 current_summary = self.evaluator.run_full_evaluation()
-                current_composite = compute_composite(current_summary, self.config.weights)
+                current_composite = compute_composite(
+                    current_summary, self.config.weights
+                )
                 current_correct_ids = extract_correct_ids(current_summary)
                 any_improvement = True
 
@@ -219,7 +253,9 @@ class OptimizationEngine:
                 else:
                     consecutive_no_improvement += 1
 
-                _print(f"✓ Round {iteration}: improved → composite={current_composite:.4f} ({len(current_correct_ids)} correct)")
+                _print(
+                    f"✓ Round {iteration}: improved → composite={current_composite:.4f} ({len(current_correct_ids)} correct)"
+                )
                 logger.info(
                     "Round %d: improved → composite=%.4f (%d correct)",
                     iteration,
@@ -228,7 +264,9 @@ class OptimizationEngine:
                 )
             else:
                 consecutive_no_improvement += 1
-                _print(f"✗ Round {iteration}: no improvement ({consecutive_no_improvement}/{CONSECUTIVE_NO_IMPROVEMENT_LIMIT} consecutive)")
+                _print(
+                    f"✗ Round {iteration}: no improvement ({consecutive_no_improvement}/{CONSECUTIVE_NO_IMPROVEMENT_LIMIT} consecutive)"
+                )
                 logger.info("Round %d: no improvement", iteration)
 
             # Check early termination (perfect score)
@@ -239,7 +277,9 @@ class OptimizationEngine:
 
             # 提前终止：连续 N 轮无改进
             if consecutive_no_improvement >= CONSECUTIVE_NO_IMPROVEMENT_LIMIT:
-                _print(f"🛑 Stopping: {CONSECUTIVE_NO_IMPROVEMENT_LIMIT} consecutive rounds without improvement")
+                _print(
+                    f"🛑 Stopping: {CONSECUTIVE_NO_IMPROVEMENT_LIMIT} consecutive rounds without improvement"
+                )
                 logger.info(
                     "Early stop: %d consecutive rounds without improvement",
                     CONSECUTIVE_NO_IMPROVEMENT_LIMIT,
@@ -250,28 +290,32 @@ class OptimizationEngine:
         delta = current_composite - baseline_composite
         best_delta = best_composite - baseline_composite
         _print("\n═══ Optimization Complete ═══")
-        _print(f"Composite: {baseline_composite:.4f} → {current_composite:.4f} ({delta:+.4f})")
-        if best_iteration > 0:
-            _print(f"Best composite: {best_composite:.4f} ({best_delta:+.4f}) @ round {best_iteration}")
-        logger.info(
-            "Optimization complete. Final composite: %.4f", current_composite
+        _print(
+            f"Composite: {baseline_composite:.4f} → {current_composite:.4f} ({delta:+.4f})"
         )
+        if best_iteration > 0:
+            _print(
+                f"Best composite: {best_composite:.4f} ({best_delta:+.4f}) @ round {best_iteration}"
+            )
+        logger.info("Optimization complete. Final composite: %.4f", current_composite)
 
         # Generate report
         _print("\n─── Report Generation ───")
         self._generate_report(baseline_summary, current_summary, any_improvement)
 
         # Log final summary
-        _debug_log({
-            "event": "run_complete",
-            "composite_start": round(baseline_composite, 4),
-            "composite_end": round(current_composite, 4),
-            "composite_best": round(best_composite, 4),
-            "delta": round(delta, 4),
-            "best_iteration": best_iteration,
-            "max_rounds": self.config.max_rounds,
-            "any_improvement": any_improvement,
-        })
+        _debug_log(
+            {
+                "event": "run_complete",
+                "composite_start": round(baseline_composite, 4),
+                "composite_end": round(current_composite, 4),
+                "composite_best": round(best_composite, 4),
+                "delta": round(delta, 4),
+                "best_iteration": best_iteration,
+                "max_rounds": self.config.max_rounds,
+                "any_improvement": any_improvement,
+            }
+        )
 
         return any_improvement
 
@@ -291,9 +335,7 @@ class OptimizationEngine:
             iteration = rec.get("iteration", "?")
             composite = rec.get("composite", 0.0)
             desc = rec.get("description", "")
-            logger.info(
-                "  #%s: composite=%.4f — %s", iteration, composite, desc
-            )
+            logger.info("  #%s: composite=%.4f — %s", iteration, composite, desc)
         return records
 
     # ------------------------------------------------------------------
@@ -323,17 +365,19 @@ class OptimizationEngine:
         if not diagnoses:
             _print("⚠ No diagnoses found, nothing to fix.")
             logger.info("Round %d: no diagnoses, nothing to fix.", iteration)
-            self.history.record({
-                "iteration": iteration,
-                "composite": compute_composite(old_summary, self.config.weights),
-                "correct_cases": len(old_correct_ids),
-                "total_cases": old_summary.total_cases,
-                "metrics": score_dict(old_summary),
-                "timestamp": _now_iso(),
-                "description": "no diagnoses",
-                "fixes_tried": 0,
-                "fixes_accepted": 0,
-            })
+            self.history.record(
+                {
+                    "iteration": iteration,
+                    "composite": compute_composite(old_summary, self.config.weights),
+                    "correct_cases": len(old_correct_ids),
+                    "total_cases": old_summary.total_cases,
+                    "metrics": score_dict(old_summary),
+                    "timestamp": _now_iso(),
+                    "description": "no diagnoses",
+                    "fixes_tried": 0,
+                    "fixes_accepted": 0,
+                }
+            )
             return False
 
         # Take top N by gain
@@ -348,23 +392,25 @@ class OptimizationEngine:
         )
 
         # Log all diagnoses for this round
-        _debug_log({
-            "event": "round_diagnoses",
-            "iteration": iteration,
-            "total_diagnoses": len(diagnoses),
-            "diagnoses": [
-                {
-                    "type": d.type,
-                    "fix_type": d.suggested_fix_type,
-                    "gain": round(d.fix_gain, 4),
-                    "affected": len(d.affected_cases),
-                    "description": d.description,
-                    "expected": {k: str(v) for k, v in d.expected_values.items()},
-                    "keywords": d.suggested_keywords[:5],
-                }
-                for d in diagnoses[:10]  # top 10 to avoid bloating
-            ],
-        })
+        _debug_log(
+            {
+                "event": "round_diagnoses",
+                "iteration": iteration,
+                "total_diagnoses": len(diagnoses),
+                "diagnoses": [
+                    {
+                        "type": d.type,
+                        "fix_type": d.suggested_fix_type,
+                        "gain": round(d.fix_gain, 4),
+                        "affected": len(d.affected_cases),
+                        "description": d.description,
+                        "expected": {k: str(v) for k, v in d.expected_values.items()},
+                        "keywords": d.suggested_keywords[:5],
+                    }
+                    for d in diagnoses[:10]  # top 10 to avoid bloating
+                ],
+            }
+        )
 
         accepted_any = False
         fixes_tried = 0
@@ -379,16 +425,24 @@ class OptimizationEngine:
                 candidates_kw = diag.details.get("keyword_candidates", [])
                 if candidates_kw:
                     kw_accepted = self._run_keyword_review_loop(
-                        diag, candidates_kw, iteration, old_summary, current_predictions,
+                        diag,
+                        candidates_kw,
+                        iteration,
+                        old_summary,
+                        current_predictions,
                     )
                     if kw_accepted:
                         fixes_accepted += 1
                         accepted_any = True
-                        current_predictions = dict(self.evaluator.predictions or current_predictions)
+                        current_predictions = dict(
+                            self.evaluator.predictions or current_predictions
+                        )
                         continue  # skip old verifier for this diag
 
             fixes_tried += 1
-            _print(f"Trying fix: [{diag.type}] {diag.suggested_fix_type} (gain={diag.fix_gain:.4f})")
+            _print(
+                f"Trying fix: [{diag.type}] {diag.suggested_fix_type} (gain={diag.fix_gain:.4f})"
+            )
             logger.info(
                 "  Trying fix: [%s] %s (gain=%.4f)",
                 diag.type,
@@ -399,20 +453,24 @@ class OptimizationEngine:
             fix_result = self.fixer.apply_fix(diag)
 
             if not fix_result.success:
-                _print(f"✗ Fix failed: {fix_result.fix_type} — {fix_result.error or fix_result.description}")
+                _print(
+                    f"✗ Fix failed: {fix_result.fix_type} — {fix_result.error or fix_result.description}"
+                )
                 logger.warning(
                     "  Fix failed: %s — %s",
                     fix_result.fix_type,
                     fix_result.error or fix_result.description,
                 )
-                _debug_log({
-                    "event": "fix_failure",
-                    "iteration": iteration,
-                    "diagnosis_type": diag.type,
-                    "fix_type": fix_result.fix_type,
-                    "error": fix_result.error or fix_result.description,
-                    "gain_estimated": round(diag.fix_gain, 4),
-                })
+                _debug_log(
+                    {
+                        "event": "fix_failure",
+                        "iteration": iteration,
+                        "diagnosis_type": diag.type,
+                        "fix_type": fix_result.fix_type,
+                        "error": fix_result.error or fix_result.description,
+                        "gain_estimated": round(diag.fix_gain, 4),
+                    }
+                )
                 continue
 
             # 增量验证：只重评受影响工单
@@ -420,14 +478,17 @@ class OptimizationEngine:
 
             # Verify improvement
             improved, new_summary, new_composite = self._verify_fix(
-                old_summary, old_correct_ids,
+                old_summary,
+                old_correct_ids,
                 affected_cases=affected_ids,
                 old_predictions=current_predictions,
             )
 
             if improved:
                 # 更新 predictions 缓存，后续修复基于最新状态
-                current_predictions = dict(self.evaluator.predictions or current_predictions)
+                current_predictions = dict(
+                    self.evaluator.predictions or current_predictions
+                )
                 # Commit the fix
                 msg = (
                     f"optimizer round {iteration}: {diag.suggested_fix_type} "
@@ -439,55 +500,72 @@ class OptimizationEngine:
                 _print(f"✅ OK: {msg} → {sha[:8]}")
                 logger.info("  Accepted fix, committed %s", sha[:8])
 
-                _debug_log({
-                    "event": "fix_accepted",
-                    "iteration": iteration,
-                    "diagnosis_type": diag.type,
-                    "fix_type": diag.suggested_fix_type,
-                    "composite_before": round(compute_composite(old_summary, self.config.weights), 4),
-                    "composite_after": round(new_composite, 4),
-                    "delta": round(new_composite - compute_composite(old_summary, self.config.weights), 4),
-                    "gain_estimated": round(diag.fix_gain, 4),
-                    "commit_sha": sha[:8],
-                })
+                _debug_log(
+                    {
+                        "event": "fix_accepted",
+                        "iteration": iteration,
+                        "diagnosis_type": diag.type,
+                        "fix_type": diag.suggested_fix_type,
+                        "composite_before": round(
+                            compute_composite(old_summary, self.config.weights), 4
+                        ),
+                        "composite_after": round(new_composite, 4),
+                        "delta": round(
+                            new_composite
+                            - compute_composite(old_summary, self.config.weights),
+                            4,
+                        ),
+                        "gain_estimated": round(diag.fix_gain, 4),
+                        "commit_sha": sha[:8],
+                    }
+                )
 
-                self.history.record({
-                    "iteration": iteration,
-                    "composite": new_composite,
-                    "best_composite": self._best_composite,  # NEW
-                    "correct_cases": len(extract_correct_ids(new_summary)),
-                    "total_cases": new_summary.total_cases,
-                    "metrics": score_dict(new_summary),
-                    "timestamp": _now_iso(),
-                    "description": f"accepted: {diag.suggested_fix_type}",
-                    "fix_type": diag.suggested_fix_type,
-                    "diagnosis_type": diag.type,
-                    "commit_sha": sha,
-                    "fix_gain_actual": new_composite - compute_composite(old_summary, self.config.weights),
-                })
+                self.history.record(
+                    {
+                        "iteration": iteration,
+                        "composite": new_composite,
+                        "best_composite": self._best_composite,  # NEW
+                        "correct_cases": len(extract_correct_ids(new_summary)),
+                        "total_cases": new_summary.total_cases,
+                        "metrics": score_dict(new_summary),
+                        "timestamp": _now_iso(),
+                        "description": f"accepted: {diag.suggested_fix_type}",
+                        "fix_type": diag.suggested_fix_type,
+                        "diagnosis_type": diag.type,
+                        "commit_sha": sha,
+                        "fix_gain_actual": new_composite
+                        - compute_composite(old_summary, self.config.weights),
+                    }
+                )
             else:
                 # Rollback
                 self.fixer.rollback()
                 _print(f"✗ Rolled back: no improvement after {diag.suggested_fix_type}")
                 logger.info("  Reverted fix (no improvement)")
-                _debug_log({
-                    "event": "fix_rolled_back",
-                    "iteration": iteration,
-                    "diagnosis_type": diag.type,
-                    "fix_type": diag.suggested_fix_type,
-                    "gain_estimated": round(diag.fix_gain, 4),
-                })
-                self.history.record({
-                    "iteration": iteration,
-                    "composite": compute_composite(old_summary, self.config.weights),
-                    "correct_cases": len(old_correct_ids),
-                    "total_cases": old_summary.total_cases,
-                    "metrics": score_dict(old_summary),
-                    "timestamp": _now_iso(),
-                    "description": f"reverted: {diag.suggested_fix_type}",
-                    "fix_type": diag.suggested_fix_type,
-                    "diagnosis_type": diag.type,
-                })
+                _debug_log(
+                    {
+                        "event": "fix_rolled_back",
+                        "iteration": iteration,
+                        "diagnosis_type": diag.type,
+                        "fix_type": diag.suggested_fix_type,
+                        "gain_estimated": round(diag.fix_gain, 4),
+                    }
+                )
+                self.history.record(
+                    {
+                        "iteration": iteration,
+                        "composite": compute_composite(
+                            old_summary, self.config.weights
+                        ),
+                        "correct_cases": len(old_correct_ids),
+                        "total_cases": old_summary.total_cases,
+                        "metrics": score_dict(old_summary),
+                        "timestamp": _now_iso(),
+                        "description": f"reverted: {diag.suggested_fix_type}",
+                        "fix_type": diag.suggested_fix_type,
+                        "diagnosis_type": diag.type,
+                    }
+                )
 
         final_composite = (
             compute_composite(old_summary, self.config.weights)
@@ -499,10 +577,12 @@ class OptimizationEngine:
             final_summary = self.evaluator.run_full_evaluation()
             final_composite = compute_composite(final_summary, self.config.weights)
 
-        self.history.save_state({
-            "iteration": iteration,
-            "composite": final_composite,
-        })
+        self.history.save_state(
+            {
+                "iteration": iteration,
+                "composite": final_composite,
+            }
+        )
 
         return accepted_any
 
@@ -526,10 +606,15 @@ class OptimizationEngine:
         golden = self.evaluator.dataset.golden
 
         for keyword in candidates_kw:
-            _print(f"  Simulating keyword '{keyword}' for {diag.expected_values.get('intent', '?')}...")
+            _print(
+                f"  Simulating keyword '{keyword}' for {diag.expected_values.get('intent', '?')}..."
+            )
 
             tradeoff = analyze_keyword_tradeoff(
-                diag, keyword, tickets, golden,
+                diag,
+                keyword,
+                tickets,
+                golden,
                 current_predictions=current_predictions,
             )
 
@@ -549,10 +634,14 @@ class OptimizationEngine:
                 if cid in tickets
             ]
 
-            _print(f"    \U0001f4cb LLM reviewing '{keyword}': fix {len(tradeoff.fixed_case_ids)}, harm {len(tradeoff.harmed_case_ids)}, net={tradeoff.net_gain}")
+            _print(
+                f"    \U0001f4cb LLM reviewing '{keyword}': fix {len(tradeoff.fixed_case_ids)}, harm {len(tradeoff.harmed_case_ids)}, net={tradeoff.net_gain}"
+            )
 
             try:
-                review = review_keyword(tradeoff, sample_fixed, sample_harmed, self.config)
+                review = review_keyword(
+                    tradeoff, sample_fixed, sample_harmed, self.config
+                )
             except ValueError as e:
                 _print(f"    \u2717 LLM review failed: {e}")
                 continue
@@ -567,7 +656,8 @@ class OptimizationEngine:
                     # Run verification
                     affected_ids = set(diag.affected_cases or [])
                     improved, new_summary, new_composite = self._verify_fix(
-                        old_summary, set(),  # use full eval for keyword changes
+                        old_summary,
+                        set(),  # use full eval for keyword changes
                         affected_cases=affected_ids,
                         old_predictions=current_predictions,
                     )
@@ -578,32 +668,43 @@ class OptimizationEngine:
                             f"for {tradeoff.target_intent} (composite={new_composite:.4f})"
                         )
                         sha = commit(message=msg)
-                        current_predictions = dict(self.evaluator.predictions or current_predictions)
+                        current_predictions = dict(
+                            self.evaluator.predictions or current_predictions
+                        )
 
                         _print(f"    \u2705 Committed: {msg} \u2192 {sha[:8]}")
 
-                        self.history.record({
-                            "iteration": iteration,
-                            "composite": new_composite,
-                            "best_composite": self._best_composite,
-                            "correct_cases": len(extract_correct_ids(new_summary)),
-                            "total_cases": new_summary.total_cases,
-                            "metrics": score_dict(new_summary),
-                            "timestamp": _now_iso(),
-                            "description": f"LLM keyword: {keyword} \u2192 {tradeoff.target_intent}",
-                            "fix_type": "intent_keyword_llm",
-                            "diagnosis_type": diag.type,
-                            "commit_sha": sha,
-                            "fix_gain_actual": new_composite - compute_composite(old_summary, self.config.weights),
-                        })
+                        self.history.record(
+                            {
+                                "iteration": iteration,
+                                "composite": new_composite,
+                                "best_composite": self._best_composite,
+                                "correct_cases": len(extract_correct_ids(new_summary)),
+                                "total_cases": new_summary.total_cases,
+                                "metrics": score_dict(new_summary),
+                                "timestamp": _now_iso(),
+                                "description": f"LLM keyword: {keyword} \u2192 {tradeoff.target_intent}",
+                                "fix_type": "intent_keyword_llm",
+                                "diagnosis_type": diag.type,
+                                "commit_sha": sha,
+                                "fix_gain_actual": new_composite
+                                - compute_composite(old_summary, self.config.weights),
+                            }
+                        )
                         return True
                     else:
                         self.fixer.rollback()
-                        _print(f"    \u2717 No improvement after applying '{keyword}', rolled back")
+                        _print(
+                            f"    \u2717 No improvement after applying '{keyword}', rolled back"
+                        )
                 else:
-                    _print(f"    \u2717 apply_fix_keyword failed: {result.error or result.description}")
+                    _print(
+                        f"    \u2717 apply_fix_keyword failed: {result.error or result.description}"
+                    )
             else:
-                _print(f"    \u2717 LLM REJECTED: {review.get('reasoning', 'no reason')[:100]}")
+                _print(
+                    f"    \u2717 LLM REJECTED: {review.get('reasoning', 'no reason')[:100]}"
+                )
 
         return False
 
@@ -639,7 +740,9 @@ class OptimizationEngine:
                 )
             )
 
-        md = reporter.generate(iter_records, baseline=baseline_summary, final=final_summary)
+        md = reporter.generate(
+            iter_records, baseline=baseline_summary, final=final_summary
+        )
         path = reporter.save(md)
         _print(f"✅ Report saved to {path}")
 
@@ -717,7 +820,9 @@ class OptimizationEngine:
 # Module-level helpers
 # ------------------------------------------------------------------
 
+
 def _now_iso() -> str:
     """Return current UTC time as ISO string."""
     import datetime
+
     return datetime.datetime.now(datetime.timezone.utc).isoformat()

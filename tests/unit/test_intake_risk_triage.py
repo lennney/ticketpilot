@@ -80,7 +80,11 @@ class TestGoldenCases:
             (
                 "我要求3倍赔偿，你们违约了",
                 IntentClass.OTHER,
-                {RiskFlag.COMPENSATION_RISK, RiskFlag.POLICY_CONFLICT, RiskFlag.LOW_CONFIDENCE},
+                {
+                    RiskFlag.COMPENSATION_RISK,
+                    RiskFlag.POLICY_CONFLICT,
+                    RiskFlag.LOW_CONFIDENCE,
+                },
                 RiskSeverity.MEDIUM,
             ),
             (
@@ -98,7 +102,12 @@ class TestGoldenCases:
         ],
     )
     def test_golden_cases(
-        self, mock_retrieve, input_text, expected_intent, expected_flags, expected_severity
+        self,
+        mock_retrieve,
+        input_text,
+        expected_intent,
+        expected_flags,
+        expected_severity,
     ):
         """Test all golden cases must pass."""
         mock_retrieve.return_value = _make_non_empty_evidence()

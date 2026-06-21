@@ -9,6 +9,7 @@ from ticketpilot.agent.memory import EpisodicMemory, WorkingMemory
 # WorkingMemory
 # ---------------------------------------------------------------------------
 
+
 class TestWorkingMemory:
     def test_rejects_empty_run_id(self):
         with pytest.raises(ValueError, match="run_id must not be empty"):
@@ -81,6 +82,7 @@ class TestWorkingMemory:
 # ---------------------------------------------------------------------------
 # EpisodicMemory
 # ---------------------------------------------------------------------------
+
 
 class TestEpisodicMemory:
     def test_starts_empty(self):

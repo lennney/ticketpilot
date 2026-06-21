@@ -69,9 +69,7 @@ def _parse_semicolon_list(value: str | None) -> frozenset[str]:
     """
     if not value or not value.strip():
         return frozenset()
-    return frozenset(
-        token.strip() for token in value.split(";") if token.strip()
-    )
+    return frozenset(token.strip() for token in value.split(";") if token.strip())
 
 
 def load_tickets_eval(path: str | pathlib.Path) -> dict[str, EvalTicket]:
@@ -103,16 +101,11 @@ def load_tickets_eval(path: str | pathlib.Path) -> dict[str, EvalTicket]:
         for row_idx, row in enumerate(reader, start=2):
             case_id_raw = row.get("case_id", "").strip()
             if not case_id_raw:
-                msg = (
-                    f"{path.name}: row {row_idx}: 'case_id' is empty or missing"
-                )
+                msg = f"{path.name}: row {row_idx}: 'case_id' is empty or missing"
                 raise ValueError(msg)
 
             if case_id_raw in tickets:
-                msg = (
-                    f"{path.name}: row {row_idx}: duplicate case_id "
-                    f"'{case_id_raw}'"
-                )
+                msg = f"{path.name}: row {row_idx}: duplicate case_id '{case_id_raw}'"
                 raise ValueError(msg)
 
             try:
@@ -125,10 +118,7 @@ def load_tickets_eval(path: str | pathlib.Path) -> dict[str, EvalTicket]:
                     notes=row.get("notes", "").strip() or None,
                 )
             except Exception as exc:
-                msg = (
-                    f"{path.name}: row {row_idx}: failed to create "
-                    f"EvalTicket: {exc}"
-                )
+                msg = f"{path.name}: row {row_idx}: failed to create EvalTicket: {exc}"
                 raise ValueError(msg) from exc
 
             tickets[case_id_raw] = ticket
@@ -167,24 +157,17 @@ def load_golden_expectations(
         for row_idx, row in enumerate(reader, start=2):
             case_id_raw = row.get("case_id", "").strip()
             if not case_id_raw:
-                msg = (
-                    f"{path.name}: row {row_idx}: 'case_id' is empty or missing"
-                )
+                msg = f"{path.name}: row {row_idx}: 'case_id' is empty or missing"
                 raise ValueError(msg)
 
             if case_id_raw in golden:
-                msg = (
-                    f"{path.name}: row {row_idx}: duplicate case_id "
-                    f"'{case_id_raw}'"
-                )
+                msg = f"{path.name}: row {row_idx}: duplicate case_id '{case_id_raw}'"
                 raise ValueError(msg)
 
             try:
                 expectation = GoldenExpectation(
                     case_id=case_id_raw,
-                    expected_issue_type=row.get(
-                        "expected_issue_type", ""
-                    ).strip(),
+                    expected_issue_type=row.get("expected_issue_type", "").strip(),
                     expected_risk_flags=_parse_semicolon_list(
                         row.get("expected_risk_flags", "")
                     ),
@@ -201,9 +184,7 @@ def load_golden_expectations(
                     expected_fallback_required=row.get(
                         "expected_fallback_required", ""
                     ).strip(),
-                    expected_no_auto_send=row.get(
-                        "expected_no_auto_send", ""
-                    ).strip(),
+                    expected_no_auto_send=row.get("expected_no_auto_send", "").strip(),
                     notes=row.get("notes", "").strip() or None,
                 )
             except Exception as exc:

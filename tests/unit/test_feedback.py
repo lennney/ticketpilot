@@ -22,6 +22,7 @@ from ticketpilot.review.schemas import ReviewAction, ReviewDecision
 # Fixtures
 # ---------------------------------------------------------------------------
 
+
 def _make_decision(
     ticket_id: str = "t-1",
     action: ReviewAction = ReviewAction.APPROVE,
@@ -71,6 +72,7 @@ def _make_record(
 # ---------------------------------------------------------------------------
 # FeedbackCollector
 # ---------------------------------------------------------------------------
+
 
 class TestFeedbackCollector:
     def test_collect_approve(self) -> None:
@@ -146,13 +148,16 @@ class TestFeedbackCollector:
 # CalibrationCurve
 # ---------------------------------------------------------------------------
 
+
 class TestCalibrationCurve:
     def test_empty_records(self) -> None:
         curve = CalibrationCurve.build([])
         assert curve.buckets == []
 
     def test_single_bucket(self) -> None:
-        records = [_make_record(predicted_confidence=0.85, was_correct=True) for _ in range(5)]
+        records = [
+            _make_record(predicted_confidence=0.85, was_correct=True) for _ in range(5)
+        ]
         curve = CalibrationCurve.build(records)
 
         assert len(curve.buckets) == 1
@@ -162,12 +167,16 @@ class TestCalibrationCurve:
         assert bucket.actual_accuracy == 1.0
 
     def test_all_correct(self) -> None:
-        records = [_make_record(predicted_confidence=0.5, was_correct=True) for _ in range(10)]
+        records = [
+            _make_record(predicted_confidence=0.5, was_correct=True) for _ in range(10)
+        ]
         curve = CalibrationCurve.build(records)
         assert curve.buckets[0].actual_accuracy == 1.0
 
     def test_all_wrong(self) -> None:
-        records = [_make_record(predicted_confidence=0.3, was_correct=False) for _ in range(10)]
+        records = [
+            _make_record(predicted_confidence=0.3, was_correct=False) for _ in range(10)
+        ]
         curve = CalibrationCurve.build(records)
         assert curve.buckets[0].actual_accuracy == 0.0
 
@@ -237,6 +246,7 @@ class TestCalibrationCurve:
 # ThresholdAdvisor
 # ---------------------------------------------------------------------------
 
+
 class TestThresholdAdvisor:
     def test_insufficient_data(self) -> None:
         advisor = ThresholdAdvisor()
@@ -258,7 +268,9 @@ class TestThresholdAdvisor:
         """When accuracy in high bucket is >= 0.8 and thresholds match, no change."""
         advisor = ThresholdAdvisor()
         # Create enough records in the high bucket, all correct
-        records = [_make_record(predicted_confidence=0.9, was_correct=True) for _ in range(15)]
+        records = [
+            _make_record(predicted_confidence=0.9, was_correct=True) for _ in range(15)
+        ]
         curve = CalibrationCurve.build(records)
         suggestion = advisor.analyze(curve)
 
@@ -270,7 +282,9 @@ class TestThresholdAdvisor:
         """If low-confidence bucket has high accuracy, thresholds may shift."""
         advisor = ThresholdAdvisor()
         # All records in 0.4-0.6 bucket, all correct → suggests high=0.4
-        records = [_make_record(predicted_confidence=0.5, was_correct=True) for _ in range(15)]
+        records = [
+            _make_record(predicted_confidence=0.5, was_correct=True) for _ in range(15)
+        ]
         curve = CalibrationCurve.build(records)
         suggestion = advisor.analyze(curve)
 
@@ -282,7 +296,9 @@ class TestThresholdAdvisor:
     def test_suggestion_is_advisory(self) -> None:
         """Verify the suggestion includes current thresholds for comparison."""
         advisor = ThresholdAdvisor()
-        records = [_make_record(predicted_confidence=0.5, was_correct=True) for _ in range(15)]
+        records = [
+            _make_record(predicted_confidence=0.5, was_correct=True) for _ in range(15)
+        ]
         curve = CalibrationCurve.build(records)
         suggestion = advisor.analyze(curve)
 
@@ -316,15 +332,17 @@ class TestIsotonicCalibrator:
     def test_monotonicity_enforced(self) -> None:
         """Violating inputs must produce monotonic output after PAV."""
         records = [
-            _make_record(predicted_confidence=0.3, was_correct=True),   # high actual
+            _make_record(predicted_confidence=0.3, was_correct=True),  # high actual
             _make_record(predicted_confidence=0.5, was_correct=False),  # low actual
-            _make_record(predicted_confidence=0.7, was_correct=True),   # high actual
+            _make_record(predicted_confidence=0.7, was_correct=True),  # high actual
         ]
         cal = IsotonicCalibrator().fit(records)
 
         vals = [cal.calibrate(x) for x in [0.1, 0.3, 0.5, 0.7, 0.9]]
         for i in range(len(vals) - 1):
-            assert vals[i] <= vals[i + 1], f"Monotonicity violated at index {i}: {vals[i]} > {vals[i+1]}"
+            assert vals[i] <= vals[i + 1], (
+                f"Monotonicity violated at index {i}: {vals[i]} > {vals[i + 1]}"
+            )
 
     def test_empty_records(self) -> None:
         cal = IsotonicCalibrator().fit([])
@@ -351,12 +369,16 @@ class TestIsotonicCalibrator:
             assert loaded.calibrate(score) == cal.calibrate(score)
 
     def test_all_correct(self) -> None:
-        records = [_make_record(predicted_confidence=0.5, was_correct=True) for _ in range(10)]
+        records = [
+            _make_record(predicted_confidence=0.5, was_correct=True) for _ in range(10)
+        ]
         cal = IsotonicCalibrator().fit(records)
         assert cal.calibrate(0.5) == 1.0
 
     def test_all_wrong(self) -> None:
-        records = [_make_record(predicted_confidence=0.5, was_correct=False) for _ in range(10)]
+        records = [
+            _make_record(predicted_confidence=0.5, was_correct=False) for _ in range(10)
+        ]
         cal = IsotonicCalibrator().fit(records)
         assert cal.calibrate(0.5) == 0.0
 
@@ -396,7 +418,9 @@ class TestReliabilityDiagram:
         assert "ECE" in ascii_art
 
     def test_to_ascii_has_bars(self) -> None:
-        records = [_make_record(predicted_confidence=0.9, was_correct=True) for _ in range(5)]
+        records = [
+            _make_record(predicted_confidence=0.9, was_correct=True) for _ in range(5)
+        ]
         diagram = ReliabilityDiagram.build(records)
         ascii_art = diagram.to_ascii()
 
@@ -436,19 +460,25 @@ class TestCalibrationECE:
     def test_is_well_calibrated_true(self) -> None:
         """Records with small gap should be well calibrated."""
         # All in one bucket, predicted ~0.9, actual = 1.0
-        records = [_make_record(predicted_confidence=0.9, was_correct=True) for _ in range(10)]
+        records = [
+            _make_record(predicted_confidence=0.9, was_correct=True) for _ in range(10)
+        ]
         curve = CalibrationCurve.build(records)
         assert curve.is_well_calibrated(threshold=0.15) is True
 
     def test_is_well_calibrated_false(self) -> None:
         """Records with large gap should NOT be well calibrated."""
         # Predicted ~0.9 but all wrong → actual = 0.0, gap = 0.9
-        records = [_make_record(predicted_confidence=0.9, was_correct=False) for _ in range(10)]
+        records = [
+            _make_record(predicted_confidence=0.9, was_correct=False) for _ in range(10)
+        ]
         curve = CalibrationCurve.build(records)
         assert curve.is_well_calibrated(threshold=0.05) is False
 
     def test_is_well_calibrated_default_threshold(self) -> None:
-        records = [_make_record(predicted_confidence=0.5, was_correct=True) for _ in range(10)]
+        records = [
+            _make_record(predicted_confidence=0.5, was_correct=True) for _ in range(10)
+        ]
         curve = CalibrationCurve.build(records)
         # predicted ~0.5, actual = 1.0, gap = 0.5 → ECE = 0.5
         assert curve.is_well_calibrated() is False

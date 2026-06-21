@@ -153,7 +153,9 @@ class TestSessionStateTransition:
 
         # Build system message (same logic as callback)
         action_label = ACTION_LABELS[decision.action]
-        reason_text = f" — {decision.decision_reason}" if decision.decision_reason else ""
+        reason_text = (
+            f" — {decision.decision_reason}" if decision.decision_reason else ""
+        )
         system_message = f"[审核结果] {action_label}{reason_text}"
 
         # Append to messages
@@ -177,7 +179,9 @@ class TestSessionStateTransition:
         )
 
         action_label = ACTION_LABELS[decision.action]
-        reason_text = f" — {decision.decision_reason}" if decision.decision_reason else ""
+        reason_text = (
+            f" — {decision.decision_reason}" if decision.decision_reason else ""
+        )
         system_message = f"[审核结果] {action_label}{reason_text}"
 
         assert system_message == "[审核结果] 审核通过（已编辑） — Minor correction"
@@ -190,7 +194,9 @@ class TestSessionStateTransition:
         )
 
         action_label = ACTION_LABELS[decision.action]
-        reason_text = f" — {decision.decision_reason}" if decision.decision_reason else ""
+        reason_text = (
+            f" — {decision.decision_reason}" if decision.decision_reason else ""
+        )
         system_message = f"[审核结果] {action_label}{reason_text}"
 
         assert system_message == "[审核结果] 已升级 — Customer VIP"
@@ -203,7 +209,9 @@ class TestSessionStateTransition:
         )
 
         action_label = ACTION_LABELS[decision.action]
-        reason_text = f" — {decision.decision_reason}" if decision.decision_reason else ""
+        reason_text = (
+            f" — {decision.decision_reason}" if decision.decision_reason else ""
+        )
         system_message = f"[审核结果] {action_label}{reason_text}"
 
         assert system_message == "[审核结果] 已拒绝 — Inappropriate content"

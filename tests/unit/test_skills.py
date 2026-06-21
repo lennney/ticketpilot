@@ -230,9 +230,7 @@ class TestPersistence:
     """Tests for save_skill_library round-trip."""
 
     def test_save_and_reload(self):
-        with tempfile.NamedTemporaryFile(
-            suffix=".json", delete=False, mode="w"
-        ) as f:
+        with tempfile.NamedTemporaryFile(suffix=".json", delete=False, mode="w") as f:
             tmp_path = f.name
 
         try:
@@ -270,9 +268,7 @@ class TestPersistence:
             assert "s1" in reloaded.skills
 
     def test_save_with_datetime_fields(self):
-        with tempfile.NamedTemporaryFile(
-            suffix=".json", delete=False, mode="w"
-        ) as f:
+        with tempfile.NamedTemporaryFile(suffix=".json", delete=False, mode="w") as f:
             tmp_path = f.name
 
         try:

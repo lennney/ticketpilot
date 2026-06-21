@@ -45,6 +45,7 @@ class AgentTrace:
         """Serialize the trace to a JSON string."""
         payload = self.to_dict()
         import json
+
         return json.dumps(payload, default=str, ensure_ascii=False)
 
     def to_dict(self) -> dict[str, Any]:

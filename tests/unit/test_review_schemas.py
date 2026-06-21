@@ -251,7 +251,10 @@ class TestReviewDecisionAuditFields:
             guard_forbidden_details=["refund_amount", "compensation_amount"],
         )
         assert decision.guard_forbidden_promise is True
-        assert decision.guard_forbidden_details == ["refund_amount", "compensation_amount"]
+        assert decision.guard_forbidden_details == [
+            "refund_amount",
+            "compensation_amount",
+        ]
 
     def test_guard_forbidden_details_defaults_empty(self):
         decision = ReviewDecision(

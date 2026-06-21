@@ -43,7 +43,9 @@ def evidence_to_display_items(
         items.append(
             EvidenceDisplayItem(
                 chunk_id=str(ev.chunk_id),
-                doc_type=ev.doc_type.value if hasattr(ev.doc_type, "value") else str(ev.doc_type),
+                doc_type=ev.doc_type.value
+                if hasattr(ev.doc_type, "value")
+                else str(ev.doc_type),
                 title=ev.title,
                 score=ev.score,
                 content_preview=content_preview,
@@ -88,9 +90,7 @@ def ticket_output_to_chat_display(
         else:
             risk_badge = str(severity).upper()
 
-        risk_flags = [
-            f.value for f in ticket_output.risk_assessment.flags
-        ]
+        risk_flags = [f.value for f in ticket_output.risk_assessment.flags]
 
     # Extract draft and guard info
     guard_passed: bool | None = None

@@ -85,7 +85,9 @@ class TestChunkText:
     def test_short_text_creates_only_parent(self):
         """Test short text (<=300 chars) creates only PARENT chunk."""
         # Short Chinese text
-        text = "如何申请退款？如果商品有质量问题，可以在7天内申请退款。需要提供商品照片。"
+        text = (
+            "如何申请退款？如果商品有质量问题，可以在7天内申请退款。需要提供商品照片。"
+        )
         chunks = chunk_text(
             text=text,
             doc_id=uuid4(),
@@ -126,7 +128,10 @@ class TestChunkText:
         """Test medium text (>300, <=1000) creates PARENT + children."""
         # Medium text with multiple sentences - must be > 300 chars per parent
         # to trigger child creation
-        text = "这是第一句话。这是第二句话。这是第三句话。这是第四句话。这是第五句话。" * 10
+        text = (
+            "这是第一句话。这是第二句话。这是第三句话。这是第四句话。这是第五句话。"
+            * 10
+        )
 
         chunks = chunk_text(
             text=text,

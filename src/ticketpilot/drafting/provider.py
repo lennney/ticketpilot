@@ -6,9 +6,7 @@ from ticketpilot.drafting.schemas import Citation, DraftReply
 from ticketpilot.schema.evidence import EvidenceCandidate
 from ticketpilot.schema.ticket import ClassificationResult, RiskAssessment
 
-NO_EVIDENCE_FALLBACK_TEXT = (
-    "根据现有信息，无法确认具体政策条款，建议转人工处理。"
-)
+NO_EVIDENCE_FALLBACK_TEXT = "根据现有信息，无法确认具体政策条款，建议转人工处理。"
 
 
 class AbstractDraftProvider(ABC):
@@ -100,9 +98,7 @@ class FakeDraftProvider(AbstractDraftProvider):
         draft_text = "\n".join(lines)
 
         # Compute confidence from average evidence score
-        avg_score = (
-            sum(e.score for e in top_n) / len(top_n) if top_n else 0.0
-        )
+        avg_score = sum(e.score for e in top_n) / len(top_n) if top_n else 0.0
         confidence = max(0.0, min(1.0, avg_score))
 
         must_human = (

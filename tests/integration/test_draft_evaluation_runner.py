@@ -13,7 +13,6 @@ import sys
 import tempfile
 
 
-
 class TestDraftEvaluationRunner:
     """End-to-end tests for run_draft_evaluation.py runner functions."""
 
@@ -38,7 +37,14 @@ class TestDraftEvaluationRunner:
             with tickets_path.open("w", newline="", encoding="utf-8") as f:
                 writer = csv.DictWriter(
                     f,
-                    fieldnames=["case_id", "original_text", "customer_id", "submitted_at", "scenario_type", "notes"],
+                    fieldnames=[
+                        "case_id",
+                        "original_text",
+                        "customer_id",
+                        "submitted_at",
+                        "scenario_type",
+                        "notes",
+                    ],
                 )
                 writer.writeheader()
                 writer.writerows(fixture_cases)

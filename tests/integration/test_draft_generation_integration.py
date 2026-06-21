@@ -262,8 +262,7 @@ class TestDraftGenerationIntegration:
         reasons = trace["human_review_reasons"]
         # Guard failure (risk not acknowledged) or escalation recorded
         assert any(
-            "risk" in r or "escalation" in r or "guard_failed" in r
-            for r in reasons
+            "risk" in r or "escalation" in r or "guard_failed" in r for r in reasons
         ), f"Expected risk-related reason in {reasons}"
 
     def test_no_network_calls(self):
@@ -279,6 +278,7 @@ class TestDraftGenerationIntegration:
         """FakeLLMProvider works without any environment configuration."""
         # Ensure no API keys are set
         import os
+
         old_val = os.environ.pop("TICKETPILOT_LLM_PROVIDER", None)
         try:
             ev = _evidence()
@@ -309,4 +309,7 @@ class TestDraftGenerationIntegration:
             )
             result = generate_draft(output)
             # Either guard failed or human review was set
-            assert result.draft.must_human_review is True or not result.guard_result.guard_passed
+            assert (
+                result.draft.must_human_review is True
+                or not result.guard_result.guard_passed
+            )

@@ -184,9 +184,7 @@ class TestRunPipelineWithDraft:
         ticket_output = _make_ticket_output(
             must_human_review=True, severity=RiskSeverity.HIGH
         )
-        draft_reply = _make_draft_reply(
-            ticket_output.ticket_id, must_human_review=True
-        )
+        draft_reply = _make_draft_reply(ticket_output.ticket_id, must_human_review=True)
         with (
             patch(
                 "ticketpilot.drafting.pipeline.intake_risk_pipeline",

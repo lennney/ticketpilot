@@ -20,7 +20,9 @@ class TestRiskAssessor:
         """Set up test fixtures."""
         self.assessor = RiskAssessor()
 
-    def _make_classification(self, intent: IntentClass, confidence: float) -> ClassificationResult:
+    def _make_classification(
+        self, intent: IntentClass, confidence: float
+    ) -> ClassificationResult:
         """Helper to create ClassificationResult."""
         return ClassificationResult(
             intent=intent,
@@ -28,7 +30,9 @@ class TestRiskAssessor:
             classified_at=datetime.utcnow(),
         )
 
-    def _make_normalized_ticket(self, text: str, order_numbers: list[str] = None) -> NormalizedTicket:
+    def _make_normalized_ticket(
+        self, text: str, order_numbers: list[str] = None
+    ) -> NormalizedTicket:
         """Helper to create NormalizedTicket."""
         return NormalizedTicket(
             text=text,
@@ -83,7 +87,9 @@ class TestRiskAssessor:
         result = self.assessor.assess(ticket, classification)
         assert RiskFlag.LOW_CONFIDENCE in result.flags
         assert result.must_human_review is True
-        assert result.severity == RiskSeverity.LOW  # LOW_CONFIDENCE is meta, doesn't count for severity
+        assert (
+            result.severity == RiskSeverity.LOW
+        )  # LOW_CONFIDENCE is meta, doesn't count for severity
 
     def test_flag_insufficient_evidence(self):
         """Test insufficient_evidence flag is set for vague tickets."""
@@ -92,7 +98,9 @@ class TestRiskAssessor:
         result = self.assessor.assess(ticket, classification)
         assert RiskFlag.INSUFFICIENT_EVIDENCE in result.flags
         assert result.must_human_review is True
-        assert result.severity == RiskSeverity.LOW  # INSUFFICIENT_EVIDENCE is meta, doesn't count for severity
+        assert (
+            result.severity == RiskSeverity.LOW
+        )  # INSUFFICIENT_EVIDENCE is meta, doesn't count for severity
 
     def test_flag_not_set_with_order(self):
         """Test insufficient_evidence is not set when order number exists."""
@@ -103,7 +111,9 @@ class TestRiskAssessor:
 
     def test_severity_low_with_no_flags(self):
         """Test severity is LOW when no flags are set."""
-        ticket = self._make_normalized_ticket("我申请退款，订单号123456", order_numbers=["123456"])
+        ticket = self._make_normalized_ticket(
+            "我申请退款，订单号123456", order_numbers=["123456"]
+        )
         classification = self._make_classification(IntentClass.REFUND, 0.9)
         result = self.assessor.assess(ticket, classification)
         assert result.severity == RiskSeverity.LOW
@@ -148,8 +158,12 @@ class TestRiskAssessor:
             ticket = self._make_normalized_ticket(phrase)
             classification = self._make_classification(IntentClass.OTHER, 0.9)
             result = self.assessor.assess(ticket, classification)
-            assert RiskFlag.PRIVACY_RISK in result.flags, f"Phrase {phrase!r} should trigger PRIVACY_RISK"
-            assert result.must_human_review is True, f"Phrase {phrase!r} should require human review"
+            assert RiskFlag.PRIVACY_RISK in result.flags, (
+                f"Phrase {phrase!r} should trigger PRIVACY_RISK"
+            )
+            assert result.must_human_review is True, (
+                f"Phrase {phrase!r} should require human review"
+            )
 
     def test_privacy_risk_severity(self):
         """Test PRIVACY_RISK counts as a substantive flag for severity."""

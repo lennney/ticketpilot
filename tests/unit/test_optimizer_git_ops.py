@@ -1,4 +1,5 @@
 """Tests for ticketpilot.optimizer.git_ops module."""
+
 from __future__ import annotations
 
 import subprocess
@@ -21,18 +22,24 @@ def git_repo(tmp_path: Path) -> Path:
     subprocess.run(["git", "init"], cwd=tmp_path, capture_output=True, check=True)
     subprocess.run(
         ["git", "config", "user.email", "test@test.com"],
-        cwd=tmp_path, capture_output=True, check=True,
+        cwd=tmp_path,
+        capture_output=True,
+        check=True,
     )
     subprocess.run(
         ["git", "config", "user.name", "Test"],
-        cwd=tmp_path, capture_output=True, check=True,
+        cwd=tmp_path,
+        capture_output=True,
+        check=True,
     )
     # Make an initial commit so HEAD exists
     (tmp_path / ".gitkeep").write_text("")
     subprocess.run(["git", "add", "."], cwd=tmp_path, capture_output=True, check=True)
     subprocess.run(
         ["git", "commit", "-m", "initial", "--allow-empty"],
-        cwd=tmp_path, capture_output=True, check=True,
+        cwd=tmp_path,
+        capture_output=True,
+        check=True,
     )
     return tmp_path
 

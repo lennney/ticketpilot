@@ -38,7 +38,9 @@ class ProvenanceStore:
     def get_by_chunk(self, chunk_id: UUID) -> list[ResponseProvenance]:
         """Get all provenance records that reference a specific chunk."""
         response_ids = self._by_chunk.get(chunk_id, [])
-        return [self._by_response[rid] for rid in response_ids if rid in self._by_response]
+        return [
+            self._by_response[rid] for rid in response_ids if rid in self._by_response
+        ]
 
     def clear(self) -> None:
         """Clear all stored provenance records."""

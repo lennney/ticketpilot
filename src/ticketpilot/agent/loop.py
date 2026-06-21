@@ -84,66 +84,106 @@ def run_agent_pipeline(
 
     try:
         # --- plan ---
-        text = raw_ticket.original_text if isinstance(raw_ticket, RawTicket) else str(raw_ticket)
+        text = (
+            raw_ticket.original_text
+            if isinstance(raw_ticket, RawTicket)
+            else str(raw_ticket)
+        )
         plan = plan_engine.create_plan(text)
-        trace.add_event(AgentEventType.PLAN_CREATED, data={"template": plan_engine.select_template(text)})
+        trace.add_event(
+            AgentEventType.PLAN_CREATED,
+            data={"template": plan_engine.select_template(text)},
+        )
         wm.set("plan", plan)
 
         # --- execute 5 core steps ---
         step_results: dict[str, dict[str, Any]] = {}
 
         # Step 1: normalize_ticket
-        trace.add_event(AgentEventType.TOOL_CALLED, data={"tool": "normalize_ticket", "step": "s1_normalize"})
+        trace.add_event(
+            AgentEventType.TOOL_CALLED,
+            data={"tool": "normalize_ticket", "step": "s1_normalize"},
+        )
         norm_result = reg.call("normalize_ticket", {"raw_ticket": raw_ticket})
         trace.add_event(AgentEventType.TOOL_RETURNED, data={"tool": "normalize_ticket"})
         wm.set("normalized_ticket", norm_result)
         step_results["normalize_ticket"] = norm_result
 
         # Step 2: classify_ticket
-        trace.add_event(AgentEventType.TOOL_CALLED, data={"tool": "classify_ticket", "step": "s2_classify"})
-        cls_result = reg.call("classify_ticket", {"normalized_text": norm_result["text"]})
+        trace.add_event(
+            AgentEventType.TOOL_CALLED,
+            data={"tool": "classify_ticket", "step": "s2_classify"},
+        )
+        cls_result = reg.call(
+            "classify_ticket", {"normalized_text": norm_result["text"]}
+        )
         trace.add_event(AgentEventType.TOOL_RETURNED, data={"tool": "classify_ticket"})
         wm.set("classification", cls_result)
         step_results["classify_ticket"] = cls_result
 
         # Step 3: assess_risk
-        trace.add_event(AgentEventType.TOOL_CALLED, data={"tool": "assess_risk", "step": "s3_assess_risk"})
-        risk_result = reg.call("assess_risk", {
-            "normalized_ticket": norm_result,
-            "classification": cls_result,
-        })
+        trace.add_event(
+            AgentEventType.TOOL_CALLED,
+            data={"tool": "assess_risk", "step": "s3_assess_risk"},
+        )
+        risk_result = reg.call(
+            "assess_risk",
+            {
+                "normalized_ticket": norm_result,
+                "classification": cls_result,
+            },
+        )
         trace.add_event(AgentEventType.TOOL_RETURNED, data={"tool": "assess_risk"})
         wm.set("risk_assessment", risk_result)
         step_results["assess_risk"] = risk_result
 
         # Step 4: retrieve_evidence
-        trace.add_event(AgentEventType.TOOL_CALLED, data={"tool": "retrieve_evidence", "step": "s4_retrieve_evidence"})
-        ev_result = reg.call("retrieve_evidence", {
-            "normalized_text": norm_result["text"],
-            "intent": cls_result["intent"],
-            "risk_flags": risk_result["flags"],
-            "top_k": 10,
-        })
-        trace.add_event(AgentEventType.TOOL_RETURNED, data={"tool": "retrieve_evidence"})
+        trace.add_event(
+            AgentEventType.TOOL_CALLED,
+            data={"tool": "retrieve_evidence", "step": "s4_retrieve_evidence"},
+        )
+        ev_result = reg.call(
+            "retrieve_evidence",
+            {
+                "normalized_text": norm_result["text"],
+                "intent": cls_result["intent"],
+                "risk_flags": risk_result["flags"],
+                "top_k": 10,
+            },
+        )
+        trace.add_event(
+            AgentEventType.TOOL_RETURNED, data={"tool": "retrieve_evidence"}
+        )
         wm.set("evidence_result", ev_result)
         step_results["retrieve_evidence"] = ev_result
 
         # Build ticket_output for generate_draft
         ticket_output = _construct_ticket_output(
-            run_id, raw_ticket, norm_result, cls_result, risk_result, ev_result,
+            run_id,
+            raw_ticket,
+            norm_result,
+            cls_result,
+            risk_result,
+            ev_result,
         )
         wm.set("ticket_output", ticket_output)
 
         # Step 5: generate_draft
-        trace.add_event(AgentEventType.TOOL_CALLED, data={"tool": "generate_draft", "step": "s5_generate_draft"})
+        trace.add_event(
+            AgentEventType.TOOL_CALLED,
+            data={"tool": "generate_draft", "step": "s5_generate_draft"},
+        )
         draft_reply = reg.call("generate_draft", {"ticket_output": ticket_output})
         trace.add_event(AgentEventType.TOOL_RETURNED, data={"tool": "generate_draft"})
         wm.set("draft_reply", draft_reply)
 
-        trace.add_event(AgentEventType.DRAFT_GENERATED, data={
-            "confidence": draft_reply.get("confidence"),
-            "must_human_review": draft_reply.get("must_human_review"),
-        })
+        trace.add_event(
+            AgentEventType.DRAFT_GENERATED,
+            data={
+                "confidence": draft_reply.get("confidence"),
+                "must_human_review": draft_reply.get("must_human_review"),
+            },
+        )
 
         # --- final status ---
         risk_must_review = risk_result.get("must_human_review", False)
@@ -151,17 +191,23 @@ def run_agent_pipeline(
         needs_review = risk_must_review or draft_must_review
 
         if needs_review:
-            trace.add_event(AgentEventType.HUMAN_REVIEW_REQUIRED, data={
-                "reason": "risk" if risk_must_review else "draft",
-            })
+            trace.add_event(
+                AgentEventType.HUMAN_REVIEW_REQUIRED,
+                data={
+                    "reason": "risk" if risk_must_review else "draft",
+                },
+            )
             final_status = AgentRunStatus.HUMAN_REVIEW_REQUIRED
         else:
             final_status = AgentRunStatus.COMPLETED
 
-        trace.add_event(AgentEventType.RISK_CHECKED, data={
-            "must_human_review": needs_review,
-            "final_status": final_status.value,
-        })
+        trace.add_event(
+            AgentEventType.RISK_CHECKED,
+            data={
+                "must_human_review": needs_review,
+                "final_status": final_status.value,
+            },
+        )
         trace.add_event(AgentEventType.RUN_COMPLETED)
         completed_at = datetime.now(timezone.utc)
 
@@ -172,7 +218,9 @@ def run_agent_pipeline(
 
     return AgentRun(
         run_id=run_id,
-        raw_ticket_text=raw_ticket.original_text if isinstance(raw_ticket, RawTicket) else str(raw_ticket),
+        raw_ticket_text=raw_ticket.original_text
+        if isinstance(raw_ticket, RawTicket)
+        else str(raw_ticket),
         plan=plan,
         skill_id=None,
         events=trace.get_events(),

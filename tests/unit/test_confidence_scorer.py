@@ -180,6 +180,12 @@ class TestConfidenceScorer:
         ticket = self._make_ticket_output(confidence=0.5, evidence_count=1)
         result = scorer.score(ticket)
 
-        for dim in ["retrieval_confidence", "classification_confidence", "citation_confidence", "evidence_density", "overall"]:
+        for dim in [
+            "retrieval_confidence",
+            "classification_confidence",
+            "citation_confidence",
+            "evidence_density",
+            "overall",
+        ]:
             val = getattr(result, dim)
             assert 0 <= val <= 1, f"{dim} = {val} out of range"

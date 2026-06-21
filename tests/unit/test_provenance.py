@@ -129,5 +129,6 @@ class TestResponseProvenance:
     def test_provenance_is_pydantic_model(self):
         """Provenance classes are Pydantic BaseModel (not dataclass)."""
         from pydantic import BaseModel
+
         assert issubclass(ClaimProvenance, BaseModel)
         assert issubclass(ResponseProvenance, BaseModel)

@@ -1,4 +1,5 @@
 """Tests for ticketpilot.optimizer.fixer."""
+
 from __future__ import annotations
 
 from typing import Any
@@ -11,6 +12,7 @@ from ticketpilot.optimizer.fixer import Fixer, FixResult
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
+
 
 def _make_diagnosis(
     *,
@@ -50,6 +52,7 @@ def _make_diagnosis(
 # FixResult basics
 # ---------------------------------------------------------------------------
 
+
 class TestFixResult:
     def test_dataclass_fields(self) -> None:
         r = FixResult(success=True, fix_type="test", description="ok")
@@ -65,6 +68,7 @@ class TestFixResult:
 # ---------------------------------------------------------------------------
 # Fixer: dry-run mode
 # ---------------------------------------------------------------------------
+
 
 class TestFixerDryRun:
     def test_dry_run_intent_keyword_returns_success(self) -> None:
@@ -118,6 +122,7 @@ class TestFixerDryRun:
 # Fixer: unknown / missing fix type
 # ---------------------------------------------------------------------------
 
+
 class TestFixerEdgeCases:
     def test_missing_suggested_fix_type(self) -> None:
         fixer = Fixer(dry_run=True)
@@ -148,6 +153,7 @@ class TestFixerEdgeCases:
 # Fixer: intent keyword fix (real write + rollback)
 # ---------------------------------------------------------------------------
 
+
 class TestFixerIntentKeywords:
     def test_add_keywords_real_write(self) -> None:
         """Write new keywords to rules.py and verify they appear."""
@@ -166,7 +172,9 @@ class TestFixerIntentKeywords:
         for kw in new_kws:
             assert kw not in before, f"'{kw}' already present in original"
 
-        diag = _make_diagnosis(fix_type="intent_keyword", intent="REFUND", keywords=new_kws)
+        diag = _make_diagnosis(
+            fix_type="intent_keyword", intent="REFUND", keywords=new_kws
+        )
         result = fixer.apply_fix(diag)
 
         assert result.success is True
@@ -231,6 +239,7 @@ class TestFixerIntentKeywords:
 # Fixer: risk keyword fix (real write + rollback)
 # ---------------------------------------------------------------------------
 
+
 class TestFixerRiskKeywords:
     def test_add_keywords_real_write(self) -> None:
         from pathlib import Path
@@ -269,6 +278,7 @@ class TestFixerRiskKeywords:
 # ---------------------------------------------------------------------------
 # Fixer: confidence threshold fix (real write + rollback)
 # ---------------------------------------------------------------------------
+
 
 class TestFixerConfidenceThreshold:
     def test_change_threshold_real_write(self) -> None:
@@ -315,6 +325,7 @@ class TestFixerConfidenceThreshold:
 # Fixer: rollback
 # ---------------------------------------------------------------------------
 
+
 class TestFixerRollback:
     def test_rollback_restores_all_files(self) -> None:
         import importlib
@@ -335,7 +346,9 @@ class TestFixerRollback:
         risk_before = Path(risk_path).read_text(encoding="utf-8")
 
         # Apply a keyword fix
-        diag = _make_diagnosis(fix_type="intent_keyword", intent="REFUND", keywords=["测试回滚"])
+        diag = _make_diagnosis(
+            fix_type="intent_keyword", intent="REFUND", keywords=["测试回滚"]
+        )
         fixer.apply_fix(diag)
         assert Path(rules_path).read_text(encoding="utf-8") != rules_before
 

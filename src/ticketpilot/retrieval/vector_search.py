@@ -161,7 +161,9 @@ def _detect_embedding_dim() -> int:
         if dim is not None and dim > 0:
             return dim
     except Exception as exc:
-        logger.error("Failed to detect embedding dimension, falling back to 384", exc_info=exc)
+        logger.error(
+            "Failed to detect embedding dimension, falling back to 384", exc_info=exc
+        )
     return 384
 
 

@@ -66,6 +66,4 @@ def save_skill_library(
     p = Path(path)
     p.parent.mkdir(parents=True, exist_ok=True)
     data = library.model_dump(mode="json")
-    p.write_text(
-        json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8"
-    )
+    p.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")

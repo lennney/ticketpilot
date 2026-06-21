@@ -84,7 +84,11 @@ class TestFormatOutput:
     def test_human_readable(self):
         result = {
             "ticket_id": "t1",
-            "classification": {"intent": "complaint", "confidence": 0.8, "reasoning": "test"},
+            "classification": {
+                "intent": "complaint",
+                "confidence": 0.8,
+                "reasoning": "test",
+            },
             "risk_assessment": {"risk_level": "medium"},
             "evidence": [],
             "draft": {"text": "reply"},
@@ -102,7 +106,11 @@ class TestMain:
         mock_result = MagicMock()
         mock_result.model_dump.return_value = {
             "ticket_id": "t1",
-            "classification": {"intent": "complaint", "confidence": 0.8, "reasoning": "test"},
+            "classification": {
+                "intent": "complaint",
+                "confidence": 0.8,
+                "reasoning": "test",
+            },
             "risk_assessment": {"risk_level": "medium"},
             "evidence": [],
             "draft": {"text": "reply"},

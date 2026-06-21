@@ -1,1 +1,1 @@
-{"iteration": 0, "composite": 1.0, "correct_cases": 3, "total_cases": 3, "metrics": {"intent": 1.0, "severity": 1.0, "risk_f1": 1.0, "evidence": 1.0, "no_auto_send": 1.0, "fallback": 1.0}, "timestamp": "2026-06-11T12:13:52.672761+00:00", "description": "baseline"}
+{"iteration": 0, "composite": 1.0, "correct_cases": 3, "total_cases": 3, "metrics": {"intent": 1.0, "severity": 1.0, "risk_f1": 1.0, "evidence": 1.0, "no_auto_send": 1.0, "fallback": 1.0}, "timestamp": "2026-06-21T07:48:31.932310+00:00", "description": "baseline"}

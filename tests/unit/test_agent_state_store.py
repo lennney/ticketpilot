@@ -47,7 +47,10 @@ class TestAgentStateStore:
                 AgentEvent(event_type=AgentEventType.PLAN_CREATED, step_number=0),
             ],
             ticket_output={"ticket_id": "test-001"},
-            draft_reply={"draft_text": "退款将在3个工作日内处理[1]。", "confidence": 0.85},
+            draft_reply={
+                "draft_text": "退款将在3个工作日内处理[1]。",
+                "confidence": 0.85,
+            },
             final_status=status,
             started_at=datetime.utcnow(),
         )
@@ -160,11 +163,13 @@ class TestAgentStateStore:
         """Events survive save/load roundtrip."""
         store = AgentStateStore(tmp_path / "test.db")
         run = self._make_run()
-        run.events.append(AgentEvent(
-            event_type=AgentEventType.TOOL_CALLED,
-            step_number=1,
-            data={"tool": "normalize_ticket"},
-        ))
+        run.events.append(
+            AgentEvent(
+                event_type=AgentEventType.TOOL_CALLED,
+                step_number=1,
+                data={"tool": "normalize_ticket"},
+            )
+        )
         store.save_run(run)
 
         loaded = store.load_run(run.run_id)

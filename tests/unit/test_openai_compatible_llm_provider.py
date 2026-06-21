@@ -104,7 +104,10 @@ class TestOpenAICompatibleProviderGenerateDraft:
             )
 
         assert isinstance(result, DraftReply)
-        assert result.draft_text == "Hello, regarding your refund request, we will process it within 1-3 business days."
+        assert (
+            result.draft_text
+            == "Hello, regarding your refund request, we will process it within 1-3 business days."
+        )
         assert result.provider_id == "openai_compatible"
         assert result.confidence == 0.7
 
@@ -129,7 +132,9 @@ class TestOpenAICompatibleProviderGenerateDraft:
                 evidence_candidates=evidence,
             )
 
-        assert result.draft_text == "根据现有信息，无法确认具体政策条款，建议转人工处理。"
+        assert (
+            result.draft_text == "根据现有信息，无法确认具体政策条款，建议转人工处理。"
+        )
         assert result.must_human_review is True
         assert result.fallback_reason == "api_error"
         assert result.escalation_reason == "api_call_failed"
@@ -151,7 +156,9 @@ class TestOpenAICompatibleProviderGenerateDraft:
                 evidence_candidates=evidence,
             )
 
-        assert result.draft_text == "根据现有信息，无法确认具体政策条款，建议转人工处理。"
+        assert (
+            result.draft_text == "根据现有信息，无法确认具体政策条款，建议转人工处理。"
+        )
         assert result.must_human_review is True
         assert result.fallback_reason == "api_error"
         assert result.escalation_reason == "api_call_failed"
@@ -167,6 +174,7 @@ class TestOpenAICompatibleProviderGenerateDraft:
 
         with patch("urllib.request.urlopen") as mock_urlopen:
             import urllib.error
+
             mock_urlopen.side_effect = urllib.error.URLError("timed out")
 
             result = provider.generate_draft(
@@ -175,7 +183,9 @@ class TestOpenAICompatibleProviderGenerateDraft:
                 evidence_candidates=evidence,
             )
 
-        assert result.draft_text == "根据现有信息，无法确认具体政策条款，建议转人工处理。"
+        assert (
+            result.draft_text == "根据现有信息，无法确认具体政策条款，建议转人工处理。"
+        )
         assert result.must_human_review is True
         assert result.fallback_reason == "api_error"
 
@@ -192,7 +202,9 @@ class TestOpenAICompatibleProviderGenerateDraft:
             evidence_candidates=[],
         )
 
-        assert result.draft_text == "根据现有信息，无法确认具体政策条款，建议转人工处理。"
+        assert (
+            result.draft_text == "根据现有信息，无法确认具体政策条款，建议转人工处理。"
+        )
         assert result.must_human_review is True
         assert result.fallback_reason == "no_evidence"
         assert result.confidence == 0.0
@@ -209,7 +221,9 @@ class TestOpenAICompatibleProviderGenerateDraft:
             mock_context = MagicMock()
             mock_context.__enter__ = MagicMock(return_value=mock_context)
             mock_context.__exit__ = MagicMock(return_value=None)
-            mock_context.read.return_value = b'{"choices":[{"message":{"content":"Hello"}}]}'
+            mock_context.read.return_value = (
+                b'{"choices":[{"message":{"content":"Hello"}}]}'
+            )
             mock_urlopen.return_value = mock_context
 
             result = provider.generate_draft(

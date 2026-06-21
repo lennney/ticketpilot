@@ -254,9 +254,7 @@ class TestBuildReviewDecision:
         """EDIT action should keep original_draft_text and store edited_text."""
         result = _make_result()
         edited = "您好，已为您处理退款申请，预计3个工作日内到账。"
-        decision = build_review_decision(
-            result, ReviewAction.EDIT, edited_text=edited
-        )
+        decision = build_review_decision(result, ReviewAction.EDIT, edited_text=edited)
         assert decision.action == ReviewAction.EDIT
         assert decision.original_draft_text == result.draft_reply.draft_text
         assert decision.edited_text == edited
@@ -407,9 +405,7 @@ class TestSaveReview:
         """EDIT decision preserves edited_text through save/load."""
         result = _make_result()
         edited = "您好，已为您处理。"
-        decision = build_review_decision(
-            result, ReviewAction.EDIT, edited_text=edited
-        )
+        decision = build_review_decision(result, ReviewAction.EDIT, edited_text=edited)
         with tempfile.TemporaryDirectory() as tmpdir:
             path = os.path.join(tmpdir, "reviews.jsonl")
             store = ReviewStore(path)
@@ -460,7 +456,11 @@ class TestSaveReview:
             result1 = _make_result()
             result2 = _make_result()
             store.save(build_review_decision(result1, ReviewAction.APPROVE))
-            store.save(build_review_decision(result2, ReviewAction.REJECT, decision_reason="不采纳"))
+            store.save(
+                build_review_decision(
+                    result2, ReviewAction.REJECT, decision_reason="不采纳"
+                )
+            )
             loaded = store.load_all()
             assert len(loaded) == 2
             assert loaded[0].action == ReviewAction.APPROVE
@@ -475,7 +475,9 @@ class TestSaveReview:
             result = _make_result()
             store.save(build_review_decision(result, ReviewAction.APPROVE))
             assert store.count() == 1
-            store.save(build_review_decision(result, ReviewAction.EDIT, edited_text="edit"))
+            store.save(
+                build_review_decision(result, ReviewAction.EDIT, edited_text="edit")
+            )
             assert store.count() == 2
 
 
@@ -488,7 +490,9 @@ class TestReviewTriggerReasonsScenarios:
         result = _make_result(
             must_human_review=True, severity=RiskSeverity.HIGH, risk_flags=flags
         )
-        decision = build_review_decision(result, ReviewAction.ESCALATE, decision_reason="法务介入")
+        decision = build_review_decision(
+            result, ReviewAction.ESCALATE, decision_reason="法务介入"
+        )
         assert "high_risk" in decision.review_trigger_reasons
         assert decision.was_high_risk is True
         assert "legal_risk" in decision.risk_flags
@@ -509,7 +513,9 @@ class TestReviewTriggerReasonsScenarios:
         result = _make_result(
             unsupported_claims=["客户可申请全额赔偿", "根据公司政策第5条"]
         )
-        decision = build_review_decision(result, ReviewAction.EDIT, edited_text="修正后的文本")
+        decision = build_review_decision(
+            result, ReviewAction.EDIT, edited_text="修正后的文本"
+        )
         assert "unsupported_claims" in decision.review_trigger_reasons
         assert decision.had_unsupported_claims is True
 
@@ -541,7 +547,9 @@ class TestReviewTriggerReasonsScenarios:
             confidence=0.0,
             risk_flags={RiskFlag.LEGAL_RISK},
         )
-        decision = build_review_decision(result, ReviewAction.ESCALATE, decision_reason="多重问题")
+        decision = build_review_decision(
+            result, ReviewAction.ESCALATE, decision_reason="多重问题"
+        )
         triggers = decision.review_trigger_reasons
         assert "high_risk" in triggers
         assert "no_evidence" in triggers
@@ -767,7 +775,8 @@ class TestDraftGenToAuditFields:
         from ticketpilot.review.console import draft_gen_to_audit_fields
 
         gen_result = self._make_gen_result(
-            guard_forbidden=True, guard_passed=False,
+            guard_forbidden=True,
+            guard_passed=False,
             guard_forbidden_details=["refund_amount"],
         )
         result = draft_gen_to_audit_fields(gen_result)
@@ -777,7 +786,8 @@ class TestDraftGenToAuditFields:
         from ticketpilot.review.console import draft_gen_to_audit_fields
 
         gen_result = self._make_gen_result(
-            guard_risk_respected=False, guard_passed=False,
+            guard_risk_respected=False,
+            guard_passed=False,
         )
         result = draft_gen_to_audit_fields(gen_result)
         assert "risk_not_acknowledged" in result["human_review_reasons"]
@@ -922,7 +932,9 @@ class TestBuildReviewDecisionWithGenResult:
 
         result = _make_result()
         gen_result = self._make_gen_result(provider_name="openai", model_name="gpt-4o")
-        decision = build_review_decision(result, ReviewAction.APPROVE, gen_result=gen_result)
+        decision = build_review_decision(
+            result, ReviewAction.APPROVE, gen_result=gen_result
+        )
         assert decision.provider_name == "openai"
         assert decision.model_name == "gpt-4o"
 
@@ -931,7 +943,9 @@ class TestBuildReviewDecisionWithGenResult:
 
         result = _make_result()
         gen_result = self._make_gen_result(citation_valid=True)
-        decision = build_review_decision(result, ReviewAction.APPROVE, gen_result=gen_result)
+        decision = build_review_decision(
+            result, ReviewAction.APPROVE, gen_result=gen_result
+        )
         assert decision.citation_validation_valid is True
         assert decision.valid_cited_evidence_ids == ["id1"]
         assert decision.invalid_cited_evidence_ids == []
@@ -941,7 +955,9 @@ class TestBuildReviewDecisionWithGenResult:
 
         result = _make_result()
         gen_result = self._make_gen_result(guard_passed=False)
-        decision = build_review_decision(result, ReviewAction.APPROVE, gen_result=gen_result)
+        decision = build_review_decision(
+            result, ReviewAction.APPROVE, gen_result=gen_result
+        )
         assert decision.guard_passed is False
         assert decision.guard_uncited_claims is False
 
@@ -950,7 +966,9 @@ class TestBuildReviewDecisionWithGenResult:
 
         result = _make_result()
         gen_result = self._make_gen_result(guard_uncited=True, guard_passed=False)
-        decision = build_review_decision(result, ReviewAction.APPROVE, gen_result=gen_result)
+        decision = build_review_decision(
+            result, ReviewAction.APPROVE, gen_result=gen_result
+        )
         assert decision.guard_uncited_claims is True
 
     def test_with_gen_result_populates_guard_forbidden_promise(self):
@@ -962,7 +980,9 @@ class TestBuildReviewDecisionWithGenResult:
             guard_forbidden_details=["refund_amount"],
             guard_passed=False,
         )
-        decision = build_review_decision(result, ReviewAction.APPROVE, gen_result=gen_result)
+        decision = build_review_decision(
+            result, ReviewAction.APPROVE, gen_result=gen_result
+        )
         assert decision.guard_forbidden_promise is True
         assert decision.guard_forbidden_details == ["refund_amount"]
 
@@ -970,8 +990,12 @@ class TestBuildReviewDecisionWithGenResult:
         from ticketpilot.review.console import build_review_decision
 
         result = _make_result()
-        gen_result = self._make_gen_result(guard_risk_respected=False, guard_passed=False)
-        decision = build_review_decision(result, ReviewAction.APPROVE, gen_result=gen_result)
+        gen_result = self._make_gen_result(
+            guard_risk_respected=False, guard_passed=False
+        )
+        decision = build_review_decision(
+            result, ReviewAction.APPROVE, gen_result=gen_result
+        )
         assert decision.guard_risk_not_acknowledged is True
 
     def test_with_gen_result_populates_human_review_forced(self):
@@ -979,7 +1003,9 @@ class TestBuildReviewDecisionWithGenResult:
 
         result = _make_result()
         gen_result = self._make_gen_result(must_human_review=True)
-        decision = build_review_decision(result, ReviewAction.APPROVE, gen_result=gen_result)
+        decision = build_review_decision(
+            result, ReviewAction.APPROVE, gen_result=gen_result
+        )
         assert decision.human_review_forced is True
 
     def test_with_gen_result_populates_human_review_reasons(self):
@@ -991,7 +1017,9 @@ class TestBuildReviewDecisionWithGenResult:
             citation_valid=False,
             guard_passed=False,
         )
-        decision = build_review_decision(result, ReviewAction.APPROVE, gen_result=gen_result)
+        decision = build_review_decision(
+            result, ReviewAction.APPROVE, gen_result=gen_result
+        )
         assert len(decision.human_review_reasons) == 3
 
     def test_with_gen_result_populates_escalation_reason(self):
@@ -1001,7 +1029,9 @@ class TestBuildReviewDecisionWithGenResult:
         gen_result = self._make_gen_result(
             escalation_reason="guard: forbidden_promise",
         )
-        decision = build_review_decision(result, ReviewAction.APPROVE, gen_result=gen_result)
+        decision = build_review_decision(
+            result, ReviewAction.APPROVE, gen_result=gen_result
+        )
         assert decision.escalation_reason == "guard: forbidden_promise"
 
     def test_roundtrip_via_review_store(self):
@@ -1017,7 +1047,9 @@ class TestBuildReviewDecisionWithGenResult:
             must_human_review=False,
         )
         decision = build_review_decision(
-            result, ReviewAction.APPROVE, gen_result=gen_result,
+            result,
+            ReviewAction.APPROVE,
+            gen_result=gen_result,
         )
         with tempfile.TemporaryDirectory() as tmpdir:
             path = os.path.join(tmpdir, "reviews.jsonl")

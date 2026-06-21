@@ -129,7 +129,9 @@ def _setup_chunks_cursor(c, chunks=None, faq=10, policy=15, case=5):
     """
     c.__enter__.return_value = c
     c.fetchall.side_effect = [
-        chunks if chunks is not None else _make_mock_chunks(5),  # _get_chunks_for_rebuild
+        chunks
+        if chunks is not None
+        else _make_mock_chunks(5),  # _get_chunks_for_rebuild
     ]
     c.fetchone.side_effect = [
         (faq,),
@@ -154,7 +156,9 @@ class TestDryRunBehavior:
         )
 
         with (
-            patch.object(rebuild, "create_embedding_provider", return_value=mock_provider),
+            patch.object(
+                rebuild, "create_embedding_provider", return_value=mock_provider
+            ),
             patch.object(rebuild, "read_metadata", return_value=None),
             patch.object(rebuild, "get_db_connection") as mock_get_conn,
         ):
@@ -170,7 +174,9 @@ class TestDryRunBehavior:
         import scripts.rebuild_embeddings as rebuild
 
         meta = EmbeddingIndexMetadata(
-            provider_name="fake", model_name="fake-384", dimension=4,
+            provider_name="fake",
+            model_name="fake-384",
+            dimension=4,
         )
         conn = _make_mock_conn(
             dim_check_cb=lambda c: _setup_dim_check_cursor(c),
@@ -178,7 +184,9 @@ class TestDryRunBehavior:
         )
 
         with (
-            patch.object(rebuild, "create_embedding_provider", return_value=mock_provider),
+            patch.object(
+                rebuild, "create_embedding_provider", return_value=mock_provider
+            ),
             patch.object(rebuild, "read_metadata", return_value=meta),
             patch.object(rebuild, "get_db_connection") as mock_get_conn,
         ):
@@ -201,7 +209,9 @@ class TestDryRunBehavior:
 class TestDimensionHandling:
     """Tests for dimension mismatch behavior."""
 
-    def test_dimension_mismatch_fails_without_reset_flag(self, mock_config, mock_provider):
+    def test_dimension_mismatch_fails_without_reset_flag(
+        self, mock_config, mock_provider
+    ):
         """DB column dimension differs from provider → fail without --allow-dimension-reset."""
         import scripts.rebuild_embeddings as rebuild
 
@@ -211,7 +221,9 @@ class TestDimensionHandling:
         )
 
         with (
-            patch.object(rebuild, "create_embedding_provider", return_value=mock_provider),
+            patch.object(
+                rebuild, "create_embedding_provider", return_value=mock_provider
+            ),
             patch.object(rebuild, "read_metadata", return_value=None),
             patch.object(rebuild, "get_db_connection") as mock_get_conn,
         ):
@@ -227,7 +239,9 @@ class TestDimensionHandling:
         assert result["status"] == "failed"
         assert any("dimension mismatch" in e.lower() for e in result.get("errors", []))
 
-    def test_dimension_mismatch_succeeds_with_reset_flag(self, mock_config, mock_provider):
+    def test_dimension_mismatch_succeeds_with_reset_flag(
+        self, mock_config, mock_provider
+    ):
         """With --allow-dimension-reset, dimension mismatch should proceed."""
         import scripts.rebuild_embeddings as rebuild
 
@@ -237,7 +251,9 @@ class TestDimensionHandling:
         )
 
         with (
-            patch.object(rebuild, "create_embedding_provider", return_value=mock_provider),
+            patch.object(
+                rebuild, "create_embedding_provider", return_value=mock_provider
+            ),
             patch.object(rebuild, "read_metadata", return_value=None),
             patch.object(rebuild, "write_metadata"),
             patch.object(rebuild, "get_db_connection") as mock_get_conn,
@@ -265,7 +281,9 @@ class TestEdgeCases:
         )
 
         with (
-            patch.object(rebuild, "create_embedding_provider", return_value=mock_provider),
+            patch.object(
+                rebuild, "create_embedding_provider", return_value=mock_provider
+            ),
             patch.object(rebuild, "read_metadata", return_value=None),
             patch.object(rebuild, "get_db_connection") as mock_get_conn,
         ):
@@ -280,7 +298,11 @@ class TestEdgeCases:
         import scripts.rebuild_embeddings as rebuild
 
         with (
-            patch.object(rebuild, "create_embedding_provider", side_effect=ValueError("Missing API key")),
+            patch.object(
+                rebuild,
+                "create_embedding_provider",
+                side_effect=ValueError("Missing API key"),
+            ),
             patch.object(rebuild, "read_metadata", return_value=None),
         ):
             result = rebuild.run_rebuild(mock_config, _make_dry_run_args())
@@ -293,6 +315,7 @@ class TestEdgeCases:
         import scripts.rebuild_embeddings as rebuild
 
         import os
+
         os.environ["EMBEDDING_PROVIDER"] = "fake"
         os.environ["EMBEDDING_MODEL"] = "fake-384"
         os.environ["EMBEDDING_DIM"] = "384"
@@ -334,7 +357,9 @@ class TestEdgeCases:
         )
 
         with (
-            patch.object(rebuild, "create_embedding_provider", return_value=mock_provider),
+            patch.object(
+                rebuild, "create_embedding_provider", return_value=mock_provider
+            ),
             patch.object(rebuild, "read_metadata", return_value=meta),
             patch.object(rebuild, "get_db_connection") as mock_get_conn,
         ):
@@ -362,7 +387,9 @@ class TestFullRebuildFlow:
         )
 
         with (
-            patch.object(rebuild, "create_embedding_provider", return_value=mock_provider),
+            patch.object(
+                rebuild, "create_embedding_provider", return_value=mock_provider
+            ),
             patch.object(rebuild, "read_metadata", return_value=None),
             patch.object(rebuild, "write_metadata") as mock_write_meta,
             patch.object(rebuild, "get_db_connection") as mock_get_conn,
@@ -386,7 +413,9 @@ class TestFullRebuildFlow:
         )
 
         with (
-            patch.object(rebuild, "create_embedding_provider", return_value=mock_provider),
+            patch.object(
+                rebuild, "create_embedding_provider", return_value=mock_provider
+            ),
             patch.object(rebuild, "read_metadata", return_value=None),
             patch.object(rebuild, "write_metadata"),
             patch.object(rebuild, "get_db_connection") as mock_get_conn,

@@ -32,7 +32,9 @@ def compact_error(error: Exception, context: str, max_len: int = 200) -> str:
     return f"{error_type}: {msg} (context: {context})"
 
 
-def compact_errors(errors: list[tuple[Exception, str]], max_len: int = 200) -> list[str]:
+def compact_errors(
+    errors: list[tuple[Exception, str]], max_len: int = 200
+) -> list[str]:
     """Compact multiple errors into summaries.
 
     Args:

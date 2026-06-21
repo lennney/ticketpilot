@@ -79,9 +79,7 @@ def _parse_intent(raw: Any) -> IntentClass:
             return IntentClass(raw)
         except ValueError:
             valid = [e.value for e in IntentClass]
-            raise ValueError(
-                f"invalid intent '{raw}'; valid values: {valid}"
-            ) from None
+            raise ValueError(f"invalid intent '{raw}'; valid values: {valid}") from None
     raise TypeError(f"unexpected intent type: {type(raw).__name__}")
 
 
@@ -268,7 +266,10 @@ _DEFAULT_TOOL_DEFS: list[dict[str, Any]] = [
             "type": "object",
             "properties": {
                 "question": {"type": "string", "description": "What to ask the human"},
-                "context": {"type": "object", "description": "Relevant context for the human"},
+                "context": {
+                    "type": "object",
+                    "description": "Relevant context for the human",
+                },
                 "options": {
                     "type": "array",
                     "items": {"type": "string"},

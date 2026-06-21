@@ -114,7 +114,9 @@ class TestPolicyDocumentValidation:
         policy_docs = load_policy_seed_data()
         pattern = re.compile(r"^\d+\.\d+\.\d+$")
         for doc in policy_docs:
-            assert pattern.match(doc.policy_code), f"Invalid policy_code: {doc.policy_code}"
+            assert pattern.match(doc.policy_code), (
+                f"Invalid policy_code: {doc.policy_code}"
+            )
 
     def test_policy_has_required_fields(self):
         """Test each Policy has required fields."""

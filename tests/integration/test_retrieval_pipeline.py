@@ -43,16 +43,18 @@ class TestPipelineMocked:
         mock_keyword_results = []
         mock_vector_results = []
 
-        with patch(
-            "ticketpilot.retrieval.pipeline.get_fake_embedding_provider"
-        ) as mock_provider, \
-        patch(
-            "ticketpilot.retrieval.pipeline.keyword_search",
-            return_value=(mock_keyword_results, "fts")
-        ), \
-        patch(
-            "ticketpilot.retrieval.pipeline.vector_search",
-            return_value=(mock_vector_results, 1)
+        with (
+            patch(
+                "ticketpilot.retrieval.pipeline.get_fake_embedding_provider"
+            ) as mock_provider,
+            patch(
+                "ticketpilot.retrieval.pipeline.keyword_search",
+                return_value=(mock_keyword_results, "fts"),
+            ),
+            patch(
+                "ticketpilot.retrieval.pipeline.vector_search",
+                return_value=(mock_vector_results, 1),
+            ),
         ):
             mock_provider.return_value = FakeEmbeddingProvider()
 
@@ -67,16 +69,18 @@ class TestPipelineMocked:
         mock_keyword_results = []
         mock_vector_results = []
 
-        with patch(
-            "ticketpilot.retrieval.pipeline.get_fake_embedding_provider"
-        ) as mock_provider, \
-        patch(
-            "ticketpilot.retrieval.pipeline.keyword_search",
-            return_value=(mock_keyword_results, "fts")
-        ), \
-        patch(
-            "ticketpilot.retrieval.pipeline.vector_search",
-            return_value=(mock_vector_results, 1)
+        with (
+            patch(
+                "ticketpilot.retrieval.pipeline.get_fake_embedding_provider"
+            ) as mock_provider,
+            patch(
+                "ticketpilot.retrieval.pipeline.keyword_search",
+                return_value=(mock_keyword_results, "fts"),
+            ),
+            patch(
+                "ticketpilot.retrieval.pipeline.vector_search",
+                return_value=(mock_vector_results, 1),
+            ),
         ):
             mock_provider.return_value = FakeEmbeddingProvider()
 
@@ -97,9 +101,7 @@ class TestPipelineMocked:
 
     def test_simple_retrieval_returns_content_list(self):
         """Test that simple_retrieval returns just content strings."""
-        with patch(
-            "ticketpilot.retrieval.pipeline.hybrid_retrieval"
-        ) as mock_hybrid:
+        with patch("ticketpilot.retrieval.pipeline.hybrid_retrieval") as mock_hybrid:
             mock_hybrid.return_value = MagicMock(
                 fused_results=[
                     MagicMock(content="Result 1"),
@@ -120,6 +122,7 @@ class TestPipelineIntegration:
         """Check if database is available."""
         try:
             from ticketpilot.retrieval.db.connection import get_db_connection
+
             with get_db_connection() as conn:
                 conn.execute("SELECT 1")
             return True
@@ -132,7 +135,11 @@ class TestPipelineIntegration:
         if not db_available:
             pytest.skip("Database not available")
         try:
-            from ticketpilot.retrieval.db.seeding import seed_knowledge_chunks, get_chunk_count
+            from ticketpilot.retrieval.db.seeding import (
+                seed_knowledge_chunks,
+                get_chunk_count,
+            )
+
             if get_chunk_count() == 0:
                 seed_knowledge_chunks(clear_existing=True)
         except Exception as e:
@@ -144,6 +151,7 @@ class TestPipelineIntegration:
             pytest.skip("Database not available")
 
         from ticketpilot.retrieval.vector_search import _detect_embedding_dim
+
         expected_dim = _detect_embedding_dim()
 
         trace = hybrid_retrieval("退款如何申请", top_k=5)
@@ -160,9 +168,7 @@ class TestPipelineIntegration:
         trace = hybrid_retrieval("退款政策", top_k=10)
 
         # Should have results from at least one path
-        has_results = (
-            len(trace.keyword_results) > 0 or len(trace.vector_results) > 0
-        )
+        has_results = len(trace.keyword_results) > 0 or len(trace.vector_results) > 0
         assert has_results, "Should have results from keyword or vector search"
 
     def test_pipeline_ranking_differs_from_inputs(self, db_available, ensure_seeded):

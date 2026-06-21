@@ -53,7 +53,9 @@ class CalibrationCurve(BaseModel):
         for rec in records:
             for lo, hi in BUCKET_EDGES:
                 # Last bucket is inclusive on the right (0.8-1.0)
-                if lo <= rec.predicted_confidence < hi or (hi == 1.0 and rec.predicted_confidence == 1.0):
+                if lo <= rec.predicted_confidence < hi or (
+                    hi == 1.0 and rec.predicted_confidence == 1.0
+                ):
                     bucketed[(lo, hi)].append(rec)
                     break
 
@@ -271,9 +273,7 @@ class ReliabilityDiagram:
                 f"{b['range']:<10} {b['predicted']:>9.4f} {b['actual']:>9.4f} {b['count']:>6}  "
                 f"P|{pred_bar}|"
             )
-            lines.append(
-                f"{'':>10} {'':>9} {'':>9} {'':>6}  A|{act_bar}|"
-            )
+            lines.append(f"{'':>10} {'':>9} {'':>9} {'':>6}  A|{act_bar}|")
 
         lines.append("-" * (width + 30))
         lines.append(f"Total samples: {self._total_count}  |  ECE: {self._ece:.4f}")

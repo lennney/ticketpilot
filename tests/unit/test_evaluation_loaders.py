@@ -328,20 +328,10 @@ class TestLoadEvalDataset:
         result2 = load_eval_dataset(str(tickets_path), str(golden_path))
 
         assert result1.is_valid == result2.is_valid
-        assert (
-            result1.dataset.ticket_count == result2.dataset.ticket_count
-        )
-        assert (
-            result1.dataset.golden_count == result2.dataset.golden_count
-        )
-        assert (
-            result1.missing_golden_for_ticket
-            == result2.missing_golden_for_ticket
-        )
-        assert (
-            result1.missing_ticket_for_golden
-            == result2.missing_ticket_for_golden
-        )
+        assert result1.dataset.ticket_count == result2.dataset.ticket_count
+        assert result1.dataset.golden_count == result2.dataset.golden_count
+        assert result1.missing_golden_for_ticket == result2.missing_golden_for_ticket
+        assert result1.missing_ticket_for_golden == result2.missing_ticket_for_golden
         assert result1.errors == result2.errors
 
     def test_nonexistent_tickets_file(self, tmp_dir):
@@ -352,8 +342,6 @@ class TestLoadEvalDataset:
         assert len(result.errors) > 0
 
     def test_nonexistent_golden_file(self, valid_tickets_csv, tmp_dir):
-        result = load_eval_dataset(
-            str(valid_tickets_csv), "/nonexistent/golden.csv"
-        )
+        result = load_eval_dataset(str(valid_tickets_csv), "/nonexistent/golden.csv")
         assert not result.is_valid
         assert len(result.errors) > 0

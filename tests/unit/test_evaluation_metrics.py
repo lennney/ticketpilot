@@ -268,9 +268,7 @@ class TestComputeCaseMetrics:
         assert any(m.metric == "risk_flags" for m in result.mismatches)
 
     def test_risk_flag_extra(self):
-        golden = _make_golden(
-            expected_risk_flags=frozenset({"complaint_risk"})
-        )
+        golden = _make_golden(expected_risk_flags=frozenset({"complaint_risk"}))
         prediction = _make_prediction(
             predicted_risk_flags=frozenset({"complaint_risk", "extra_risk"})
         )
@@ -280,9 +278,7 @@ class TestComputeCaseMetrics:
         assert any(m.metric == "risk_flags" for m in result.mismatches)
 
     def test_evidence_doc_type_all_matched(self):
-        golden = _make_golden(
-            expected_evidence_doc_types=frozenset({"FAQ", "POLICY"})
-        )
+        golden = _make_golden(expected_evidence_doc_types=frozenset({"FAQ", "POLICY"}))
         prediction = _make_prediction(
             predicted_evidence_doc_types=frozenset({"FAQ", "POLICY", "CASE"})
         )
@@ -290,12 +286,8 @@ class TestComputeCaseMetrics:
         assert result.metrics.evidence_doc_type_recall == 1.0
 
     def test_evidence_doc_type_missing(self):
-        golden = _make_golden(
-            expected_evidence_doc_types=frozenset({"FAQ", "POLICY"})
-        )
-        prediction = _make_prediction(
-            predicted_evidence_doc_types=frozenset({"FAQ"})
-        )
+        golden = _make_golden(expected_evidence_doc_types=frozenset({"FAQ", "POLICY"}))
+        prediction = _make_prediction(predicted_evidence_doc_types=frozenset({"FAQ"}))
         result = compute_case_metrics(prediction, golden)
         assert result.metrics.evidence_doc_type_recall == 0.5
         assert any(m.metric == "evidence_doc_type_recall" for m in result.mismatches)
@@ -390,7 +382,9 @@ class TestValidatePredictions:
         errors = validate_predictions(preds, golds)
         assert len(errors) == 2
         assert any("Missing prediction" in e and "case_gold" in e for e in errors)
-        assert any("Prediction without golden" in e and "case_pred" in e for e in errors)
+        assert any(
+            "Prediction without golden" in e and "case_pred" in e for e in errors
+        )
 
     def test_errors_in_deterministic_order(self):
         """Error messages are sorted by case_id for determinism."""
@@ -523,9 +517,7 @@ class TestComputeEvaluationSummary:
         }
         preds = {
             "case_001": _make_prediction("case_001", predicted_issue_type="complaint"),
-            "case_002": _make_prediction(
-                "case_002", predicted_issue_type="refund"
-            ),
+            "case_002": _make_prediction("case_002", predicted_issue_type="refund"),
         }
         summary = compute_evaluation_summary(preds, golds)
         assert len(summary.failed_cases) == 2
@@ -640,7 +632,9 @@ class TestQualityGateMetrics:
         }
         preds = {
             "case_001": _make_prediction("case_001", predicted_no_auto_send=False),
-            "case_002": _make_prediction("case_002", predicted_no_auto_send=False),  # wrong
+            "case_002": _make_prediction(
+                "case_002", predicted_no_auto_send=False
+            ),  # wrong
             "case_003": _make_prediction("case_003", predicted_no_auto_send=True),
         }
         summary = compute_evaluation_summary(preds, golds)

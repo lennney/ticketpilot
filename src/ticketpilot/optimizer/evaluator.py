@@ -3,6 +3,7 @@
 Runs the TicketPilot pipeline on all eval tickets, computes metrics
 against golden expectations, and caches the baseline for comparison.
 """
+
 from __future__ import annotations
 
 import logging
@@ -19,6 +20,7 @@ def _get_pool() -> ThreadPoolExecutor:
     if _pool is None:
         _pool = ThreadPoolExecutor(max_workers=4)
     return _pool
+
 
 from ticketpilot.evaluation.loaders import load_eval_dataset
 from ticketpilot.evaluation.metrics import compute_evaluation_summary
@@ -71,9 +73,7 @@ class OptimizerEvaluator:
                 + result.missing_ticket_for_golden
                 + result.errors
             )
-            raise ValueError(
-                "Eval dataset validation failed:\n" + "\n".join(errors)
-            )
+            raise ValueError("Eval dataset validation failed:\n" + "\n".join(errors))
         self._dataset = result.dataset
         logger.info(
             "Loaded eval dataset: %d tickets, %d golden expectations",
@@ -202,9 +202,7 @@ class OptimizerEvaluator:
         """
         ds = self.dataset
         self._predictions = self._generate_predictions()
-        summary = compute_evaluation_summary(
-            self._predictions, ds.golden
-        )
+        summary = compute_evaluation_summary(self._predictions, ds.golden)
         logger.info(
             "Evaluation complete: %d cases, intent=%.2f%%, severity=%.2f%%, "
             "risk_f1=%.2f%%",

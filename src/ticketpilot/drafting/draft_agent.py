@@ -94,18 +94,10 @@ class DraftAgent:
             "TICKETPILOT_LLM_BASE_URL", "https://api.deepseek.com"
         ).rstrip("/")
         self._api_key = os.environ.get("TICKETPILOT_LLM_API_KEY", "")
-        self._model = os.environ.get(
-            "TICKETPILOT_LLM_MODEL", "deepseek-chat"
-        )
-        self._timeout = int(
-            os.environ.get("TICKETPILOT_LLM_TIMEOUT_SECONDS", "60")
-        )
-        self._max_tokens = int(
-            os.environ.get("TICKETPILOT_LLM_MAX_TOKENS", "1024")
-        )
-        self._temperature = float(
-            os.environ.get("TICKETPILOT_LLM_TEMPERATURE", "0.3")
-        )
+        self._model = os.environ.get("TICKETPILOT_LLM_MODEL", "deepseek-chat")
+        self._timeout = int(os.environ.get("TICKETPILOT_LLM_TIMEOUT_SECONDS", "60"))
+        self._max_tokens = int(os.environ.get("TICKETPILOT_LLM_MAX_TOKENS", "1024"))
+        self._temperature = float(os.environ.get("TICKETPILOT_LLM_TEMPERATURE", "0.3"))
         self._template_id = template_id
 
     @property
@@ -212,9 +204,7 @@ class DraftAgent:
 
             # Run guardrails
             with (
-                trace.step("guardrails")
-                if trace
-                else contextlib.nullcontext() as step
+                trace.step("guardrails") if trace else contextlib.nullcontext() as step
             ):
                 guardrail_results = run_guardrails(
                     input_text=normalized_text,
@@ -234,26 +224,16 @@ class DraftAgent:
                         [g.check_name for g in failed_guardrails],
                     )
                     result.must_human_review = True
-                    result.safety_notes.extend(
-                        [g.message for g in failed_guardrails]
-                    )
+                    result.safety_notes.extend([g.message for g in failed_guardrails])
 
                 if step:
                     step.finish(
                         {
-                            "passed": len(
-                                [g for g in guardrail_results if g.passed]
-                            ),
+                            "passed": len([g for g in guardrail_results if g.passed]),
                             "failed": len(
-                                [
-                                    g
-                                    for g in guardrail_results
-                                    if not g.passed
-                                ]
+                                [g for g in guardrail_results if not g.passed]
                             ),
-                            "checks": [
-                                g.check_name for g in guardrail_results
-                            ],
+                            "checks": [g.check_name for g in guardrail_results],
                         }
                     )
 
@@ -328,13 +308,8 @@ class DraftAgent:
 
         # Step 2-3: Evaluate evidence and optionally reformulate
         if state.evidence:
-            avg_score = (
-                sum(e.score for e in state.evidence) / len(state.evidence)
-            )
-            if (
-                avg_score < _EVIDENCE_SCORE_THRESHOLD
-                or len(state.evidence) < 2
-            ):
+            avg_score = sum(e.score for e in state.evidence) / len(state.evidence)
+            if avg_score < _EVIDENCE_SCORE_THRESHOLD or len(state.evidence) < 2:
                 with (
                     trace.step(
                         "reformulate",
@@ -362,9 +337,7 @@ class DraftAgent:
                         max_evidence=_MAX_EVIDENCE,
                     )
                     if step:
-                        step.finish(
-                            {"new_evidence_count": len(state.evidence)}
-                        )
+                        step.finish({"new_evidence_count": len(state.evidence)})
 
         # If still no evidence, use LLM to try one more search
         if not state.evidence:
@@ -392,9 +365,7 @@ class DraftAgent:
         # Step 4: Generate reply
         if state.evidence:
             with (
-                trace.step(
-                    "generate", {"evidence_count": len(state.evidence)}
-                )
+                trace.step("generate", {"evidence_count": len(state.evidence)})
                 if trace
                 else contextlib.nullcontext() as step
             ):
@@ -411,9 +382,7 @@ class DraftAgent:
                 if step:
                     step.finish({"has_draft": draft_result is not None})
         else:
-            logger.info(
-                "DraftAgent: no evidence after all attempts, using fallback"
-            )
+            logger.info("DraftAgent: no evidence after all attempts, using fallback")
             draft_result = None
 
         # Step 5: Self-reflection and revision
@@ -433,16 +402,10 @@ class DraftAgent:
                     llm_config=self._llm_config,
                 )
                 if step:
-                    step.finish(
-                        {"confidence": draft_result.get("confidence", 0)}
-                    )
+                    step.finish({"confidence": draft_result.get("confidence", 0)})
 
             # Step 6: Final verification
-            with (
-                trace.step("verify")
-                if trace
-                else contextlib.nullcontext() as step
-            ):
+            with trace.step("verify") if trace else contextlib.nullcontext() as step:
                 verified = verify_reply(
                     draft_result=draft_result,
                     evidence=state.evidence,
@@ -484,9 +447,7 @@ class DraftAgent:
                         chunk_id=UUID(r["chunk_id"]),
                         doc_id=UUID(r["doc_id"]),
                         doc_type=DocType(r["doc_type"]),
-                        source_id=UUID(
-                            r.get("source_id", r["doc_id"])
-                        ),
+                        source_id=UUID(r.get("source_id", r["doc_id"])),
                         source_table=r.get("source_table", ""),
                         content=r.get("content", ""),
                         score=r.get("score", 0.0),
@@ -495,7 +456,5 @@ class DraftAgent:
                     )
                 )
             except (KeyError, ValueError) as e:
-                logger.warning(
-                    "DraftAgent: skipping malformed result: %s", e
-                )
+                logger.warning("DraftAgent: skipping malformed result: %s", e)
         return candidates

@@ -11,6 +11,7 @@ Quality score determines routing:
 - >= 0.5: eligible for cautious auto-send (MEDIUM confidence)
 - < 0.5: must go to human review
 """
+
 from __future__ import annotations
 
 from dataclasses import dataclass, field
@@ -53,7 +54,9 @@ def check_forbidden_promise(guardrail_passed: bool) -> QualityCheckResult:
         name="forbidden_promise",
         passed=guardrail_passed,
         score=1.0 if guardrail_passed else 0.0,
-        message="" if guardrail_passed else "Draft contains forbidden promises or guardrail violations",
+        message=""
+        if guardrail_passed
+        else "Draft contains forbidden promises or guardrail violations",
     )
 
 
@@ -132,7 +135,11 @@ def compute_draft_quality(
         overall_score = 0.0
     else:
         # Weighted average of non-veto checks
-        weights = {"citation_precision": 0.35, "claim_guard": 0.30, "evidence_coverage": 0.35}
+        weights = {
+            "citation_precision": 0.35,
+            "claim_guard": 0.30,
+            "evidence_coverage": 0.35,
+        }
         total_weight = 0.0
         weighted_sum = 0.0
         for check in checks:
