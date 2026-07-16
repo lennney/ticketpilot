@@ -1,0 +1,10 @@
+{"ticket_id": "TK-001", "category": "退款", "subject": "订单退款请求", "content": "我昨天下的订单想要退款，订单号 #20260715-001，支付了 299 元", "priority": "high", "status": "open", "created_at": "2026-07-15T10:30:00Z"}
+{"ticket_id": "TK-002", "category": "物流", "subject": "快递未收到", "content": "我的快递已经5天了还没到，物流单号 SF1234567890，请帮忙查一下", "priority": "medium", "status": "open", "created_at": "2026-07-15T11:00:00Z"}
+{"ticket_id": "TK-003", "category": "产品咨询", "subject": "产品规格询问", "content": "请问你们的产品支持 220V 电压吗？我在欧洲使用，需要确认兼容性", "priority": "low", "status": "open", "created_at": "2026-07-15T12:00:00Z"}
+{"ticket_id": "TK-004", "category": "技术支持", "subject": "App 登录失败", "content": "我的 App 一直提示登录失败，已经重置密码了还是不行。手机型号 iPhone 15 Pro，系统 iOS 18.2", "priority": "high", "status": "open", "created_at": "2026-07-15T13:00:00Z"}
+{"ticket_id": "TK-005", "category": "投诉", "subject": "客服态度差", "content": "昨天联系在线客服，态度非常敷衍，没有解决我的问题就结束了对话。我要投诉工号 8823 的客服", "priority": "high", "status": "escalated", "created_at": "2026-07-15T14:00:00Z"}
+{"ticket_id": "TK-006", "category": "退款", "subject": "部分退款", "content": "我买的产品有一个配件损坏了，想申请部分退款 50 元作为补偿", "priority": "medium", "status": "open", "created_at": "2026-07-15T15:00:00Z"}
+{"ticket_id": "TK-007", "category": "账户", "subject": "修改绑定手机号", "content": "我想修改账户绑定的手机号，原来的号码 138****1234 已经不用了，需要换成 139****5678", "priority": "low", "status": "open", "created_at": "2026-07-15T16:00:00Z"}
+{"ticket_id": "TK-008", "category": "技术支持", "subject": "数据同步异常", "content": "我的日历同步功能不工作，Google Calendar 的事件没有显示在 App 里，已经重新授权过了", "priority": "medium", "status": "open", "created_at": "2026-07-15T17:00:00Z"}
+{"ticket_id": "TK-009", "category": "物流", "subject": "地址修改", "content": "我的订单还没发货，想修改收货地址从北京改成上海，订单号 #20260714-003", "priority": "medium", "status": "open", "created_at": "2026-07-15T09:00:00Z"}
+{"ticket_id": "TK-010", "category": "产品咨询", "subject": "保修政策", "content": "请问你们的产品保修期是多久？是否支持全球联保？我在日本购买的能否在国内保修？", "priority": "low", "status": "open", "created_at": "2026-07-15T10:00:00Z"}
